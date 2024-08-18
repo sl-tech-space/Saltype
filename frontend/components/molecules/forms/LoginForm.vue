@@ -7,6 +7,7 @@ import Image from "~/components/atoms/imgs/Image.vue";
 import Field from "./ValidateField.vue";
 import { Form } from "vee-validate";
 import * as yup from "yup";
+import { saveToken } from "~/composables/token";
 
 import EyeRegular from "~/assets/images/index/eye-regular.svg";
 import EyeSlashRegular from "~/assets/images/index/eye-slash-regular.svg";
@@ -42,18 +43,23 @@ const handleSubmit = async () => {
     });
 
     if (!response.ok) {
-      throw new Error("ログインに失敗しました");
+      alert("ログインに失敗しました。");
     }
 
     const data = await response.json();
 
-    console.log("ログイン成功:", data);
+    console.log(data.token);
+    console.log(data.userName);
 
-    localStorage.setItem("authToken", data.token);
+    saveToken(data.token);
+
+    console.log(getToken());
 
     router.push({ name: "home" });
   } catch (error) {
-    console.error("エラー:", error);
+    alert(
+      "エラーが発生しました。ネットワークに接続されているか確認してください"
+    );
   }
 };
 </script>
