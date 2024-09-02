@@ -40,22 +40,25 @@ const handleSubmit = async () => {
         email: email.value,
         password: password.value,
       }),
+      signal: AbortSignal.timeout(5000),
     });
 
-    if (!response.ok) {
+    if (response.ok) {
+      const data = await response.json();
+
+      console.log(data.userName);
+
+      if (data.token) {
+        saveToken(data.token);
+        console.log(getToken());
+      } else {
+        console.log("トークンが発行されませんでした");
+      }
+
+      router.push({ name: "home" });
+    } else {
       alert("ログインに失敗しました。");
     }
-
-    const data = await response.json();
-
-    console.log(data.token);
-    console.log(data.userName);
-
-    saveToken(data.token);
-
-    console.log(getToken());
-
-    router.push({ name: "home" });
   } catch (error) {
     alert(
       "エラーが発生しました。ネットワークに接続されているか確認してください"
