@@ -5,8 +5,16 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { ssr: false } //ログイン画面 - CSR
   },
+  app: {
+    head: {
+      script: [
+        { src: 'https://accounts.google.com/gsi/client', async: true, defer: true }
+      ]
+    }
+  },
   runtimeConfig: {
     public: {
+      googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
       baseURL: 'http://localhost:8000', //Django REST Framework接続
     },
   },

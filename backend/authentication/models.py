@@ -1,7 +1,11 @@
 import uuid
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 from .validators import validate_min_length
 
 class User(AbstractUser):
@@ -16,9 +20,6 @@ class User(AbstractUser):
     last_name = None
     groups = None
     user_permissions = None
-    # is_staff = None
-    # is_active = None
-    # is_superuser = None
     last_login = None
     
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -37,7 +38,13 @@ class User(AbstractUser):
     
     class Meta:
         ordering = ["user_id"]
-        db_table = "User"
+        db_table = "user"
         
     def __str__(self):
         return self.username
+
+# ユーザー作成時に自動的にトークンを生成
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

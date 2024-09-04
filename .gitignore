@@ -1,0 +1,3 @@
+node_modules
+mysql-data/
+*.sock

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LoginForm from "../molecules/forms/LoginForm.vue";
 import Title from "../atoms/texts/Title.vue";
-import CursorEffect from "~/composables/CursorEffect.vue";
+import CursorEffect from "~/composables/ui/CursorEffect.vue";
 import GoogleAuth from "../molecules/forms/GoogleAuth.vue";
 </script>
 

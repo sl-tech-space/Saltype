@@ -4,14 +4,34 @@ import Text from "~/components/atoms/texts/Text.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Image from "~/components/atoms/imgs/Image.vue";
 import GoogleIcon from "~/assets/images/index/web_dark_rd_na@2x.png";
-import { useAuth } from "~/composables/auth";
+import { useGoogleAuth } from "~/composables/auth/useGoogleAuth";
 
 const googleIcon = ref(GoogleIcon);
 
-const signIn = async (): Promise<void> => {
-  await useAuth().signIn();
-  await navigateTo("/home");
-};
+const config = useRuntimeConfig()
+
+const { loginWithGoogle } = useGoogleAuth();
+
+const handleLoginWithGoogle = async (): Promise<void> => {
+  try {
+    await loginWithGoogle()
+  } catch (e) {
+    //TODO change
+    console.error('Login failed:', e)
+  }
+}
+
+onMounted(() => {
+  nextTick(() => {
+    const google = (window as any).google;
+    if (google) {
+      google.accounts.id.initialize({
+        client_id: config.public.googleClientId,
+        callback: loginWithGoogle
+      });
+    }
+  });
+})
 </script>
 
 <template>
@@ -25,7 +45,7 @@ const signIn = async (): Promise<void> => {
     </div>
     <div class="google-auth">
       <Button
-        @click="signIn()"
+        @click="handleLoginWithGoogle()"
         button-text="Googleで認証"
         border="dark-blue"
         width="same-as-input-large"

@@ -7,7 +7,7 @@ import Image from "~/components/atoms/imgs/Image.vue";
 import Field from "./ValidateField.vue";
 import { Form } from "vee-validate";
 import * as yup from "yup";
-import { saveToken } from "~/composables/token";
+import { getToken, saveToken } from "~/composables/auth/useToken";
 
 import EyeRegular from "~/assets/images/index/eye-regular.svg";
 import EyeSlashRegular from "~/assets/images/index/eye-slash-regular.svg";
@@ -45,16 +45,12 @@ const handleSubmit = async () => {
 
     if (response.ok) {
       const data = await response.json();
-
-      console.log(data.userName);
-
       if (data.token) {
         saveToken(data.token);
         console.log(getToken());
       } else {
         console.log("トークンが発行されませんでした");
       }
-
       router.push({ name: "home" });
     } else {
       alert("ログインに失敗しました。");
@@ -68,73 +64,30 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <Form
-    :validation-schema="validationSchema"
-    v-slot="{ meta: { valid } }"
-    @submit="handleSubmit"
-  >
+  <Form :validation-schema="validationSchema" v-slot="{ meta: { valid } }" @submit="handleSubmit">
     <Field v-model="email" name="email" class="field">
       <template #input="{ field }">
-        <Input
-          type="email"
-          id="email"
-          v-bind="field"
-          placeholder="&nbsp;メールアドレス"
-          border="blue"
-          width="large"
-          :rounded="true"
-        />
+        <Input type="email" id="email" v-bind="field" placeholder="&nbsp;メールアドレス" border="blue" width="large"
+          :rounded="true" />
       </template>
     </Field>
 
     <Field v-model="password" name="password" class="field">
       <template #input="{ field }">
         <span>
-          <Input
-            :type="showPassword ? 'text' : 'password'"
-            id="password"
-            v-bind="field"
-            placeholder="&nbsp;パスワード"
-            border="blue"
-            width="large"
-            :rounded="true"
-          />
-          <Image
-            v-if="showPassword"
-            :image-src="eyeSlashRegular"
-            alt="パスワード表示"
-            width="mini"
-            height="mini"
-            class="eye"
-            @click="passVisibility"
-          />
-          <Image
-            v-else
-            :image-src="eyeRegular"
-            alt="パスワード非表示"
-            width="mini"
-            height="mini"
-            class="eye"
-            @click="passVisibility"
-          />
+          <Input :type="showPassword ? 'text' : 'password'" id="password" v-bind="field" placeholder="&nbsp;パスワード"
+            border="blue" width="large" :rounded="true" />
+          <Image v-if="showPassword" :image-src="eyeSlashRegular" alt="パスワード表示" width="mini" height="mini" class="eye"
+            @click="passVisibility" />
+          <Image v-else :image-src="eyeRegular" alt="パスワード非表示" width="mini" height="mini" class="eye"
+            @click="passVisibility" />
         </span>
       </template>
     </Field>
 
     <div class="buttons">
-      <Button
-        type="reset"
-        button-text="リセット"
-        border="blue"
-        :rounded="true"
-      />
-      <Button
-        type="submit"
-        button-text="ログイン"
-        border="blue"
-        :rounded="true"
-        :disabled="!valid"
-      />
+      <Button type="reset" button-text="リセット" border="blue" :rounded="true" />
+      <Button type="submit" button-text="ログイン" border="blue" :rounded="true" :disabled="!valid" />
     </div>
   </Form>
 </template>
