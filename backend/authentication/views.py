@@ -10,6 +10,9 @@ from django.contrib.auth import login
 from .serializers import UserLoginSerializer, GoogleAuthSerializer
 
 class LoginView(APIView):
+    """
+    オリジナルフォームからのログインを行う
+    """
     permission_classes = [AllowAny]
     
     def post(self, request, *args, **kwargs):
@@ -20,6 +23,9 @@ class LoginView(APIView):
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 class CheckTokenView(APIView):
+    """
+    リクエストのトークンを使って自動ログインを行う
+    """
     permission_classes = [AllowAny]
     
     def post(self, request):
@@ -43,6 +49,10 @@ class CheckTokenView(APIView):
             }, status=status.HTTP_401_UNAUTHORIZED)
         
 class GoogleAuthView(APIView):
+    """
+    Google認証
+    認証と同時にDBにユーザを作成
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
