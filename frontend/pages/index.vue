@@ -5,7 +5,7 @@ import { useAuthToken } from "~/composables/auth/useAuth";
 const { authToken } = useAuthToken();
 
 onMounted(() => {
-   //authToken();
+  authToken();
 });
 </script>
 

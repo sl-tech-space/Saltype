@@ -1,14 +1,16 @@
 import { useRouter } from "vue-router";
 import { getToken, isTokenAvailable } from "~/composables/auth/useToken";
+import { useRuntimeConfig } from 'nuxt/app'
 
 export function useAuthToken() {
+  const config = useRuntimeConfig()
   const router = useRouter();
 
   const authToken = async () => {
     try {
-      if (isTokenAvailable() && getToken()) {
-        const token = getToken();
-        const response = await fetch("http://localhost:8000/api/auth-token/", {
+      if (isTokenAvailable() && await getToken()) {
+        const token = await getToken();
+        const response = await fetch(`${config.public.baseURL}/api/auth-token/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

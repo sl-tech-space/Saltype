@@ -1,12 +1,11 @@
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { saveToken, getToken } from "./useToken";
-import { string } from "yup";
+import { useRuntimeConfig } from 'nuxt/app'
 
 export function useLogin() {
+    const config = useRuntimeConfig()
   const router = useRouter();
-  const email = ref(string);
-  const password = ref(string);
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
@@ -15,7 +14,7 @@ export function useLogin() {
     error.value = null;
 
     try {
-      const response = await fetch("http://localhost:8000/api/login/", {
+      const response = await fetch(`${config.public.baseURL}/api/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
