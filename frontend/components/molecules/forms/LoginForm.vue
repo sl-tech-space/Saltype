@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import Input from "~/components/atoms/inputs/Input.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Image from "~/components/atoms/imgs/Image.vue";
 import Field from "./ValidateField.vue";
 import { Form } from "vee-validate";
 import * as yup from "yup";
-import { getToken, saveToken } from "~/composables/auth/useToken";
-
+import { useLogin } from "~/composables/auth/useLogin";
 import EyeRegular from "~/assets/images/index/eye-regular.svg";
 import EyeSlashRegular from "~/assets/images/index/eye-slash-regular.svg";
 
 const eyeRegular = ref(EyeRegular);
 const eyeSlashRegular = ref(EyeSlashRegular);
-
 const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
-const router = useRouter();
 
 const passVisibility = () => {
   showPassword.value = !showPassword.value;
@@ -29,37 +25,10 @@ const validationSchema = yup.object().shape({
   password: yup.string().required().min(8).label("パスワード"),
 });
 
-const handleSubmit = async () => {
-  try {
-    const response = await fetch("http://localhost:8000/api/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-      }),
-      signal: AbortSignal.timeout(5000),
-    });
+const { login } = useLogin()
 
-    if (response.ok) {
-      const data = await response.json();
-      if (data.token) {
-        saveToken(data.token);
-        console.log(getToken());
-      } else {
-        console.log("トークンが発行されませんでした");
-      }
-      router.push({ name: "home" });
-    } else {
-      alert("ログインに失敗しました。");
-    }
-  } catch (error) {
-    alert(
-      "エラーが発生しました。ネットワークに接続されているか確認してください"
-    );
-  }
+const handleSubmit = async () => {
+  await login(email.value, password.value);
 };
 </script>
 

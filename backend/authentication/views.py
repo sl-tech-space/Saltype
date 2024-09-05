@@ -7,31 +7,17 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import login
-from .serializers import UserLoginSerializer
+from .serializers import UserLoginSerializer, GoogleAuthSerializer
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request, *args, **kwargs):
-        serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data['user']
-            # login(request, user)
-            # request.session.set_expiry(1209600)
-            # return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class CheckSessionView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request):
-#         return Response({
-#             'user': {
-#                 'username': request.user.username,
-#             }
-#         })
+        serializer = UserLoginSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 class CheckTokenView(APIView):
     permission_classes = [AllowAny]
@@ -55,3 +41,23 @@ class CheckTokenView(APIView):
                 'is_valid': False,
                 'error': 'Invalid token'
             }, status=status.HTTP_401_UNAUTHORIZED)
+        
+class GoogleAuthView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = GoogleAuthSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                user = serializer.create(serializer.validated_data)
+                return Response({
+                    'message': 'User information saved successfully',
+                    'user_id': user.id,
+                    'email': user.email,
+                    'username': user.username
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({
+                    'error': str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

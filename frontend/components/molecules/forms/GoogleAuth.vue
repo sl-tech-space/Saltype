@@ -13,12 +13,7 @@ const config = useRuntimeConfig()
 const { loginWithGoogle } = useGoogleAuth();
 
 const handleLoginWithGoogle = async (): Promise<void> => {
-  try {
     await loginWithGoogle()
-  } catch (e) {
-    //TODO change
-    console.error('Login failed:', e)
-  }
 }
 
 onMounted(() => {

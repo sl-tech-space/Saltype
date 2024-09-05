@@ -1,16 +1,17 @@
 import { ref } from 'vue'
+import { useRouter } from "vue-router";
 import { useRuntimeConfig } from 'nuxt/app'
 
 interface GoogleUserInfo {
     email: string;
     name: string;
-    picture: string;
 }
 
 export const useGoogleAuth = () => {
   const config = useRuntimeConfig()
   const user = ref<GoogleUserInfo | null>(null)
   const error = ref<Error | null>(null)
+  const router = useRouter();
 
   const loginWithGoogle = async (): Promise<void> => {
     try {
@@ -22,7 +23,6 @@ export const useGoogleAuth = () => {
         scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
         callback: async (response: any) => {
           if (response.access_token) {
-            // トークンを使用してユーザー情報を取得
             const { data: userInfo, error: userInfoError } = await useFetch<GoogleUserInfo>('https://www.googleapis.com/oauth2/v3/userinfo', {
               headers: { Authorization: `Bearer ${response.access_token}` }
             })
@@ -34,13 +34,11 @@ export const useGoogleAuth = () => {
             if (userInfo.value) {
               console.log('User Info:', userInfo.value)
 
-              // ユーザー情報をDRFのAPIに送信
-              const { data, error: apiError } = await useFetch(`${config.public.baseURL}/api/register/`, {
+              const { data, error: apiError } = await useFetch(`${config.public.baseURL}/api/google-auth/`, {
                 method: 'POST',
                 body: {
-                  username: userInfo.value.email,
+                  username: userInfo.value.name,
                   email: userInfo.value.email,
-                  profile_picture: userInfo.value.picture
                 }
               })
 
@@ -49,6 +47,8 @@ export const useGoogleAuth = () => {
               }
 
               user.value = data.value as GoogleUserInfo
+
+              router.push({ name: "home" });
             } else {
               throw new Error('User info is null')
             }
