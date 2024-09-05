@@ -15,10 +15,10 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
+    cryptoKey: process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'),
     public: {
-      googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
       baseURL: 'http://localhost:8000', //Django REST Framework接続
-      cryptKey: process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'),
+      googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
 })

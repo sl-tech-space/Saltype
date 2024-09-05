@@ -3,7 +3,7 @@ import { encryptData, decryptData } from "~/utils/crypto";
 
 export function useCrypto() {
   const config = useRuntimeConfig();
-  const key = config.public.cryptKey as string;
+  const key = config.cryptoKey as string;
   const cryptoKey = ref<CryptoKey | null>(null);
 
   function adjustKeyLength(key: string): Uint8Array {

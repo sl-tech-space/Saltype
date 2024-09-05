@@ -1,3 +1,4 @@
+//TODO クリプトで暗号化
 enum GoogleTokenType {
     AccessToken = "access",
     RefreshToken = "refresh"

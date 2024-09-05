@@ -1,14 +1,3 @@
-// utils/crypto.ts
-
-// ランダムな暗号化キーを生成
-async function generateKey(): Promise<CryptoKey> {
-  return await window.crypto.subtle.generateKey(
-    { name: "AES-GCM", length: 256 },
-    true,
-    ["encrypt", "decrypt"]
-  );
-}
-
 // データを暗号化
 async function encryptData(data: string, key: CryptoKey): Promise<string> {
   const encoder = new TextEncoder();
@@ -52,4 +41,4 @@ async function decryptData(
   return decoder.decode(decryptedData);
 }
 
-export { generateKey, encryptData, decryptData };
+export { encryptData, decryptData };
