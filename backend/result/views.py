@@ -4,9 +4,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Rank, t_score, CustomUser, m_lang, m_diff
 
-"""
-スコアをインサートするAPIエンドポイント
-"""
+
 @api_view(['POST'])
 def insert_score_api(request):
     user_id = request.data.get('user_id')
