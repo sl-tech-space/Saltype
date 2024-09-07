@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import LoginPage from "~/components/organisms/LoginPage.vue";
+import HomePage from '~/components/organisms/HomePage.vue';
+
+useHead({
+  title: "ホーム"
+});
 </script>
 
 <template>
-  <div class="login-page">
-    <LoginPage />
-    <LoginPage />
-    <LoginPage />
+  <div class="home-page">
+    <HomePage />
   </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/index.scss" />
+<style lang="scss" src="@/assets/styles/pages/home.scss" />

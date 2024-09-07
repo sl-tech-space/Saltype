@@ -43,6 +43,10 @@ class UserLoginSerializer(serializers.Serializer):
 User = get_user_model()
 
 class GoogleAuthSerializer(serializers.Serializer):
+    """
+    Google認証
+    バリデーションとユーザ作成を担う
+    """
     email = serializers.EmailField()
     username = serializers.CharField(max_length=150)
     picture = serializers.URLField(required=False, allow_blank=True)

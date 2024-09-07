@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import LoginForm from "../molecules/forms/LoginForm.vue";
+import LoginForm from "../molecules/login/forms/LoginForm.vue";
 import Title from "../atoms/texts/Title.vue";
 import CursorEffect from "~/composables/ui/CursorEffect.vue";
-import GoogleAuth from "../molecules/forms/GoogleAuth.vue";
+import GoogleAuth from "../molecules/login/forms/GoogleAuth.vue";
 </script>
 
 <template>

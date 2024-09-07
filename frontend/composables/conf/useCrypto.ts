@@ -1,4 +1,4 @@
-import { useRuntimeConfig } from "#app";
+import { ref } from 'vue'
 import { encryptData, decryptData } from "~/utils/crypto";
 
 export function useCrypto() {
@@ -22,7 +22,7 @@ export function useCrypto() {
   async function initializeCryptoKey() {
     if (!cryptoKey.value) {
       const adjustedKeyData = adjustKeyLength(key);
-      cryptoKey.value = await window.crypto.subtle.importKey(
+      cryptoKey.value = await crypto.subtle.importKey(
         "raw",
         adjustedKeyData,
         { name: "AES-GCM" },

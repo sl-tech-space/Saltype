@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Input from "~/components/atoms/inputs/Input.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Image from "~/components/atoms/imgs/Image.vue";
-import Field from "./ValidateField.vue";
+import Field from "~/components/molecules/common/ValidateField.vue";
 import { Form } from "vee-validate";
 import * as yup from "yup";
 import { useLogin } from "~/composables/auth/useLogin";
@@ -25,7 +25,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required().min(8).label("パスワード"),
 });
 
-const { login } = useLogin()
+const { login } = await useLogin()
 
 const handleSubmit = async () => {
   await login(email.value, password.value);
