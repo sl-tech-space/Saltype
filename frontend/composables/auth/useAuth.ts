@@ -1,14 +1,14 @@
 import { useRouter } from "vue-router";
-import { getToken, isTokenAvailable } from "~/composables/auth/useToken";
-import { useRuntimeConfig } from 'nuxt/app'
+import { useToken } from "./useToken"
 
 export function useAuthToken() {
   const config = useRuntimeConfig()
+  const { getToken, isTokenAvailable } =  useToken()
   const router = useRouter();
 
   const authToken = async () => {
     try {
-      if (isTokenAvailable() && await getToken()) {
+      if (await isTokenAvailable()) {
         const token = await getToken();
         const response = await fetch(`${config.public.baseURL}/api/auth-token/`, {
           method: "POST",
@@ -30,6 +30,8 @@ export function useAuthToken() {
           console.error("Error:", errorData.userName);//TODO test
           console.log("ログインに失敗しました。");//TODO test
         }
+      } else {
+        console.log("nai")
       }
     } catch (error) {
       console.error("ネットワークエラーまたはその他の例外が発生しました:", error);

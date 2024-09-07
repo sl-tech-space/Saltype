@@ -1,0 +1,7 @@
+@use "@/assets/styles/variables" as var;
+
+.home-page {
+  width: 100%;
+  height: 100vh;
+  background-color: var.$black;
+}

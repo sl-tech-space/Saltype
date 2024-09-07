@@ -8,7 +8,7 @@ import { useGoogleAuth } from "~/composables/auth/useGoogleAuth";
 
 const googleIcon = ref(GoogleIcon);
 
-const config = useRuntimeConfig()
+const config = useRuntimeConfig();
 
 const { loginWithGoogle } = useGoogleAuth();
 

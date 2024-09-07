@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import LoginPage from "~/components/organisms/LoginPage.vue";
-import { useAuthToken } from "~/composables/auth/useAuth";
+import Title from '~/components/atoms/texts/Title.vue';
 
-const { authToken } = useAuthToken();
-
-onMounted(() => {
-  authToken();
+useHead({
+  title: "Welcome"
 });
 </script>
 
 <template>
-  <div class="login-page">
-    <LoginPage />
-  </div>
+    <Title color="dark-blue" text="Welcome" class="title" />
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/index.scss" />
+<style lang="scss" scoped>
+@use "@/assets/styles/variables" as var;
+
+.title {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var.$black;
+}
+</style>

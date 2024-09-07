@@ -3,16 +3,19 @@ interface Props {
   color?: "white" | "black" | "blue" | "dark-blue";
   width?: "small" | "medium" | "large";
   margin?: "none" | "vertical" | "horizontal";
+  visible?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   color: "white",
   margin: "none",
+  visible: true
 });
 </script>
 
 <template>
   <div
+    v-if="props.visible"
     :class="[
       'separator',
       `separator--${props.color}`,

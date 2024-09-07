@@ -1,10 +1,11 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { saveToken, getToken } from "./useToken";
-import { useRuntimeConfig } from 'nuxt/app'
+import { useToken } from "./useToken";
+import { useRuntimeConfig } from "nuxt/app";
 
-export function useLogin() {
-    const config = useRuntimeConfig()
+export async function useLogin() {
+  const config = useRuntimeConfig();
+  const { getToken, saveToken } = useToken();
   const router = useRouter();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
@@ -29,7 +30,8 @@ export function useLogin() {
       if (response.ok) {
         const data = await response.json();
         if (data.token) {
-          saveToken(data.token);
+          const mes = saveToken(data.token);
+          console.log(mes)
           console.log(getToken()); // TODO: Remove in production
           router.push({ name: "home" });
         } else {
