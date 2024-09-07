@@ -1,64 +1,65 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import t_miss, t_missana, CustomUser
+from rest_framework import status
+from .models import t_miss,t_missana
+from .serializers import MissTypeSerializer
 from django.db.models import Count
-from django.shortcuts import get_object_or_404
 
+@api_view(['POST'])
+def add_miss_type(request):
+    """
+    ミスタイプインサート処理
 
-"""
-ミスタイプをインサート（ミスタイプするたびに）
-"""
-def record_mistype(user_id, miss_char):
-    user = get_object_or_404(CustomUser, pk=user_id)
-    t_miss.objects.create(
-        user_id=user,
-        miss_char=miss_char
-    )
-
-"""
-ミスタイプデータを分析し、ミスタイプ分析テーブルにインサート（タイピングゲーム終了したら）
-"""
-def analyze_mistypes(user_id):
+    Atributes:
+        ミスタイプされるたびにミスタイプテーブルにミスタイプ文字をインサート
+    :param request: 
+        ミスタイプに関する情報が含まれるリクエスト（ユーザーID、ミスタイプされた文字など）
+    :return: 
+        成功時にステータス200とミスタイプ情報を返す
+    """
+    serializer = MissTypeSerializer(data=request.data)
     
-    user = get_object_or_404(CustomUser, pk=user_id)
+    if serializer.is_valid():
+        """ ミスタイプデータをインサート """
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # ミスタイプした文字ごとにグループ化してカウントを取得
-    mistype_data = t_miss.objects.filter(user_id=user).values('miss_char').annotate(miss_count=Count('miss_char'))
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # ミスタイプ分析テーブルにデータをインサート
-    for data in mistype_data:
-        t_missana.objects.create(
-            user_id=user,
-            miss_char=data['miss_char'],
-            miss_count=data['miss_count']
+@api_view(['POST'])
+def analyze_mistypes(request):
+    """
+    タイピングゲーム終了時のミスタイプ分析処理
+    
+    Atributes:
+        1. ユーザーごとのミスタイプを集計し、分析テーブルにインサート
+        2. ミスタイプ回数上位3つをフロントに返す
+    :param request: 
+        ユーザーIDを含むリクエストデータ
+    :return: 
+        ミスタイプ回数上位3つの結果
+    :rtype: 
+        JSON
+    """
+    user_id = request.data.get('user_id')
+
+    """ ユーザーのミスタイプを集計 """
+    miss_counts = t_miss.objects.filter(user_id=user_id) \
+        .values('miss_char') \
+        .annotate(miss_count=Count('miss_char')) \
+        .order_by('-miss_count')
+
+    """ ミスタイプ分析テーブルにインサート """
+    for miss in miss_counts:
+        t_missana.objects.update_or_create(
+            user_id_id=user_id,
+            miss_char=miss['miss_char'],
+            defaults={'miss_count': miss['miss_count']}
         )
 
-    # 分析が完了したらミスタイプテーブルのデータを削除
-    t_miss.objects.filter(user_id=user).delete()
+    """ ミスタイプ回数TOP3を抽出 """
+    top_mistypes = miss_counts[:3]
 
-"""
-ミスタイプAPI
-"""
-@api_view(['POST'])
-def record_mistype_api(request):
-    user_id = request.data.get('user_id')
-    miss_char = request.data.get('miss_char')
-
-    if user_id and miss_char:
-        record_mistype(user_id, miss_char)
-        return Response({'status': 'success'}, status=201)
-    else:
-        return Response({'error': 'Missing parameters'}, status=400)
-
-"""
-ミスタイプ分析API
-"""
-@api_view(['POST'])
-def analyze_mistypes_api(request):
-    user_id = request.data.get('user_id')
-
-    if user_id:
-        analyze_mistypes(user_id)
-        return Response({'status': 'success'}, status=201)
-    else:
-        return Response({'error': 'Missing parameters'}, status=400)
+    return Response({
+        'top_mistypes': top_mistypes
+    }, status=status.HTTP_200_OK)
