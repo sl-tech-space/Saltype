@@ -8,7 +8,7 @@ const Icon = defineAsyncComponent(() => import('~/components/atoms/imgs/Icon.vue
 <template>
     <section>
         <div class="selection-prompt">
-            <Title color="white" size="small" text="ホーム" />
+            <Title color="white" text="ホーム" />
             <!-- <Icon alt="ユーザアイコン" width="medium" height="medium" /> -->
         </div>
         <Separator color="dark-blue" width="large" margin="none" :visible="true" />

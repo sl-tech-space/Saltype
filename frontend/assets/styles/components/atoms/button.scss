@@ -92,6 +92,10 @@
   background-color: var.$dark-blue;
 }
 
+.button-background--none {
+  background-color: transparent;
+}
+
 /* round */
 .button--rounded {
   border-radius: 4px;

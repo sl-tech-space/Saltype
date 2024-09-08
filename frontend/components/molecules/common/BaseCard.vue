@@ -27,15 +27,16 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <section :class="[`card`, `card--${props.cardColor}`, `card-width--${$props.width}`, `card-height--${$props.height}`]">
+    <section
+        :class="[`card`, `card--${props.cardColor}`, `card-width--${$props.width}`, `card-height--${$props.height}`]">
         <div class="card-header">
             <slot name="card-header" />
         </div>
-        <Separator :color="props.sepColor" width="large" margin="vertical" :visible="props.headerSep" />
+        <Separator :color="props.sepColor" width="large" margin="none" :visible="props.headerSep" />
         <div class="card-body">
-            <slot />
+            <slot name="card-body" />
         </div>
-        <Separator :color="props.sepColor" width="large" margin="vertical" :visible="props.footerSep" />
+        <Separator :color="props.sepColor" width="large" margin="none" :visible="props.footerSep" />
         <div class="card-footer">
             <slot name="card-footer" />
         </div>
