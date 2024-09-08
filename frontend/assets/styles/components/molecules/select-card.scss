@@ -1,6 +1,31 @@
+@use "@/assets/styles/variables" as var;
+
 .select-cards {
-    width: 100%;
-    height: 80vh;
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: space-around;
+
+  .header-content {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card-text {
+    text-align: center;
+  }
+
+  .game-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    .body-content {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+  }
 }
