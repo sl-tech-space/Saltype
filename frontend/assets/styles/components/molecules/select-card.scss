@@ -26,6 +26,21 @@
       display: flex;
       justify-content: space-around;
       text-align: center;
+
+      .language-setting,
+      .difficulty-setting {
+        padding-top: 20px;
+      }
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+
+        .start-button {
+            font-size: 1rem;
+        }
     }
   }
 }

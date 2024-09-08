@@ -1,15 +1,26 @@
 @use "@/assets/styles/variables" as var;
 
-.embla {
-  overflow: hidden;
-  text-align: center;
-}
+.embla-wrapper {
+    display: flex;
+    justify-content: center;
+    text-align: center;
 
-.embla__container {
-  display: flex;
-}
+  .embla {
+    overflow: hidden;
+    text-align: center;
+  }
 
-.embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
+  .embla__container {
+    display: flex;
+  }
+
+  .embla__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+
+  .embla__prev:hover,
+  .embla__next:hover {
+    color: var.$purple;
+  }
 }

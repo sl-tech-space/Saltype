@@ -6,7 +6,7 @@ interface Props {
   border?: "white" | "black" | "blue" | "dark-blue" | "none";
   width?: "small" | "medium" | "large" | "same-as-input-large";
   height?: "small" | "medium" | "large";
-  background?: "white" | "black" | "blue" | "dark-blue";
+  background?: "white" | "black" | "blue" | "dark-blue" | "none";
   rounded?: boolean;
 }
 

@@ -5,7 +5,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   routeRules: {
-    '/': { ssr: false } //ログイン画面 - CSR
+    '/': { isr: true },
+    '/login': { ssr: false }, //ログイン画面 - CSR
+    '/home': { ssr: true }
   },
   app: {
     head: {
