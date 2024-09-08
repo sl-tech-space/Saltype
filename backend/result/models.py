@@ -53,10 +53,10 @@ class t_score(models.Model):
 
     Attributes:
         score_id (AutoField): スコアID
-        user_id (ForeignKey): スコアを記録したユーザーID（CustomUserモデルへの外部キー）
-        score (IntegerField): ゲームのスコア（デフォルトで0）
-        lang_id (ForeignKey): 言語設定（m_langモデルへの外部キー）
-        diff_id (ForeignKey): 難易度設定（m_diffモデルへの外部キー）
+        user_id (ForeignKey): スコアを記録したユーザーID(CustomUserモデルへの外部キー)
+        score (IntegerField): ゲームのスコア(デフォルトで0)
+        lang_id (ForeignKey): 言語設定(m_langモデルへの外部キー)
+        diff_id (ForeignKey): 難易度設定(m_diffモデルへの外部キー)
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
     
@@ -80,7 +80,7 @@ class Rank(models.Model):
 
     Attributes:
         rank_id (ForeignKey): ランクID
-        rank (CharField): ランク名（appsの方でランクの初期値をメンバーに設定）
+        rank (CharField): ランク名(appsの方でランクの初期値をメンバーに設定)
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
 
