@@ -29,7 +29,7 @@ def add_miss_type(request):
 @api_view(['POST'])
 def analyze_mistypes(request):
     """
-    タイピングゲーム終了時のミスタイプ分析処理
+    分析結果インサート処理
     
     Atributes:
         1. ユーザーごとのミスタイプを集計し、分析テーブルにインサート
