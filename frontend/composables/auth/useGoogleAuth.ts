@@ -7,6 +7,10 @@ interface GoogleUserInfo {
     name: string;
 }
 
+/**
+ * Google認証処理
+ * @returns user, error, loginWithGoogle
+ */
 export const useGoogleAuth = () => {
   const config = useRuntimeConfig()
   const user = ref<GoogleUserInfo | null>(null)

@@ -1,16 +1,18 @@
 import { useCrypto } from "../conf/useCrypto";
 
+/**
+ * ローカルストレージのトークン処理
+ * @returns saveToken, getToken, removeToken, isTokenAvailable
+ */
 export function useToken() {
     const { encrypt, decrypt } = useCrypto()
 
     async function saveToken(token: string): Promise<void> {
         try {
-            console.log(token)
             const encryptedToken = await encrypt(token);
-            console.log(encryptedToken)
             localStorage.setItem('accessToken', encryptedToken);
         } catch(error) {
-            console.error("トークンの保存に失敗", error)
+            console.log("トークンの保存に失敗")
         }
     }
 
@@ -19,10 +21,9 @@ export function useToken() {
             const encryptedToken = localStorage.getItem('accessToken');
             if(!encryptedToken) return null;
             const decryptedToken = await decrypt(encryptedToken);
-            console.log(decryptedToken)
             return await decrypt(encryptedToken);
         } catch(error) {
-            console.log("トークンの取得に失敗", error)
+            console.log("トークンの取得に失敗")
             return null;
         }
     }

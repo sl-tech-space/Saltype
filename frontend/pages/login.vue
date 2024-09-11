@@ -2,7 +2,7 @@
 import LoginPage from "~/components/organisms/LoginPage.vue";
 import { useAuthToken } from "~/composables/auth/useAuth";
 
-const { authToken } = await useAuthToken();
+const { authToken } = useAuthToken();
 
 onMounted(() => {
   authToken();
