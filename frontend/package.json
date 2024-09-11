@@ -15,6 +15,7 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/dotenv": "^1.4.2",
     "@pinia/nuxt": "^0.5.4",
+    "@sidebase/nuxt-session": "^0.2.8",
     "@types/lodash": "^4.17.7",
     "@vee-validate/i18n": "^4.13.2",
     "@vee-validate/rules": "^4.13.2",

@@ -29,8 +29,8 @@ INSTALLED_APPS = [
     'social_django',
     'oauth2_provider',
     'authentication',
-    'result',
-    'analyze'
+    # 'result',
+    # 'analyze'
 ]
 
 MIDDLEWARE = [
