@@ -39,7 +39,7 @@ class UserLoginSerializer(serializers.Serializer):
         
         data['user'] = user
         return data
-    
+
 User = get_user_model()
 
 class GoogleAuthSerializer(serializers.Serializer):

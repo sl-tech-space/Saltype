@@ -34,13 +34,33 @@
     }
 
     .footer-content {
-        display: flex;
-        justify-content: center;
-        text-align: center;
+      display: flex;
+      justify-content: center;
+      text-align: center;
 
-        .start-button {
-            font-size: 1rem;
-        }
+      .start-button {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .menu-card {
+    
+    .menu-select li {
+      margin-top: 40px;
+      margin-left: 50%;
+      list-style-type: none;
+      transform: translateX(-40%);
+
+      :hover {
+        color: var.$purple;
+      }
+    }
+
+    .logout {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
     }
   }
 }

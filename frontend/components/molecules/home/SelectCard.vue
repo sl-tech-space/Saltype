@@ -6,6 +6,13 @@ import Language from './carousels/Language.vue';
 import Separator from '~/components/atoms/ui/Separator.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
+import { useLogout } from '~/composables/auth/useLogout';
+
+const { logout } = await useLogout();
+
+const handleLogout = async () => {
+  await logout();
+};
 </script>
 
 <template>
@@ -35,20 +42,27 @@ import Text from '~/components/atoms/texts/Text.vue';
             <template #card-footer>
                 <div class="footer-content">
                     <Button border="blue" width="same-as-input-large" height="large" background="none" :rounded="true"
-                    button-text="スタート" class="start-button" />
+                        button-text="スタート" class="start-button" />
                 </div>
             </template>
         </BaseCard>
-        <BaseCard width="small" height="xl" :footer-sep="false" class="menu-card">
+        <BaseCard width="small" height="xl" class="menu-card">
             <template #card-header>
                 <div class="header-content">
                     <Title size="small" text="メニュー" class="card-text" />
                 </div>
             </template>
             <template #card-body>
-                <div class="menu-select">
-                    <Text size="large" text="ランキング" />
-                    <Text size="large" text="分析" />
+                <ul class="menu-select">
+                    <li><Text size="large" text="ランキング" /></li>
+                    <li><Text size="large" text="分析情報" /></li>
+                    <li><Text size="large" text="ご要望" /></li>
+                    <!-- <li><Text size="large" text="パスワード設定" /></li> -->
+                </ul>
+            </template>
+            <template #card-footer>
+                <div class="logout">
+                    <Button border="dark-blue" width="large" height="large" background="none" :rounded="true" button-text="ログアウト" @click="handleLogout" />
                 </div>
             </template>
         </BaseCard>
