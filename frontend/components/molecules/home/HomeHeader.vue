@@ -15,4 +15,4 @@ const Icon = defineAsyncComponent(() => import('~/components/atoms/imgs/Icon.vue
     </section>
 </template>
 
-<style lang="scss" src="@/assets/styles/components/molecules/header.scss" />
+<style lang="scss" src="@/assets/styles/components/molecules/home-header.scss" />

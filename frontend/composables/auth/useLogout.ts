@@ -1,24 +1,22 @@
 import { useRouter } from 'vue-router';
 import { useToken } from './useToken';
+import { useSession } from '../server/useSession';
 
+/**
+ * ログアウト処理
+ * ローカルストレージのトークン、サーバセッションを削除
+ * @returns logout
+ */
 export async function useLogout() {
   const router = useRouter();
   const { isTokenAvailable, removeToken } = useToken();
+  const { removeSession } = useSession();
 
   const logout = async () => {
     try {
       if(isTokenAvailable()) {
         removeToken();
-
-        const response = await fetch('/api/session/get', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        if(response.ok) {
-          console.log('またね！')
-        }
+        removeSession()
       }
 
       await router.push('/login');

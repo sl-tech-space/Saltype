@@ -1,0 +1,49 @@
+@use "@/assets/styles/variables" as var;
+
+.timer-bar-container {
+  width: 30%;
+  height: 40px;
+  border-radius: 20px;
+  outline: 1px solid var.$dark-blue;
+  outline-offset: 4px;
+  overflow: hidden;
+}
+
+.timer-bar {
+  height: 100%;
+  transition: width 0.1s linear;
+}
+
+/* bar color */
+.timer-bar--white {
+  background-color: var.$white;
+}
+
+.timer-bar--black {
+  background-color: var.$black;
+}
+
+.timer-bar--blue {
+  background-color: var.$blue;
+}
+
+.timer-bar--dark-blue {
+  background-color: var.$dark-blue;
+}
+
+/* back color */
+.timer-bar-container--white {
+  background-color: var.$white;
+}
+
+.timer-bar-container--black {
+  background-color: var.$black;
+}
+
+.timer-bar-container--blue {
+  background-color: var.$blue;
+}
+
+.timer-bar-container--dark-blue {
+  background-color: var.$dark-blue;
+}

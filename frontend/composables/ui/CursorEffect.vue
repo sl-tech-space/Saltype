@@ -1,4 +1,7 @@
 <script setup>
+/**
+ * 追従型カーソルエフェクト
+ */
 const cursor = ref(null);
 
 const updateCursor = (event) => {

@@ -7,11 +7,21 @@ import Separator from '~/components/atoms/ui/Separator.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
+import { useRouter } from "vue-router";
 
 const { logout } = await useLogout();
+const router = useRouter();
 
 const handleLogout = async () => {
   await logout();
+};
+
+const handleStart = async () => {
+  try {
+    await router.push({ name: "typing" });
+  } catch (error) {
+    console.error("Navigation failed:", error);
+  }
 };
 </script>
 
@@ -42,7 +52,7 @@ const handleLogout = async () => {
             <template #card-footer>
                 <div class="footer-content">
                     <Button border="blue" width="same-as-input-large" height="large" background="none" :rounded="true"
-                        button-text="スタート" class="start-button" />
+                        button-text="スタート" class="start-button" @click="handleStart" />
                 </div>
             </template>
         </BaseCard>

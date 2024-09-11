@@ -1,19 +1,13 @@
 <script setup lang="ts">
-import HomeHeader from '../molecules/home/Header.vue';
+import HomeHeader from '../molecules/home/HomeHeader.vue';
 import SelectCard from '../molecules/home/SelectCard.vue';
 import CursorEffect from "~/composables/ui/CursorEffect.vue";
 import { useSession } from '~/composables/server/useSession';
 
-const { user, error, getSession } = useSession()
+const { getSession } = useSession()
 
 onMounted(() => {
   getSession()
-  console.log(user)
-})
-
-//TODO test
-watch(user, (newValue) => {
-    console.log('Component: User data changed:', JSON.stringify(newValue, null, 2))
 })
 </script>
 

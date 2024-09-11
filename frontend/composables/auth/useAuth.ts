@@ -1,6 +1,10 @@
 import { useRouter } from "vue-router";
 import { useToken } from "./useToken"
 
+/**
+ * ローカルストレージのトークンを使った自動認証処理
+ * @returns authToken
+ */
 export function useAuthToken() {
   const config = useRuntimeConfig()
   const { getToken, isTokenAvailable } = useToken()
@@ -8,6 +12,7 @@ export function useAuthToken() {
 
   const authToken = async () => {
     try {
+      const { $loading } = useNuxtApp();
       if (isTokenAvailable()) {
         const token = await getToken();
         const response = await fetch(`${config.public.baseURL}/api/auth-token/`, {
