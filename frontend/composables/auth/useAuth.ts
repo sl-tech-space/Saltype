@@ -12,7 +12,6 @@ export function useAuthToken() {
 
   const authToken = async () => {
     try {
-      const { $loading } = useNuxtApp();
       if (isTokenAvailable()) {
         const token = await getToken();
         const response = await fetch(`${config.public.baseURL}/api/auth-token/`, {
