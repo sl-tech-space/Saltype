@@ -20,7 +20,6 @@ export function useToken() {
         try {
             const encryptedToken = localStorage.getItem('accessToken');
             if(!encryptedToken) return null;
-            const decryptedToken = await decrypt(encryptedToken);
             return await decrypt(encryptedToken);
         } catch(error) {
             console.log("トークンの取得に失敗")

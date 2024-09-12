@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { isr: true },
     '/login': { ssr: false }, //ログイン画面 - CSR
-    '/home': { ssr: true }
+    '/home': { ssr: true },
+    '/typing': { ssr: true }
   },
   app: {
     head: {
