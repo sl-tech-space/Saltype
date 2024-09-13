@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import t_miss
+from .models import Miss
 
 class MissTypeSerializer(serializers.ModelSerializer):
     """
@@ -9,5 +9,7 @@ class MissTypeSerializer(serializers.ModelSerializer):
         user_idとmiss_charをバリデーション
     """
     class Meta:
-        model = t_miss
+        model = Miss
         fields = ['user_id', 'miss_char']  
+
+

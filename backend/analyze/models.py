@@ -1,12 +1,12 @@
 from django.db import models
 
-class t_miss(models.Model):
+class Miss(models.Model):
     """
     ミスタイプテーブル定義
 
     Attributes:
         miss_id (AutoField): ミスタイプID
-        user_id (ForeignKey): ユーザーを表す外部キー（CustomUserモデルと関連付け）
+        user_id (ForeignKey): ユーザーを表すS外部キー（CustomUserモデルと関連付け）
         miss_char (CharField): ミスタイプされた文字を表す文字列（1文字）
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
@@ -17,7 +17,8 @@ class t_miss(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class t_missana(models.Model):
+    
+class missana(models.Model):
     """
     ミスタイプ分析テーブル定義
 
@@ -35,3 +36,6 @@ class t_missana(models.Model):
     miss_count=models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table="t_missana"
