@@ -8,20 +8,30 @@ import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
 import { useRouter } from '#app';
+import { ref } from 'vue';
 
 const { logout } = await useLogout();
 const router = useRouter();
 
+const selectedLanguage = ref("日本語");
+const selectedDifficulty = ref("easy");
+
 const handleLogout = async () => {
-  await logout();
+    await logout();
 };
 
 const handleStart = () => {
-  try {
-    router.push({ name: "typing" });
-  } catch (error) {
-    console.error("Navigation failed:", error);
-  }
+    try {
+        router.push({
+            name: "typing",
+            query: {
+                language: selectedLanguage.value,
+                difficultyLevel: selectedDifficulty.value,
+            },
+        });
+    } catch (error) {
+        console.error("Navigation failed:", error);
+    }
 };
 </script>
 
@@ -38,13 +48,13 @@ const handleStart = () => {
                     <div class="language-setting">
                         <Title size="small" text="言語選択" />
                         <Separator color="blue" margin="vertical" />
-                        <Language />
+                        <Language v-model="selectedLanguage" />
                         <Separator color="blue" margin="vertical" />
                     </div>
                     <div class="difficulty-setting">
                         <Title size="small" text="難易度選択" />
                         <Separator color="blue" margin="vertical" />
-                        <DifficultyLevel />
+                        <DifficultyLevel v-model="selectedDifficulty" />
                         <Separator color="blue" margin="vertical" />
                     </div>
                 </div>
@@ -72,7 +82,8 @@ const handleStart = () => {
             </template>
             <template #card-footer>
                 <div class="logout">
-                    <Button border="dark-blue" width="large" height="large" background="none" :rounded="true" button-text="ログアウト" @click="handleLogout" />
+                    <Button border="dark-blue" width="large" height="large" background="none" :rounded="true"
+                        button-text="ログアウト" @click="handleLogout" />
                 </div>
             </template>
         </BaseCard>

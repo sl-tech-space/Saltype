@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import gettext_lazy as _
+from .models import User
 
 class UserLoginSerializer(serializers.Serializer):
     """
@@ -40,8 +41,6 @@ class UserLoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
 
-User = get_user_model()
-
 class GoogleAuthSerializer(serializers.Serializer):
     """
     Google認証
@@ -50,6 +49,9 @@ class GoogleAuthSerializer(serializers.Serializer):
     email = serializers.EmailField()
     username = serializers.CharField(max_length=150)
     picture = serializers.URLField(required=False, allow_blank=True)
+
+    class Meta:
+        model = User
 
     @transaction.atomic
     def create(self, validated_data):

@@ -68,11 +68,11 @@ section {
   .card-header,
   .card-footer {
     height: 15%;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 
   .card-body {
     height: 70%;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 }
