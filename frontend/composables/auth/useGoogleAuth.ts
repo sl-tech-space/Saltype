@@ -3,8 +3,8 @@ import { useRouter } from "vue-router";
 import { useRuntimeConfig } from 'nuxt/app'
 
 interface GoogleUserInfo {
-    email: string;
-    name: string;
+  email: string;
+  name: string;
 }
 
 /**

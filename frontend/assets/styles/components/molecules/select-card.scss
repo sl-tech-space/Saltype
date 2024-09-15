@@ -26,11 +26,6 @@
       display: flex;
       justify-content: space-around;
       text-align: center;
-
-      .language-setting,
-      .difficulty-setting {
-        padding-top: 20px;
-      }
     }
 
     .footer-content {
@@ -45,9 +40,7 @@
   }
 
   .menu-card {
-    
     .menu-select li {
-      margin-top: 40px;
       margin-left: 50%;
       list-style-type: none;
       transform: translateX(-40%);
@@ -58,7 +51,6 @@
     }
 
     .logout {
-      margin-top: 10px;
       display: flex;
       justify-content: center;
     }
