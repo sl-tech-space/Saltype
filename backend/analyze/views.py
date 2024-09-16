@@ -1,65 +1,35 @@
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import t_miss,t_missana
 from .serializers import MissTypeSerializer
-from django.db.models import Count
+from rest_framework.permissions import AllowAny
 
-@api_view(['POST'])
-def add_miss_type(request):
+class MissTypeInsertView(APIView):
     """
     ミスタイプインサート処理
 
-    Atributes:
-        ミスタイプされるたびにミスタイプテーブルにミスタイプ文字をインサート
-    :param request: 
-        ミスタイプに関する情報が含まれるリクエスト（ユーザーID、ミスタイプされた文字など）
-    :return: 
-        成功時にステータス200とミスタイプ情報を返す
+    Attributes:
+        POSTメソッドを使用して、ミスタイプテーブルにミスタイプ情報をインサート
     """
-    serializer = MissTypeSerializer(data=request.data)
-    
-    if serializer.is_valid():
-        """ ミスタイプデータをインサート """
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    """アクセス認証（全員）"""
+    permission_classes = [AllowAny]  
 
-@api_view(['POST'])
-def analyze_mistypes(request):
-    """
-    分析結果インサート処理
-    
-    Atributes:
-        ユーザーごとのミスタイプを集計し、分析テーブルにインサート
-        ミスタイプ回数上位3つをフロントに返す
-    :param request: 
-        ユーザーIDを含むリクエストデータ
-    :return: 
-        ミスタイプ回数上位3つの結果
-    :rtype: 
-        JSON
-    """
-    user_id = request.data.get('user_id')
+    def post(self, request, *args, **kwargs):
+        """
+        ミスタイプ情報を受け取り、データベースにインサート
 
-    """ ユーザーのミスタイプを集計 """
-    miss_counts = t_miss.objects.filter(user_id=user_id) \
-        .values('miss_char') \
-        .annotate(miss_count=Count('miss_char')) \
-        .order_by('-miss_count')
+        :param request: 
+            ミスタイプに関する情報（ユーザーID、ミスタイプ文字、ミスタイプ回数）が含まれるリクエスト
+        :return: 
+            成功時にステータス201とミスタイプ情報を返す
+        """
+        serializer = MissTypeSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            """ ミスタイプデータをインサート """
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    """ ミスタイプ分析テーブルにインサート """
-    for miss in miss_counts:
-        t_missana.objects.update_or_create(
-            user_id_id=user_id,
-            miss_char=miss['miss_char'],
-            defaults={'miss_count': miss['miss_count']}
-        )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    """ ミスタイプ回数TOP3を抽出 """
-    top_mistypes = miss_counts[:3]
-
-    return Response({
-        'top_mistypes': top_mistypes
-    }, status=status.HTTP_200_OK)

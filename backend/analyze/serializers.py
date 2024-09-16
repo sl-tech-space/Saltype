@@ -10,6 +10,4 @@ class MissTypeSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Miss
-        fields = ['user_id', 'miss_char']  
-
-
+        fields = ['user_id', 'miss_char','miss_count'] 

@@ -15,11 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView
+from analyze.views import MissTypeInsertView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/', include('user.urls')),
+    # ミスタイプインサート処理
+    path('misstype_insert/', MissTypeInsertView.as_view(), name='misstype_insert'),
 ]
