@@ -8,7 +8,7 @@ import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
 import { useRouter } from '#app';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
 const { logout } = await useLogout();
 const router = useRouter();
@@ -25,8 +25,8 @@ const handleStart = () => {
         router.push({
             name: "typing",
             query: {
-                language: selectedLanguage.value,
-                difficultyLevel: selectedDifficulty.value,
+                language: selectedLanguage.value + 1,
+                difficultyLevel: selectedDifficulty.value + 1,
             },
         });
     } catch (error) {

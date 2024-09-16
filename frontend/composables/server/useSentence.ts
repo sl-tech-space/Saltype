@@ -1,16 +1,16 @@
 function convertLanguage(language: string): string {
   const languageMap: { [key: string]: string } = {
-    "0": "japanese",
-    "1": "english",
+    "1": "japanese",
+    "2": "english",
   };
   return languageMap[language.toLowerCase()] || language;
 }
 
 function convertDifficultyLevel(difficultyLevel: string): string {
   const difficultyMap: { [key: string]: string } = {
-    "0": "easy",
-    "1": "normal",
-    "2": "hard",
+    "1": "easy",
+    "2": "normal",
+    "3": "hard",
   };
   return difficultyMap[difficultyLevel.toLowerCase()] || difficultyLevel;
 }
