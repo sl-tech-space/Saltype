@@ -29,25 +29,17 @@ defineEmits(["update:modelValue"]);
 </script>
 
 <template>
-  <input
-    :type="`${props.type}`"
-    :id="`${props.id}`"
-    :value="modelValue"
-    :name="`${props.id}`"
-    :placeholder="`${props.placeholder}`"
-    :required="props.required"
-    @input="
+  <input :type="`${props.type}`" :id="`${props.id}`" :value="modelValue" :name="`${props.id}`"
+    :placeholder="`${props.placeholder}`" :required="props.required" @input="
       $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-    "
-    :class="[
+      " :class="[
       `input-text--${props.color}`,
       `input-border--${props.border}`,
       `input-width--${props.width}`,
       `input-height--${props.height}`,
       `input-background--${props.background}`,
       { 'input--rounded': props.rounded },
-    ]"
-  />
+    ]" />
 </template>
 
 <style lang="scss" src="@/assets/styles/components/atoms/input.scss" />

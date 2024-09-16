@@ -10,5 +10,5 @@ export default defineEventHandler(async (event) => {
     username: username,
   };
 
-  return { success: true, message: "セッションにユーザ情報を保存しました" }
+  return { success: true, message: "セッションにユーザ情報を保存しました" };
 });

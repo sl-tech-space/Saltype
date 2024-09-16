@@ -14,15 +14,12 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div
-    v-if="props.visible"
-    :class="[
-      'separator',
-      `separator--${props.color}`,
-      `separator--${props.width}`,
-      `separator--${props.margin}`,
-    ]"
-  ></div>
+  <div v-if="props.visible" :class="[
+    'separator',
+    `separator--${props.color}`,
+    `separator--${props.width}`,
+    `separator--${props.margin}`,
+  ]"></div>
 </template>
 
 <style lang="scss" src="@/assets/styles/components/atoms/separator.scss" />

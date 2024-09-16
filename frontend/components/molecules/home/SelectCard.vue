@@ -8,13 +8,13 @@ import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
 import { useRouter } from '#app';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const { logout } = await useLogout();
 const router = useRouter();
 
-const selectedLanguage = ref("日本語");
-const selectedDifficulty = ref("easy");
+const selectedLanguage = ref(0);
+const selectedDifficulty = ref(0);
 
 const handleLogout = async () => {
     await logout();

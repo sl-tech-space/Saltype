@@ -1,34 +1,38 @@
-import { defineEventHandler, getQuery } from "h3";
+import { defineEventHandler, readBody } from "h3";
 import fs from "fs/promises";
 import path from "path";
 
 export default defineEventHandler(async (event) => {
-  // クエリパラメータから dataFile を取得
-  const query = getQuery(event);
-  const language = (query.language as string)
-  const difficultyLevel = (query.difficultyLevel as string);
+  const body = await readBody(event);
+  const language = body.language as string;
+  const difficultyLevel = body.difficultyLevel as string;
+  const count = body.count || 100; // デフォルトで100文取得
 
-  // データファイルのパスを構築
-  const filePath = path.join(process.cwd(), "server", `data/${language}`, `${difficultyLevel}.json`);
+  const filePath = path.join(
+    process.cwd(),
+    "server",
+    "data",
+    `${language}`,
+    `${difficultyLevel}.json`
+  );
 
   try {
-    // ファイルを非同期で読み込む
     const fileContent = await fs.readFile(filePath, "utf-8");
     const data = JSON.parse(fileContent);
 
     const allSentences = data.sentences;
-    const randomIndex = Math.floor(Math.random() * allSentences.length);
-    const [sentence, additionalInfo] = allSentences[randomIndex];
+    const selectedSentences = [];
 
-    return {
-      sentence,
-      additionalInfo,
-    };
+    for (let i = 0; i < count && i < allSentences.length; i++) {
+      const randomIndex = Math.floor(Math.random() * allSentences.length);
+      selectedSentences.push(allSentences[randomIndex]);
+    }
+
+    return selectedSentences;
   } catch (error) {
-    // エラーハンドリング
     console.error(`Error reading file: ${filePath}`, error);
     return {
-      error: "Failed to load data",
+      error: `${filePath}`,
     };
   }
 });

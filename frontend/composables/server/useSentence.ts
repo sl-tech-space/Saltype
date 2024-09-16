@@ -1,34 +1,56 @@
-export function useSentence(language: string, difficultyLevel: string) {
-    const sentence = async () => {
-        try {
-            const response = await fetch("/api/random-sentences", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    language: language,
-                    difficultyLevel: difficultyLevel,
-                }),
-            });
+function convertLanguage(language: string): string {
+  const languageMap: { [key: string]: string } = {
+    "0": "japanese",
+    "1": "english",
+  };
+  return languageMap[language.toLowerCase()] || language;
+}
 
-            if (!response.ok) {
-                throw new Error(`サーバーエラー: ${response.status}`);
-            }
+function convertDifficultyLevel(difficultyLevel: string): string {
+  const difficultyMap: { [key: string]: string } = {
+    "0": "easy",
+    "1": "normal",
+    "2": "hard",
+  };
+  return difficultyMap[difficultyLevel.toLowerCase()] || difficultyLevel;
+}
 
-            const data = await response.json();
+export function useSentence(
+  language: string,
+  difficultyLevel: string,
+  count: number = 100
+) {
+  const convertedLanguage = convertLanguage(language);
+  const convertedDifficultyLevel = convertDifficultyLevel(difficultyLevel);
 
-            //TODO test
-            console.log(data)
+  const sentences = async () => {
+    try {
+      const response = await fetch("/api/random-sentences", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          language: convertedLanguage,
+          difficultyLevel: convertedDifficultyLevel,
+          count: count,
+        }),
+      });
 
-            return data;
-        } catch (error) {
-            console.error("ネットワークエラーまたはその他例外が発生しました:", error);
-            return null;
-        }
-    };
+      if (!response.ok) {
+        throw new Error(`サーバーエラー: ${response.status}`);
+      }
 
-    return {
-        sentence,
-    };
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      console.error("ネットワークエラーまたはその他例外が発生しました:", error);
+      return null;
+    }
+  };
+
+  return {
+    sentences,
+  };
 }

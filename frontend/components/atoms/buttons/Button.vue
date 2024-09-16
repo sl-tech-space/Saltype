@@ -22,17 +22,14 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <button
-    :type="`${props.type}`"
-    :class="[
-      `button-text--${props.color}`,
-      `button-border--${props.border}`,
-      `button-width--${props.width}`,
-      `button-height--${props.height}`,
-      `button-background--${props.background}`,
-      { 'button--rounded': props.rounded },
-    ]"
-  >
+  <button :type="`${props.type}`" :class="[
+    `button-text--${props.color}`,
+    `button-border--${props.border}`,
+    `button-width--${props.width}`,
+    `button-height--${props.height}`,
+    `button-background--${props.background}`,
+    { 'button--rounded': props.rounded },
+  ]">
     <slot name="any" />
     {{ props.buttonText }}
   </button>

@@ -23,6 +23,7 @@
     justify-content: flex-end;
 
     .body-content {
+      margin-top: 10px;
       display: flex;
       justify-content: space-around;
       text-align: center;
@@ -41,6 +42,7 @@
 
   .menu-card {
     .menu-select li {
+      margin-top: 20px;
       margin-left: 50%;
       list-style-type: none;
       transform: translateX(-40%);

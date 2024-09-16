@@ -16,11 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <img
-        :src="`${props.src}`"
-        :alt="`${props.alt}`"
-        :class="[`icon, icon-width--${props.width}`, `icon-height--${props.height}`]"
-    />
+    <img :src="`${props.src}`" :alt="`${props.alt}`"
+        :class="[`icon, icon-width--${props.width}`, `icon-height--${props.height}`]" />
 </template>
 
 <style lang="sass" src="@/assets/styles/components/atoms/icon.scss" />

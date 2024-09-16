@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Title from '~/components/atoms/texts/Title.vue';
+import Title from "~/components/atoms/texts/Title.vue";
 
 useHead({
   title: "Welcome"

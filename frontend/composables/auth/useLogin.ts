@@ -55,11 +55,6 @@ export async function useLogin() {
     }
   };
 
-  //Nodeサーバサイドセッション保存処理
-  const saveSessionOnServer = async (userData: any) => {
-    
-  };
-
   return {
     login,
     isLoading,

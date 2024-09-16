@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import BaseCarousel from '../../common/BaseCarousel.vue';
 import Text from '~/components/atoms/texts/Text.vue';
+
+const currentSlide = ref(0);
+
+const handleSlideChange = (index: number) => {
+    currentSlide.value = index;
+};
 </script>
 
 <template>
-    <BaseCarousel :slides="3" :options="{ loop: true }">
+    <BaseCarousel :slides="3" :options="{ loop: true }" @slide-change="handleSlideChange">
         <template #slide-0>
             <Text color="white" size="large" text="イージー" />
         </template>

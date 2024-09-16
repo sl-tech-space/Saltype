@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Text from '~/components/atoms/texts/Text.vue';
+import Text from "~/components/atoms/texts/Text.vue";
 
 interface Props {
     duration: number
@@ -39,26 +39,26 @@ const startTimer = (): void => {
 }
 
 const handleKeyPress = (event: KeyboardEvent): void => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
         startTimer()
     }
 }
 
 const remainingTimeText = computed(() => {
     const minutes = remainingMinutes.value.toString();
-    const seconds = remainingSeconds.value.toString().padStart(2, '0');
+    const seconds = remainingSeconds.value.toString().padStart(2, "0");
     return `${minutes}:${seconds}`;
 });
 
 onMounted(() => {
-    window.addEventListener('keypress', handleKeyPress)
+    window.addEventListener("keypress", handleKeyPress)
 })
 
 onUnmounted(() => {
     if (intervalId !== null) {
         clearInterval(intervalId)
     }
-    window.removeEventListener('keypress', handleKeyPress)
+    window.removeEventListener("keypress", handleKeyPress)
 })
 </script>
 

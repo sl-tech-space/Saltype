@@ -1,6 +1,6 @@
-import { useRouter } from 'vue-router';
-import { useToken } from './useToken';
-import { useSession } from '../server/useSession';
+import { useRouter } from "vue-router";
+import { useToken } from "./useToken";
+import { useSession } from "../server/useSession";
 
 /**
  * ログアウト処理
@@ -14,18 +14,18 @@ export async function useLogout() {
 
   const logout = async () => {
     try {
-      if(isTokenAvailable()) {
+      if (isTokenAvailable()) {
         removeToken();
-        removeSession()
+        removeSession();
       }
 
-      await router.push('/login');
+      await router.push("/login");
     } catch (error) {
-      alert("ログアウトに失敗：管理者に連絡してください")
+      alert("ログアウトに失敗：管理者に連絡してください");
     }
   };
 
   return {
-    logout
+    logout,
   };
 }

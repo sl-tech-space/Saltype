@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref } from "vue";
 import { encryptData, decryptData } from "~/utils/crypto";
 
 /**
