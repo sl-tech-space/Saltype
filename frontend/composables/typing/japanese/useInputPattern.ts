@@ -191,9 +191,11 @@ export function useInputPattern() {
     ["っづ", ["ddu"]],
     ["っで", ["dde"]],
     ["っど", ["ddo"]],
+    ["っしょ", ["ssyo"]],
     ["？", ["?"]],
     ["、", [","]],
     ["。", ["."]],
+    ["ー", ["-"]],
   ];
 
   function getPatternArray() {

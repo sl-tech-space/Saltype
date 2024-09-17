@@ -19,6 +19,7 @@
     "@types/lodash": "^4.17.7",
     "@vee-validate/i18n": "^4.13.2",
     "@vee-validate/rules": "^4.13.2",
+    "@vueuse/core": "^11.1.0",
     "embla-carousel": "^8.2.1",
     "embla-carousel-vue": "^8.2.1",
     "emiel": "^0.1.5",

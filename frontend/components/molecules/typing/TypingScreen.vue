@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import ShowSentence from "./ui/ShowSentence.vue";
+import JpTyping from './ui/JpTyping.vue';
+import EngTyping from './ui/EngTyping.vue';
 
+const route = useRoute();
+const language = ref("")
+
+onMounted(async () => {
+    language.value = route.query.language as string
+});
 </script>
 
 <template>
-    <ShowSentence />
+    <JpTyping v-if="language === '1'"/>
+    <EngTyping v-else />
 </template>
