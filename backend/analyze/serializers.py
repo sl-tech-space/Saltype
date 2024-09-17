@@ -5,9 +5,14 @@ class MissTypeSerializer(serializers.ModelSerializer):
     """
     ミスタイプシリアライザー
 
-    Atributes:
+    Attributes:
         user_idとmiss_charをバリデーション
     """
     class Meta:
         model = Miss
-        fields = ['user_id', 'miss_char','miss_count'] 
+        fields = ['user_id', 'miss_char', 'miss_count']
+
+    def validate_miss_char(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError("ミスタイプ文字はアルファベットである必要がある")
+        return value
