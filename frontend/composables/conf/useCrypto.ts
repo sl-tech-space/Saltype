@@ -1,6 +1,10 @@
-import { ref } from 'vue'
+import { ref } from "vue";
 import { encryptData, decryptData } from "~/utils/crypto";
 
+/**
+ * クライアントサイドデータの暗号化、復号化
+ * @returns encrypt, decrypt
+ */
 export function useCrypto() {
   const config = useRuntimeConfig();
   const key = config.cryptoKey as string;

@@ -23,24 +23,38 @@
     justify-content: flex-end;
 
     .body-content {
+      margin-top: 10px;
       display: flex;
       justify-content: space-around;
       text-align: center;
-
-      .language-setting,
-      .difficulty-setting {
-        padding-top: 20px;
-      }
     }
 
     .footer-content {
-        display: flex;
-        justify-content: center;
-        text-align: center;
+      display: flex;
+      justify-content: center;
+      text-align: center;
 
-        .start-button {
-            font-size: 1rem;
-        }
+      .start-button {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .menu-card {
+    .menu-select li {
+      margin-top: 20px;
+      margin-left: 50%;
+      list-style-type: none;
+      transform: translateX(-40%);
+
+      :hover {
+        color: var.$purple;
+      }
+    }
+
+    .logout {
+      display: flex;
+      justify-content: center;
     }
   }
 }

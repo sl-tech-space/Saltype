@@ -10,7 +10,7 @@ from .validators import validate_min_length
 
 class User(AbstractUser):
     """
-    カスタムユーザモデル DBテーブル名 - user
+    カスタムユーザモデル DBテーブル名 - m_user
 
     ユーザIDをUUIDとする
     ユーザ名をemailとする
@@ -70,7 +70,7 @@ class User(AbstractUser):
     
     class Meta:
         ordering = ["user_id"]
-        db_table = "user"
+        db_table = "m_user"
         
     def __str__(self):
         return self.username

@@ -12,9 +12,9 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <label :for="`${props.for}`" :class="`label--${props.color}`">{{
-    props.label
-  }}</label>
+  <label :for="`${props.for}`" :class="`label--${props.color}`">
+    {{ props.label }}
+  </label>
 </template>
 
 <style lang="scss" src="@/assets/styles/components/atoms/label.scss" />

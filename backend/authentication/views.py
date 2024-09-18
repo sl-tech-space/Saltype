@@ -20,7 +20,12 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({
+            'user_id': user.user_id,
+            'email': user.email,
+            'username': user.username,
+            'token': token.key
+            }, status=status.HTTP_200_OK)
 
 class CheckTokenView(APIView):
     """
@@ -38,7 +43,7 @@ class CheckTokenView(APIView):
             user = token.user
             return Response({
                 'is_valid': True,
-                'user_id': user.id,
+                'user_id': user.user_id,
                 'email': user.email,
                 'username': user.username
             }, status=status.HTTP_200_OK)
@@ -62,7 +67,7 @@ class GoogleAuthView(APIView):
                 user = serializer.create(serializer.validated_data)
                 return Response({
                     'message': 'User information saved successfully',
-                    'user_id': user.id,
+                    'user_id': user.user_id,
                     'email': user.email,
                     'username': user.username
                 }, status=status.HTTP_201_CREATED)

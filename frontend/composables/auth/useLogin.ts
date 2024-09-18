@@ -2,14 +2,21 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToken } from "./useToken";
 import { useRuntimeConfig } from "nuxt/app";
+import { useSession } from "../server/useSession";
 
+/**
+ * オリジナルフォームログイン処理
+ * @returns login, isLoading, error
+ */
 export async function useLogin() {
   const config = useRuntimeConfig();
-  const { getToken, saveToken } = useToken();
+  const { saveToken } = useToken();
+  const { saveSession } = useSession();
   const router = useRouter();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
+  //オリジナルフォームログイン処理
   const login = async (email: string, password: string) => {
     isLoading.value = true;
     error.value = null;
@@ -30,9 +37,8 @@ export async function useLogin() {
       if (response.ok) {
         const data = await response.json();
         if (data.token) {
-          const mes = saveToken(data.token);
-          console.log(mes)
-          console.log(getToken()); // TODO: Remove in production
+          saveToken(data.token);
+          saveSession(data);
           router.push({ name: "home" });
         } else {
           error.value = "トークンが発行されませんでした";
@@ -44,7 +50,6 @@ export async function useLogin() {
     } catch (err) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
-      console.error(err); // TODO: Remove in production
     } finally {
       isLoading.value = false;
     }

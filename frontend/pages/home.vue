@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HomePage from '~/components/organisms/HomePage.vue';
+import HomePage from "~/components/organisms/HomePage.vue";
 
 useHead({
   title: "ホーム"

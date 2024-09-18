@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, defineEmits } from 'vue'
 import type { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-vue'
 import Button from '~/components/atoms/buttons/Button.vue';
@@ -7,37 +7,42 @@ import Button from '~/components/atoms/buttons/Button.vue';
 interface Props {
   slides: number
   options?: EmblaOptionsType
+  modelValue?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   slides: 0,
-  options: () => ({})
+  options: () => ({}),
+  modelValue: 0
 })
+
+const emit = defineEmits(['update:modelValue'])
 
 const [emblaNode, emblaApi] = useEmblaCarousel(props.options)
 const canScrollPrev = ref(false)
 const canScrollNext = ref(false)
+const currentSlideIndex = ref(props.modelValue)
 
 const onSelect = (emblaApi: EmblaCarouselType) => {
   canScrollPrev.value = emblaApi.canScrollPrev()
   canScrollNext.value = emblaApi.canScrollNext()
+  currentSlideIndex.value = emblaApi.selectedScrollSnap()
+  emit('update:modelValue', currentSlideIndex.value)
 }
 
 const scrollPrev = () => emblaApi.value?.scrollPrev()
 const scrollNext = () => emblaApi.value?.scrollNext()
 
 onMounted(() => {
-  onMounted(() => {
-    if (emblaApi.value) {
-      emblaApi.value.reInit()
-      emblaApi.value.on('select', () => {
-        if (emblaApi.value) {
-          onSelect(emblaApi.value)
-        }
-      })
-      onSelect(emblaApi.value)
-    }
-  })
+  if (emblaApi.value) {
+    emblaApi.value.reInit()
+    emblaApi.value.on('select', () => {
+      if (emblaApi.value) {
+        onSelect(emblaApi.value)
+      }
+    })
+    onSelect(emblaApi.value)
+  }
 })
 
 watch(() => props.slides, () => {
@@ -47,7 +52,7 @@ watch(() => props.slides, () => {
   }
 })
 
-defineExpose({ emblaApi })
+defineExpose({ emblaApi, currentSlideIndex })
 </script>
 
 <template>

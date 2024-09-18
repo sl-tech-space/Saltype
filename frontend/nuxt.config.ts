@@ -2,12 +2,15 @@
 import crypto from 'crypto';
 
 export default defineNuxtConfig({
+  components: true,
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
+  modules: ['@sidebase/nuxt-session'],
   routeRules: {
     '/': { isr: true },
     '/login': { ssr: false }, //ログイン画面 - CSR
-    '/home': { ssr: true }
+    '/home': { ssr: true },
+    '/typing': { ssr: true }
   },
   app: {
     head: {
@@ -22,5 +25,8 @@ export default defineNuxtConfig({
       baseURL: 'http://localhost:8000', //Django REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
+  },
+  session: {
+    expiryInSeconds: 60 * 60 * 24,
   },
 })
