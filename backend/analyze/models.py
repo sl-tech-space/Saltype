@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 class Miss(models.Model):
@@ -14,7 +15,7 @@ class Miss(models.Model):
     """
     miss_id=models.AutoField(primary_key=True)
     # score=models.ForeignKey('Score',on_delete=models.SET_NULL,null=True,blank=True)
-    user_id = models.IntegerField()
+    user_id = models.UUIDField(default=uuid.uuid4, editable=False)
     miss_char=models.CharField(max_length=1)
     miss_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

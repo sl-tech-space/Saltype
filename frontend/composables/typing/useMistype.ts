@@ -52,7 +52,7 @@ export function useMistype() {
   
       console.log('Data being sent to server:', JSON.stringify(dataToSend, null, 2));
 
-      const response = await fetch(`${config.public.baseURL}/api/miss-type`, {
+      const response = await fetch(`${config.public.baseURL}/api/mistypes/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
