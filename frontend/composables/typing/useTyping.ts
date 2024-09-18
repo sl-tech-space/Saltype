@@ -1,12 +1,13 @@
-import { ref, computed } from 'vue';
-import { useEventListener } from '@vueuse/core';
+import { ref, computed } from "vue";
+import { useEventListener } from "@vueuse/core";
 import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
+import { useMistype } from "./useMistype";
 
 /**
  * タイピング画面処理
- * @param language 
- * @param difficultyLevel 
+ * @param language
+ * @param difficultyLevel
  * @returns sentencesData, currentSentence, coloredText,
  * isTypingStarted, countdown, isCountdownActive, initialize,
  */
@@ -21,6 +22,9 @@ export function useTyping(language: string, difficultyLevel: string) {
   const isTypingStarted = ref(false);
   const countdown = ref(3);
   const isCountdownActive = ref(false);
+  const totalTypedCount = ref(0);
+  const totalMistypeCount = ref(0);
+  const { resetMistypeStats, countMistype, sendMistypeDataToServer } = useMistype();
 
   // タイピング開始処理
   const startTyping = () => {
@@ -45,7 +49,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     return sentence
       ? {
           sentence: sentence,
-          patterns: patterns.value
+          patterns: patterns.value,
         }
       : null;
   });
@@ -67,11 +71,13 @@ export function useTyping(language: string, difficultyLevel: string) {
 
   /**
    * キー入力処理
-   * @param event 
+   * @param event
    */
   const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === "Shift") return;
+
     if (!isTypingStarted.value && !isCountdownActive.value) {
-      if (event.key === 'Enter') {
+      if (event.key === "Enter") {
         startTyping();
       }
       return;
@@ -80,7 +86,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     if (isCountdownActive.value) return;
 
     if (!isTypingStarted.value) {
-      if (event.key === 'Enter') {
+      if (event.key === "Enter") {
         isTypingStarted.value = true;
         updateColoredText();
       }
@@ -99,29 +105,39 @@ export function useTyping(language: string, difficultyLevel: string) {
         currentInputIndex.value++;
         currentPatternIndex.value = i;
         matched = true;
+        totalTypedCount.value++; 
         updateColoredText();
         break;
       }
     }
 
     if (!matched) {
-      console.log("Incorrect input");
+      console.log(event.key);
+      countMistype(event.key);
+      totalMistypeCount.value++;
       return;
     }
 
-    if (currentInputIndex.value === currentPatterns[currentPatternIndex.value].length) {
+    if (
+      currentInputIndex.value ===
+      currentPatterns[currentPatternIndex.value].length
+    ) {
       nextSentence();
     }
   };
 
   const updatePatterns = async () => {
     const { getPatternList, getAllCombinations } = useSentencePattern();
-    if(language === '1') {
-        // 日本語パターン
-        patterns.value = await getAllCombinations(await getPatternList(sentencesData.value[currentIndex.value][1]));
+    if (language === "1") {
+      // 日本語パターン
+      patterns.value = await getAllCombinations(
+        await getPatternList(sentencesData.value[currentIndex.value][1])
+      );
     } else {
-        // 英語パターン
-        patterns.value = await getAllCombinations(await getPatternList(sentencesData.value[currentIndex.value][0]));
+      // 英語パターン
+      patterns.value = await getAllCombinations(
+        await getPatternList(sentencesData.value[currentIndex.value][0])
+      );
     }
     updateColoredText();
   };
@@ -143,6 +159,23 @@ export function useTyping(language: string, difficultyLevel: string) {
     coloredText.value = `<span style="color: #0044fe;">${coloredPart}</span>${remainingPart}`;
   };
 
+  /**
+   * 正タイプ率の計算処理
+   */
+  const typingAccuracy = computed(() => {
+    const total = totalTypedCount.value + totalMistypeCount.value;
+    return total > 0 ? (totalTypedCount.value / total) * 100 : 0;
+  });
+
+  /**
+   * 合計タイプ数を初期化
+   */
+  const resetTypingStats = () => {
+    totalTypedCount.value = 0;
+    totalMistypeCount.value = 0;
+    resetMistypeStats();
+  };
+
   // 初期処理
   const initialize = async () => {
     const { sentences } = useSentence(language, difficultyLevel);
@@ -151,6 +184,8 @@ export function useTyping(language: string, difficultyLevel: string) {
       const data = await sentences();
       if (Array.isArray(data) && data.length > 0) {
         sentencesData.value = data;
+        resetMistypeStats();
+        resetTypingStats();
         await updatePatterns();
         updateColoredText();
       } else {
@@ -161,15 +196,19 @@ export function useTyping(language: string, difficultyLevel: string) {
     }
   };
 
-  useEventListener(window, 'keydown', handleKeyPress);
+  useEventListener(window, "keydown", handleKeyPress);
 
   return {
+    totalTypedCount,
+    totalMistypeCount,
+    typingAccuracy,
     sentencesData,
     currentSentence,
     coloredText,
     isTypingStarted,
     countdown,
     isCountdownActive,
+    sendMistypeDataToServer,
     initialize,
   };
 }

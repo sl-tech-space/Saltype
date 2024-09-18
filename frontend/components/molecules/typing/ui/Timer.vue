@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import BaseTimer from "../../common/BaseTimer.vue";
-</script>
 
+const { $bus } = useNuxtApp();
+
+const isTimerEnded = ref(false);
+
+const handleTimerEnd = () => {
+    isTimerEnded.value = true;
+    $bus.$emit('timer-ended');
+}
+</script>
+<!-- 18000? -->
 <template>
-    <BaseTimer :duration="180000" />
+    <BaseTimer :duration="180" @timerEnd="handleTimerEnd" />
 </template>

@@ -24,6 +24,7 @@
     "embla-carousel-vue": "^8.2.1",
     "emiel": "^0.1.5",
     "firebase": "^10.12.5",
+    "mitt": "^3.0.1",
     "nuxt": "^3.12.4",
     "vee-validate": "^4.13.2",
     "vue": "latest",

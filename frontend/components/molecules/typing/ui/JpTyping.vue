@@ -14,10 +14,22 @@ const {
   isTypingStarted,
   countdown,
   isCountdownActive,
+  sendMistypeDataToServer,
   initialize,
 } = useTyping(language.value, difficultyLevel.value);
 
-onMounted(initialize);
+const { $bus } = useNuxtApp();
+
+onMounted(() => {
+  initialize();
+  $bus.$on('timer-ended', () => {
+    sendMistypeDataToServer()
+  });
+});
+
+onUnmounted(() => {
+  $bus.$off('timer-ended');
+});
 </script>
 
 <template>

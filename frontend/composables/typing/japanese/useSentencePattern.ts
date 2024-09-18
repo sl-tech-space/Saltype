@@ -30,6 +30,13 @@ export function useSentencePattern() {
         continue;
       }
 
+      // 「っしょ」のチェック
+      if (i + 2 < sentence.length && sentence.slice(i, i + 3) === "っしょ") {
+        patterns.push(["ssyo", "sshyo"]);
+        i += 3;
+        continue;
+      }
+
       // 拗音のチェック
       if (i + 1 < sentence.length) {
         const twoChars = sentence.slice(i, i + 2);

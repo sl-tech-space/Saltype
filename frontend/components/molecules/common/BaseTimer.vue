@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
     barColor: "black"
 });
 
+const emit = defineEmits(['timerEnd']);
 const progress = ref<number>(0)
 const isRunning = ref<boolean>(false)
 const remainingMinutes = ref<number>(Math.floor(props.duration / 60000))
@@ -29,11 +30,13 @@ const startTimer = (): void => {
         const remainingTime = Math.max(props.duration - elapsedTime, 0)
         remainingMinutes.value = Math.floor(remainingTime / 60000)
         remainingSeconds.value = Math.floor((remainingTime % 60000) / 1000)
-        if (progress.value === 100) {
+        if (progress.value === 100 || (remainingMinutes.value === 0 && remainingSeconds.value === 0)) {
             if (intervalId !== null) {
-                clearInterval(intervalId)
+                clearInterval(intervalId);
             }
-            isRunning.value = false
+            isRunning.value = false;
+
+            emit('timerEnd');
         }
     }, 1000)
 }
