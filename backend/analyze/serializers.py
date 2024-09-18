@@ -1,13 +1,18 @@
 from rest_framework import serializers
-from .models import t_miss
+from .models import Miss
 
 class MissTypeSerializer(serializers.ModelSerializer):
     """
     ミスタイプシリアライザー
 
-    Atributes:
+    Attributes:
         user_idとmiss_charをバリデーション
     """
     class Meta:
-        model = t_miss
-        fields = ['user_id', 'miss_char']  
+        model = Miss
+        fields = ['user_id', 'miss_char', 'miss_count']
+
+    def validate_miss_char(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError("ミスタイプ文字はアルファベットである必要がある")
+        return value

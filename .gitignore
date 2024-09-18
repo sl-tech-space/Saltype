@@ -1,3 +1,11 @@
+<<<<<<< HEAD
 node_modules
 mysql-data/
 *.sock
+=======
+backend/analyze/__pycache__/
+backend/analyze/migrations/__pycache__/
+backend/config/.env
+backend/config/__pycache__/
+backend/config/settings/__pycache__/
+>>>>>>> feature/analyze
