@@ -1,5 +1,6 @@
 import { useRouter } from "vue-router";
 import { useToken } from "./useToken";
+import { useSession } from "../server/useSession";
 
 /**
  * ローカルストレージのトークンを使った自動認証処理
@@ -8,6 +9,7 @@ import { useToken } from "./useToken";
 export function useAuthToken() {
   const config = useRuntimeConfig();
   const { getToken, isTokenAvailable } = useToken();
+  const { saveSession } = useSession();
   const router = useRouter();
 
   const authToken = async () => {
@@ -28,6 +30,9 @@ export function useAuthToken() {
           }
         );
         if (response.ok) {
+          const data = await response.json();
+          saveSession(data);
+
           router.push({ name: "home" });
         } else {
         }
