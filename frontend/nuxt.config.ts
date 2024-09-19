@@ -3,7 +3,7 @@ import crypto from 'crypto';
 
 export default defineNuxtConfig({
   components: true,
-  compatibilityDate: '2024-04-03',
+  compatibilityDate: '2024-09-20',
   devtools: { enabled: true },
   modules: ['@sidebase/nuxt-session'],
   routeRules: {

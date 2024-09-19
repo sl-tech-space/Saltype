@@ -3,32 +3,43 @@ import { useTyping } from "~/composables/typing/useTyping";
 import Text from "~/components/atoms/texts/Text.vue";
 import Title from "~/components/atoms/texts/Title.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
+import Loading from "~/composables/ui/Loading.vue";
 
 const route = useRoute();
 const language = ref(route.query.language as string || "0");
 const difficultyLevel = ref(route.query.difficultyLevel as string || "0");
+let isLoading = ref(false);
 
 const {
-  currentSentence,
-  coloredText,
-  isTypingStarted,
-  countdown,
-  isCountdownActive,
-  sendMistypeDataToServer,
-  initialize,
+    totalTypedCount,
+    totalMistypeCount,
+    typingAccuracy,
+    currentSentence,
+    coloredText,
+    isTypingStarted,
+    countdown,
+    isCountdownActive,
+    sendMistypeDataToServer,
+    initialize,
 } = useTyping(language.value, difficultyLevel.value);
 
 const { $bus } = useNuxtApp();
 
 onMounted(() => {
-  initialize();
-  $bus.$on('timer-ended', () => {
-    sendMistypeDataToServer()
-  });
+    initialize();
+    $bus.$on('timer-ended', () => {
+        isLoading.value = true;
+        sendMistypeDataToServer(
+            totalTypedCount,
+            totalMistypeCount,
+            typingAccuracy
+        )
+        isLoading.value = false;
+    });
 });
 
 onUnmounted(() => {
-  $bus.$off('timer-ended');
+    $bus.$off('timer-ended');
 });
 </script>
 
@@ -38,7 +49,8 @@ onUnmounted(() => {
             <span>
                 <div v-if="currentSentence">
                     <div v-if="!isTypingStarted">
-                        <Title color="blue" size="medium" :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />
+                        <Title color="blue" size="medium"
+                            :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />
                     </div>
                     <div v-else>
                         <Title color="blue" size="small" v-html="coloredText" />
@@ -50,6 +62,7 @@ onUnmounted(() => {
         </div>
         <Separator color="dark-blue" width="medium" />
     </section>
+    <Loading :isLoading="isLoading" />
 </template>
 
 <style lang="scss" src="@/assets/styles/components/molecules/typing.scss" />

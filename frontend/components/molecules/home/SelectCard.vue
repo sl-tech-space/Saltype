@@ -7,11 +7,15 @@ import Separator from '~/components/atoms/ui/Separator.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
+import Loading from '~/composables/ui/Loading.vue';
 import { useRouter } from '#app';
 import { ref } from 'vue';
+import { useSession } from '~/composables/server/useSession';
 
 const { logout } = await useLogout();
+const { getSession } = useSession();
 const router = useRouter();
+let isLoading = ref(false);
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
@@ -20,8 +24,19 @@ const handleLogout = async () => {
     await logout();
 };
 
-const handleStart = () => {
+const handleStart = async () => {
     try {
+        isLoading.value = true;
+
+        const user = await getSession();
+
+        if(!user || !user.value) {
+            alert("セッション無効");
+            router.push({ name: "login" });
+            isLoading.value = false;
+            return;
+        }
+
         router.push({
             name: "typing",
             query: {
@@ -29,6 +44,7 @@ const handleStart = () => {
                 difficultyLevel: selectedDifficulty.value + 1,
             },
         });
+        isLoading.value = false;
     } catch (error) {
         console.error("Navigation failed:", error);
     }
@@ -88,6 +104,7 @@ const handleStart = () => {
             </template>
         </BaseCard>
     </div>
+    <Loading :isLoading="isLoading" />
 </template>
 
 <style lang="sass" src="@/assets/styles/components/molecules/select-card.scss" />
