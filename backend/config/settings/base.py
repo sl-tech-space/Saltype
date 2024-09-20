@@ -28,8 +28,8 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     'social_django',
     'oauth2_provider',
-    'authentication',
-    'analyze'
+    'apps.authentication',
+    'apps.analyze'
 ]
 
 MIDDLEWARE = [
