@@ -18,13 +18,13 @@ class MissTypeInsertView(APIView):
         """
         ミスタイプ情報を配列形式で受け取り、データベースにインサート
 
-        :param request: 
+        :param request:
             - miss_data: ミスタイプされた文字とその回数のリスト
             - user_id: ユーザーID
-        :return: 
+        :return:
             成功時にステータス201とインサートされたミスタイプ情報、またはミスタイプがない場合は204を返す
         """
-        
+
         """リクエストから miss_data（ミスタイプ情報のリスト）と user_id を取得"""
         data_list = request.data.get('miss_data', [])
         user_id = request.data.get('user_id')
@@ -53,13 +53,13 @@ class MissTypeInsertView(APIView):
                 """ 既存のエントリが見つかった場合はカウントを更新 """
                 miss_instance.miss_count += miss_count
                 miss_instance.save()
-            
+
             inserted_data.append({
                 'user': user_id,
                 'miss_char': miss_instance.miss_char,
                 'miss_count': miss_instance.miss_count,
             })
-            
+
         return Response(inserted_data, status=status.HTTP_201_CREATED)
 
 class TopMissTypesView(APIView):
@@ -75,7 +75,7 @@ class TopMissTypesView(APIView):
         :param request: リクエストオブジェクト
         :return: 上位3件のミスタイプデータ
         """
-        
+
         """ユーザーIDをリクエストパラメータから取得"""
         user_id = request.data.get('user_id')
 
@@ -88,5 +88,5 @@ class TopMissTypesView(APIView):
 
         """取得したデータをシリアライズ"""
         serializer = MissTypeSerializer(top_miss_types, many=True)
-        
+
         return Response(serializer.data, status=status.HTTP_200_OK)

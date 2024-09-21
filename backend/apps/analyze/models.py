@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-
 class Miss(models.Model):
     """
     ミスタイプテーブル定義
