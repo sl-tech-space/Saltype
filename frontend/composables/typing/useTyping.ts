@@ -8,10 +8,12 @@ import { useMistype } from "./useMistype";
  * タイピング画面処理
  * @param language
  * @param difficultyLevel
- * @returns sentencesData, currentSentence, coloredText,
- * isTypingStarted, countdown, isCountdownActive, initialize,
+ * @returns typingAccuracy, sentencesData, currentSentence,
+ * coloredText, isTypingStarted, countdown,
+ * isCountdownActive, finishTyping, initialize,
  */
 export function useTyping(language: string, difficultyLevel: string) {
+  const router = useRouter();
   const sentencesData = ref<Array<[string, string]>>([]);
   const currentIndex = ref(0);
   const patterns = ref<string[]>([]);
@@ -22,11 +24,28 @@ export function useTyping(language: string, difficultyLevel: string) {
   const isTypingStarted = ref(false);
   const countdown = ref(3);
   const isCountdownActive = ref(false);
-  const totalTypedCount = ref(0);
-  const totalMistypeCount = ref(0);
-  const { resetMistypeStats, countMistype, sendMistypeDataToServer } = useMistype();
+  const { resetMistypeStats, countMistype, sendMistypeDataToServer } =
+    useMistype();
 
-  // タイピング開始処理
+  const typingResults = reactive({
+    totalCorrectTypedCount: 0,
+    totalMistypedCount: 0,
+    typingAccuracy: 0,
+  });
+
+  watch(
+    () => [
+      typingResults.totalCorrectTypedCount,
+      typingResults.totalMistypedCount,
+    ],
+    () => {
+      typingResults.typingAccuracy = typingAccuracy.value;
+    }
+  );
+
+  /**
+   * タイピング開始処理
+   */
   const startTyping = () => {
     isCountdownActive.value = true;
     countdown.value = 3;
@@ -39,6 +58,16 @@ export function useTyping(language: string, difficultyLevel: string) {
         updateColoredText();
       }
     }, 1000);
+  };
+
+  /**
+   * タイピング終了処理
+   */
+  const finishTyping = () => {
+    isTypingStarted.value = false;
+    sendMistypeDataToServer();
+
+    router.push({ name: "score" });
   };
 
   /**
@@ -105,7 +134,7 @@ export function useTyping(language: string, difficultyLevel: string) {
         currentInputIndex.value++;
         currentPatternIndex.value = i;
         matched = true;
-        totalTypedCount.value++; 
+        typingResults.totalCorrectTypedCount++;
         updateColoredText();
         break;
       }
@@ -114,7 +143,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     if (!matched) {
       console.log(event.key);
       countMistype(event.key);
-      totalMistypeCount.value++;
+      typingResults.totalMistypedCount++;
       return;
     }
 
@@ -163,20 +192,23 @@ export function useTyping(language: string, difficultyLevel: string) {
    * 正タイプ率の計算処理
    */
   const typingAccuracy = computed(() => {
-    const total = totalTypedCount.value + totalMistypeCount.value;
-    return total > 0 ? (totalTypedCount.value / total) * 100 : 0;
+    const total =
+      typingResults.totalCorrectTypedCount + typingResults.totalMistypedCount;
+    return total > 0 ? (typingResults.totalCorrectTypedCount / total) * 100 : 0;
   });
 
   /**
    * 合計タイプ数を初期化
    */
   const resetTypingStats = () => {
-    totalTypedCount.value = 0;
-    totalMistypeCount.value = 0;
+    typingResults.totalCorrectTypedCount = 0;
+    typingResults.totalMistypedCount = 0;
     resetMistypeStats();
   };
 
-  // 初期処理
+  /**
+   * 初期化処理
+   */
   const initialize = async () => {
     const { sentences } = useSentence(language, difficultyLevel);
 
@@ -199,8 +231,6 @@ export function useTyping(language: string, difficultyLevel: string) {
   useEventListener(window, "keydown", handleKeyPress);
 
   return {
-    totalTypedCount,
-    totalMistypeCount,
     typingAccuracy,
     sentencesData,
     currentSentence,
@@ -208,7 +238,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     isTypingStarted,
     countdown,
     isCountdownActive,
-    sendMistypeDataToServer,
+    finishTyping,
     initialize,
   };
 }

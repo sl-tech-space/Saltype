@@ -8,12 +8,13 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   color: "white",
   size: "medium",
-  text: "テキスト",
+  text: "",
 });
 </script>
 
 <template>
   <p :class="[`text--${props.color}`, `text--${props.size}`]">
+    <slot></slot>
     {{ props.text }}
   </p>
 </template>

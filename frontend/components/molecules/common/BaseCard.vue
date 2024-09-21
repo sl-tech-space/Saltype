@@ -6,12 +6,14 @@ import Separator from '~/components/atoms/ui/Separator.vue';
  * - small 横に４枚並ぶサイズ
  * - medium 横に３枚並ぶサイズ
  * - large 横に２枚並ぶサイズ
+ * - xl 画面3/2
+ * - full 100%
  */
 interface Props {
     cardColor?: "white" | "black" | "blue" | "dark-blue",
     sepColor?: "white" | "black" | "blue" | "dark-blue",
-    width?: "small" | "medium" | "large" | "xl",
-    height?: "small" | "medium" | "large" | "xl",
+    width?: "small" | "medium" | "large" | "xl" | "full",
+    height?: "small" | "medium" | "large" | "xl" | "full",
     headerSep?: boolean
     footerSep?: boolean
 }

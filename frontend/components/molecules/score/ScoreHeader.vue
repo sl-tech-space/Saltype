@@ -14,7 +14,7 @@ const handleBackToHome = () => {
 <template>
     <section>
         <div class="typing-header">
-            <Title color="white" text="スコア" />
+            <Title color="white" text="スコアボード" />
             <Title color="white" text="タイピング結果" />
             <Button border="dark-blue" width="large" height="medium" background="none" :rounded="true" button-text="戻る"
                 @click="handleBackToHome" />
