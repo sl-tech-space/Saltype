@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.db import transaction
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import gettext_lazy as _
-from .models import User
+from apps.common.models import User
 
 class UserLoginSerializer(serializers.Serializer):
     """

@@ -16,6 +16,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Application definition
 INSTALLED_APPS = [
+    'apps.authentication',
+    'apps.analyze',
+    'apps.common',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,8 +31,6 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     'social_django',
     'oauth2_provider',
-    'authentication',
-    'analyze'
 ]
 
 MIDDLEWARE = [
@@ -96,7 +97,7 @@ CORS_ALLOW_HEADERS = [
     'x-xsrf-token',
 ]
 
-AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'common.User'
 
 # Internationalization
 LANGUAGE_CODE = 'ja'
