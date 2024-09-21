@@ -57,7 +57,7 @@ defineExpose({ emblaApi, currentSlideIndex })
 
 <template>
   <div class="embla-wrapper">
-    <Button class="embla__prev" button-text="&lt;" color="blue" width="small" @click="scrollPrev" />
+    <Button class="embla__prev" button-text="&lt;" color="blue" width="small" background="none" @click="scrollPrev" />
     <div class="embla" ref="emblaNode">
       <div class="embla__container">
         <div v-for="(slide, index) in slides" :key="index" class="embla__slide">
@@ -65,7 +65,7 @@ defineExpose({ emblaApi, currentSlideIndex })
         </div>
       </div>
     </div>
-    <Button class="embla__next" button-text="&gt;" color="blue" width="small" @click="scrollNext" />
+    <Button class="embla__next" button-text="&gt;" color="blue" width="small" background="none" @click="scrollNext" />
   </div>
 </template>
 

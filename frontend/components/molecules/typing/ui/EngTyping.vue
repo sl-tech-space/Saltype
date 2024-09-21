@@ -11,15 +11,12 @@ const difficultyLevel = ref(route.query.difficultyLevel as string || "0");
 let isLoading = ref(false);
 
 const {
-    totalTypedCount,
-    totalMistypeCount,
-    typingAccuracy,
     currentSentence,
     coloredText,
     isTypingStarted,
     countdown,
     isCountdownActive,
-    sendMistypeDataToServer,
+    finishTyping,
     initialize,
 } = useTyping(language.value, difficultyLevel.value);
 
@@ -29,11 +26,7 @@ onMounted(() => {
     initialize();
     $bus.$on('timer-ended', () => {
         isLoading.value = true;
-        sendMistypeDataToServer(
-            totalTypedCount,
-            totalMistypeCount,
-            typingAccuracy
-        )
+        finishTyping();
         isLoading.value = false;
     });
 });

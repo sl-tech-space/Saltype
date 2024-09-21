@@ -15,6 +15,13 @@ function convertDifficultyLevel(difficultyLevel: string): string {
   return difficultyMap[difficultyLevel.toLowerCase()] || difficultyLevel;
 }
 
+/**
+ * 文章を返す処理
+ * @param language 
+ * @param difficultyLevel 
+ * @param count 
+ * @returns sentences
+ */
 export function useSentence(
   language: string,
   difficultyLevel: string,

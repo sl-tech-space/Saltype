@@ -10,7 +10,7 @@ const handleTimerEnd = () => {
     $bus.$emit('timer-ended');
 }
 </script>
-<!-- 18000? -->
+<!-- 180000? -->
 <template>
-    <BaseTimer :duration="180" @timerEnd="handleTimerEnd" />
+    <BaseTimer :duration="1800" @timerEnd="handleTimerEnd" />
 </template>
