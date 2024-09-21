@@ -1,5 +1,6 @@
 node_modules
 mysql-data/
+postgres-data/
 *.sock
 backend/apps/analyze/__pycache__/
 backend/apps/analyze/migrations/__pycache__/

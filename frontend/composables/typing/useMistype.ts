@@ -73,7 +73,7 @@ export function useMistype() {
         miss_data: missData,
       };
 
-      const response = await fetch(`${config.public.baseURL}/api/mistypes/`, {
+      const response = await fetch(`${config.public.baseURL}/api/mistypes/insert`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

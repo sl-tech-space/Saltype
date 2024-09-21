@@ -3,8 +3,8 @@ import LoginPage from "~/components/organisms/LoginPage.vue";
 import Loading from "~/composables/ui/Loading.vue";
 import { useAuthToken } from "~/composables/auth/useAuth";
 
-let isLoading = ref(true);
 const { authToken } = useAuthToken();
+let isLoading = ref(true);
 
 onMounted(() => {
   authToken();
