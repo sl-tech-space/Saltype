@@ -41,18 +41,13 @@ class AddScoreAndRankView(APIView):
         if serializer.is_valid():
             """ データ取得 """
             data = serializer.validated_data
-            user = data.get('user')
+            user_id = data.get('user_id')
             lang = data.get('lang')
             diff = data.get('diff')
 
             """ NULLチェック """
-            if not user or not lang or not diff:
+            if not user_id or not lang or not diff:
                 return Response({'error': 'Invalid data: user, lang or diff is None'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            """ モデルの属性アクセス """
-            user_id = user.user_id
-            lang_id = lang.lang_id
-            diff_id = diff.diff_id
             
             """ タイピング数と正確さを受け取る """
             typing_count = request.data.get('typing_count', 0)
@@ -66,7 +61,7 @@ class AddScoreAndRankView(APIView):
             score_instance = serializer.save()  
 
             """ スコア判定と処理 """
-            score_service = ScoreService(user_id, lang_id, diff_id, score)
+            score_service = ScoreService(user_id, lang.lang_id, diff.diff_id, score)
             score_instance, is_high_score, new_highest_score, rank = self.process_score_and_rank(score_service, serializer)
 
             """ 現在のランキング順位取得 """
