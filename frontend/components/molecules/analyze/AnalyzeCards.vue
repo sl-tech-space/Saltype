@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TypoFrequencyCard from './cards/TypoFrequencyCard.vue';
-import AverageScoreCard from './cards/AverageScoreCard.vue';
 import GrowthChartCard from './cards/GrowthChartCard.vue';
 </script>
 
@@ -8,7 +7,6 @@ import GrowthChartCard from './cards/GrowthChartCard.vue';
     <div class="analyze-cards-container">
         <div class="top-card">
             <TypoFrequencyCard />
-            <AverageScoreCard />
         </div>
         <div class="bottom-card">
             <GrowthChartCard />

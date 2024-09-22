@@ -1,16 +1,13 @@
 import { useSession } from "../server/useSession";
 
-export function useTypoFrequency() {
+export function useAverageScore() {
   const config = useRuntimeConfig();
   const { getSession } = useSession();
-  const typoFrequencyTop3 = ref<TypoFrequency[]>([])
 
-  interface TypoFrequency {
-    miss_char: string;
-    miss_count: number;
-  }
-
-  const getTypoFrequencyTop3 = async () => {
+  const getAverageScore = async (
+    selectedLanguage: number,
+    selectedDifficulty: number
+  ) => {
     try {
       const userSession = await getSession();
       const user = userSession?.value;
@@ -20,8 +17,10 @@ export function useTypoFrequency() {
         return;
       }
 
+      console.log(selectedLanguage, selectedDifficulty);
+
       const response = await fetch(
-        `${config.public.baseURL}/api/mistypes/top`,
+        `${config.public.baseURL}/api/score/average`,
         {
           method: "POST",
           headers: {
@@ -29,26 +28,28 @@ export function useTypoFrequency() {
           },
           body: JSON.stringify({
             user_id: user.user_id,
+            lang_id: selectedLanguage,
+            diff_id: selectedDifficulty
           }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("ミスタイプ頻度の取得に失敗");
+        const errorText = await response.text();
+        console.error("エラーレスポンス:", errorText);
+        throw new Error("平均スコアの取得に失敗");
       }
 
       const data = await response.json();
       console.log(data);
 
-      typoFrequencyTop3.value = data;
-
+      return data.average_score;
     } catch (error) {
-      console.error("ミスタイプ頻度リクエスト送信に失敗", error);
+      console.error(error);
     }
   };
 
   return {
-    typoFrequencyTop3,
-    getTypoFrequencyTop3,
+    getAverageScore,
   };
 }
