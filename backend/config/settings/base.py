@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'apps.authentication',
     'apps.analyze',
     'apps.common',
+    'apps.score',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
