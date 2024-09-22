@@ -2,8 +2,8 @@ node_modules
 mysql-data/
 postgres-data/
 *.sock
-backend/apps/analyze/__pycache__/
-backend/apps/analyze/migrations/__pycache__/
+backend/apps/mistype/__pycache__/
+backend/apps/mistype/migrations/__pycache__/
 backend/apps/authentication/__pycache__/
 backend/apps/authentication/migrations/__pycache__/
 backend/apps/common/__pycache__/
