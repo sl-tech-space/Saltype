@@ -1,0 +1,32 @@
+.analyze-cards-container {
+  width: 100%;
+  height: 75vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .top-card,
+  .bottom-card {
+    width: 90%;
+    height: 40%;
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+  }
+
+  .bottom-card,
+  .body-content {
+    margin-top: 2%;
+  }
+
+  .header-content {
+    margin-left: 4%;
+  }
+
+  .body-content,
+  .footer-content {
+    display: flex;
+    justify-content: center;
+  }
+}

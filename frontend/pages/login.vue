@@ -8,7 +8,9 @@ let isLoading = ref(true);
 
 onMounted(() => {
   authToken();
-  isLoading.value = false;
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 500);
 });
 
 useHead({

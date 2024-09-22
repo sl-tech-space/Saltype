@@ -29,14 +29,13 @@ export function useAuthToken() {
             signal: AbortSignal.timeout(5000),
           }
         );
+
         if (response.ok) {
           const data = await response.json();
           saveSession(data);
 
           router.push({ name: "home" });
-        } else {
         }
-      } else {
       }
     } catch (error) {
       console.error(
