@@ -67,6 +67,15 @@ export function useTyping(language: string, difficultyLevel: string) {
     isTypingStarted.value = false;
     sendMistypeDataToServer();
 
+    localStorage.setItem(
+      "totalCorrectTypedCount",
+      typingResults.totalCorrectTypedCount.toString()
+    );
+    localStorage.setItem(
+      "typingAccuracy",
+      typingResults.typingAccuracy.toString()
+    );
+
     router.push({ name: "score" });
   };
 
@@ -194,7 +203,9 @@ export function useTyping(language: string, difficultyLevel: string) {
   const typingAccuracy = computed(() => {
     const total =
       typingResults.totalCorrectTypedCount + typingResults.totalMistypedCount;
-    return total > 0 ? (typingResults.totalCorrectTypedCount / total) * 100 : 0;
+    return total > 0
+      ? Number((typingResults.totalCorrectTypedCount / total).toFixed(2))
+      : 0;
   });
 
   /**

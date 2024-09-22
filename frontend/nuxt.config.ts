@@ -10,7 +10,9 @@ export default defineNuxtConfig({
     '/': { isr: true },
     '/login': { ssr: false }, //ログイン画面 - CSR
     '/home': { ssr: true },
-    '/typing': { ssr: true }
+    '/typing': { ssr: true },
+    '/score': { ssr: true },
+    '/analyze': { ssr: true }
   },
   app: {
     head: {
@@ -28,5 +30,8 @@ export default defineNuxtConfig({
   },
   session: {
     expiryInSeconds: 60 * 60 * 24,
+    rolling: true,
+    sameSite: 'lax',
+    httpOnly: true, 
   },
 })

@@ -3,7 +3,6 @@ import BaseCard from '../../common/BaseCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
-import Separator from '~/components/atoms/ui/Separator.vue';
 import { useRouter } from '#app';
 import { ref } from 'vue';
 import { useSession } from '~/composables/server/useSession';
