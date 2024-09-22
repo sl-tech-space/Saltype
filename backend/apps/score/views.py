@@ -138,20 +138,28 @@ class AverageScoreView(APIView):
 
     permission_classes = [AllowAny]
 
-    def get(self, request, lang_id, diff_id, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
-        指定された言語IDと難易度IDに基づいて平均スコアを返す
+        指定されたユーザーID、言語ID、難易度IDに基づいて平均スコアを返す
 
-        :param lang_id: 言語ID
-        :param diff_id: 難易度ID
+        :param request: POSTリクエスト
         :return: 平均スコア
         """
-        average_score = Score.objects.filter(lang_id=lang_id, diff_id=diff_id).aggregate(Avg('score'))
+        user_id = request.data.get('user_id')
+        lang_id = request.data.get('lang_id')
+        diff_id = request.data.get('diff_id')
+
+        """ パラメータ確認 """
+        if not all([user_id, lang_id, diff_id]):
+            return Response({'error': 'user_id, lang_id, and diff_id are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        """ 平均スコアを計算 """
+        average_score = Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id).aggregate(Avg('score'))
 
         if average_score['score__avg'] is not None:
             return Response({'average_score': average_score['score__avg']}, status=status.HTTP_200_OK)
         else:
-            return Response({'error': 'No scores found for the given language and difficulty'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'No scores found for the given user, language, and difficulty'}, status=status.HTTP_404_NOT_FOUND)
         
 class PastScoresView(APIView):
     """
