@@ -20,6 +20,10 @@ let isLoading = ref(false);
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
+const handleAnalyze = () => {
+    router.push({ name: "analyze" });
+};
+
 const handleLogout = async () => {
     await logout();
 };
@@ -104,7 +108,7 @@ const handleStart = async () => {
                         </Text>
                     </li>
                     <li>
-                        <Text size="large">
+                        <Text size="large" @click="handleAnalyze">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                                 fill="#e8eaed">
                                 <path

@@ -1,5 +1,4 @@
 import { ref, computed } from "vue";
-import { useRuntimeConfig } from "nuxt/app";
 import { useSession } from "../server/useSession";
 
 /**
@@ -62,7 +61,7 @@ export function useMistype() {
       const user = userSession?.value;
 
       if (!user || !user.user_id) {
-        console.error("User session or user_id not available");
+        console.error("セッション情報が存在しません");
         return;
       }
 
@@ -73,13 +72,16 @@ export function useMistype() {
         miss_data: missData,
       };
 
-      const response = await fetch(`${config.public.baseURL}/api/mistypes/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await fetch(
+        `${config.public.baseURL}/api/mistypes/insert`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("ミスタイプデータの送信に失敗");
