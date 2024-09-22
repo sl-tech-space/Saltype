@@ -6,6 +6,8 @@ backend/apps/analyze/__pycache__/
 backend/apps/analyze/migrations/__pycache__/
 backend/apps/authentication/__pycache__/
 backend/apps/authentication/migrations/__pycache__/
+backend/apps/common/__pycache__/
+backend/apps/common/migrations/__pycache__/
 backend/config/.env
 backend/config/__pycache__/
 backend/config/settings/__pycache__/
