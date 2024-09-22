@@ -16,9 +16,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Application definition
 INSTALLED_APPS = [
-    'apps.authentication',
-    'apps.analyze',
     'apps.common',
+    'apps.authentication',
+    'apps.mistype',
     'apps.score',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -2,10 +2,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .services import ScoreService
-from apps.common.models import Rank, User,Score
-from .serializers import ScoreSerializer
 from django.db.models import Avg
+
+from .services import ScoreService
+from .serializers import ScoreSerializer
+from apps.common.models import Rank, User,Score
 
 class AddScoreAndRankView(APIView):
     """
