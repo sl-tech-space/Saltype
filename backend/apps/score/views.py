@@ -2,52 +2,39 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from django.db.models import Avg
+from rest_framework.exceptions import ValidationError
 
+from django.db.models import Avg
+from django.db import DatabaseError
+
+from apps.common.utils import CommonUtils
 from .services import ScoreService
 from .serializers import ScoreSerializer
 from apps.common.models import Rank, User,Score
+import logging
+
+logger = logging.getLogger(__name__)
 
 class AddScoreAndRankView(APIView):
-    """
-    スコアインサートとランクインサート処理
-
-    Attributes:
-        1.最高スコア判定
-        2.スコアインサート
-        3.ランク判定
-        4.最高スコアの時のみランクインサート
-    """
 
     """ アクセス認証（全員） """
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         """
-        postでリクエストが来た時の処理
-        
-        :return:
-            score(int):スコア
-            is_high_score(bool):最高スコアかどうか
-            highest_score(int):最高スコア
-            rank(int):ランク名
-            ranking_position(int):ユーザのランキング 
+        POSTリクエスト処理
         """
+        
+        try:
+            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data)
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
         """リクエストデータをシリアライザーへ"""
         serializer = ScoreSerializer(data=request.data)
         
         """ バリデーション通過できたら """
         if serializer.is_valid():
-            """ データ取得 """
-            data = serializer.validated_data
-            user_id = data.get('user_id')
-            lang = data.get('lang')
-            diff = data.get('diff')
-
-            """ NULLチェック """
-            if not user_id or not lang or not diff:
-                return Response({'error': 'Invalid data: user, lang or diff is None'}, status=status.HTTP_400_BAD_REQUEST)
             
             """ タイピング数と正確さを受け取る """
             typing_count = request.data.get('typing_count', 0)
@@ -58,10 +45,9 @@ class AddScoreAndRankView(APIView):
             
             """ スコアをserializerに設定 """
             serializer.validated_data['score'] = score
-            score_instance = serializer.save()  
 
             """ スコア判定と処理 """
-            score_service = ScoreService(user_id, lang.lang_id, diff.diff_id, score)
+            score_service = ScoreService(user_id, lang_id, diff_id, score)
             score_instance, is_high_score, new_highest_score, rank = self.process_score_and_rank(score_service, serializer)
 
             """ 現在のランキング順位取得 """
@@ -74,12 +60,18 @@ class AddScoreAndRankView(APIView):
                 'rank': rank.rank if rank else None,
                 'ranking_position': ranking_position,
             }, status=status.HTTP_200_OK)
+            
+        if not serializer.is_valid():
+            logger.error(f"Serializer validation error: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    BASE_SCORE_MULTIPLIER = 10
+    
     def calculate_score(self, typing_count, accuracy):
         """ タイピング数と正確さに基づいてスコアを計算 """
-        base_score = typing_count * 10  
+        base_score = typing_count * self.BASE_SCORE_MULTIPLIER
         score = base_score * accuracy  
         return score
     
@@ -91,27 +83,27 @@ class AddScoreAndRankView(APIView):
         4.最高スコアの場合、最高ランクアップデート
         """
         
-        """ 最高スコア判定 """
-        is_high_score, new_highest_score = score_service.is_new_high_score()
-
-        """ スコアインサート """
-        try:
-            score_instance = serializer.save()
-        except Exception as e:
-            print(f"Error saving score: {e}")
-            return score_instance, is_high_score, new_highest_score, None
-
-        """ ランク判定 """
-        rank_id = score_service.determine_rank()
-        rank = Rank.objects.filter(rank_id=rank_id).first()
-
-        """ 最高スコアの場合のみユーザのランクアップデート """
+        score_instance = self.insert_score(serializer)
+        is_high_score, new_highest_score = self.check_high_score(score_service)
+        rank = self.determine_rank(score_service)
+        
         if is_high_score and rank:
-            user = self.update_user_rank(score_service.user_id, rank.rank_id)
-            if not user:
-                return score_instance, is_high_score, new_highest_score, None
-
+            self.update_user_rank(score_service.user_id, rank.rank_id)
+            
         return score_instance, is_high_score, new_highest_score, rank
+    def insert_score(self, serializer):
+        try:
+            return serializer.save()
+        except Exception as e:
+            logger.error(f"Error saving score: {e}")
+            return None
+
+    def check_high_score(self, score_service):
+        return score_service.is_new_high_score()
+
+    def determine_rank(self, score_service):
+        rank_id = score_service.determine_rank()
+        return Rank.objects.filter(rank_id=rank_id).first()
 
     def update_user_rank(self, user_id, rank_id):
         """
@@ -123,6 +115,9 @@ class AddScoreAndRankView(APIView):
             user.save()
             return user
         except User.DoesNotExist:
+            return None
+        except DatabaseError as e:
+            logger.error(f"Database error while updating user rank: {e}")
             return None
 
 
@@ -140,13 +135,11 @@ class AverageScoreView(APIView):
         :param request: POSTリクエスト
         :return: 平均スコア
         """
-        user_id = request.data.get('user_id')
-        lang_id = request.data.get('lang_id')
-        diff_id = request.data.get('diff_id')
-
-        """ パラメータ確認 """
-        if not all([user_id, lang_id, diff_id]):
-            return Response({'error': 'user_id, lang_id, and diff_id are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data)
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         """ 平均スコアを計算 """
         average_score = Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id).aggregate(Avg('score'))
@@ -167,9 +160,11 @@ class PastScoresView(APIView):
         """
         ユーザーの過去30回のスコアデータを返す
         """
-        user_id = request.data.get('user_id')
-        lang_id = request.data.get('lang_id')
-        diff_id = request.data.get('diff_id')
+        
+        try:
+            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data)
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         """ スコアデータを取得 """
         scores = Score.objects.filter(
