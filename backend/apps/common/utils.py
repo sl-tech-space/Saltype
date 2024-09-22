@@ -2,15 +2,13 @@ from rest_framework.exceptions import ValidationError
 
 class CommonUtils:
     @staticmethod
-    def validate_request_params(data):
+    def validate_request_params(data, required_params):
         """
         リクエストのパラメータをバリデーションする共通メソッド
         """
-        user_id = data.get('user_id')
-        lang_id = data.get('lang_id')
-        diff_id = data.get('diff_id')
+        missing_params = [param for param in required_params if not data.get(param)]
+        
+        if missing_params:
+            raise ValidationError(f"{', '.join(missing_params)} が必要です。")
 
-        if not all([user_id, lang_id, diff_id]):
-            raise ValidationError("user_id, lang_id, and diff_id are required.")
-
-        return user_id, lang_id, diff_id
+        return [data[param] for param in required_params]

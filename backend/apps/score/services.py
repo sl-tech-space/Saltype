@@ -1,5 +1,9 @@
 from apps.common.models import Score
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class ScoreService:
     def __init__(self, user_id, lang_id, diff_id, score):
         """
@@ -23,17 +27,26 @@ class ScoreService:
             new_highest_score: 新しい最高スコア (int or None)
         """
 
-        old_highest_score = Score.objects.filter(
-            user_id=self.user_id,
-            lang_id=self.lang_id,
-            diff_id=self.diff_id
-        ).order_by('-score', '-created_at').first()
+        try:
+            old_highest_score = Score.objects.filter(
+                user_id=self.user_id,
+                lang_id=self.lang_id,
+                diff_id=self.diff_id
+            ).order_by('-score', '-created_at').first()
+            
+            """ 過去にスコアがない場合 """
+            if old_highest_score is None:
+                return True, self.score
+            
+            """ 現在のスコアが過去のスコアより高い場合 """
+            if self.score >= old_highest_score.score:
+                return True, self.score
+
+            """ 現在のスコアが過去のスコアより低いか同じ場合 """
+            return False, old_highest_score.score
         
-        if old_highest_score is None: #過去スコアがない場合
-            return True, self.score
-        elif self.score > old_highest_score.score:#取得スコアが過去スコアより大きい場合
-            return True, self.score
-        else:#取得スコアの方が小さい場合
+        except Exception as e:
+            logger.error(f"最高スコア判定中にエラーが発生しました: {e}")
             return False, None
 
     def determine_rank(self):
@@ -67,14 +80,13 @@ class ScoreService:
             diff_id=self.diff_id
         ).order_by('-created_at').first()
 
-        """ ユーザーのスコアより高いスコアを持つユーザーの数をカウント """
+        if user_score is None:
+            return None
+
         higher_score_count = Score.objects.filter(
             lang_id=self.lang_id,
             diff_id=self.diff_id,
             score__gt=user_score.score
         ).count()
 
-        """ 順位計算 """
-        rank_position = higher_score_count + 1
-
-        return rank_position
+        return higher_score_count + 1

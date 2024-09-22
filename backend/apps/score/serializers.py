@@ -1,11 +1,8 @@
 from rest_framework import serializers
-
 from apps.common.models import Score, User, Lang, Diff
 
 class ScoreSerializer(serializers.ModelSerializer):
-    """
-    Scoreモデルのシリアライザークラス
-    """
+    """ Scoreモデルのシリアライザークラス """
     
     user_id = serializers.UUIDField(write_only=True)
     lang_id = serializers.PrimaryKeyRelatedField(source='lang', queryset=Lang.objects.all(), write_only=True)
@@ -25,7 +22,7 @@ class ScoreSerializer(serializers.ModelSerializer):
         try:
             user = User.objects.get(user_id=user_id)
         except User.DoesNotExist:
-            raise serializers.ValidationError('User with this ID does not exist.')
+            raise serializers.ValidationError('指定されたIDのユーザーは存在しません。')
         
         """ データからlangとdiffを取り出して新しいScoreを作成 """
         lang = validated_data.pop('lang')

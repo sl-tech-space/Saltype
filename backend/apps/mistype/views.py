@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 from .serializers import MissTypeSerializer
+from apps.common.utils import CommonUtils
 from .models import Miss
 
 class MissTypeInsertView(APIView):
