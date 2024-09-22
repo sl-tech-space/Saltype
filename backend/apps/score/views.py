@@ -3,8 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .services import ScoreService
-from apps.common.models import Rank, User
+from apps.common.models import Rank, User,Score
 from .serializers import ScoreSerializer
+from django.db.models import Avg
 
 class AddScoreAndRankView(APIView):
     """
@@ -127,3 +128,53 @@ class AddScoreAndRankView(APIView):
             return user
         except User.DoesNotExist:
             return None
+
+
+class AverageScoreView(APIView):
+    """
+    平均スコアを取得
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, lang_id, diff_id, *args, **kwargs):
+        """
+        指定された言語IDと難易度IDに基づいて平均スコアを返す
+
+        :param lang_id: 言語ID
+        :param diff_id: 難易度ID
+        :return: 平均スコア
+        """
+        average_score = Score.objects.filter(lang_id=lang_id, diff_id=diff_id).aggregate(Avg('score'))
+
+        if average_score['score__avg'] is not None:
+            return Response({'average_score': average_score['score__avg']}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'No scores found for the given language and difficulty'}, status=status.HTTP_404_NOT_FOUND)
+        
+class PastScoresView(APIView):
+    """
+    ユーザーの過去30回のスコアデータを取得
+    """
+
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        """
+        ユーザーの過去30回のスコアデータを返す
+        """
+        user_id = request.data.get('user_id')
+        lang_id = request.data.get('lang_id')
+        diff_id = request.data.get('diff_id')
+
+        """ スコアデータを取得 """
+        scores = Score.objects.filter(
+            user_id=user_id,
+            lang_id=lang_id,
+            diff_id=diff_id
+        ).order_by('-created_at')[:30]
+
+        """ スコアデータをシリアライズ """
+        scores_data = ScoreSerializer(scores, many=True).data
+
+        return Response(scores_data, status=status.HTTP_200_OK)

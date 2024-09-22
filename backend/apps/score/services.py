@@ -39,30 +39,21 @@ class ScoreService:
     def determine_rank(self):
         """
         スコアに基づいてランクIDを決定する
-        
         :return: ランクID (int)
         """
-        if self.score >= 1000:
-            """7:社長"""
-            return 7  
-        elif self.score >= 900:
-            """6:取締役"""
-            return 6  
-        elif self.score >= 700:
-            """5:部長"""
-            return 5  
-        elif self.score >= 500:
-            """4:課長"""
-            return 4  
-        elif self.score >= 300:
-            """3:係長"""
-            return 3  
-        elif self.score >= 100:
-            """2:主任"""
-            return 2  
-        else:
-            """メンバー"""
-            return 1  
+        rank_thresholds = [
+            (1000, 7, "社長"),
+            (900, 6, "取締役"),
+            (700, 5, "部長"),
+            (500, 4, "課長"),
+            (300, 3, "係長"),
+            (100, 2, "主任"),
+            (0, 1, "メンバー")
+        ]
+        for threshold, rank, title in rank_thresholds:
+            if self.score >= threshold:
+                return rank
+        return 1
 
     def get_ranking_position(self):
         """
