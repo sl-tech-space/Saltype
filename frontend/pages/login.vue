@@ -22,7 +22,7 @@ useHead({
   <main class="login-page">
     <LoginPage />
   </main>
-  <Loading :isLoading="isLoading" />
+  <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" src="@/assets/styles/pages/login.scss" />

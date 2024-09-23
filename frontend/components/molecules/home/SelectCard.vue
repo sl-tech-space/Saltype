@@ -13,8 +13,8 @@ import { ref } from 'vue';
 import { useSession } from '~/composables/server/useSession';
 
 const { logout } = await useLogout();
-const { isLoading, checkSession } = useSession();
 const router = useRouter();
+const { isLoading, checkSession } = useSession();
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
@@ -34,7 +34,6 @@ const handleStart = async () => {
     try {
         const isSessionValid = await checkSession(false);
         if (!isSessionValid) return;
-
 
         localStorage.setItem("language", selectedLanguage.value.toString());
         localStorage.setItem("difficulty", selectedDifficulty.value.toString())
@@ -134,7 +133,7 @@ const handleStart = async () => {
             </template>
         </BaseCard>
     </div>
-    <Loading :isLoading="isLoading" />
+    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="sass" src="@/assets/styles/components/molecules/select-card.scss" />

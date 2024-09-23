@@ -24,7 +24,7 @@ const props = defineProps<{
             <div class="body-content">
                 <ul>
                     <li v-for="(item, index) in props.typoFrequencyTop3" :key="index" style="margin-top: 10px;">
-                        <Text size="large">
+                        <Text size="large" color="blue">
                             {{ index + 1 }}. キー: {{ item.miss_char }}&ensp;回数: {{ item.miss_count }}
                         </Text>
                     </li>

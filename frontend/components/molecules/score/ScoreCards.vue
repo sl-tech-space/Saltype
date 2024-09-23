@@ -78,7 +78,7 @@ onMounted(async () => {
             <RankingCard :ranking="scoreBoardData?.ranking_position || 0" />
         </div>
     </div>
-    <Loading :isLoading="isLoading" />
+    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" src="@/assets/styles/components/molecules/score-cards.scss" />

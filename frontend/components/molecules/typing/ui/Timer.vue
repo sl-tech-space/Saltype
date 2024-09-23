@@ -12,5 +12,5 @@ const handleTimerEnd = () => {
 </script>
 <!-- 180000 -->
 <template>
-    <BaseTimer :duration="18000" @timerEnd="handleTimerEnd" />
+    <BaseTimer :duration="180000" @timerEnd="handleTimerEnd" />
 </template>

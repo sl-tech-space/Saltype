@@ -9,5 +9,5 @@ useHead({
 </script>
 
 <template>
-  <Loading :isLoading="isLoading" />
+  <Loading :is-loading="isLoading" />
 </template>

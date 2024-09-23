@@ -5,18 +5,19 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+  gap: 5%;
 
   .left-card {
-    flex: 7;
-    width: 80%;
+    flex: 6;
+    width: 50%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
   }
 
   .right-card {
-    flex: 3;
+    flex: 4;
     height: 100%;
     display: flex;
     align-items: center;
@@ -33,5 +34,11 @@
   .footer-content {
     display: flex;
     justify-content: center;
+  }
+
+  .body-content {
+    ul {
+      list-style-type: none;
+    }
   }
 }
