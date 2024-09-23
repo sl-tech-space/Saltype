@@ -5,7 +5,6 @@ import RankingCard from './cards/RankingCard.vue';
 import ScoreCard from './cards/ScoreCard.vue';
 import Loading from '~/composables/ui/Loading.vue';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
-import { useAverageScore } from '~/composables/score/useAverageScore';
 import { useSession } from '~/composables/server/useSession';
 
 interface ScoreBoardData {
@@ -13,12 +12,8 @@ interface ScoreBoardData {
     is_high_score: boolean;
     rank: string;
     ranking_position: number;
-    score: {
-        diff: number;
-        lang: number;
-        score: number;
-        user: string;
-    };
+    score: number;
+    average_score: number;
 }
 
 const selectedLanguage = ref(0);
@@ -26,9 +21,7 @@ const selectedDifficulty = ref(0);
 const totalCorrectTypedCount = ref(0);
 const typingAccuracy = ref(0);
 const scoreBoardData = ref<ScoreBoardData | null>(null);
-const averageScore = ref(0);
 const { getParam } = useScoreBoardParam();
-const { getAverageScore } = useAverageScore();
 const { isLoading, checkSession } = useSession();
 
 onMounted(async () => {
@@ -54,10 +47,6 @@ onMounted(async () => {
                 totalCorrectTypedCount.value,
                 typingAccuracy.value
             );
-            averageScore.value = await getAverageScore(
-                selectedLanguage.value,
-                selectedDifficulty.value
-            )
             isLoading.value = false;
         } catch (error) {
             console.error('Failed to fetch ScoreBoard data:', error);
@@ -69,7 +58,7 @@ onMounted(async () => {
 <template>
     <div class="score-cards-container">
         <div class="top-card">
-            <ScoreCard :your-total-score="scoreBoardData?.score?.score || 0" :your-average-score="averageScore" />
+            <ScoreCard :your-total-score="scoreBoardData?.score || 0" :your-average-score="scoreBoardData?.average_score || 0" />
             <RankCard :rank="scoreBoardData?.rank || 'データなし'" />
         </div>
         <div class="bottom-card">
