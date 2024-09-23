@@ -2,17 +2,19 @@
 import BaseCard from '../../common/BaseCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
-import { useTypoFrequency } from '~/composables/analyze/useTypoFrequency';
 
-const { typoFrequencyTop3, getTypoFrequencyTop3 } = useTypoFrequency();
+interface Props {
+  miss_char: string;
+  miss_count: number;
+}
 
-onMounted(() => {
-    getTypoFrequencyTop3();
-});
+const props = defineProps<{
+  typoFrequencyTop3: Props[];
+}>();
 </script>
 
 <template>
-    <BaseCard width="large" height="full" :footer-sep="false">
+    <BaseCard width="xl" height="xl" :footer-sep="false">
         <template #card-header>
             <div class="header-content">
                 <Title size="small" text="ミス頻度TOP3" />
@@ -21,7 +23,7 @@ onMounted(() => {
         <template #card-body>
             <div class="body-content">
                 <ul>
-                    <li v-for="(item, index) in typoFrequencyTop3" :key="index" style="margin-top: 10px;">
+                    <li v-for="(item, index) in props.typoFrequencyTop3" :key="index" style="margin-top: 10px;">
                         <Text size="large">
                             {{ index + 1 }}. キー: {{ item.miss_char }}&ensp;回数: {{ item.miss_count }}
                         </Text>

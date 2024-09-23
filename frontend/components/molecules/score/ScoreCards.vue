@@ -6,6 +6,7 @@ import ScoreCard from './cards/ScoreCard.vue';
 import Loading from '~/composables/ui/Loading.vue';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
 import { useAverageScore } from '~/composables/score/useAverageScore';
+import { useSession } from '~/composables/server/useSession';
 
 interface ScoreBoardData {
     highest_score: number;
@@ -26,11 +27,14 @@ const totalCorrectTypedCount = ref(0);
 const typingAccuracy = ref(0);
 const scoreBoardData = ref<ScoreBoardData | null>(null);
 const averageScore = ref(0);
-let isLoading = ref(true);
 const { getParam } = useScoreBoardParam();
 const { getAverageScore } = useAverageScore();
+const { isLoading, checkSession } = useSession();
 
 onMounted(async () => {
+    const isSessionValid = await checkSession(false);
+    if (!isSessionValid) return;
+
     const storedLanguage = localStorage.getItem("language");
     const storedDifficulty = localStorage.getItem("difficulty");
     const storedTotalCorrectTypedCount = localStorage.getItem("totalCorrectTypedCount");

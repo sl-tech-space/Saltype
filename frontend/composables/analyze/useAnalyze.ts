@@ -1,9 +1,9 @@
 import { useSession } from "../server/useSession";
 
-export function useTypoFrequency() {
+export function useAnalyze() {
   const config = useRuntimeConfig();
   const { getSession } = useSession();
-  const typoFrequencyTop3 = ref<TypoFrequency[]>([])
+  const typoFrequencyTop3 = ref<TypoFrequency[]>([]);
 
   interface TypoFrequency {
     miss_char: string;
@@ -41,14 +41,55 @@ export function useTypoFrequency() {
       console.log(data);
 
       typoFrequencyTop3.value = data;
-
     } catch (error) {
-      console.error("ミスタイプ頻度リクエスト送信に失敗", error);
+      console.error(error);
+    }
+  };
+
+  const getPastScores = async (
+    selectedLanguage: Number,
+    selectedDifficulty: Number
+  ) => {
+    try {
+      const userSession = await getSession();
+      const user = userSession?.value;
+
+      if (!user || !user.user_id) {
+        console.error("セッション情報が存在しません");
+        return;
+      }
+
+      const response = await fetch(
+        `${config.public.baseURL}/api/score/pastscores`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.user_id,
+            lang_id: selectedLanguage,
+            diff_id: selectedDifficulty
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("過去のスコア取得に失敗");
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      return data;
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return {
     typoFrequencyTop3,
     getTypoFrequencyTop3,
+    getPastScores
   };
 }

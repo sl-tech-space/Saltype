@@ -13,14 +13,16 @@ import { ref } from 'vue';
 import { useSession } from '~/composables/server/useSession';
 
 const { logout } = await useLogout();
-const { getSession } = useSession();
+const { isLoading, checkSession } = useSession();
 const router = useRouter();
-let isLoading = ref(false);
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
-const handleAnalyze = () => {
+const handleAnalyze = async () => {
+    const isSessionValid = await checkSession(true);
+    if (!isSessionValid) return;
+
     router.push({ name: "analyze" });
 };
 
@@ -30,16 +32,9 @@ const handleLogout = async () => {
 
 const handleStart = async () => {
     try {
-        isLoading.value = true;
+        const isSessionValid = await checkSession(false);
+        if (!isSessionValid) return;
 
-        const user = await getSession();
-
-        if (!user || !user.value) {
-            alert("セッション無効");
-            router.push({ name: "login" });
-            isLoading.value = false;
-            return;
-        }
 
         localStorage.setItem("language", selectedLanguage.value.toString());
         localStorage.setItem("difficulty", selectedDifficulty.value.toString())
@@ -51,6 +46,7 @@ const handleStart = async () => {
                 difficultyLevel: selectedDifficulty.value + 1,
             },
         });
+
         isLoading.value = false;
     } catch (error) {
         console.error("Navigation failed:", error);

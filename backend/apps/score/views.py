@@ -129,7 +129,7 @@ class AverageScoreView(APIView):
         :return: 平均スコア
         """
         try:
-            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data)
+            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data, ['user_id', 'lang_id', 'diff_id'])
         except ValidationError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -150,7 +150,7 @@ class PastScoresView(APIView):
         ユーザーの過去30回のスコアデータを返す
         """
         try:
-            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data)
+            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data, ['user_id', 'lang_id', 'diff_id'])
         except ValidationError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
