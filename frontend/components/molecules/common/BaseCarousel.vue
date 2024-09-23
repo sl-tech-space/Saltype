@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: 0
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['slide-change'])
 
 const [emblaNode, emblaApi] = useEmblaCarousel(props.options)
 const canScrollPrev = ref(false)
@@ -27,7 +27,7 @@ const onSelect = (emblaApi: EmblaCarouselType) => {
   canScrollPrev.value = emblaApi.canScrollPrev()
   canScrollNext.value = emblaApi.canScrollNext()
   currentSlideIndex.value = emblaApi.selectedScrollSnap()
-  emit('update:modelValue', currentSlideIndex.value)
+  emit('slide-change', currentSlideIndex.value)
 }
 
 const scrollPrev = () => emblaApi.value?.scrollPrev()

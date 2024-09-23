@@ -12,6 +12,8 @@ interface User {
  */
 export function useSession() {
   const user: Ref<User | null> = ref(null);
+  const router = useRouter();
+  const isLoading = ref(false);
   const error = ref(null);
 
   const getSession = async () => {
@@ -75,11 +77,35 @@ export function useSession() {
     }
   };
 
+  const checkSession = async (endFlg: boolean) => {
+    isLoading.value = true;
+    try {
+      const user = await getSession();
+
+      if (!user || !user.value) {
+        alert("セッション無効");
+        router.push({ name: "login" });
+        return false;
+      }
+
+      if(endFlg) {
+        isLoading.value = false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Session check failed:", error);
+      return false;
+    }
+  };
+
   return {
     user,
     error,
+    isLoading,
     getSession,
     saveSession,
     removeSession,
+    checkSession
   };
 }
