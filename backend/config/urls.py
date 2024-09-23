@@ -6,4 +6,5 @@ urlpatterns = [
     path('api/', include('apps.authentication.urls')),
     path('api/', include('apps.mistype.urls')),
     path('api/', include('apps.score.urls')),
+    path('api/', include('apps.ranking.urls')),
 ]
