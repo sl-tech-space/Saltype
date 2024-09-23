@@ -27,6 +27,11 @@ class AddScoreAndRankView(APIView):
         except ValidationError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
+        """ 平均スコア取得を求める場合 """
+        if request.data.get('action') == 'get_average_score':
+            average_score = self.get_average_score(user_id, lang_id, diff_id)
+            return Response({'average_score': average_score}, status=status.HTTP_200_OK)
+        
         """ リクエストデータをシリアライザーへ """
         serializer = ScoreSerializer(data=request.data)
         
@@ -43,12 +48,16 @@ class AddScoreAndRankView(APIView):
             """ スコア判定と処理 """
             score_service = ScoreService(user_id, lang_id, diff_id, score)
             score_instance, is_high_score, new_highest_score, rank = self.handle_score_and_rank_update(score_service, serializer)
+            
+            """ 平均スコアの取得 """
+            average_score = self.get_average_score(user_id, lang_id, diff_id)
 
             """ 現在のランキング順位取得 """
             ranking_position = score_service.get_ranking_position()
 
             return Response({
-                'score': ScoreSerializer(score_instance).data,
+                'score': score_service.score,
+                'average_score': average_score,
                 'is_high_score': is_high_score,
                 'highest_score': new_highest_score,
                 'rank': rank.rank if rank else None,
@@ -116,30 +125,13 @@ class AddScoreAndRankView(APIView):
         except DatabaseError as e:
             logger.error(f"ユーザーのランク更新中にデータベースエラーが発生しました: {e}")
             return None
-
-
-class AverageScoreView(APIView):
-    """ 平均スコアを取得 """
-    permission_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        """
-        指定されたユーザーID、言語ID、難易度IDに基づいて平均スコアを返す
-        :param request: POSTリクエスト
-        :return: 平均スコア
-        """
-        try:
-            user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data, ['user_id', 'lang_id', 'diff_id'])
-        except ValidationError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        """ 平均スコアを計算 """
+        
+    def get_average_score(self, user_id, lang_id, diff_id):
+        """ 指定されたユーザー、言語、難易度の平均スコアを取得 """
         average_score = Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id).aggregate(Avg('score'))
+        return average_score['score__avg'] if average_score['score__avg'] is not None else 0
 
-        if average_score['score__avg'] is not None:
-            return Response({'average_score': average_score['score__avg']}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': '指定されたユーザー、言語、難易度に対するスコアが見つかりません。'}, status=status.HTTP_404_NOT_FOUND)
+
         
 class PastScoresView(APIView):
     """ ユーザーの過去30回のスコアデータを取得 """
