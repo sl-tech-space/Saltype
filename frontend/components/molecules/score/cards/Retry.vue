@@ -7,9 +7,8 @@ import { useRouter } from '#app';
 import { ref } from 'vue';
 import { useSession } from '~/composables/server/useSession';
 
-const { getSession } = useSession();
+const { isLoading, checkSession } = useSession();
 const router = useRouter();
-let isLoading = ref(false);
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 const selectedLanguageText = ref("");
@@ -18,16 +17,8 @@ const isDisabled = ref(true)
 
 const handleStart = async () => {
     try {
-        isLoading.value = true;
-
-        const user = await getSession();
-
-        if (!user || !user.value) {
-            alert("セッション無効");
-            router.push({ name: "login" });
-            isLoading.value = false;
-            return;
-        }
+        const isSessionValid = await checkSession(false);
+        if (!isSessionValid) return;
 
         router.push({
             name: "typing",

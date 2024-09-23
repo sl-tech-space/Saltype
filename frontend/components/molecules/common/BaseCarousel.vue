@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
 import type { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-vue'
 import Button from '~/components/atoms/buttons/Button.vue';

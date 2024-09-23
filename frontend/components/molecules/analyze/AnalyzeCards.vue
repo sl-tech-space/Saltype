@@ -19,11 +19,7 @@ onMounted(async () => {
     for (const { languageId, difficultyId } of allCombinations) {
         const key = `${languageId}-${difficultyId}`;
         scoresByCombination.value[key] = await getPastScores(languageId, difficultyId);
-
-        console.log(`Scores for ${key}:`, scoresByCombination.value[key]);
     }
-
-    console.log("送信する値", scoresByCombination.value["1-1"])
 
     await getTypoFrequencyTop3();
 

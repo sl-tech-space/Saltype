@@ -38,7 +38,6 @@ export const useGoogleAuth = () => {
             );
 
             if (userInfo) {
-              console.log("User Info:", userInfo);
 
               const data = await $fetch(
                 `${config.public.baseURL}/api/google-auth/`,

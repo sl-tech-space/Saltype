@@ -58,7 +58,6 @@ onMounted(async () => {
                 selectedLanguage.value,
                 selectedDifficulty.value
             )
-            console.log('ScoreBoard Data:', scoreBoardData.value);
             isLoading.value = false;
         } catch (error) {
             console.error('Failed to fetch ScoreBoard data:', error);

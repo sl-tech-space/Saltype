@@ -38,7 +38,6 @@ export function useAnalyze() {
       }
 
       const data = await response.json();
-      console.log(data);
 
       typoFrequencyTop3.value = data;
     } catch (error) {
@@ -79,7 +78,6 @@ export function useAnalyze() {
       }
 
       const data = await response.json();
-      console.log(data);
 
       return data;
     } catch (error) {

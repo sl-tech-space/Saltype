@@ -23,7 +23,6 @@ ChartJS.register(
     Legend
 );
 
-// プロップスの定義
 const props = defineProps<{
     scores: { score: number }[];
 }>();

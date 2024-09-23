@@ -30,7 +30,6 @@ const handleSlideChange = (index: number) => {
 };
 
 const formattedCurrentCombination = computed(() => {
-    console.log('Current Combination:', currentCombination.value);
     if (!currentCombination.value) return 'No combination selected';
 
     const [left, right] = currentCombination.value.split('-');

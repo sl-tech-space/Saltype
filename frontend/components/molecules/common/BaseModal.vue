@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import Button from '~/components/atoms/buttons/Button.vue';
+
+const props = defineProps<{
+    modelValue: boolean;
+}>();
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: boolean): void;
+}>();
+
+const isOpen = ref(props.modelValue);
+
+watch(() => props.modelValue, (newValue) => {
+    isOpen.value = newValue;
+});
+
+const handleCloseModal = () => {
+    emit('update:modelValue', false);
+};
+</script>
+
 <template>
     <Teleport to="body">
         <Transition name="modal">
@@ -22,27 +44,5 @@
         </Transition>
     </Teleport>
 </template>
-
-<script setup lang="ts">
-import Button from '~/components/atoms/buttons/Button.vue';
-
-const props = defineProps<{
-    modelValue: boolean;
-}>();
-
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: boolean): void;
-}>();
-
-const isOpen = ref(props.modelValue);
-
-watch(() => props.modelValue, (newValue) => {
-    isOpen.value = newValue;
-});
-
-const handleCloseModal = () => {
-    emit('update:modelValue', false);
-};
-</script>
 
 <style lang="sass" src="@/assets/styles/components/molecules/base-modal.scss" />

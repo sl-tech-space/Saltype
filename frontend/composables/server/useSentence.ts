@@ -1,3 +1,9 @@
+/**
+ * 受け渡した文字の変換
+ * 数字 → 文字
+ * @param language 
+ * @returns languageMap[language.toLowerCase()] || language
+ */
 function convertLanguage(language: string): string {
   const languageMap: { [key: string]: string } = {
     "1": "japanese",
@@ -6,6 +12,12 @@ function convertLanguage(language: string): string {
   return languageMap[language.toLowerCase()] || language;
 }
 
+/**
+ * 受け渡した文字の変換
+ * 数字 → 文字
+ * @param difficultyLevel 
+ * @returns difficultyMap[difficultyLevel.toLowerCase()] || difficultyLevel
+ */
 function convertDifficultyLevel(difficultyLevel: string): string {
   const difficultyMap: { [key: string]: string } = {
     "1": "easy",

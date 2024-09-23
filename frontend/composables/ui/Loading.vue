@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * ローディング画面
+ */
 defineProps<{
     isLoading: boolean
 }>()

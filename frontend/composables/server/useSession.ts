@@ -16,6 +16,10 @@ export function useSession() {
   const isLoading = ref(false);
   const error = ref(null);
 
+  /**
+   * セッションの取得
+   * @returns user
+   */
   const getSession = async () => {
     try {
       const response = await fetch("/api/session/get", {
@@ -39,6 +43,10 @@ export function useSession() {
     }
   };
 
+  /**
+   * セッションの保存
+   * @param userData 
+   */
   const saveSession = async (userData: any) => {
     try {
       const response = await fetch("/api/session/save", {
@@ -61,6 +69,9 @@ export function useSession() {
     }
   };
 
+  /**
+   * セッションの削除
+   */
   const removeSession = async () => {
     try {
       const response = await fetch("/api/session/get", {
@@ -77,6 +88,12 @@ export function useSession() {
     }
   };
 
+  /**
+   * セッションの存在チェック
+   * endFlg - false isLoadingをtrueのままにする
+   * @param endFlg 
+   * @returns true, false
+   */
   const checkSession = async (endFlg: boolean) => {
     isLoading.value = true;
     try {

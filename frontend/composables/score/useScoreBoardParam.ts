@@ -19,11 +19,6 @@ export function useScoreBoardParam() {
         return;
       }
 
-      console.log(selectedLanguage,
-        selectedDifficulty,
-        totalCorrectTypedCount,
-        typingAccuracy)
-
       const response = await fetch(
         `${config.public.baseURL}/api/score/insert`,
         {
@@ -48,7 +43,6 @@ export function useScoreBoardParam() {
       }
       
       const data = await response.json();
-      console.log(data)
 
       return data;
 

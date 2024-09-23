@@ -17,8 +17,6 @@ export function useAverageScore() {
         return;
       }
 
-      console.log(selectedLanguage, selectedDifficulty);
-
       const response = await fetch(
         `${config.public.baseURL}/api/score/average`,
         {
@@ -41,7 +39,6 @@ export function useAverageScore() {
       }
 
       const data = await response.json();
-      console.log(data);
 
       return data.average_score;
     } catch (error) {
