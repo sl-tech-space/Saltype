@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from apps.common.models import Score, User, Lang, Diff
+import logging
+
+logger = logging.getLogger(__name__)
 
 class ScoreSerializer(serializers.ModelSerializer):
     """ Scoreモデルのシリアライザークラス """
@@ -19,13 +22,13 @@ class ScoreSerializer(serializers.ModelSerializer):
         :return: 新しく作成されたScoreインスタンス
         """
         user_id = validated_data.pop('user_id')
-        try:
-            user = User.objects.get(user_id=user_id)
-        except User.DoesNotExist:
-            raise serializers.ValidationError('指定されたIDのユーザーは存在しません。')
-        
-        """ データからlangとdiffを取り出して新しいScoreを作成 """
         lang = validated_data.pop('lang')
         diff = validated_data.pop('diff')
         
+        logger.debug(f"user_id: {user_id}, lang: {lang}, diff: {diff}")
+        
+        if not user_id or not lang or not diff:
+            raise serializers.ValidationError('必要なフィールドが不足しています。')
+        
+        user = User.objects.get(user_id=user_id)
         return Score.objects.create(user=user, lang=lang, diff=diff, **validated_data)
