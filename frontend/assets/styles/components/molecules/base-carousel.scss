@@ -15,6 +15,7 @@
 
   .embla__container {
     display: flex;
+    user-select: none;
   }
 
   .embla__slide {

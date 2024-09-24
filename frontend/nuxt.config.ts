@@ -7,12 +7,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@sidebase/nuxt-session'],
   routeRules: {
-    '/': { isr: true },
-    '/login': { ssr: false }, //ログイン画面 - CSR
-    '/home': { ssr: true },
-    '/typing': { ssr: true },
-    '/score': { ssr: true },
-    '/analyze': { ssr: true }
+    '/': { prerender: true }, // SSG
+    '/login': { ssr: false }, // CSR
+    '/home': { ssr: true }, // SSR
+    '/typing': { ssr: true }, // SSR
+    '/score': { ssr: true }, // SSR
+    '/analyze': { ssr: true }, // SSR
+    '/ranking': { isr: 300 } // ISR 5minutes
   },
   app: {
     head: {

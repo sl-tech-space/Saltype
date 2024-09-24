@@ -19,7 +19,14 @@ const { isLoading, checkSession } = useSession();
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
-const handleAnalyze = async () => {
+const navigateToRanking = async () => {
+    const isSessionValid = await checkSession(true);
+    if (!isSessionValid) return;
+
+    router.push({ name: "ranking" });
+}
+
+const navigateToAnalyze = async () => {
     const isSessionValid = await checkSession(true);
     if (!isSessionValid) return;
 
@@ -93,7 +100,7 @@ const handleStart = async () => {
             <template #card-body>
                 <ul class="menu-select">
                     <li>
-                        <Text size="large">
+                        <Text size="large" @click="navigateToRanking">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                                 fill="#e8eaed">
                                 <path
@@ -103,7 +110,7 @@ const handleStart = async () => {
                         </Text>
                     </li>
                     <li>
-                        <Text size="large" @click="handleAnalyze">
+                        <Text size="large" @click="navigateToAnalyze">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                                 fill="#e8eaed">
                                 <path
