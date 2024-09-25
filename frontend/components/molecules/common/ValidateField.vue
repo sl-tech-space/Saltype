@@ -22,7 +22,7 @@ const updateValue = (value: string) => {
       <slot name="input" :field="field"></slot>
     </Field>
     <ErrorMessage :name="props.name" v-slot="{ message }">
-      <Text color="blue" :text="message" />
+      <Text color="main-color" :text="message" />
     </ErrorMessage>
   </div>
 </template>

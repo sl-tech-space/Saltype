@@ -72,22 +72,22 @@ const handleStart = async () => {
                 <div class="body-content">
                     <div class="language-setting">
                         <Title size="small" text="言語選択" />
-                        <Separator color="blue" margin="vertical" />
+                        <Separator color="main-color" margin="vertical" />
                         <Language v-model="selectedLanguage" />
-                        <Separator color="blue" margin="vertical" />
+                        <Separator color="main-color" margin="vertical" />
                     </div>
                     <div class="difficulty-setting">
                         <Title size="small" text="難易度選択" />
-                        <Separator color="blue" margin="vertical" />
+                        <Separator color="main-color" margin="vertical" />
                         <DifficultyLevel v-model="selectedDifficulty" />
-                        <Separator color="blue" margin="vertical" />
+                        <Separator color="main-color" margin="vertical" />
                     </div>
                 </div>
             </template>
             <template #card-footer>
                 <div class="footer-content">
-                    <Button border="blue" width="same-as-input-large" height="large" background="none" :rounded="true"
-                        button-text="スタート" class="start-button" @click="handleStart" />
+                    <Button border="main-color" width="same-as-input-large" height="large" background="none"
+                        :rounded="true" button-text="スタート" class="start-button" @click="handleStart" />
                 </div>
             </template>
         </BaseCard>
@@ -134,7 +134,7 @@ const handleStart = async () => {
             </template>
             <template #card-footer>
                 <div class="logout">
-                    <Button border="dark-blue" width="large" height="large" background="none" :rounded="true"
+                    <Button border="sub-color" width="large" height="large" background="none" :rounded="true"
                         button-text="ログアウト" @click="handleLogout" />
                 </div>
             </template>
@@ -143,4 +143,64 @@ const handleStart = async () => {
     <Loading :is-loading="isLoading" />
 </template>
 
-<style lang="sass" src="@/assets/styles/components/molecules/select-card.scss" />
+<style lang="scss" scoped>
+.select-cards {
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    justify-content: space-around;
+
+    .header-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .card-text {
+        text-align: center;
+    }
+
+    .game-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        .body-content {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+
+            .start-button {
+                font-size: 1rem;
+            }
+        }
+    }
+
+    .menu-card {
+        .menu-select li {
+            margin-top: 20px;
+            margin-left: 50%;
+            cursor: pointer;
+            list-style-type: none;
+            transform: translateX(-40%);
+
+            :hover {
+                color: $hover-color;
+            }
+        }
+
+        .logout {
+            display: flex;
+            justify-content: center;
+        }
+    }
+}
+</style>

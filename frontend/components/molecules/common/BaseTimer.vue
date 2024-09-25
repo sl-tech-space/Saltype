@@ -3,12 +3,12 @@ import Text from '~/components/atoms/texts/Text.vue';
 
 interface Props {
     duration: number
-    backColor?: "white" | "black" | "blue" | "dark-blue";
-    barColor?: "white" | "black" | "blue" | "dark-blue";
+    backColor?: "white" | "black" | "main-color" | "sub-color";
+    barColor?: "white" | "black" | "main-color" | "sub-color";
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    backColor: "blue",
+    backColor: "main-color",
     barColor: "black"
 });
 
@@ -76,4 +76,61 @@ onUnmounted(() => {
     </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/components/molecules/base-timer.scss" />
+<style lang="scss" scoped>
+.timer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .timer-bar-container {
+        width: 50%;
+        height: 40px;
+        border-radius: 20px;
+        outline: 1px solid $sub-color;
+        outline-offset: 4px;
+        overflow: hidden;
+    }
+
+    .timer-bar {
+        height: 100%;
+        transition: width 0.1s linear;
+    }
+
+    /* bar color */
+    .timer-bar--white {
+        background-color: $white;
+    }
+
+    .timer-bar--black {
+        background-color: $black;
+    }
+
+    .timer-bar--main-color {
+        background-color: $main-color;
+    }
+
+    .timer-bar--sub-color {
+        background-color: $sub-color;
+    }
+
+    /* back color */
+    .timer-bar-container--white {
+        background-color: $white;
+    }
+
+    .timer-bar-container--black {
+        background-color: $black;
+    }
+
+    .timer-bar-container--main-color {
+        background-color: $main-color;
+    }
+
+    .timer-bar-container--sub-color {
+        background-color: $sub-color;
+    }
+}
+</style>

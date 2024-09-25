@@ -10,8 +10,8 @@ import Separator from '~/components/atoms/ui/Separator.vue';
  * - full 100%
  */
 interface Props {
-    cardColor?: "white" | "black" | "blue" | "dark-blue",
-    sepColor?: "white" | "black" | "blue" | "dark-blue",
+    cardColor?: "white" | "black" | "main-color" | "sub-color",
+    sepColor?: "white" | "black" | "main-color" | "sub-color",
     width?: "small" | "medium" | "large" | "xl" | "full",
     height?: "small" | "medium" | "large" | "xl" | "full",
     headerSep?: boolean
@@ -20,7 +20,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     cardColor: "black",
-    sepColor: "dark-blue",
+    sepColor: "sub-color",
     width: "medium",
     height: "medium",
     headerSep: true,
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 <template>
     <section
-        :class="[`card`, `card--${props.cardColor}`, `card-width--${$props.width}`, `card-height--${$props.height}`]">
+        :class="[`card`, `card--${props.cardColor}`, `card-width--${props.width}`, `card-height--${props.height}`]">
         <div class="card-header">
             <slot name="card-header" />
         </div>
@@ -45,4 +45,89 @@ const props = withDefaults(defineProps<Props>(), {
     </section>
 </template>
 
-<style lang="sass" src="@/assets/styles/components/molecules/base-card.scss" />
+<style lang="scss" scoped>
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px $main-color, 0 1px 3px $main-color;
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: 0 4px 6px $sub-color, 0 1px 3px $sub-color;
+}
+
+.card--white {
+    color: $white;
+}
+
+.card--black {
+    color: $black;
+}
+
+.card--main-color {
+    color: $main-color;
+}
+
+.card--sub-color {
+    color: $sub-color;
+}
+
+.card-width--small {
+    width: 22%;
+}
+
+.card-width--medium {
+    width: 30%;
+}
+
+.card-width--large {
+    width: 45%;
+}
+
+.card-width--xl {
+    width: 70%;
+}
+
+.card-width--full {
+    width: 100%;
+}
+
+.card-height--small {
+    height: 22%;
+}
+
+.card-height--medium {
+    height: 40%;
+}
+
+.card-height--large {
+    height: 60%;
+}
+
+.card-height--xl {
+    height: 80%;
+}
+
+.card-height--full {
+    height: 100%;
+}
+
+section {
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding: 1rem;
+    }
+
+    .card-header,
+    .card-footer {
+        height: 15%;
+        overflow-y: hidden;
+    }
+
+    .card-body {
+        height: 70%;
+        overflow-y: hidden;
+    }
+}
+</style>

@@ -35,4 +35,13 @@ export default defineNuxtConfig({
     sameSite: 'lax',
     httpOnly: true, 
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "@/assets/styles/variables.scss" as *;'
+        }
+      }
+    }
+  }
 })

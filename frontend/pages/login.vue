@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import LoginPage from "~/components/organisms/LoginPage.vue";
+import CursorEffect from "~/composables/ui/CursorEffect.vue";
+import LoginForm from "~/components/organisms/login/LoginForm.vue";
+import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
 import Loading from "~/composables/ui/Loading.vue";
+import Title from "~/components/atoms/texts/Title.vue";
 import { useAuthToken } from "~/composables/auth/useAuth";
 
 const { authToken } = useAuthToken();
@@ -13,16 +16,37 @@ onMounted(() => {
   }, 500);
 });
 
-useHead({
-  title: "ログイン"
-});
+onMounted(() => {
+  useHead({
+    title: "ログイン"
+  })
+})
 </script>
 
 <template>
-  <main class="login-page">
-    <LoginPage />
-  </main>
+  <CursorEffect />
+  <div class="page">
+    <div class="login">
+      <Title text="ログイン" class="title" />
+      <LoginForm />
+      <GoogleAuth />
+    </div>
+  </div>
   <Loading :is-loading="isLoading" />
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/login.scss" />
+<style lang="scss" scoped>
+.page {
+  @extend %full-page;
+  @include vertical-centered-flex;
+  @include hidden;
+
+  .login {
+    @include vertical-centered-flex;
+
+    .title {
+      padding-bottom: 30px;
+    }
+  }
+}
+</style>

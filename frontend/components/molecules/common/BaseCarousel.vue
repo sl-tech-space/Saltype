@@ -56,7 +56,8 @@ defineExpose({ emblaApi, currentSlideIndex })
 
 <template>
   <div class="embla-wrapper">
-    <Button class="embla__prev" button-text="&lt;" color="blue" width="small" background="none" @click="scrollPrev" />
+    <Button class="embla__prev" button-text="&lt;" color="main-color" width="small" background="none"
+      @click="scrollPrev" />
     <div class="embla" ref="emblaNode">
       <div class="embla__container">
         <div v-for="(slide, index) in slides" :key="index" class="embla__slide">
@@ -64,8 +65,54 @@ defineExpose({ emblaApi, currentSlideIndex })
         </div>
       </div>
     </div>
-    <Button class="embla__next" button-text="&gt;" color="blue" width="small" background="none" @click="scrollNext" />
+    <Button class="embla__next" button-text="&gt;" color="main-color" width="small" background="none"
+      @click="scrollNext" />
   </div>
 </template>
 
-<style lang="sass" src="@/assets/styles/components/molecules/base-carousel.scss" />
+<style lang="scss" scoped>
+.embla-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+
+  .embla {
+    overflow: hidden;
+    text-align: center;
+    flex-grow: 1;
+  }
+
+  .embla__container {
+    display: flex;
+    user-select: none;
+  }
+
+  .embla__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+
+  .embla__button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  .embla__prev {
+    left: 10px;
+  }
+
+  .embla__next {
+    right: 10px;
+  }
+
+  .embla__prev:hover,
+  .embla__next:hover {
+    color: $hover-color;
+    cursor: pointer;
+  }
+}
+</style>

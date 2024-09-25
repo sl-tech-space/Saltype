@@ -25,4 +25,19 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/composables/cursor-effect.scss" />
+<style lang="scss" scoped>
+.cursor {
+  width: 30px;
+  height: 30px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 0 0 30px $main-color, 0 0 45px $main-color, 0 0 80px $main-color;
+  pointer-events: none;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: exclusion;
+}
+</style>

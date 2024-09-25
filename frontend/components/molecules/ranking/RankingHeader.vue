@@ -21,10 +21,10 @@ const handleBackToHome = async () => {
     <section>
         <div class="ranking-header">
             <Title color="white" text="ランキング" />
-            <Button border="dark-blue" width="large" height="medium" background="none" :rounded="true" button-text="戻る"
+            <Button border="sub-color" width="large" height="medium" background="none" :rounded="true" button-text="戻る"
                 @click="handleBackToHome" />
         </div>
-        <Separator color="dark-blue" width="large" margin="none" :visible="true" />
+        <Separator color="sub-color" width="large" margin="none" :visible="true" />
     </section>
     <Loading :is-loading="isLoading" />
 </template>

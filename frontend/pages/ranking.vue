@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import RankingPage from '~/components/organisms/RankingPage.vue';
+import CursorEffect from "~/composables/ui/CursorEffect.vue";
 
-useHead({
-  title: "ランキング"
-});
+onMounted(() => {
+  useHead({
+    title: "ランキング"
+  })
+})
 </script>
 
 <template>
-  <div class="ranking-page">
-    <RankingPage />
-  </div>
+    <CursorEffect />
+    <div class="page">
+        
+    </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/ranking.scss" />
+<style lang="scss" scoped>
+.page {
+  @extend %full-page;
+}
+</style>
