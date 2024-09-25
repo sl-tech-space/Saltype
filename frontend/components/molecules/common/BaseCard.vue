@@ -50,6 +50,8 @@ const props = withDefaults(defineProps<Props>(), {
     border-radius: 8px;
     box-shadow: 0 4px 6px $main-color, 0 1px 3px $main-color;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover {
@@ -113,6 +115,8 @@ const props = withDefaults(defineProps<Props>(), {
 }
 
 section {
+    max-height: 100%;
+
     .card-header,
     .card-body,
     .card-footer {
@@ -121,7 +125,7 @@ section {
 
     .card-header,
     .card-footer {
-        height: 15%;
+        max-height: 15%;
         overflow-y: hidden;
     }
 

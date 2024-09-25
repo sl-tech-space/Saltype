@@ -40,6 +40,12 @@ $disabled-color: #363636;
   display: flex;
   flex-flow: column;
   justify-content: center;
+  align-items: center;
+}
+
+@mixin vertical-flex {
+  display: flex;
+  flex-flow: column;
 }
 
 @mixin vertical-centered-flex {
@@ -47,6 +53,11 @@ $disabled-color: #363636;
   flex-flow: column;
   justify-content: center;
   text-align: center;
+}
+
+@mixin horizontal-flex {
+  display: flex;
+  justify-content: center;
 }
 
 @mixin horizontal-centered-flex {

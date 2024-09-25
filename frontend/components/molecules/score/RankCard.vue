@@ -19,7 +19,7 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-    <BaseCard width="large" height="full" :footer-sep="false">
+    <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
                 <Title size="small" text="ランク" class="card-text" />
@@ -27,19 +27,19 @@ const props = defineProps<Props>();
         </template>
         <template #card-body>
             <div class="body-content">
-                <Title size="medium" color="blue" :text="props.rank" class="rank-text" />
+                <Title size="medium" color="main-color" :text="props.rank" class="rank-text" />
             </div>
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="dark-blue" width="same-as-input-large" height="medium" background="none" :rounded="true"
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
                     button-text="ランク詳細" @click="handleOpenModal" />
             </div>
         </template>
     </BaseCard>
     <BaseModal v-model="showModal">
         <template #modal-header>
-            <Title size="small" color="blue" text="ランク詳細" />
+            <Title size="small" color="main-color" text="ランク詳細" />
         </template>
         <template #modal-body>
             <Text size="large" text="1000 ~ : 社長" style="margin-top: 5%;" />
@@ -52,3 +52,19 @@ const props = defineProps<Props>();
         </template>
     </BaseModal>
 </template>
+
+<style lang="scss" scoped>
+.in-score-card {
+    .header-content {
+        margin-left: 4%;
+    }
+
+    .body-content {
+        @include horizontal-centered-flex;
+    }
+
+    .footer-content {
+        @include horizontal-centered-flex;
+    }
+}
+</style>

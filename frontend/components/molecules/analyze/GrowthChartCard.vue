@@ -48,30 +48,51 @@ if (combinations.value.length > 0) {
 </script>
 
 <template>
-    <BaseCard width="xl" height="xl">
+    <BaseCard width="xl" height="xl" class="growth-chart-card">
         <template #card-header>
             <div class="header-content">
                 <Title size="small" text="成長グラフ" />
             </div>
         </template>
         <template #card-body>
-            <BaseCarousel :slides="combinations.length" :options="{ loop: true }" @slide-change="handleSlideChange">
+            <BaseCarousel :slides="combinations.length" :options="{ loop: true }" @slide-change="handleSlideChange"
+                class="body-content">
                 <template v-for="(combination, index) in combinations" :key="combination" #[`slide-${index}`]>
                     <div v-if="props.scoresByCombination[combination].length > 0">
                         <BaseChart :scores="props.scoresByCombination[combination]" />
                     </div>
                     <div v-else>
-                        <Title size="small" color="blue" text="データがありません" />
+                        <Title size="small" color="main-color" text="データがありません" />
                     </div>
                 </template>
             </BaseCarousel>
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Text size="large" color="blue">
+                <Text size="large" color="main-color">
                     設定 : {{ formattedCurrentCombination }}
                 </Text>
             </div>
         </template>
     </BaseCard>
 </template>
+
+<style lang="scss" scoped>
+.growth-chart-card {
+    .header-content {
+        margin-left: 4%;
+    }
+
+    .footer-content {
+        @include horizontal-centered-flex;
+    }
+
+    .body-content {
+        margin-top: 10%;
+
+        .body-content-container {
+            @include horizontal-centered-flex;
+        }
+    }
+}
+</style>

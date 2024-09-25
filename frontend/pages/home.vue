@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CursorEffect from '~/composables/ui/CursorEffect.vue';
 import HomeHeader from '~/components/organisms/home/HomeHeader.vue';
-import SelectCard from '~/components/molecules/home/SelectCard.vue';
+import HomeCard from '~/components/organisms/home/HomeCard.vue';
 
 onMounted(() => {
   useHead({
@@ -14,7 +14,7 @@ onMounted(() => {
   <CursorEffect />
   <div class="page">
     <HomeHeader />
-    <SelectCard />
+    <HomeCard />
   </div>
 </template>
 

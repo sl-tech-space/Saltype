@@ -47,6 +47,7 @@ onMounted(async () => {
                 totalCorrectTypedCount.value,
                 typingAccuracy.value
             );
+
             isLoading.value = false;
         } catch (error) {
             console.error('Failed to fetch ScoreBoard data:', error);

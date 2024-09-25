@@ -63,7 +63,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <BaseCard width="large" height="full" :footer-sep="false">
+    <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
                 <Title size="small" text="リトライ" class="card-text" />
@@ -80,9 +80,25 @@ onMounted(() => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="dark-blue" width="same-as-input-large" height="medium" background="none" :rounded="true"
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
                     button-text="スタート" class="start-button" :disabled="isDisabled" @click="handleStart" />
             </div>
         </template>
     </BaseCard>
 </template>
+
+<style lang="scss" scoped>
+.in-score-card {
+    .header-content {
+        margin-left: 4%;
+    }
+
+    .body-content {
+        @include horizontal-centered-flex;
+    }
+
+    .footer-content {
+        @include horizontal-centered-flex;
+    }
+}
+</style>

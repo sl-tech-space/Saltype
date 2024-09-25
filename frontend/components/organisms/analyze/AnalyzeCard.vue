@@ -21,7 +21,7 @@ onMounted(async () => {
         scoresByCombination.value[key] = await getPastScores(languageId, difficultyId);
     }
 
-    console.log(await getTypoFrequencyTop3());
+    await getTypoFrequencyTop3();
 
     isLoading.value = false;
 });
@@ -42,17 +42,15 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .analyze-cards-container {
     width: 100%;
-    height: 65vh;
+    height: 75vh;
     position: relative;
     display: flex;
     justify-content: space-around;
-    align-items: center;
     gap: 5%;
 
     .left-card {
         flex: 6;
         width: 50%;
-        height: 100%;
         display: flex;
         justify-content: flex-end;
         align-items: center;
@@ -60,28 +58,8 @@ onMounted(async () => {
 
     .right-card {
         flex: 4;
-        height: 100%;
         display: flex;
         align-items: center;
-    }
-
-    .header-content {
-        margin-left: 4%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .body-content,
-    .footer-content {
-        display: flex;
-        justify-content: center;
-    }
-
-    .body-content {
-        ul {
-            list-style-type: none;
-        }
     }
 }
 </style>
