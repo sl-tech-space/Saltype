@@ -12,12 +12,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-handle_exceptions = HandleExceptions() 
-
-class AddScoreAndRankView(APIView):
+class ScoreAndRankHandler(APIView):
     permission_classes = [AllowAny]
 
-    @handle_exceptions
+    @HandleExceptions() 
     def post(self, request, *args, **kwargs):
         user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data, ['user_id', 'lang_id', 'diff_id'])
         score_service = ScoreService(user_id, lang_id, diff_id)
@@ -50,10 +48,10 @@ class AddScoreAndRankView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PastScoresView(APIView):
+class GetPastScores(APIView):
     permission_classes = [AllowAny]
 
-    @handle_exceptions
+    @HandleExceptions() 
     def post(self, request, *args, **kwargs):
         user_id, lang_id, diff_id = CommonUtils.validate_request_params(request.data, ['user_id', 'lang_id', 'diff_id'])
 

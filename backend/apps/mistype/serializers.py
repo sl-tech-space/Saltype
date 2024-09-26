@@ -20,8 +20,3 @@ class MissTypeSerializer(serializers.ModelSerializer):
         if not value.isalpha():
             raise serializers.ValidationError("ミスタイプ文字はアルファベットである必要があります")
         return value
-
-    def validate_miss_count(self, value):
-        if value < 0:
-            raise serializers.ValidationError("ミスカウントは0以上でなければなりません")
-        return value

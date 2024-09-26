@@ -5,7 +5,6 @@ from apps.common.models import Score, User
 from apps.common.utils import HandleExceptions
 logger = logging.getLogger(__name__)
 
-handle_exceptions = HandleExceptions()
 
 class ScoreService:
     BASE_SCORE_MULTIPLIER = 10
@@ -27,7 +26,7 @@ class ScoreService:
         """
         return typing_count * ScoreService.BASE_SCORE_MULTIPLIER * accuracy
 
-    @handle_exceptions
+    @HandleExceptions()
     def is_new_high_score(self, score):
         """
         最高スコア判定処理
@@ -46,7 +45,7 @@ class ScoreService:
 
         return False, old_highest_score.score
 
-    @handle_exceptions
+    @HandleExceptions()
     def determine_rank(self, score):
         ranks = [
             (1000, "社長"),
@@ -59,7 +58,7 @@ class ScoreService:
         ]
         return next(rank for threshold, rank in ranks if score >= threshold)
 
-    @handle_exceptions
+    @HandleExceptions()
     def get_ranking_position(self, score):
         """
         現在のユーザーのランキング順位を取得(タイ順位を採用)
@@ -73,13 +72,13 @@ class ScoreService:
         return higher_score_count + 1
 
     @staticmethod
-    @handle_exceptions
+    @HandleExceptions()
     def get_average_score(user_id, lang_id, diff_id):
         average_score = Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id).aggregate(Avg('score'))
         return average_score['score__avg'] or 0
 
     @transaction.atomic
-    @handle_exceptions
+    @HandleExceptions()
     def save_score_and_update_rank(self, score_data):
         """
         スコアを保存し、必要ならランクを更新する
