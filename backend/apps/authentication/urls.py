@@ -1,6 +1,6 @@
-from django.urls import path, include
+from django.urls import include, path
 
-from .views import LoginView, CheckTokenView, GoogleAuthView
+from .views import CheckTokenView, GoogleAuthView, LoginView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),

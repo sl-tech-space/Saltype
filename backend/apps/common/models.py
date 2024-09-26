@@ -1,12 +1,14 @@
 import uuid
-from django.db import models
+
+from apps.authentication.validators import validate_min_length
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
-from apps.authentication.validators import validate_min_length
+
 
 class User(AbstractUser):
     """
@@ -43,18 +45,18 @@ class User(AbstractUser):
         - ユーザー作成時に自動的に認証トークンが生成される
     """
     username_validator = UnicodeUsernameValidator()
-    
+
     class PERMISSON(models.IntegerChoices):
         ADMIN = 0
         MEMBER = 1
-    
+
     id = None
     first_name = None
     last_name = None
     groups = None
     user_permissions = None
     last_login = None
-    
+
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     rank = models.ForeignKey('Rank', on_delete=models.SET_NULL, null=True, blank=True)
     username = models.CharField(max_length=150, unique=True, validators=[username_validator])
@@ -64,17 +66,18 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     del_flg = models.BooleanField(default=False)
-    
+
     USERNAME_FIELD = "email"
-    
+
     REQUIRED_FIELDS = ["username", "password"]
-    
+
     class Meta:
         ordering = ["user_id"]
         db_table = "m_user"
-        
+
     def __str__(self):
         return self.username
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(instance=None, created=False, **kwargs):
@@ -91,6 +94,7 @@ def create_auth_token(instance=None, created=False, **kwargs):
     """
     if created:
         Token.objects.create(user=instance)
+
 
 class Lang(models.Model):
     """
@@ -115,6 +119,7 @@ class Lang(models.Model):
     class Meta:
         db_table = "m_lang"
 
+
 class Diff(models.Model):
     """
     難易度マスタテーブル定義
@@ -137,6 +142,7 @@ class Diff(models.Model):
 
     class Meta:
         db_table = "m_diff"
+
 
 class Rank(models.Model):
     """
@@ -161,6 +167,7 @@ class Rank(models.Model):
     class Meta:
         db_table = "m_rank"
 
+
 class Score(models.Model):
     """
     スコアテーブル定義
@@ -178,7 +185,10 @@ class Score(models.Model):
         db_table (str): データベーステーブル名
     """
     score_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True) 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.SET_NULL,
+                             null=True,
+                             blank=True)
     score = models.IntegerField(default=0)
     lang = models.ForeignKey('Lang', on_delete=models.SET_NULL, null=True, blank=True)
     diff = models.ForeignKey('Diff', on_delete=models.SET_NULL, null=True, blank=True)

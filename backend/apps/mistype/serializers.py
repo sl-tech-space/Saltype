@@ -1,7 +1,8 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 
 from .models import Miss
+
 
 class MissTypeSerializer(serializers.ModelSerializer):
     """
@@ -19,9 +20,4 @@ class MissTypeSerializer(serializers.ModelSerializer):
     def validate_miss_char(self, value):
         if not value.isalpha():
             raise serializers.ValidationError("ミスタイプ文字はアルファベットである必要があります")
-        return value
-
-    def validate_miss_count(self, value):
-        if value < 0:
-            raise serializers.ValidationError("ミスカウントは0以上でなければなりません")
         return value

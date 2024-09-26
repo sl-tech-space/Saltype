@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import ScoreByLangAndDiffView
+
+from .views import GetRanking
 
 urlpatterns = [
-    path('ranking', ScoreByLangAndDiffView.as_view(), name='get_ranking'),
+    path('ranking', GetRanking.as_view(), name='get_ranking'),
 ]

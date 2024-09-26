@@ -3,7 +3,7 @@ import TypoFrequencyCard from '~/components/molecules/analyze/TypoFrequencyCard.
 import GrowthChartCard from '~/components/molecules/analyze/GrowthChartCard.vue';
 import Loading from '~/composables/ui/Loading.vue';
 import { useAnalyze } from '~/composables/analyze/useAnalyze';
-import { useLanguageAndDifficulty, Language, Difficulty } from '~/composables/typing/useLanguageAndDifficulty';
+import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
 
 const { typoFrequencyTop3, getTypoFrequencyTop3, getPastScores } = useAnalyze();
 const { generateAllCombinations } = useLanguageAndDifficulty();

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CursorEffect from "~/composables/ui/CursorEffect.vue";
+import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
 
 onMounted(() => {
   useHead({
@@ -11,7 +12,7 @@ onMounted(() => {
 <template>
     <CursorEffect />
     <div class="page">
-        
+        <RankingHeader />
     </div>
 </template>
 

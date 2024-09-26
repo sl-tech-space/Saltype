@@ -48,11 +48,6 @@ const props = defineProps<{
 
             li {
                 margin-top: 10%;
-
-                &:hover {
-                    color: $hover-color;
-                    cursor: pointer;
-                }
             }
         }
     }

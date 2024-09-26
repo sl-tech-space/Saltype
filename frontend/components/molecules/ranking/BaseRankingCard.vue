@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import BaseCard from '../common/BaseCard.vue';
+import Button from '~/components/atoms/buttons/Button.vue';
+
+interface Props {
+
+}
+
+const props = defineProps<Props>();
+
+onMounted(() => {
+
+});
 </script>
 
 <template>
@@ -20,7 +31,8 @@ import BaseCard from '../common/BaseCard.vue';
         </template>
         <template #card-footer>
             <div class="footer-content">
-
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
+                    button-text="もっと見る >>>" />
             </div>
         </template>
     </BaseCard>
