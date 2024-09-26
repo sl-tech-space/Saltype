@@ -1,17 +1,19 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import AllowAny
-from django.db import transaction
-from .serializers import MissTypeSerializer
-from apps.common.utils import CommonUtils,HandleExceptions
-from rest_framework.exceptions import ValidationError
-from .models import Miss
-from django.db import DatabaseError
-from .services import MissTypeService
 import logging
 
+from apps.common.utils import CommonUtils, HandleExceptions
+from django.db import DatabaseError, transaction
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .models import Miss
+from .serializers import MissTypeSerializer
+from .services import MissTypeService
+
 logger = logging.getLogger(__name__)
+
 
 class InsertMisTypes(APIView):
     """
@@ -21,7 +23,8 @@ class InsertMisTypes(APIView):
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-        user_id, miss_data = CommonUtils.validate_request_params(request.data, ['user_id', 'miss_data'])
+        user_id, miss_data = CommonUtils.validate_request_params(request.data,
+                                                                 ['user_id', 'miss_data'])
 
         if not miss_data:
             return Response({"message": "ミスタイプはありませんでした"}, status=status.HTTP_204_NO_CONTENT)
@@ -30,6 +33,7 @@ class InsertMisTypes(APIView):
         inserted_data = MissTypeService.insert_miss_types(user_id, miss_data)
 
         return Response(inserted_data, status=status.HTTP_201_CREATED)
+
 
 class GetTopMissTypes(APIView):
     """

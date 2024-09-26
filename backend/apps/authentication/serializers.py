@@ -1,9 +1,9 @@
-from rest_framework import serializers
-from django.db import transaction
-from django.contrib.auth import authenticate
-from django.utils.translation import gettext_lazy as _
-
 from apps.common.models import User
+from django.contrib.auth import authenticate
+from django.db import transaction
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
 
 class UserLoginSerializer(serializers.Serializer):
     """
@@ -23,13 +23,12 @@ class UserLoginSerializer(serializers.Serializer):
     def validate(self, data):
         email = data.get('email')
         password = data.get('password')
-        
+
         if not email or not password:
             msg = _('メールアドレスとパスワードを入力してください。')
             raise serializers.ValidationError(msg, code='authorization')
 
-        user = authenticate(request=self.context.get('request'),
-                            username=email, password=password)
+        user = authenticate(request=self.context.get('request'), username=email, password=password)
 
         if user is None:
             msg = _('メールアドレスまたはパスワードが正しくありません。')
@@ -38,9 +37,10 @@ class UserLoginSerializer(serializers.Serializer):
         if not user.is_active:
             msg = _('ユーザーアカウントが無効です。')
             raise serializers.ValidationError(msg, code='authorization')
-        
+
         data['user'] = user
         return data
+
 
 class GoogleAuthSerializer(serializers.Serializer):
     """
@@ -58,7 +58,7 @@ class GoogleAuthSerializer(serializers.Serializer):
     def create(self, validated_data):
         email = validated_data['email']
         username = validated_data['username']
-        
+
         user, created = User.objects.get_or_create(email=email)
         if created:
             user.username = username

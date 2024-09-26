@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ScoreAndRankHandler,GetPastScores
+from .views import GetPastScores, ScoreAndRankHandler
 
 urlpatterns = [
     path('score/insert', ScoreAndRankHandler.as_view(), name='score_insert'),

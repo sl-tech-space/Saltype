@@ -13,3 +13,7 @@ backend/apps/score/migrations/__pycache__/
 backend/config/.env
 backend/config/__pycache__/
 backend/config/settings/__pycache__/
+backend/apps/mistype/__pycache__/
+backend/apps/ranking/__pycache__/
+backend/apps/mistype/migrations/__pycache__/
+

@@ -1,7 +1,8 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 
 from .models import Miss
+
 
 class MissTypeSerializer(serializers.ModelSerializer):
     """

@@ -1,8 +1,10 @@
 import logging
-from django.db import DatabaseError, transaction
-from django.db.models import Avg
+
 from apps.common.models import Score, User
 from apps.common.utils import HandleExceptions
+from django.db import DatabaseError, transaction
+from django.db.models import Avg
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,11 +36,10 @@ class ScoreService:
             is_high_score: 最高スコアかどうかのフラグ (bool)
             new_highest_score: 新しい最高スコア (int or None)
         """
-        old_highest_score = Score.objects.filter(
-            user_id=self.user_id,
-            lang_id=self.lang_id,
-            diff_id=self.diff_id
-        ).order_by('-score', '-created_at').first()
+        old_highest_score = Score.objects.filter(user_id=self.user_id,
+                                                 lang_id=self.lang_id,
+                                                 diff_id=self.diff_id).order_by(
+                                                     '-score', '-created_at').first()
 
         if old_highest_score is None or score >= old_highest_score.score:
             return True, score if old_highest_score is None else old_highest_score.score
@@ -47,15 +48,8 @@ class ScoreService:
 
     @HandleExceptions()
     def determine_rank(self, score):
-        ranks = [
-            (1000, "社長"),
-            (900, "取締役"),
-            (700, "部長"),
-            (500, "課長"),
-            (300, "係長"),
-            (100, "主任"),
-            (0, "メンバー")
-        ]
+        ranks = [(1000, "社長"), (900, "取締役"), (700, "部長"), (500, "課長"), (300, "係長"), (100, "主任"),
+                 (0, "メンバー")]
         return next(rank for threshold, rank in ranks if score >= threshold)
 
     @HandleExceptions()
@@ -63,18 +57,17 @@ class ScoreService:
         """
         現在のユーザーのランキング順位を取得(タイ順位を採用)
         """
-        higher_score_count = Score.objects.filter(
-            lang_id=self.lang_id,
-            diff_id=self.diff_id,
-            score__gt=score
-        ).count()
+        higher_score_count = Score.objects.filter(lang_id=self.lang_id,
+                                                  diff_id=self.diff_id,
+                                                  score__gt=score).count()
 
         return higher_score_count + 1
 
     @staticmethod
     @HandleExceptions()
     def get_average_score(user_id, lang_id, diff_id):
-        average_score = Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id).aggregate(Avg('score'))
+        average_score = Score.objects.filter(user_id=user_id, lang_id=lang_id,
+                                             diff_id=diff_id).aggregate(Avg('score'))
         return average_score['score__avg'] or 0
 
     @transaction.atomic

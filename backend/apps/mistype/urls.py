@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import InsertMisTypes,GetTopMissTypes
+from .views import GetTopMissTypes, InsertMisTypes
 
 urlpatterns = [
     path('mistypes/insert', InsertMisTypes.as_view(), name='misstype_insert'),
