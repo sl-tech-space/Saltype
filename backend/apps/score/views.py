@@ -14,20 +14,22 @@ logger = logging.getLogger(__name__)
 
 
 class ScoreAndRankHandler(APIView):
+
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-        user_id, lang_id, diff_id = CommonUtils.validate_request_params(
-            request.data, ['user_id', 'lang_id', 'diff_id'])
-        score_service = ScoreService(user_id, lang_id, diff_id)
-
-        if request.data.get('action') == 'get_average_score':
-            average_score = score_service.get_average_score(user_id, lang_id, diff_id)
-            return Response({'average_score': average_score}, status=status.HTTP_200_OK)
-
         serializer = ScoreSerializer(data=request.data)
+
         if serializer.is_valid():
+            score_data = serializer.validated_data
+            user_id = score_data['user'].user_id
+            lang_id = score_data['lang'].id
+            diff_id = score_data['diff'].id
+
+            score_service = ScoreService(user_id, lang_id, diff_id)
+            average_score = score_service.get_average_score(user_id, lang_id, diff_id)
+
             typing_count = request.data.get('typing_count', 0)
             accuracy = request.data.get('accuracy', 1.0)
             score = score_service.calculate_score(typing_count, accuracy)
@@ -58,11 +60,17 @@ class GetPastScores(APIView):
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-        user_id, lang_id, diff_id = CommonUtils.validate_request_params(
-            request.data, ['user_id', 'lang_id', 'diff_id'])
+        serializer = ScoreSerializer(data=request.data)
+        if serializer.is_valid():
+            score_data = serializer.validated_data
+            user_id = score_data['user'].user_id
+            lang_id = score_data['lang'].id
+            diff_id = score_data['diff'].id
 
-        scores = Score.objects.filter(user_id=user_id, lang_id=lang_id,
-                                      diff_id=diff_id).order_by('-created_at')[:30]
+            scores = Score.objects.filter(user_id=user_id, lang_id=lang_id,
+                                          diff_id=diff_id).order_by('-created_at')[:30]
 
-        scores_data = ScoreSerializer(scores, many=True).data
-        return Response(scores_data, status=status.HTTP_200_OK)
+            scores_data = ScoreSerializer(scores, many=True).data
+            return Response(scores_data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -46,13 +46,11 @@ class ScoreService:
 
         return False, old_highest_score.score
 
-    @HandleExceptions()
     def determine_rank(self, score):
         ranks = [(1000, "社長"), (900, "取締役"), (700, "部長"), (500, "課長"), (300, "係長"), (100, "主任"),
                  (0, "メンバー")]
         return next(rank for threshold, rank in ranks if score >= threshold)
 
-    @HandleExceptions()
     def get_ranking_position(self, score):
         """
         現在のユーザーのランキング順位を取得(タイ順位を採用)
@@ -64,7 +62,6 @@ class ScoreService:
         return higher_score_count + 1
 
     @staticmethod
-    @HandleExceptions()
     def get_average_score(user_id, lang_id, diff_id):
         average_score = Score.objects.filter(user_id=user_id, lang_id=lang_id,
                                              diff_id=diff_id).aggregate(Avg('score'))

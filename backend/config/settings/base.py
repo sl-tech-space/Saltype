@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'apps.authentication',
     'apps.mistype',
     'apps.score',
+    'apps.ranking',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,10 +84,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000'
-]
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
 
 CORS_ALLOW_HEADERS = [
     'authorization',
@@ -136,9 +134,9 @@ STATIC_URL = '/static/'
 # #SESSION_COOKIE_SECURE = True  # HTTPS
 # SESSION_COOKIE_HTTPONLY = True
 # SESSION_COOKIE_SAMESITE = 'Lax'
-
 """Google Authentication Settings"""
 import os
+
 from dotenv import load_dotenv
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
