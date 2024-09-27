@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  color?: "white" | "black" | "blue" | "dark-blue";
+  color?: "white" | "black" | "main-color" | "sub-color";
   width?: "small" | "medium" | "large";
   margin?: "none" | "vertical" | "horizontal";
   visible?: boolean
@@ -22,4 +22,49 @@ const props = withDefaults(defineProps<Props>(), {
   ]"></div>
 </template>
 
-<style lang="scss" src="@/assets/styles/components/atoms/separator.scss" />
+<style lang="scss" scoped>
+.separator {
+  align-self: center;
+  border-bottom: 1px solid;
+}
+
+.separator--white {
+  border-color: $white;
+}
+
+.separator--black {
+  border-color: $black;
+}
+
+.separator--main-color {
+  border-color: $main-color;
+}
+
+.separator--sub-color {
+  border-color: $sub-color;
+}
+
+.separator--small {
+  width: 15%;
+}
+
+.separator--medium {
+  width: 50%;
+}
+
+.separator--large {
+  width: 90%;
+}
+
+.separator--none {
+  margin: 0;
+}
+
+.separator--vertical {
+  margin: 35px 0;
+}
+
+.separator--horizontal {
+  margin: 0 35px;
+}
+</style>

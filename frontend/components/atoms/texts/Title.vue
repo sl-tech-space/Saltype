@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  color?: "white" | "black" | "blue" | "dark-blue";
+  color?: "white" | "black" | "main-color" | "sub-color";
   size?: "small" | "medium" | "large";
   text?: string;
 }
@@ -18,4 +18,34 @@ const props = withDefaults(defineProps<Props>(), {
   </h1>
 </template>
 
-<style lang="scss" src="@/assets/styles/components/atoms/title.scss" />
+<style lang="scss" scoped>
+/** title text **/
+.title--white {
+  color: $white;
+}
+
+.title--black {
+  color: $black;
+}
+
+.title--main-color {
+  color: $main-color;
+}
+
+.title--sub-color {
+  color: $sub-color;
+}
+
+/** title text size **/
+.title--small {
+  font-size: 2rem;
+}
+
+.title--medium {
+  font-size: 2.5rem;
+}
+
+.title--large {
+  font-size: 3rem;
+}
+</style>

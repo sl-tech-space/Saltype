@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import TypingPage from "~/components/organisms/TypingPage.vue";
+import CursorEffect from '~/composables/ui/CursorEffect.vue';
+import TypingHeader from '~/components/organisms/typing/TypingHeader.vue';
+import TypingScreen from '~/components/organisms/typing/TypingScreen.vue';
 
-useHead({
-  title: "タイピング"
-});
+onMounted(() => {
+  useHead({
+    title: "タイピング"
+  })
+})
 </script>
 
 <template>
-  <main class="typing-page">
-    <TypingPage />
-  </main>
+  <CursorEffect />
+  <div class="page">
+    <TypingHeader />
+    <TypingScreen />
+  </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/typing.scss" />
+<style lang="scss" scoped>
+.page {
+  @extend %full-page;
+}
+</style>

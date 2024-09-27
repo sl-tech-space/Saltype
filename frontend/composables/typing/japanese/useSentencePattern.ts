@@ -1,7 +1,7 @@
 import { useInputPattern } from "./useInputPattern";
 
 /**
- *
+ * 文章パターンの判定処理
  * @returns getPatternList, getAllCombinations
  */
 export function useSentencePattern() {

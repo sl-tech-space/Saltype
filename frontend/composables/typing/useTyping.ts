@@ -150,7 +150,6 @@ export function useTyping(language: string, difficultyLevel: string) {
     }
 
     if (!matched) {
-      console.log(event.key);
       countMistype(event.key);
       typingResults.totalMistypedCount++;
       return;

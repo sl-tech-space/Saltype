@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import ScorePage from '~/components/organisms/ScorePage.vue';
+import CursorEffect from '~/composables/ui/CursorEffect.vue';
+import ScoreHeader from '~/components/organisms/score/ScoreHeader.vue';
+import ScoreBoardCard from '~/components/organisms/score/ScoreBoardCard.vue';
 
-useHead({
-  title: "スコア"
-});
+onMounted(() => {
+  useHead({
+    title: "スコア"
+  })
+})
 </script>
 
 <template>
-  <div class="score-page">
-    <ScorePage />
+  <CursorEffect />
+  <div class="page">
+    <ScoreHeader />
+    <ScoreBoardCard />
   </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/score.scss" />
+<style lang="scss" scoped>
+.page {
+  @extend %full-page;
+}
+</style>

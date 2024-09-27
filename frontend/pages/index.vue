@@ -3,11 +3,13 @@ import Loading from "~/composables/ui/Loading.vue";
 
 let isLoading = ref(true);
 
-useHead({
-  title: "Welcome"
-});
+onMounted(() => {
+  useHead({
+    title: "Welcome"
+  })
+})
 </script>
 
 <template>
-  <Loading :isLoading="isLoading" />
+  <Loading :is-loading="isLoading" />
 </template>

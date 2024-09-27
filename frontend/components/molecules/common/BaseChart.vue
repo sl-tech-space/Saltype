@@ -23,7 +23,6 @@ ChartJS.register(
     Legend
 );
 
-// プロップスの定義
 const props = defineProps<{
     scores: { score: number }[];
 }>();
@@ -85,4 +84,9 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
     </div>
 </template>
 
-<style lang="sass" src="@/assets/styles/components/molecules/base-chart.scss" />
+<style lang="scss" scoped>
+.chart-container {
+    width: 90%;
+    height: 290px;
+}
+</style>

@@ -84,7 +84,8 @@ export function useMistype() {
       );
 
       if (!response.ok) {
-        throw new Error("ミスタイプデータの取得に失敗");
+        resetMistypeStats();
+        throw new Error("ミスタイプデータの送信に失敗");
       }
 
       resetMistypeStats();

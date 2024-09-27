@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import HomePage from "~/components/organisms/HomePage.vue";
+import CursorEffect from '~/composables/ui/CursorEffect.vue';
+import HomeHeader from '~/components/organisms/home/HomeHeader.vue';
+import HomeCard from '~/components/organisms/home/HomeCard.vue';
 
-useHead({
-  title: "ホーム"
-});
+onMounted(() => {
+  useHead({
+    title: "ホーム"
+  })
+})
 </script>
 
 <template>
-  <div class="home-page">
-    <HomePage />
+  <CursorEffect />
+  <div class="page">
+    <HomeHeader />
+    <HomeCard />
   </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/home.scss" />
+<style lang="scss" scoped>
+.page {
+  @extend %full-page;
+}
+</style>

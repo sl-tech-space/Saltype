@@ -1,6 +1,71 @@
 $white: #ffffff;
 $black: #141414;
-$blue: #0099ff;
-$dark-blue: #0044fe;
-$purple: #6f42c1;
+$main-color: #0099ff;
+$sub-color: #0044fe;
+$hover-color: #6f42c1;
 $disabled-color: #363636;
+
+%full-page {
+  width: 100%;
+  height: 100vh;
+  background-color: $black;
+}
+
+%header {
+  width: 100%;
+  height: 25vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .header-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+  }
+
+  .header-left,
+  .header-center,
+  .header-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+%typing {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin vertical-flex {
+  display: flex;
+  flex-flow: column;
+}
+
+@mixin vertical-centered-flex {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  text-align: center;
+}
+
+@mixin horizontal-flex {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin horizontal-centered-flex {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+@mixin hidden {
+  overflow: hidden;
+}

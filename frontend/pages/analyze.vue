@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import AnalyzePage from '~/components/organisms/AnalyzePage.vue';
+import CursorEffect from '~/composables/ui/CursorEffect.vue';
+import AnalyzeHeader from '~/components/organisms/analyze/AnalyzeHeader.vue';
+import AnalyzeCard from '~/components/organisms/analyze/AnalyzeCard.vue';
 
-useHead({
-  title: "分析情報"
-});
+onMounted(() => {
+  useHead({
+    title: "分析情報"
+  })
+})
 </script>
 
 <template>
-    <div class="analyze-page">
-        <AnalyzePage />
-    </div>
+  <CursorEffect />
+  <div class="page">
+    <AnalyzeHeader />
+    <AnalyzeCard />
+  </div>
 </template>
 
-<style lang="scss" src="@/assets/styles/pages/analyze.scss" />
+<style lang="scss" scoped>
+.page {
+  @extend %full-page;
+}
+</style>

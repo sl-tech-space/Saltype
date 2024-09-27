@@ -17,4 +17,20 @@ const props = withDefaults(defineProps<Props>(), {
   </label>
 </template>
 
-<style lang="scss" src="@/assets/styles/components/atoms/label.scss" />
+<style lang="scss" scoped>
+.label--white {
+  color: $white;
+}
+
+.label--black {
+  color: $black;
+}
+
+.label--blue {
+  color: $main-color;
+}
+
+.label--dark-blue {
+  color: $sub-color;
+}
+</style>
