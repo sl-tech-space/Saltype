@@ -19,7 +19,7 @@ class CommonUtils:
 
         if missing_params:
             error_message = f"{', '.join(missing_params)} が必要です。"
-            logger.error(error_message)  # ロギングを追加
+            logger.error(error_message)
             raise ValidationError(error_message)
 
         return [data[param] for param in required_params]

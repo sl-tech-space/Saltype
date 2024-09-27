@@ -1,6 +1,7 @@
 import logging
 
 from apps.common.models import Diff, Lang, Score, User
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 logger = logging.getLogger(__name__)
@@ -33,8 +34,5 @@ class ScoreSerializer(serializers.ModelSerializer):
 
         logger.debug(f"user_id: {user_id}, lang: {lang}, diff: {diff}")
 
-        if not user_id or not lang or not diff:
-            raise serializers.ValidationError('必要なフィールドが不足しています。')
-
-        user = User.objects.get(user_id=user_id)
+        user = get_object_or_404(User, user_id=user_id)
         return Score.objects.create(user=user, lang=lang, diff=diff, **validated_data)

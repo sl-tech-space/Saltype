@@ -1,12 +1,12 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-from .base import *
 
+from dotenv import load_dotenv
+
+from .base import *
 """.envを読み込む"""
 env_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(env_path)
-
 """環境変数を取得"""
 environment = os.getenv('DJANGO_ENV', 'development')
 
@@ -29,7 +29,6 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 #         'PORT': os.getenv('DB_PORT', '3306'),
 #     }
 # }
-
 """Postgre DB"""
 DATABASES = {
     "default": {
