@@ -1,31 +1,35 @@
 import logging
 
 from apps.common.models import Score
-from apps.common.utils import CommonUtils, HandleExceptions
+from apps.common.utils import HandleExceptions
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import ScoreSerializer
+from .serializers import PastScoreSerializer, ScoreSerializer
 from .services import ScoreService
 
 logger = logging.getLogger(__name__)
 
 
 class ScoreAndRankHandler(APIView):
+    """
+    スコア計算処理、最高スコア判定処理、スコア平均取得処理、ランク更新処理
+    """
 
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-        serializer = ScoreSerializer(data=request.data)
 
+        serializer = ScoreSerializer(data=request.data)
         if serializer.is_valid():
+
             score_data = serializer.validated_data
-            user_id = score_data['user'].user_id
-            lang_id = score_data['lang'].id
-            diff_id = score_data['diff'].id
+            user_id = score_data['user_id']
+            lang_id = score_data['lang']
+            diff_id = score_data['diff']
 
             score_service = ScoreService(user_id, lang_id, diff_id)
             average_score = score_service.get_average_score(user_id, lang_id, diff_id)
@@ -40,6 +44,7 @@ class ScoreAndRankHandler(APIView):
                 score_data)
 
             average_score = score_service.get_average_score(user_id, lang_id, diff_id)
+
             ranking_position = score_service.get_ranking_position(score)
 
             return Response(
@@ -60,14 +65,15 @@ class GetPastScores(APIView):
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-        serializer = ScoreSerializer(data=request.data)
+
+        serializer = PastScoreSerializer(data=request.data)
+
         if serializer.is_valid():
             score_data = serializer.validated_data
-            user_id = score_data['user'].user_id
-            lang_id = score_data['lang'].id
-            diff_id = score_data['diff'].id
+            lang_id = score_data['lang']
+            diff_id = score_data['diff']
 
-            scores = Score.objects.filter(user_id=user_id, lang_id=lang_id,
+            scores = Score.objects.filter(lang_id=lang_id,
                                           diff_id=diff_id).order_by('-created_at')[:30]
 
             scores_data = ScoreSerializer(scores, many=True).data

@@ -1,7 +1,7 @@
 import logging
 
-from apps.common.utils import CommonUtils, HandleExceptions
-from django.db import DatabaseError, transaction
+from apps.common.utils import HandleExceptions
+from django.db import transaction
 
 from .models import Miss
 
