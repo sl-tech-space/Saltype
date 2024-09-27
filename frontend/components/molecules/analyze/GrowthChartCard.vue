@@ -58,7 +58,7 @@ if (combinations.value.length > 0) {
             <BaseCarousel :slides="combinations.length" :options="{ loop: true }" @slide-change="handleSlideChange"
                 class="body-content">
                 <template v-for="(combination, index) in combinations" :key="combination" #[`slide-${index}`]>
-                    <div v-if="props.scoresByCombination[combination].length > 0">
+                    <div v-if="props.scoresByCombination?.[combination]?.length > 0">
                         <BaseChart :scores="props.scoresByCombination[combination]" />
                     </div>
                     <div v-else>
