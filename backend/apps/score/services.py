@@ -2,7 +2,7 @@ import logging
 
 from apps.common.models import Score, User
 from apps.common.utils import HandleExceptions
-from django.db import DatabaseError, transaction
+from django.db import transaction
 from django.db.models import Avg
 
 logger = logging.getLogger(__name__)
