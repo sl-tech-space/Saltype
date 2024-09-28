@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@nuxt/types": "^2.18.1"
+  }
+}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CursorEffect from '~/composables/ui/CursorEffect.vue';
+import CursorEffect from '~/composables/ui/useCursorEffect.vue';
 import TypingHeader from '~/components/organisms/typing/TypingHeader.vue';
 import TypingScreen from '~/components/organisms/typing/TypingScreen.vue';
 

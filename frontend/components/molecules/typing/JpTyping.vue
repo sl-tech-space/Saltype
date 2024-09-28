@@ -3,7 +3,8 @@ import { useTyping } from "~/composables/typing/useTyping";
 import Text from "~/components/atoms/texts/Text.vue";
 import Title from "~/components/atoms/texts/Title.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
-import Loading from "~/composables/ui/Loading.vue";
+import Loading from "~/composables/ui/useLoading.vue";
+import { useEventListener } from "@vueuse/core";
 
 const route = useRoute();
 const language = ref(route.query.language as string || "0");
@@ -16,11 +17,20 @@ const {
     isTypingStarted,
     countdown,
     isCountdownActive,
+    handleKeyPress,
     finishTyping,
     initialize,
 } = useTyping(language.value, difficultyLevel.value);
 
 const { $bus } = useNuxtApp();
+type KeyPressEvent = KeyboardEvent & { result: "correct" | "incorrect" };
+
+const emitKeyPress = (event: KeyPressEvent) => {
+    const result = handleKeyPress(event);
+    $bus.$emit('key-press', { code: event.code, result: result } as KeyPressEvent);
+};
+
+useEventListener(window, 'keydown', emitKeyPress);
 
 onMounted(() => {
     initialize();

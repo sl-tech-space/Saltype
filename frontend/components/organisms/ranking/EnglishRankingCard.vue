@@ -11,7 +11,7 @@ const props = defineProps<Props>();
 
 const { getDifficultyName } = useLanguageAndDifficulty();
 
-const japaneseDifficultyIds = ['1-1', '1-2', '1-3'];
+const englishDifficultyIds = ['2-1', '2-2', '2-3'];
 
 const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] => {
     if (Array.isArray(obj)) {
@@ -24,7 +24,7 @@ const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): Rankin
 <template>
     <div class="ranking-cards-container">
         <div class="ranking-cards">
-            <BaseRankingCard v-for="id in japaneseDifficultyIds" :key="id"
+            <BaseRankingCard v-for="id in englishDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
                 :rankings="objectToArray(props.rankingsByCombination[id] || [])" />
         </div>

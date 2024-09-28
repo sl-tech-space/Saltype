@@ -1,9 +1,13 @@
 $white: #ffffff;
+$translucent-white: rgba(255, 255, 255, 0.3);
 $black: #141414;
+$translucent-black: rgba(0, 0, 0, 0.3);
 $main-color: #0099ff;
 $sub-color: #0044fe;
 $hover-color: #6f42c1;
 $disabled-color: #363636;
+$correct-color: #59ff59;
+$incorrect-color: #b10000;
 
 %full-page {
   width: 100%;

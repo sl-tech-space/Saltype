@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CursorEffect from '~/composables/ui/CursorEffect.vue';
+import CursorEffect from '~/composables/ui/useCursorEffect.vue';
 import AnalyzeHeader from '~/components/organisms/analyze/AnalyzeHeader.vue';
 import AnalyzeCard from '~/components/organisms/analyze/AnalyzeCard.vue';
 

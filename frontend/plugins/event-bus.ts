@@ -8,7 +8,7 @@ export default defineNuxtPlugin(() => {
       bus: {
         $on: emitter.on,
         $off: emitter.off,
-        $emit: emitter.emit
+        $emit: emitter.emit,
       }
     }
   }

@@ -4,7 +4,7 @@
  * @param language 
  * @returns languageMap[language.toLowerCase()] || language
  */
-function convertLanguage(language: string): string {
+function _convertLanguage(language: string): string {
   const languageMap: { [key: string]: string } = {
     "1": "japanese",
     "2": "english",
@@ -18,7 +18,7 @@ function convertLanguage(language: string): string {
  * @param difficultyLevel 
  * @returns difficultyMap[difficultyLevel.toLowerCase()] || difficultyLevel
  */
-function convertDifficultyLevel(difficultyLevel: string): string {
+function _convertDifficultyLevel(difficultyLevel: string): string {
   const difficultyMap: { [key: string]: string } = {
     "1": "easy",
     "2": "normal",
@@ -39,8 +39,8 @@ export function useSentence(
   difficultyLevel: string,
   count: number = 100
 ) {
-  const convertedLanguage = convertLanguage(language);
-  const convertedDifficultyLevel = convertDifficultyLevel(difficultyLevel);
+  const convertedLanguage = _convertLanguage(language);
+  const convertedDifficultyLevel = _convertDifficultyLevel(difficultyLevel);
 
   const sentences = async () => {
     try {

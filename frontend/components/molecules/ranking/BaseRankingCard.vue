@@ -2,41 +2,41 @@
 import BaseCard from '../common/BaseCard.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Title from '~/components/atoms/texts/Title.vue';
-import type { RankingProps } from '~/composables/ranking/useRankingTypes';
+import Text from '~/components/atoms/texts/Text.vue';
+import type { RankingItem } from '~/composables/ranking/useRankingTypes';
 
 interface Props {
-  difficultyName: string;
-  rankingData: {
-    scores: Array<{
-      user_id: string;
-      username: string;
-      score: number;
-    }>;
-  };
+    difficultyName: string;
+    rankings: RankingItem[] | RankingItem[][];
 }
 
 const props = defineProps<Props>();
 
-// 表示するランキングの数を制限（例：上位5件）
-const topRankings = computed(() => props.rankings.scores.slice(0, 5));
+const topRankings = computed(() => {
+    const rankingsArray = Array.isArray(props.rankings[0]) ? props.rankings[0] : props.rankings;
+    return rankingsArray as RankingItem[];
+});
 </script>
 
 <template>
-    <BaseCard width="large" height="full">
+    <BaseCard width="medium" height="full">
         <template #card-header>
             <div class="header-content">
-                <Title size="small">
-                    {{ props.difficultyName }} ランキング
-                </Title>
+                <Title size="small" :text="props.difficultyName" />
             </div>
         </template>
         <template #card-body>
             <div class="body-content">
                 <div class="body-container">
                     <ul class="ranking-list">
-                        <li v-for="(ranking, index) in topRankings" :key="index" class="ranking-item">
-                            <span class="rank">{{ index + 1 }}</span>
-                            <span class="score">{{ ranking.score }}</span>
+                        <li v-for="index in 5" :key="index" class="ranking-item">
+                            <Text v-if="topRankings[index - 1]" size="large" color="main-color">
+                                {{ index }}位&nbsp;:&nbsp;{{ topRankings[index - 1].username }}&ensp;スコア&nbsp;:&nbsp;{{
+                                    topRankings[index - 1].score }}
+                            </Text>
+                            <Text v-else size="large" color="sub-color">
+                                {{ index }}位&nbsp;:&nbsp;データがありません
+                            </Text>
                         </li>
                     </ul>
                 </div>
@@ -44,39 +44,30 @@ const topRankings = computed(() => props.rankings.scores.slice(0, 5));
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button 
-                    border="sub-color" 
-                    width="same-as-input-large" 
-                    height="medium" 
-                    background="none" 
-                    :rounded="true"
-                    button-text="もっと見る >>>" 
-                />
+                <Button border="main-color" width="same-as-input-large" height="medium" background="none"
+                    :rounded="true" button-text="もっと見る" />
             </div>
         </template>
     </BaseCard>
 </template>
 
-<style scoped>
-.ranking-list {
-    list-style-type: none;
-    padding: 0;
+<style lang="scss" scoped>
+.body-content {
+    .ranking-list {
+        list-style-type: none;
+        padding: 0;
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4%;
+            padding: 2%;
+            border-bottom: 1px solid $translucent-white;
+        }
+    }
 }
 
-.ranking-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    padding: 5px;
-    border-bottom: 1px solid #eee;
-}
-
-.rank {
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.score {
-    font-weight: bold;
+.footer-content {
+    @include horizontal-centered-flex;
 }
 </style>

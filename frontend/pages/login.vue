@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import CursorEffect from "~/composables/ui/CursorEffect.vue";
+import CursorEffect from "~/composables/ui/useCursorEffect.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
-import Loading from "~/composables/ui/Loading.vue";
+import Loading from "~/composables/ui/useLoading.vue";
 import Title from "~/components/atoms/texts/Title.vue";
 import { useAuthToken } from "~/composables/auth/useAuth";
 

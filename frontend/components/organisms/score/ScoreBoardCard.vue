@@ -3,7 +3,7 @@ import RetryCard from '~/components/molecules/score/RetryCard.vue';
 import RankCard from '~/components/molecules/score/RankCard.vue';
 import RankingCard from '~/components/molecules/score/RankingCard.vue';
 import ScoreCard from '~/components/molecules/score/ScoreCard.vue';
-import Loading from '~/composables/ui/Loading.vue';
+import Loading from '~/composables/ui/useLoading.vue';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
 import { useSession } from '~/composables/server/useSession';
 
