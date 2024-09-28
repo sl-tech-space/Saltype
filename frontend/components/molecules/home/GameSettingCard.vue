@@ -5,7 +5,7 @@ import DifficultyLevel from '../common/carousels/DifficultyLevel.vue';
 import Language from '../common/carousels/Language.vue';
 import Separator from '~/components/atoms/ui/Separator.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
-import Loading from '~/composables/ui/Loading.vue';
+import Loading from '~/composables/ui/useLoading.vue';
 import { useRouter } from '#app';
 import { useSession } from '~/composables/server/useSession';
 

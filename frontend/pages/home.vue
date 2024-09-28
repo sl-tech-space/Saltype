@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CursorEffect from '~/composables/ui/CursorEffect.vue';
+import CursorEffect from '~/composables/ui/useCursorEffect.vue';
 import HomeHeader from '~/components/organisms/home/HomeHeader.vue';
 import HomeCard from '~/components/organisms/home/HomeCard.vue';
 

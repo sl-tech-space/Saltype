@@ -32,7 +32,7 @@ const topRankings = computed(() => {
                         <li v-for="index in 5" :key="index" class="ranking-item">
                             <Text v-if="topRankings[index - 1]" size="large" color="main-color">
                                 {{ index }}位&nbsp;:&nbsp;{{ topRankings[index - 1].username }}&ensp;スコア&nbsp;:&nbsp;{{
-                                topRankings[index - 1].score }}
+                                    topRankings[index - 1].score }}
                             </Text>
                             <Text v-else size="large" color="sub-color">
                                 {{ index }}位&nbsp;:&nbsp;データがありません
@@ -44,32 +44,30 @@ const topRankings = computed(() => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="main-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="もっと見る" />
+                <Button border="main-color" width="same-as-input-large" height="medium" background="none"
+                    :rounded="true" button-text="もっと見る" />
             </div>
         </template>
     </BaseCard>
 </template>
 
 <style lang="scss" scoped>
-.header-content {
-    margin-left: 4%;
+.body-content {
+    .ranking-list {
+        list-style-type: none;
+        padding: 0;
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4%;
+            padding: 2%;
+            border-bottom: 1px solid $translucent-white;
+        }
+    }
 }
 
 .footer-content {
     @include horizontal-centered-flex;
-}
-
-.ranking-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.ranking-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    padding: 5px;
-    border-bottom: 1px solid $translucent-white;
 }
 </style>

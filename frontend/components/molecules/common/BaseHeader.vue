@@ -2,7 +2,7 @@
 import Title from "~/components/atoms/texts/Title.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
-import Loading from "~/composables/ui/Loading.vue";
+import Loading from "~/composables/ui/useLoading.vue";
 import { useRouter } from "#app";
 import { useSession } from "~/composables/server/useSession";
 
@@ -30,7 +30,7 @@ const handleBackToHome = async () => {
                 <slot name="header-left" />
             </div>
             <div class="header-center">
-                <Title v-if="props.title !== undefined && props.title !== null" size="small" color="white" :text="props.title" />
+                <Title v-if="props.title !== undefined && props.title !== null" size="medium" color="white" :text="props.title" />
                 <slot v-else name="header-center" />
             </div>
             <div class="header-right">

@@ -3,6 +3,7 @@ import { useEventListener } from "@vueuse/core";
 import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
 import { useMistype } from "./useMistype";
+import type { Handler } from "mitt";
 
 /**
  * タイピング画面処理
@@ -111,56 +112,56 @@ export function useTyping(language: string, difficultyLevel: string) {
    * キー入力処理
    * @param event
    */
-  const handleKeyPress = (event: KeyboardEvent) => {
-    if (event.key === "Shift") return;
+  const handleKeyPress = (event: KeyboardEvent): 'correct' | 'incorrect' => {
+    if (event.key === "Shift" || event.key === "ShiftRight") {
+      return "correct";
+    }
 
     if (!isTypingStarted.value && !isCountdownActive.value) {
       if (event.key === "Enter") {
         startTyping();
       }
-      return;
+      return 'correct';
     }
 
-    if (isCountdownActive.value) return;
+    if (isCountdownActive.value) {
+      return 'incorrect';
+    }
 
     if (!isTypingStarted.value) {
       if (event.key === "Enter") {
         isTypingStarted.value = true;
         updateColoredText();
       }
-      return;
+      return 'correct';
     }
 
-    if (!currentSentence.value) return;
-
+    if (!currentSentence.value) {
+      return 'correct';
+    }
+  
     const currentPatterns = currentSentence.value.patterns;
-    let matched = false;
-
+  
     for (let i = 0; i < currentPatterns.length; i++) {
       const expectedChar = currentPatterns[i][currentInputIndex.value];
       if (event.key === expectedChar) {
         currentInput.value += event.key;
         currentInputIndex.value++;
         currentPatternIndex.value = i;
-        matched = true;
         typingResults.totalCorrectTypedCount++;
         updateColoredText();
-        break;
+  
+        if (currentInputIndex.value === currentPatterns[currentPatternIndex.value].length) {
+          nextSentence();
+        }
+  
+        return 'correct';
       }
     }
-
-    if (!matched) {
-      countMistype(event.key);
-      typingResults.totalMistypedCount++;
-      return;
-    }
-
-    if (
-      currentInputIndex.value ===
-      currentPatterns[currentPatternIndex.value].length
-    ) {
-      nextSentence();
-    }
+  
+    countMistype(event.key);
+    typingResults.totalMistypedCount++;
+    return 'incorrect';
   };
 
   const updatePatterns = async () => {
@@ -193,7 +194,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     const coloredPart = fullText.slice(0, currentInputIndex.value);
     const remainingPart = fullText.slice(currentInputIndex.value);
 
-    coloredText.value = `<span style="color: #0044fe;">${coloredPart}</span>${remainingPart}`;
+    coloredText.value = `<span style="opacity: 0.5">${coloredPart}</span>${remainingPart}`;
   };
 
   /**
@@ -230,15 +231,11 @@ export function useTyping(language: string, difficultyLevel: string) {
         resetTypingStats();
         await updatePatterns();
         updateColoredText();
-      } else {
-        console.error("Invalid data received:", data);
       }
     } catch (error) {
       console.error("文章の取得に失敗しました:", error);
     }
   };
-
-  useEventListener(window, "keydown", handleKeyPress);
 
   return {
     typingAccuracy,
@@ -248,6 +245,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     isTypingStarted,
     countdown,
     isCountdownActive,
+    handleKeyPress,
     finishTyping,
     initialize,
   };

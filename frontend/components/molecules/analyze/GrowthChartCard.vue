@@ -30,7 +30,7 @@ const handleSlideChange = (index: number) => {
 };
 
 const formattedCurrentCombination = computed(() => {
-    if (!currentCombination.value) return 'No combination selected';
+    if (!currentCombination.value) return 'エラー発生';
 
     const [left, right] = currentCombination.value.split('-');
     const languageId = Number(left);

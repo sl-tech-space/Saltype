@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import CursorEffect from "~/composables/ui/CursorEffect.vue";
-import ScrollHandler from "~/composables/ui/ScrollHandler.vue";
+import CursorEffect from "~/composables/ui/useCursorEffect.vue";
+import ScrollHandler from "~/composables/ui/useScrollHandler.vue";
 import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
 import JapaneseRankingCard from "~/components/organisms/ranking/JapaneseRankingCard.vue";
 import EnglishRankingCard from "~/components/organisms/ranking/EnglishRankingCard.vue";
-import Loading from "~/composables/ui/Loading.vue";
+import Loading from "~/composables/ui/useLoading.vue";
 import { useRanking } from '~/composables/ranking/useRanking';
 
 const { isLoading, japaneseRankings, englishRankings, getRankingByLimitParam } = useRanking();
