@@ -5,36 +5,35 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import RankingRequestSerializer
+from .serializers import RankingSerializer
 
 
 class GetRanking(APIView):
-    """ 
-    言語IDと難易度IDに基づいてスコアを降順で取得して返すビュー 
-    """
+    """言語IDと難易度IDに基づいてユーザをスコアで並べて取得"""
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-        """ POSTリクエストボディからlang_idとdiff_idを取得 """
-        serializer = RankingRequestSerializer(data=request.data)
+        """リクエストから送信されたデータをもとにシリアライズインスタンス作成"""
+        serializer = RankingSerializer(data=request.data)
 
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            ranking_data = serializer.validated_data
+            lang_id = ranking_data['lang_id']  # 言語ID
+            diff_id = ranking_data['diff_id']  # 難易度ID
+            ranking_limit = ranking_data['ranking_limit']  # ランキング上限
+            """ 言語IDと難易度IDに基づいてスコアをフィルタリング """
+            filtered_scores = Score.objects.filter(lang_id=lang_id,
+                                                   diff_id=diff_id).select_related('user')
+            """ スコアを降順で取得 """
+            scores = filtered_scores.order_by('-score')[:ranking_limit]
+            """ スコアのリストをフロントに返すために必要なデータに変換 """
+            ranking_response_data = [{
+                'user_id': score_entry.user.user_id,
+                'username': score_entry.user.username,
+                'score': score_entry.score
+            } for score_entry in scores]
 
-        lang_id = serializer.validated_data['lang_id']
-        diff_id = serializer.validated_data['diff_id']
-        ranking_limit = serializer.validated_data['ranking_limit']
-        """ 言語IDと難易度IDに基づいてスコアをフィルタリング """
-        filtered_scores = Score.objects.filter(lang_id=lang_id,
-                                               diff_id=diff_id).select_related('user')
-        """ スコアを降順で取得 """
-        scores = filtered_scores.order_by('-score')[:ranking_limit]
-        """ スコアのリストをフロントに返すために必要なデータに変換 """
-        ranking_data = [{
-            'user_id': score_entry.user.user_id,
-            'username': score_entry.user.username,
-            'score': score_entry.score
-        } for score_entry in scores]
+            return Response({'ranking_data': ranking_response_data}, status=status.HTTP_200_OK)
 
-        return Response({'ranking-data': ranking_data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

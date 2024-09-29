@@ -15,36 +15,41 @@ logger = logging.getLogger(__name__)
 
 class ScoreAndRankHandler(APIView):
     """
-    スコア計算処理、最高スコア判定処理、スコア平均取得処理、ランク更新処理
+    平均スコア取得:get_average_score
+    スコア計算:calculate_score
+    最高ランク判定:is_new_high_score
+    ランク更新:update_rank
+    ランキング取得処理:get_ranking_position
     """
-
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-
+        """リクエストから送信されたデータをもとにシリアライズインスタンス作成"""
         serializer = ScoreSerializer(data=request.data)
         if serializer.is_valid():
-
+            """有効データの取得"""
             score_data = serializer.validated_data
-            user_id = score_data['user_id']
-            lang_id = score_data['lang']
-            diff_id = score_data['diff']
-
+            user_id = score_data['user_id']  #ユーザID
+            lang_id = score_data['lang']  #言語ID
+            diff_id = score_data['diff']  #難易度ID
+            """スコアサービスのインスタンス作成"""
             score_service = ScoreService(user_id, lang_id, diff_id)
+            """平均スコア取得"""
             average_score = score_service.get_average_score(user_id, lang_id, diff_id)
-
+            """スコア計算"""
             typing_count = request.data.get('typing_count', 0)
             accuracy = request.data.get('accuracy', 1.0)
             score = score_service.calculate_score(typing_count, accuracy)
-
-            score_data = serializer.validated_data
+            """socreに計算したスコアを入れる"""
             score_data['score'] = score
-            score_instance, is_high_score, new_highest_score, rank = score_service.save_score_and_update_rank(
-                score_data)
-
-            average_score = score_service.get_average_score(user_id, lang_id, diff_id)
-
+            """スコアを保存"""
+            score_instance = Score.objects.create(**score_data, score=score)
+            """最高スコア判定"""
+            is_high_score, new_highest_score = score_service.is_new_high_score(score)
+            """ランク更新処理"""
+            rank = score_service.update_rank(score, is_high_score)
+            """ランキング取得"""
             ranking_position = score_service.get_ranking_position(score)
 
             return Response(
@@ -57,26 +62,30 @@ class ScoreAndRankHandler(APIView):
                     'ranking_position': ranking_position,
                 },
                 status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetPastScores(APIView):
+    """過去スコア取得処理(30個)"""
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-
+        """リクエストから送信されたデータをもとにシリアライズインスタンス作成"""
         serializer = PastScoreSerializer(data=request.data)
 
         if serializer.is_valid():
+            """有効データの取得"""
             score_data = serializer.validated_data
-            lang_id = score_data['lang']
-            diff_id = score_data['diff']
-
+            lang_id = score_data['lang']  # 言語ID
+            diff_id = score_data['diff']  # 難易度ID
+            """最新のデータ30件取得"""
             scores = Score.objects.filter(lang_id=lang_id,
                                           diff_id=diff_id).order_by('-created_at')[:30]
-
+            """スコアをシリアライズ"""
             scores_data = ScoreSerializer(scores, many=True).data
+
             return Response(scores_data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
