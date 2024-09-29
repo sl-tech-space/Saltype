@@ -41,8 +41,8 @@ class ScoreAndRankHandler(APIView):
             typing_count = request.data.get('typing_count', 0)
             accuracy = request.data.get('accuracy', 1.0)
             score = score_service.calculate_score(typing_count, accuracy)
-            """socreに計算したスコアを入れる"""
-            score_data['score'] = score
+            """score_dataからscoreフィールドを削除"""
+            score_data.pop('score', None)
             """スコアを保存"""
             score_instance = Score.objects.create(**score_data, score=score)
             """最高スコア判定"""
