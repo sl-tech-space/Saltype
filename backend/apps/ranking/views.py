@@ -21,12 +21,12 @@ class GetRanking(APIView):
             ranking_data = serializer.validated_data
             lang_id = ranking_data['lang_id']  # 言語ID
             diff_id = ranking_data['diff_id']  # 難易度ID
-            ranking_limit = ranking_data['ranking_limit']  # ランキング上限
+            ranking_count = ranking_data['ranking_count']  # ランキング上限
             """ 言語IDと難易度IDに基づいてスコアをフィルタリング """
             filtered_scores = Score.objects.filter(lang_id=lang_id,
                                                    diff_id=diff_id).select_related('user')
             """ スコアを降順で取得 """
-            scores = filtered_scores.order_by('-score')[:ranking_limit]
+            scores = filtered_scores.order_by('-score')[:ranking_count]
             """ スコアのリストをフロントに返すために必要なデータに変換 """
             ranking_response_data = [{
                 'user_id': score_entry.user.user_id,
