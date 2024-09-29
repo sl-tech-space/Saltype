@@ -6,56 +6,55 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import (MissDataSerializer, MissTypeSerializer, UserIDSerializer)
-from .services import MissTypeService
+from .serializers import MissTypeSerializer, UserIDSerializer
+from .services import MisTypeService
 
 logger = logging.getLogger(__name__)
 
 
 class InsertMisTypes(APIView):
-    """
-    ミスタイプインサート処理
-    """
+    """ミスタイプインサート処理"""
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
+        """リクエストから送信されたデータをもとにシリアライズインスタンス作成"""
         serializer = MissTypeSerializer(data=request.data)
         if serializer.is_valid():
+            """有効データの取得"""
             validated_data = serializer.validated_data
-            user_id = validated_data.get('user_id')
-            miss_data = validated_data.get('miss_data')
+            user_id = validated_data['user_id']
+            miss_data = validated_data['miss_data']
 
-            if not miss_data:
-                return Response({"message": "ミスタイプはありませんでした"}, status=status.HTTP_204_NO_CONTENT)
-
-            inserted_data = MissTypeService.insert_miss_types(user_id, miss_data)
-
+            inserted_data = MisTypeService.insert_miss_types(user_id, miss_data)
             return Response(inserted_data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetTopMissTypes(APIView):
-    """
-    ユーザーのミスタイプの上位3件を取得するエンドポイント
-    """
+    """ユーザーのミスタイプの上位3件を取得"""
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-
+        """リクエストから送信されたデータをもとにシリアライズインスタンス作成"""
         serializer = UserIDSerializer(data=request.data)
+        if serializer.is_valid():
+            """有効データの取得"""
+            user_id = serializer.validated_data['user_id']
+            count = serializer.validated_data['count']
+            """ミスタイプ降順取得処理"""
+            miss_chars = MisTypeService.get_misType_Top(user_id, count)
 
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if not miss_chars.exists():
+                return Response({"message": "指定されたユーザーに関連するミスタイプは存在しません"},
+                                status=status.HTTP_204_NO_CONTENT)
 
-        validated_data = serializer.validated_data
-        user_id = validated_data.get('user_id')
+            miss_chars_data = [{
+                "miss_char": miss.miss_char,
+                "miss_count": miss.miss_count
+            } for miss in miss_chars]
+            return Response(miss_chars_data, status=status.HTTP_200_OK)
 
-        top_miss_types = MissTypeService.get_top_miss_types(user_id)
-
-        if not top_miss_types:
-            return Response({"message": "ミスタイプデータは存在しません"}, status=status.HTTP_204_NO_CONTENT)
-
-        miss_serializer = MissDataSerializer(top_miss_types, many=True)
-        return Response(miss_serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 class ScoreSerializer(serializers.ModelSerializer):
     """ Scoreモデルのシリアライザークラス """
-
     user_id = serializers.UUIDField(write_only=True)
     lang_id = serializers.PrimaryKeyRelatedField(source='lang',
                                                  queryset=Lang.objects.all(),
@@ -39,9 +38,7 @@ class ScoreSerializer(serializers.ModelSerializer):
 
 
 class PastScoreSerializer(serializers.Serializer):
-    """
-    スコア取得用のシリアライザー
-    """
+    """過去スコア取得用のシリアライザー"""
     lang_id = serializers.PrimaryKeyRelatedField(source='lang',
                                                  queryset=Lang.objects.all(),
                                                  write_only=True)

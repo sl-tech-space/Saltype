@@ -1,3 +1,4 @@
+from apps.common.utils import HandleExceptions
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -8,9 +9,7 @@ from .serializers import GoogleAuthSerializer, UserLoginSerializer
 
 
 class LoginView(APIView):
-    """
-    オリジナルフォームからのログインを行う
-    """
+    """オリジナルフォームからのログインを行う"""
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -29,9 +28,7 @@ class LoginView(APIView):
 
 
 class CheckTokenView(APIView):
-    """
-    リクエストのトークンを使って自動ログインを行う
-    """
+    """リクエストのトークンを使って自動ログインを行う"""
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -59,25 +56,20 @@ class CheckTokenView(APIView):
 
 
 class GoogleAuthView(APIView):
-    """
-    Google認証
-    認証と同時にDBにユーザを作成
-    """
+    """Google認証 認証と同時にDBにユーザを作成"""
     permission_classes = [AllowAny]
 
+    @HandleExceptions()
     def post(self, request):
         serializer = GoogleAuthSerializer(data=request.data)
         if serializer.is_valid():
-            try:
-                user = serializer.create(serializer.validated_data)
-                return Response(
-                    {
-                        'message': 'User information saved successfully',
-                        'user_id': user.user_id,
-                        'email': user.email,
-                        'username': user.username
-                    },
-                    status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            user = serializer.create(serializer.validated_data)
+            return Response(
+                {
+                    'message': 'User information saved successfully',
+                    'user_id': user.user_id,
+                    'email': user.email,
+                    'username': user.username
+                },
+                status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

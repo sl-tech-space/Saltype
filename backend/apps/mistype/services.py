@@ -8,7 +8,7 @@ from .models import Miss
 logger = logging.getLogger(__name__)
 
 
-class MissTypeService:
+class MisTypeService:
 
     @staticmethod
     @transaction.atomic
@@ -20,12 +20,13 @@ class MissTypeService:
         for data in miss_data:
             miss_char = data.get('miss_char')
             miss_count = data.get('miss_count', 0)
-
+            """ミスタイプのインスタンスを取得または作成"""
             miss_instance, created = Miss.objects.get_or_create(user_id=user_id,
                                                                 miss_char=miss_char,
                                                                 defaults={'miss_count': miss_count})
 
             if not created:
+                """既存のミスタイプの場合、カウントを更新"""
                 miss_instance.miss_count += miss_count
                 miss_instance.save()
 
@@ -38,11 +39,6 @@ class MissTypeService:
         return inserted_data
 
     @staticmethod
-    def get_top_miss_types(user_id):
-        """指定されたユーザーのミスタイプの上位3件を取得"""
-        top_miss_types = Miss.objects.filter(user_id=user_id).order_by('-miss_count')[:3]
-
-        if not top_miss_types:
-            return None
-
-        return top_miss_types
+    def get_misType_Top(user_id, count):
+        """ミスタイプ降順取得"""
+        return Miss.objects.filter(user_id=user_id).order_by('-miss_count')[:count]

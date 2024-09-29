@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'apps.mistype',
     'apps.score',
     'apps.ranking',
+    'apps.request',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

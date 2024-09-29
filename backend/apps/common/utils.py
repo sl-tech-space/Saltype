@@ -16,11 +16,12 @@ class HandleExceptions:
                 return func(*args, **kwargs)
             except DatabaseError as e:
                 logger.error(f"Database error: {e}")
-                return Response({'error': 'Database error occurred.'},
+                return Response({'error': 'データベースエラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
             except Exception as e:
                 logger.error(f"Unexpected error: {e}")
-                return Response({'error': 'An unexpected error occurred.'},
+                return Response({'error': '予期せぬエラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return wrapper
