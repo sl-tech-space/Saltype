@@ -1,6 +1,8 @@
 import os
+import ssl
 from pathlib import Path
 
+import certifi
 from dotenv import load_dotenv
 
 from .base import *
@@ -40,3 +42,16 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
+"""証明書のパスを指定"""
+os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
+os.environ['CURL_CA_BUNDLE'] = certifi.where()
+"""SSLコンテキストを作成"""
+ssl_context = ssl.create_default_context()
+ssl_context.load_verify_locations(certifi.where())
+"""メール設定"""
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv("EMAIL_HOST", 'smtp.gmail.com')
+EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", 'True') == 'True'
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
