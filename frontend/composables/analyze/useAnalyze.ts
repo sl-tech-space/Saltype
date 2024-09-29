@@ -3,14 +3,14 @@ import { useSession } from "../server/useSession";
 export function useAnalyze() {
   const config = useRuntimeConfig();
   const { getSession } = useSession();
-  const typoFrequencyTop3 = ref<TypoFrequency[]>([]);
+  const typoFrequency = ref<TypoFrequency[]>([]);
 
   interface TypoFrequency {
     miss_char: string;
     miss_count: number;
   }
 
-  const getTypoFrequencyTop3 = async () => {
+  const getTypoFrequencyByLimitParam = async (limit: Number) => {
     try {
       const userSession = await getSession();
       const user = userSession?.value;
@@ -29,6 +29,7 @@ export function useAnalyze() {
           },
           body: JSON.stringify({
             user_id: user.user_id,
+            count: limit,
           }),
         }
       );
@@ -39,7 +40,7 @@ export function useAnalyze() {
 
       const data = await response.json();
 
-      typoFrequencyTop3.value = data;
+      typoFrequency.value = data;
     } catch (error) {
       console.error(error);
     }
@@ -86,8 +87,8 @@ export function useAnalyze() {
   };
 
   return {
-    typoFrequencyTop3,
-    getTypoFrequencyTop3,
+    typoFrequency,
+    getTypoFrequencyByLimitParam,
     getPastScores
   };
 }

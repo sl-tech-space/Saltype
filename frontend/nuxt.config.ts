@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     '/typing': { ssr: true }, // SSR
     '/score': { ssr: true }, // SSR
     '/analyze': { ssr: true }, // SSR
-    '/ranking': { isr: 300 } // ISR 5minutes
+    '/ranking': { isr: 300 }, // ISR 5minutes
+    '/contact': { ssr: false } // CSR
   },
   app: {
     head: {
