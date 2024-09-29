@@ -53,14 +53,13 @@ export function useRanking() {
       });
 
       if (!response.ok) {
-        throw new Error("ランキングデータ取得に失敗");
+        throw new Error("ランキングデータ取得に失敗しました");
       }
 
       const data = await response.json();
 
       return data;
     } catch (error) {
-      console.error(error);
     }
   };
 

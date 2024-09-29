@@ -39,7 +39,7 @@ export function useSession() {
       }
       return user;
     } catch (err) {
-      console.error("セッションの取得に失敗");
+      console.error("セッションの取得に失敗しました");
     }
   };
 
@@ -65,7 +65,7 @@ export function useSession() {
         console.error("セッションの保存に失敗しました");
       }
     } catch (err) {
-      console.error("セッションの保存中にエラーが発生しました", err);
+      console.error("セッションの保存中にエラーが発生しました");
     }
   };
 
@@ -80,11 +80,12 @@ export function useSession() {
           "Content-Type": "application/json",
         },
       });
-      if (response.ok) {
-        console.log("またね！");
+
+      if (!response.ok) {
+        console.error("セッションの削除に失敗しました");
       }
     } catch (err) {
-      console.error("セッションの削除に失敗");
+      console.error("セッションの削除に失敗しました");
     }
   };
 
@@ -111,7 +112,6 @@ export function useSession() {
 
       return true;
     } catch (error) {
-      console.error("Session check failed:", error);
       return false;
     }
   };

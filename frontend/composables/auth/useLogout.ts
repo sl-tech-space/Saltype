@@ -19,7 +19,10 @@ export async function useLogout() {
         removeSession();
       }
 
-      await router.push("/login");
+      await router.push({
+        path: "/login",
+        query: { reason: "logout" }
+      });
     } catch (error) {
       alert("ログアウトに失敗：管理者に連絡してください");
     }

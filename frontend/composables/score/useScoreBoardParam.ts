@@ -37,9 +37,7 @@ export function useScoreBoardParam() {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("エラーレスポンス:", errorText);
-        throw new Error("スコアボードデータの取得に失敗");
+        throw new Error("スコアボードデータの取得に失敗しました");
       }
       
       const data = await response.json();
@@ -47,7 +45,6 @@ export function useScoreBoardParam() {
       return data;
 
     } catch (error) {
-      console.error(error);
     }
   };
 

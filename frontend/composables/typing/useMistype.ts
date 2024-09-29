@@ -90,7 +90,6 @@ export function useMistype() {
 
       resetMistypeStats();
     } catch (error) {
-      console.error("Error sending mistype data:", error);
     }
   };
 

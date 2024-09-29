@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -26,9 +25,6 @@ ChartJS.register(
 const props = defineProps<{
     scores: { score: number }[];
 }>();
-
-// 最大スコアを計算
-const maxScore = computed(() => Math.max(...props.scores.map(item => item.score)));
 
 // チャートデータの計算
 const chartData = computed(() => ({

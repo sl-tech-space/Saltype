@@ -38,10 +38,7 @@ export function useAuthToken() {
         }
       }
     } catch (error) {
-      console.error(
-        "ネットワークエラーまたはその他の例外が発生しました:",
-        error
-      );
+      console.error("ネットワークエラーまたはその他の例外が発生しました:");
     }
   };
 

@@ -57,7 +57,7 @@ export const useGoogleAuth = () => {
 
               router.push({ name: "home" });
             } else {
-              throw new Error("User info is null");
+              throw new Error("ユーザ情報が存在しません");
             }
           }
         },
@@ -65,9 +65,8 @@ export const useGoogleAuth = () => {
 
       client.requestAccessToken();
     } catch (err) {
-      console.error("Google login error:", err);
       error.value =
-        err instanceof Error ? err : new Error("An unknown error occurred");
+        err instanceof Error ? err : new Error("ログインに失敗しました");
     }
   };
 

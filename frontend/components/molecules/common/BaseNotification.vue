@@ -38,7 +38,7 @@ const adjustHeight = () => {
                 {{ message }}
             </Text>
             <Text color="white">
-                送信内容&nbsp;:&nbsp;{{ content }}
+                {{ content }}
             </Text>
         </div>
     </Transition>

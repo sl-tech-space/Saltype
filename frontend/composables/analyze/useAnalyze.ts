@@ -35,7 +35,7 @@ export function useAnalyze() {
       );
 
       if (!response.ok) {
-        throw new Error("ミスタイプ頻度の取得に失敗");
+        throw new Error("ミスタイプ頻度の取得に失敗しました");
       }
 
       const data = await response.json();
@@ -75,14 +75,13 @@ export function useAnalyze() {
       );
 
       if (!response.ok) {
-        throw new Error("過去のスコア取得に失敗");
+        throw new Error("過去のスコア取得に失敗しました");
       }
 
       const data = await response.json();
 
       return data;
     } catch (error) {
-      console.error(error);
     }
   };
 

@@ -233,7 +233,7 @@ export function useTyping(language: string, difficultyLevel: string) {
         updateColoredText();
       }
     } catch (error) {
-      console.error("文章の取得に失敗しました:", error);
+      console.error("文章の取得に失敗しました:");
     }
   };
 

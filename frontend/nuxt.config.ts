@@ -43,6 +43,9 @@ export default defineNuxtConfig({
           additionalData: '@use "@/assets/styles/variables.scss" as *;'
         }
       }
+    },
+    optimizeDeps: {
+      include: ['vee-validate', 'embla-carousel-vue', '@vueuse/core', 'vue-chartjs', 'chart.js']
     }
-  }
+  },
 })

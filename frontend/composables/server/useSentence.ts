@@ -57,14 +57,14 @@ export function useSentence(
       });
 
       if (!response.ok) {
-        throw new Error(`サーバーエラー: ${response.status}`);
+        throw new Error(`サーバーエラー`);
       }
 
       const data = await response.json();
 
       return data;
     } catch (error) {
-      console.error("ネットワークエラーまたはその他例外が発生しました:", error);
+      console.error("ネットワークエラーまたはその他例外が発生しました");
       return null;
     }
   };

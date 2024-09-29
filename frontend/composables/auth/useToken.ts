@@ -12,7 +12,7 @@ export function useToken() {
       const encryptedToken = await encrypt(token);
       localStorage.setItem("accessToken", encryptedToken);
     } catch (error) {
-      console.log("トークンの保存に失敗");
+      console.log("トークンの保存に失敗しました");
     }
   }
 
@@ -22,7 +22,7 @@ export function useToken() {
       if (!encryptedToken) return null;
       return await decrypt(encryptedToken);
     } catch (error) {
-      console.log("トークンの取得に失敗");
+      console.log("トークンの取得に失敗しました");
       return null;
     }
   }
