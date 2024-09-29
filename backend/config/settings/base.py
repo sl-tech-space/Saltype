@@ -138,8 +138,6 @@ STATIC_URL = '/static/'
 """Google Authentication Settings"""
 import os
 
-from dotenv import load_dotenv
-
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
 

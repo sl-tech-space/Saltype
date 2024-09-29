@@ -42,12 +42,6 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
-"""証明書のパスを指定"""
-os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
-os.environ['CURL_CA_BUNDLE'] = certifi.where()
-"""SSLコンテキストを作成"""
-ssl_context = ssl.create_default_context()
-ssl_context.load_verify_locations(certifi.where())
 """メール設定"""
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv("EMAIL_HOST", 'smtp.gmail.com')

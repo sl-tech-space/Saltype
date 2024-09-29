@@ -1,14 +1,27 @@
+from apps.common.utils import HandleExceptions
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 
 
-def send_request_email(user_id, request_content):
-    try:
-        User = get_user_model()
-        user = User.objects.get(user_id=user_id)
-        subject = f"New Request from {user.username}"
-        message = f"User {user.username} ({user.email}) has submitted the following request:\n\n{request_content}"
+class RequestEmail:
+
+    def __init__(self, user_id, request_content):
+        """初期化処理"""
+        self.user_id = user_id
+        self.request_content = request_content
+        self.User = get_user_model()
+
+    @HandleExceptions()
+    def get_user(self):
+        """ユーザ情報取得"""
+        return self.User.objects.get(user_id=self.user_id)
+
+    def send_request_email(self):
+        username = self.get_user()
+        subject = f"{username}から要望が届いています。"
+        message = f" {username} から:\n\n{self.request_content}\n"
+
         send_mail(
             subject,
             message,
@@ -16,5 +29,3 @@ def send_request_email(user_id, request_content):
             [settings.EMAIL_HOST_USER],
             fail_silently=False,
         )
-    except User.DoesNotExist:
-        raise ValueError("Invalid user_id")
