@@ -27,7 +27,6 @@ const difficultyNames = {
  * generateAllCombinations
  */
 export function useLanguageAndDifficulty() {
-
   /**
    * 言語一覧取得
    */
@@ -74,6 +73,6 @@ export function useLanguageAndDifficulty() {
     getDifficulties,
     getLanguageName,
     getDifficultyName,
-    generateAllCombinations
+    generateAllCombinations,
   };
 }

@@ -1,17 +1,17 @@
 import { ref, computed } from "vue";
-import { useEventListener } from "@vueuse/core";
 import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
 import { useMistype } from "./useMistype";
-import type { Handler } from "mitt";
 
 /**
  * タイピング画面処理
  * @param language
  * @param difficultyLevel
- * @returns typingAccuracy, sentencesData, currentSentence,
- * coloredText, isTypingStarted, countdown,
- * isCountdownActive, finishTyping, initialize,
+ * @returns typingAccuracy, sentencesData,
+ * currentSentence, coloredText,
+ * isTypingStarted, countdown,
+ * isCountdownActive, handleKeyPress,
+ * finishTyping, initialize,
  */
 export function useTyping(language: string, difficultyLevel: string) {
   const router = useRouter();

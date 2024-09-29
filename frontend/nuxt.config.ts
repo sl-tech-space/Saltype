@@ -4,7 +4,7 @@ import crypto from 'crypto';
 export default defineNuxtConfig({
   components: true,
   compatibilityDate: '2024-09-20',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   modules: ['@sidebase/nuxt-session'],
   routeRules: {
     '/': { prerender: true }, // SSG
@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     '/typing': { ssr: true }, // SSR
     '/score': { ssr: true }, // SSR
     '/analyze': { ssr: true }, // SSR
-    '/ranking': { isr: 300 } // ISR 5minutes
+    '/ranking': { isr: 300 }, // ISR 5minutes
+    '/contact': { ssr: false } // CSR
   },
   app: {
     head: {

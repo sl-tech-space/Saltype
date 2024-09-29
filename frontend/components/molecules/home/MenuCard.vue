@@ -12,19 +12,16 @@ const { logout } = await useLogout();
 const router = useRouter();
 const { isLoading, checkSession } = useSession();
 
-const navigateToRanking = async () => {
+const navigateToRoute = async (routeName: string) => {
     const isSessionValid = await checkSession(true);
     if (!isSessionValid) return;
 
-    router.push({ name: "ranking" });
-}
-
-const navigateToAnalyze = async () => {
-    const isSessionValid = await checkSession(true);
-    if (!isSessionValid) return;
-
-    router.push({ name: "analyze" });
+    router.push({ name: routeName });
 };
+
+const navigateToRanking = () => navigateToRoute("ranking");
+const navigateToAnalyze = () => navigateToRoute("analyze");
+const navigateToContact = () => navigateToRoute("contact");
 
 const handleLogout = async () => {
     await logout();
@@ -62,7 +59,7 @@ const handleLogout = async () => {
                         </Text>
                     </li>
                     <li>
-                        <Text size="large">
+                        <Text size="large" @click="navigateToContact">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                                 fill="#e8eaed">
                                 <path
@@ -99,8 +96,9 @@ const handleLogout = async () => {
 
             li {
                 margin-top: 10%;
+                list-style-type: none;
 
-                &:hover {
+                p:hover {
                     color: $hover-color;
                     cursor: pointer;
                 }

@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['timerEnd']);
-const progress = ref<number>(0)
+const progress = ref<number>(100)
 const isRunning = ref<boolean>(false)
 const remainingMinutes = ref<number>(Math.floor(props.duration / 60000))
 const remainingSeconds = ref<number>(Math.floor((props.duration % 60000) / 1000))
@@ -26,11 +26,11 @@ const startTimer = (): void => {
     const startTime = Date.now()
     intervalId = window.setInterval(() => {
         const elapsedTime = Date.now() - startTime
-        progress.value = Math.min((elapsedTime / props.duration) * 100, 100)
+        progress.value = Math.max(100 - (elapsedTime / props.duration) * 100, 0) // 100%から減少
         const remainingTime = Math.max(props.duration - elapsedTime, 0)
         remainingMinutes.value = Math.floor(remainingTime / 60000)
         remainingSeconds.value = Math.floor((remainingTime % 60000) / 1000)
-        if (progress.value === 100 || (remainingMinutes.value === 0 && remainingSeconds.value === 0)) {
+        if (progress.value === 0 || (remainingMinutes.value === 0 && remainingSeconds.value === 0)) {
             if (intervalId !== null) {
                 clearInterval(intervalId);
             }
@@ -40,6 +40,7 @@ const startTimer = (): void => {
         }
     }, 1000)
 }
+
 
 const handleKeyPress = (event: KeyboardEvent): void => {
     if (event.key === 'Enter') {
@@ -54,6 +55,13 @@ const remainingTimeText = computed(() => {
     const seconds = remainingSeconds.value.toString().padStart(2, '0');
     return `${minutes}:${seconds}`;
 });
+
+const timerBarStyle = computed(() => {
+  return {
+    width: `${progress.value}%`,
+    transition: isRunning.value ? 'width 1s linear' : 'none'
+  }
+})
 
 onMounted(() => {
     window.addEventListener('keypress', handleKeyPress)
@@ -71,7 +79,7 @@ onUnmounted(() => {
     <div class="timer">
         <Text color="white" size="large" :text="remainingTimeText" />
         <div :class="[`timer-bar-container`, `timer-bar-container--${props.backColor}`]">
-            <div :class="[`timer-bar`, `timer-bar--${props.barColor}`]" :style="{ width: `${progress}%` }"></div>
+            <div :class="[`timer-bar`, `timer-bar--${props.barColor}`]" :style="timerBarStyle"></div>
         </div>
     </div>
 </template>
@@ -86,51 +94,53 @@ onUnmounted(() => {
     margin-bottom: 20px;
 
     .timer-bar-container {
-        width: 50%;
+        width: 100%;
         height: 40px;
         border-radius: 20px;
         outline: 1px solid $sub-color;
         outline-offset: 4px;
         overflow: hidden;
-    }
+        transform: scaleX(-1);
 
-    .timer-bar {
-        height: 100%;
-        transition: width 0.1s linear;
-    }
+        .timer-bar {
+            will-change: width;
+            height: 100%;
+            transition: width 1s linear;
+        }
 
-    /* bar color */
-    .timer-bar--white {
-        background-color: $white;
-    }
+        /* bar color */
+        .timer-bar--white {
+            background-color: $white;
+        }
 
-    .timer-bar--black {
-        background-color: $black;
-    }
+        .timer-bar--black {
+            background-color: $black;
+        }
 
-    .timer-bar--main-color {
-        background-color: $main-color;
-    }
+        .timer-bar--main-color {
+            background-color: $main-color;
+        }
 
-    .timer-bar--sub-color {
-        background-color: $sub-color;
-    }
+        .timer-bar--sub-color {
+            background-color: $sub-color;
+        }
 
-    /* back color */
-    .timer-bar-container--white {
-        background-color: $white;
-    }
+        /* back color */
+        .timer-bar-container--white {
+            background-color: $white;
+        }
 
-    .timer-bar-container--black {
-        background-color: $black;
-    }
+        .timer-bar-container--black {
+            background-color: $black;
+        }
 
-    .timer-bar-container--main-color {
-        background-color: $main-color;
-    }
+        .timer-bar-container--main-color {
+            background-color: $main-color;
+        }
 
-    .timer-bar-container--sub-color {
-        background-color: $sub-color;
+        .timer-bar-container--sub-color {
+            background-color: $sub-color;
+        }
     }
 }
 </style>

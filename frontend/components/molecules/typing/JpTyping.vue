@@ -23,6 +23,7 @@ const {
 } = useTyping(language.value, difficultyLevel.value);
 
 const { $bus } = useNuxtApp();
+
 type KeyPressEvent = KeyboardEvent & { result: "correct" | "incorrect" };
 
 const emitKeyPress = (event: KeyPressEvent) => {

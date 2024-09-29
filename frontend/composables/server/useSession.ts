@@ -100,7 +100,7 @@ export function useSession() {
       const user = await getSession();
 
       if (!user || !user.value) {
-        alert("セッション無効");
+        alert("セッション切れのためリロードします");
         router.push({ name: "login" });
         return false;
       }

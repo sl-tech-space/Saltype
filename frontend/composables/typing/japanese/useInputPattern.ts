@@ -203,6 +203,6 @@ export function useInputPattern() {
   }
 
   return {
-    getPatternArray
-  }
+    getPatternArray,
+  };
 }

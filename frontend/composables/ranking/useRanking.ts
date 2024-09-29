@@ -1,6 +1,11 @@
 import type { RankingItem } from "./useRankingTypes";
 import { useLanguageAndDifficulty } from "~/composables/typing/useLanguageAndDifficulty";
 
+/**
+ * ランキング画面コンポーザブル
+ * @returns  isLoading,　japaneseRankings,
+ * englishRankings, getRankingByLimitParam,
+ */
 export function useRanking() {
   const config = useRuntimeConfig();
   const { generateAllCombinations } = useLanguageAndDifficulty();

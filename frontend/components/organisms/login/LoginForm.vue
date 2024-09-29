@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import Input from "~/components/atoms/inputs/Input.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Image from "~/components/atoms/imgs/Image.vue";

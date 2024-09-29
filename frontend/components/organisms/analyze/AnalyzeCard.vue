@@ -5,11 +5,12 @@ import Loading from '~/composables/ui/useLoading.vue';
 import { useAnalyze } from '~/composables/analyze/useAnalyze';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
 
-const { typoFrequencyTop3, getTypoFrequencyTop3, getPastScores } = useAnalyze();
+const { typoFrequency, getTypoFrequencyByLimitParam, getPastScores } = useAnalyze();
 const { generateAllCombinations } = useLanguageAndDifficulty();
 
 // 各設定ごとのスコアを保持するためのreactive変数
 const scoresByCombination = ref<Record<string, Array<{ score: number }>>>({});
+const limit = 10;
 const isLoading = ref(true);
 
 onMounted(async () => {
@@ -21,7 +22,7 @@ onMounted(async () => {
         scoresByCombination.value[key] = await getPastScores(languageId, difficultyId);
     }
 
-    await getTypoFrequencyTop3();
+    await getTypoFrequencyByLimitParam(limit);
 
     isLoading.value = false;
 });
@@ -33,7 +34,7 @@ onMounted(async () => {
             <GrowthChartCard :scoresByCombination="scoresByCombination" />
         </div>
         <div class="right-card">
-            <TypoFrequencyCard :typoFrequencyTop3="typoFrequencyTop3" />
+            <TypoFrequencyCard :typoFrequency="typoFrequency" :limit="limit" />
         </div>
     </main>
     <Loading :isLoading="isLoading" />
