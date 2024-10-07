@@ -5,9 +5,7 @@ import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import { useRouter } from '#app';
 import { ref } from 'vue';
-import { useSession } from '~/composables/server/useSession';
 
-const { isLoading, checkSession } = useSession();
 const router = useRouter();
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
@@ -17,9 +15,6 @@ const isDisabled = ref(true)
 
 const handleStart = async () => {
     try {
-        const isSessionValid = await checkSession(false);
-        if (!isSessionValid) return;
-
         router.push({
             name: "typing",
             query: {
@@ -27,7 +22,6 @@ const handleStart = async () => {
                 difficultyLevel: selectedDifficulty.value + 1,
             },
         });
-        isLoading.value = false;
     } catch (error) {
         console.error("Navigation failed:", error);
     }

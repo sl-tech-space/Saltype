@@ -33,7 +33,7 @@ class InsertMisTypes(APIView):
 
 
 class GetTopMissTypes(APIView):
-    """ユーザーのミスタイプの上位3件を取得"""
+    """ユーザーのミスタイプの上位N件を取得"""
     permission_classes = [AllowAny]
 
     @HandleExceptions()

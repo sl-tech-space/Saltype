@@ -5,7 +5,6 @@ import RankingCard from '~/components/molecules/score/RankingCard.vue';
 import ScoreCard from '~/components/molecules/score/ScoreCard.vue';
 import Loading from '~/composables/ui/useLoading.vue';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
-import { useSession } from '~/composables/server/useSession';
 
 interface ScoreBoardData {
     highest_score: number;
@@ -22,12 +21,8 @@ const totalCorrectTypedCount = ref(0);
 const typingAccuracy = ref(0);
 const scoreBoardData = ref<ScoreBoardData | null>(null);
 const { getParam } = useScoreBoardParam();
-const { isLoading, checkSession } = useSession();
 
 onMounted(async () => {
-    const isSessionValid = await checkSession(false);
-    if (!isSessionValid) return;
-
     const storedLanguage = localStorage.getItem("language");
     const storedDifficulty = localStorage.getItem("difficulty");
     const storedTotalCorrectTypedCount = localStorage.getItem("totalCorrectTypedCount");
@@ -47,8 +42,6 @@ onMounted(async () => {
                 totalCorrectTypedCount.value,
                 typingAccuracy.value
             );
-
-            isLoading.value = false;
         } catch (error) {
             console.error('Failed to fetch ScoreBoard data:', error);
         }
@@ -68,7 +61,6 @@ onMounted(async () => {
             <RankingCard :ranking="scoreBoardData?.ranking_position || 0" />
         </div>
     </main>
-    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>

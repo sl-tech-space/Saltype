@@ -7,7 +7,6 @@ from .models import Miss
 
 logger = logging.getLogger(__name__)
 
-
 class MisTypeService:
 
     @staticmethod

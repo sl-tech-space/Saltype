@@ -1,8 +1,8 @@
-import { useSession } from "../server/useSession";
+import { useUser } from "../conf/useUser";
 
 export function useAnalyze() {
   const config = useRuntimeConfig();
-  const { getSession } = useSession();
+  const { user } = useUser();
   const typoFrequency = ref<TypoFrequency[]>([]);
 
   interface TypoFrequency {
@@ -12,11 +12,8 @@ export function useAnalyze() {
 
   const getTypoFrequencyByLimitParam = async (limit: Number) => {
     try {
-      const userSession = await getSession();
-      const user = userSession?.value;
-
-      if (!user || !user.user_id) {
-        console.error("セッション情報が存在しません");
+      if (!user.value) {
+        console.error("ユーザ情報が存在しません");
         return;
       }
 
@@ -28,7 +25,7 @@ export function useAnalyze() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_id: user.user_id,
+            user_id: user.value.user_id,
             count: limit,
           }),
         }
@@ -51,11 +48,8 @@ export function useAnalyze() {
     selectedDifficulty: Number
   ) => {
     try {
-      const userSession = await getSession();
-      const user = userSession?.value;
-
-      if (!user || !user.user_id) {
-        console.error("セッション情報が存在しません");
+      if (!user.value) {
+        console.error("ユーザ情報が存在しません");
         return;
       }
 
@@ -67,7 +61,7 @@ export function useAnalyze() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_id: user.user_id,
+            user_id: user.value.user_id,
             lang_id: selectedLanguage,
             diff_id: selectedDifficulty
           }),

@@ -1,8 +1,8 @@
-import { useSession } from "../server/useSession";
+import { useUser } from "../conf/useUser";
 
 export function useScoreBoardParam() {
   const config = useRuntimeConfig();
-  const { getSession } = useSession();
+  const { user } = useUser();
 
   const getParam = async (
     selectedLanguage: number,
@@ -11,11 +11,8 @@ export function useScoreBoardParam() {
     typingAccuracy: number
   ) => {
     try {
-      const userSession = await getSession();
-      const user = userSession?.value;
-
-      if (!user || !user.user_id) {
-        console.error("セッション情報が存在しません");
+      if (!user.value) {
+        console.error("ユーザ情報が存在しません");
         return;
       }
 
@@ -27,7 +24,7 @@ export function useScoreBoardParam() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_id: user.user_id,
+            user_id: user.value.user_id,
             lang_id: Number(selectedLanguage),
             diff_id: Number(selectedDifficulty),
             typing_count: Number(totalCorrectTypedCount),

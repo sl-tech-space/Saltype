@@ -4,7 +4,6 @@ import Button from "~/components/atoms/buttons/Button.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
 import Loading from "~/composables/ui/useLoading.vue";
 import { useRouter } from "#app";
-import { useSession } from "~/composables/server/useSession";
 
 interface Props {
     title?: string
@@ -13,12 +12,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const router = useRouter();
-const { isLoading, checkSession } = useSession()
 
 const handleBackToHome = async () => {
-    const isSessionValid = await checkSession(true);
-    if (!isSessionValid) return;
-
     router.push({ name: "home" })
 };
 </script>
@@ -42,7 +37,6 @@ const handleBackToHome = async () => {
         </div>
         <Separator color="sub-color" width="large" margin="none" :visible="true" />
     </header>
-    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>
