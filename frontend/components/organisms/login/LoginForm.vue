@@ -3,6 +3,7 @@ import Input from "~/components/atoms/inputs/Input.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Image from "~/components/atoms/imgs/Image.vue";
 import Field from "~/components/molecules/common/ValidateField.vue";
+import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
 import { Form } from "vee-validate";
 import * as yup from "yup";
 import { useLogin } from "~/composables/auth/useLogin";
@@ -29,6 +30,20 @@ const { login } = await useLogin()
 const handleSubmit = async () => {
   await login(email.value, password.value);
 };
+
+const route = useRoute();
+const showNotification = ref(false);
+
+const handleLogout = () => {
+  showNotification.value = true;
+}
+
+onMounted(() => {
+  showNotification.value = false;
+  if (route.query.reason === 'logout') {
+    handleLogout();
+  }
+});
 </script>
 
 <template>
@@ -58,6 +73,7 @@ const handleSubmit = async () => {
       <Button type="submit" button-text="ログイン" border="main-color" :rounded="true" :disabled="!valid" />
     </div>
   </Form>
+  <BaseNotification message="ログアウトしました" content="また来てね！" :show="showNotification" />
 </template>
 
 <style lang="scss" scoped>

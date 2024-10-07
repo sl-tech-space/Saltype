@@ -7,18 +7,14 @@ import Separator from '~/components/atoms/ui/Separator.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Loading from '~/composables/ui/useLoading.vue';
 import { useRouter } from '#app';
-import { useSession } from '~/composables/server/useSession';
 
 const router = useRouter();
-const { isLoading, checkSession } = useSession();
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
 const handleStart = async () => {
     try {
-        const isSessionValid = await checkSession(false);
-        if (!isSessionValid) return;
 
         localStorage.setItem("language", selectedLanguage.value.toString());
         localStorage.setItem("difficulty", selectedDifficulty.value.toString())
@@ -31,7 +27,6 @@ const handleStart = async () => {
             },
         });
 
-        isLoading.value = false;
     } catch (error) {
         console.error("Navigation failed:", error);
     }
@@ -70,7 +65,6 @@ const handleStart = async () => {
             </div>
         </template>
     </BaseCard>
-    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>

@@ -5,7 +5,6 @@ from .models import Miss
 
 User = get_user_model()
 
-
 class MissTypeSerializer(serializers.Serializer):
     """
     全体のミスタイプシリアライザー

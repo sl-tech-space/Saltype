@@ -4,13 +4,10 @@ import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
 import Loading from "~/composables/ui/useLoading.vue";
 import Title from "~/components/atoms/texts/Title.vue";
-import { useAuthToken } from "~/composables/auth/useAuth";
 
-const { authToken } = useAuthToken();
 let isLoading = ref(true);
 
 onMounted(() => {
-  authToken();
   setTimeout(() => {
     isLoading.value = false;
   }, 500);

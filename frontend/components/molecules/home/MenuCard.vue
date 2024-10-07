@@ -6,16 +6,11 @@ import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
 import Loading from '~/composables/ui/useLoading.vue';
 import { useRouter } from '#app';
-import { useSession } from '~/composables/server/useSession';
 
 const { logout } = await useLogout();
 const router = useRouter();
-const { isLoading, checkSession } = useSession();
 
 const navigateToRoute = async (routeName: string) => {
-    const isSessionValid = await checkSession(true);
-    if (!isSessionValid) return;
-
     router.push({ name: routeName });
 };
 
@@ -79,7 +74,6 @@ const handleLogout = async () => {
             </div>
         </template>
     </BaseCard>
-    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>

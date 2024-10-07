@@ -1,8 +1,4 @@
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useToken } from "./useToken";
-import { useRuntimeConfig } from "nuxt/app";
-import { useSession } from "../server/useSession";
 
 /**
  * オリジナルフォームログイン処理
@@ -10,8 +6,6 @@ import { useSession } from "../server/useSession";
  */
 export async function useLogin() {
   const config = useRuntimeConfig();
-  const { saveToken } = useToken();
-  const { saveSession } = useSession();
   const router = useRouter();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
@@ -37,8 +31,7 @@ export async function useLogin() {
       if (response.ok) {
         const data = await response.json();
         if (data.token) {
-          saveToken(data.token);
-          saveSession(data);
+          useCookie("auth_token").value = data.token;
           router.push({ name: "home" });
         } else {
           error.value = "トークンが発行されませんでした";
@@ -47,7 +40,7 @@ export async function useLogin() {
         const errorData = await response.json();
         error.value = errorData.message || "ログインに失敗しました。";
       }
-    } catch (err) {
+    } catch (e) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {

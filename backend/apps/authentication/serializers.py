@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+from django.contrib.auth import get_user_model
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -41,6 +43,10 @@ class UserLoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
 
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ['user_id', 'username', 'email']
 
 class GoogleAuthSerializer(serializers.Serializer):
     """

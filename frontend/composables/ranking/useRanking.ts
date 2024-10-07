@@ -38,7 +38,11 @@ export function useRanking() {
     isLoading.value = false;
   };
 
-  const _getRanking = async (language: Number, difficulty: Number, limit: Number) => {
+  const _getRanking = async (
+    language: Number,
+    difficulty: Number,
+    limit: Number
+  ) => {
     try {
       const response = await fetch(`${config.public.baseURL}/api/ranking`, {
         method: "POST",
@@ -53,15 +57,13 @@ export function useRanking() {
       });
 
       if (!response.ok) {
-        throw new Error("ランキングデータ取得に失敗");
+        throw new Error("ランキングデータ取得に失敗しました");
       }
 
       const data = await response.json();
 
       return data;
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (e) {}
   };
 
   return {

@@ -1,21 +1,17 @@
-import { useSession } from "../server/useSession";
+import { useUser } from "../conf/useUser";
 
 export function useContact() {
   const config = useRuntimeConfig();
-  const { getSession } = useSession();
+  const { user } = useUser();
   const isLoading = ref(false);
-  const message = ref('');
-  
+  const message = ref("");
+
   const sendContentToServer = async (content: string): Promise<string> => {
     isLoading.value = true;
 
     try {
-      const userSession = await getSession();
-      const user = userSession?.value;
-
-      if (!user || !user.user_id) {
-        console.error("セッション情報が存在しません");
-        message.value = "送信失敗:セッション無効"
+      if (!user.value) {
+        message.value = "ユーザ情報が存在しません";
         return message.value;
       }
 
@@ -27,27 +23,27 @@ export function useContact() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_id: user.user_id,
-            request_content: content
+            user_id: user.value.user_id,
+            request_content: content,
           }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("要望の送信に失敗");
+        throw new Error("要望の送信に失敗しました");
       }
 
-      message.value = "送信成功"
-    } catch (error) {
-      message.value = "送信失敗"
+      message.value = "送信成功";
+    } catch (e) {
+      message.value = "送信失敗";
     } finally {
-        isLoading.value = false;
-        return message.value;
+      isLoading.value = false;
+      return message.value;
     }
   };
 
   return {
     isLoading,
-    sendContentToServer
-  }
+    sendContentToServer,
+  };
 }

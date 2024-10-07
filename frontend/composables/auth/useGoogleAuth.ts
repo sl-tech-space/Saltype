@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useRuntimeConfig } from "nuxt/app";
-import { useSession } from "../server/useSession";
+import { useUser } from "../conf/useUser";
 
 interface GoogleUserInfo {
   email: string;
@@ -14,10 +14,10 @@ interface GoogleUserInfo {
  */
 export const useGoogleAuth = () => {
   const config = useRuntimeConfig();
-  const { saveSession, getSession } = useSession();
   const user = ref<GoogleUserInfo | null>(null);
   const router = useRouter();
   const error = ref<Error | null>(null);
+  const { setUser } = useUser();
 
   const loginWithGoogle = async (): Promise<void> => {
     try {
@@ -38,36 +38,44 @@ export const useGoogleAuth = () => {
             );
 
             if (userInfo) {
-
-              const data = await $fetch(
+              const response = await fetch(
                 `${config.public.baseURL}/api/google-auth/`,
                 {
-                  lazy: true,
                   method: "POST",
-                  body: {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
                     username: userInfo.name,
                     email: userInfo.email,
-                  },
+                  }),
                 }
               );
 
-              saveSession(data);
+              if (!response.ok) {
+                console.log(response.json);
+                throw new Error("認証に失敗");
+              }
 
-              user.value = data as GoogleUserInfo;
+              const data = await response.json();
 
+              if (!data.token) {
+                throw new Error("トークンが存在しません");
+              }
+
+              useCookie("auth_token").value = data.token;
               router.push({ name: "home" });
             } else {
-              throw new Error("User info is null");
+              throw new Error("ユーザ情報が存在しません");
             }
           }
         },
       });
 
       client.requestAccessToken();
-    } catch (err) {
-      console.error("Google login error:", err);
+    } catch (e) {
       error.value =
-        err instanceof Error ? err : new Error("An unknown error occurred");
+        e instanceof Error ? e : new Error("ログインに失敗しました");
     }
   };
 

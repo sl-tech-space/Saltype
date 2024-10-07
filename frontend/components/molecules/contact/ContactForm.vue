@@ -39,7 +39,7 @@ const handleSubmit = async () => {
         </div>
     </Form>
     <Loading :is-loading="isLoading" />
-    <BaseNotification :message="message" :content="contact" :show="showNotification" />
+    <BaseNotification :message="message" :content="`送信内容 : ${contact}`" :show="showNotification" />
 </template>
 
 <style lang="scss" scoped>

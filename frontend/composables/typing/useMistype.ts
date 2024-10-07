@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { useSession } from "../server/useSession";
+import { useUser } from "../conf/useUser";
 
 /**
  * ミスタイプキー処理
@@ -8,7 +8,7 @@ import { useSession } from "../server/useSession";
  */
 export function useMistype() {
   const config = useRuntimeConfig();
-  const { getSession } = useSession();
+  const { user } = useUser();
   const mistypeCount = ref<Record<string, number>>({});
 
   /**
@@ -57,20 +57,19 @@ export function useMistype() {
    */
   const sendMistypeDataToServer = async () => {
     try {
-      const userSession = await getSession();
-      const user = userSession?.value;
-
-      if (!user || !user.user_id) {
-        console.error("セッション情報が存在しません");
+      if (!user.value) {
+        console.error("ユーザ情報が存在しません");
         return;
       }
 
       const missData = formatMistypeData();
 
       const dataToSend = {
-        user_id: user.user_id,
+        user_id: user.value.user_id,
         miss_data: missData,
       };
+
+      console.log(dataToSend);
 
       const response = await fetch(
         `${config.public.baseURL}/api/mistypes/insert`,
@@ -89,9 +88,7 @@ export function useMistype() {
       }
 
       resetMistypeStats();
-    } catch (error) {
-      console.error("Error sending mistype data:", error);
-    }
+    } catch (e) {}
   };
 
   return {
