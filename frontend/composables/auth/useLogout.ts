@@ -17,9 +17,9 @@ export async function useLogout() {
 
       await router.push({
         path: "/login",
-        query: { reason: "logout" }
+        query: { reason: "logout" },
       });
-    } catch (error) {
+    } catch (e) {
       alert("ログアウトに失敗：管理者に連絡してください");
     }
   };

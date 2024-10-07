@@ -53,7 +53,7 @@ export const useGoogleAuth = () => {
               );
 
               if (!response.ok) {
-                console.log(response.json)
+                console.log(response.json);
                 throw new Error("認証に失敗");
               }
 
@@ -73,9 +73,9 @@ export const useGoogleAuth = () => {
       });
 
       client.requestAccessToken();
-    } catch (err) {
+    } catch (e) {
       error.value =
-        err instanceof Error ? err : new Error("ログインに失敗しました");
+        e instanceof Error ? e : new Error("ログインに失敗しました");
     }
   };
 

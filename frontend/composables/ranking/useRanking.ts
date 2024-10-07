@@ -38,7 +38,11 @@ export function useRanking() {
     isLoading.value = false;
   };
 
-  const _getRanking = async (language: Number, difficulty: Number, limit: Number) => {
+  const _getRanking = async (
+    language: Number,
+    difficulty: Number,
+    limit: Number
+  ) => {
     try {
       const response = await fetch(`${config.public.baseURL}/api/ranking`, {
         method: "POST",
@@ -59,8 +63,7 @@ export function useRanking() {
       const data = await response.json();
 
       return data;
-    } catch (error) {
-    }
+    } catch (e) {}
   };
 
   return {

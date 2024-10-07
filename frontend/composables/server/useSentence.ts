@@ -1,7 +1,7 @@
 /**
  * 受け渡した文字の変換
  * 数字 → 文字
- * @param language 
+ * @param language
  * @returns languageMap[language.toLowerCase()] || language
  */
 function _convertLanguage(language: string): string {
@@ -15,7 +15,7 @@ function _convertLanguage(language: string): string {
 /**
  * 受け渡した文字の変換
  * 数字 → 文字
- * @param difficultyLevel 
+ * @param difficultyLevel
  * @returns difficultyMap[difficultyLevel.toLowerCase()] || difficultyLevel
  */
 function _convertDifficultyLevel(difficultyLevel: string): string {
@@ -29,9 +29,9 @@ function _convertDifficultyLevel(difficultyLevel: string): string {
 
 /**
  * 文章を返す処理
- * @param language 
- * @param difficultyLevel 
- * @param count 
+ * @param language
+ * @param difficultyLevel
+ * @param count
  * @returns sentences
  */
 export function useSentence(
@@ -63,7 +63,7 @@ export function useSentence(
       const data = await response.json();
 
       return data;
-    } catch (error) {
+    } catch (e) {
       console.error("ネットワークエラーまたはその他例外が発生しました");
       return null;
     }

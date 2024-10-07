@@ -38,8 +38,8 @@ export function useAnalyze() {
       const data = await response.json();
 
       typoFrequency.value = data;
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -63,7 +63,7 @@ export function useAnalyze() {
           body: JSON.stringify({
             user_id: user.value.user_id,
             lang_id: selectedLanguage,
-            diff_id: selectedDifficulty
+            diff_id: selectedDifficulty,
           }),
         }
       );
@@ -75,13 +75,12 @@ export function useAnalyze() {
       const data = await response.json();
 
       return data;
-    } catch (error) {
-    }
+    } catch (e) {}
   };
 
   return {
     typoFrequency,
     getTypoFrequencyByLimitParam,
-    getPastScores
+    getPastScores,
   };
 }

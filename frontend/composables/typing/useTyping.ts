@@ -112,7 +112,7 @@ export function useTyping(language: string, difficultyLevel: string) {
    * キー入力処理
    * @param event
    */
-  const handleKeyPress = (event: KeyboardEvent): 'correct' | 'incorrect' => {
+  const handleKeyPress = (event: KeyboardEvent): "correct" | "incorrect" => {
     if (event.key === "Shift" || event.key === "ShiftRight") {
       return "correct";
     }
@@ -121,11 +121,11 @@ export function useTyping(language: string, difficultyLevel: string) {
       if (event.key === "Enter") {
         startTyping();
       }
-      return 'correct';
+      return "correct";
     }
 
     if (isCountdownActive.value) {
-      return 'incorrect';
+      return "incorrect";
     }
 
     if (!isTypingStarted.value) {
@@ -133,15 +133,15 @@ export function useTyping(language: string, difficultyLevel: string) {
         isTypingStarted.value = true;
         updateColoredText();
       }
-      return 'correct';
+      return "correct";
     }
 
     if (!currentSentence.value) {
-      return 'correct';
+      return "correct";
     }
-  
+
     const currentPatterns = currentSentence.value.patterns;
-  
+
     for (let i = 0; i < currentPatterns.length; i++) {
       const expectedChar = currentPatterns[i][currentInputIndex.value];
       if (event.key === expectedChar) {
@@ -150,18 +150,21 @@ export function useTyping(language: string, difficultyLevel: string) {
         currentPatternIndex.value = i;
         typingResults.totalCorrectTypedCount++;
         updateColoredText();
-  
-        if (currentInputIndex.value === currentPatterns[currentPatternIndex.value].length) {
+
+        if (
+          currentInputIndex.value ===
+          currentPatterns[currentPatternIndex.value].length
+        ) {
           nextSentence();
         }
-  
-        return 'correct';
+
+        return "correct";
       }
     }
-  
+
     countMistype(event.key);
     typingResults.totalMistypedCount++;
-    return 'incorrect';
+    return "incorrect";
   };
 
   const updatePatterns = async () => {
@@ -232,7 +235,7 @@ export function useTyping(language: string, difficultyLevel: string) {
         await updatePatterns();
         updateColoredText();
       }
-    } catch (error) {
+    } catch (e) {
       console.error("文章の取得に失敗しました:");
     }
   };

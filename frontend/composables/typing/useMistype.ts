@@ -86,10 +86,9 @@ export function useMistype() {
         resetMistypeStats();
         throw new Error("ミスタイプデータの送信に失敗");
       }
-      
+
       resetMistypeStats();
-    } catch (error) {
-    }
+    } catch (e) {}
   };
 
   return {

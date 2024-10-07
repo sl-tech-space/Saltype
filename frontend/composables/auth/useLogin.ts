@@ -31,7 +31,7 @@ export async function useLogin() {
       if (response.ok) {
         const data = await response.json();
         if (data.token) {
-          useCookie('auth_token').value = data.token;
+          useCookie("auth_token").value = data.token;
           router.push({ name: "home" });
         } else {
           error.value = "トークンが発行されませんでした";
@@ -40,7 +40,7 @@ export async function useLogin() {
         const errorData = await response.json();
         error.value = errorData.message || "ログインに失敗しました。";
       }
-    } catch (err) {
+    } catch (e) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {

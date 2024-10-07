@@ -29,10 +29,7 @@ export default defineEventHandler(async (event) => {
     }
 
     return selectedSentences;
-  } catch (error) {
-    console.error(`Error reading file: ${filePath}`, error);
-    return {
-      error: `${filePath}`,
-    };
+  } catch (e) {
+    console.log("文章取得失敗");
   }
 });

@@ -28,7 +28,7 @@ export function useScoreBoardParam() {
             lang_id: Number(selectedLanguage),
             diff_id: Number(selectedDifficulty),
             typing_count: Number(totalCorrectTypedCount),
-            accuracy: Number(typingAccuracy)
+            accuracy: Number(typingAccuracy),
           }),
         }
       );
@@ -36,16 +36,14 @@ export function useScoreBoardParam() {
       if (!response.ok) {
         throw new Error("スコアボードデータの取得に失敗しました");
       }
-      
+
       const data = await response.json();
 
       return data;
-
-    } catch (error) {
-    }
+    } catch (e) {}
   };
 
   return {
-    getParam
+    getParam,
   };
 }
