@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   components: true,
   compatibilityDate: "2024-09-20",
   devtools: { enabled: false },
-  modules: ["@sidebase/nuxt-session"],
+  modules: ["@sidebase/nuxt-session", "@nuxt/test-utils/module"],
   routeRules: {
     "/": { prerender: true }, // SSG
     "/login": { ssr: false }, // CSR
@@ -57,6 +57,14 @@ export default defineNuxtConfig({
         "vue-chartjs",
         "chart.js",
       ],
+    },
+    test: {
+      environment: "nuxt",
+      coverage: {
+        provider: "v8",
+        reporter: ["text", "json", "html"],
+        exclude: ["node_modules", ".nuxt", "coverage"],
+      },
     },
   },
 });

@@ -2,7 +2,6 @@
 import Title from "~/components/atoms/texts/Title.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
-import Loading from "~/composables/ui/useLoading.vue";
 import { useRouter } from "#app";
 
 interface Props {
