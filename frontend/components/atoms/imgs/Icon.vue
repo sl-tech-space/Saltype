@@ -2,7 +2,7 @@
 import DefaultUserIcon from "~/assets/images/home/default-user-icon.png"
 
 interface Props {
-    src?: string | Ref<string, string>;
+    src?: string | Ref<string>;
     alt?: string;
     width?: "small" | "medium" | "large";
     height?: "small" | "medium" | "large";
@@ -13,10 +13,16 @@ const props = withDefaults(defineProps<Props>(), {
     width: "medium",
     height: "medium"
 });
+
+const imageSrc = computed(() => {
+    return typeof props.src === 'object' && 'value' in props.src
+        ? props.src.value
+        : props.src;
+});
 </script>
 
 <template>
-    <img :src="`${props.src}`" :alt="`${props.alt}`"
+    <img :src="`${imageSrc}`" :alt="`${props.alt}`"
         :class="[`icon, icon-width--${props.width}`, `icon-height--${props.height}`]" />
 </template>
 

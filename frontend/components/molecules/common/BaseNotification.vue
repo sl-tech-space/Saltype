@@ -8,19 +8,19 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const isVisible = ref(false);
+const isVisible = ref(props.show);
 const notificationRef = ref<HTMLDivElement | null>(null);
+let timer: ReturnType<typeof setTimeout> | null = null;
 
-watch(() => props.show, async (newValue) => {
-    if (newValue) {
-        isVisible.value = true;
-        await nextTick();
-        adjustHeight();
-        setTimeout(() => {
-            isVisible.value = false;
-        }, 5000);
-    }
-});
+const showNotification = async () => {
+    isVisible.value = true;
+    await nextTick();
+    adjustHeight();
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+        isVisible.value = false;
+    }, 5000);
+};
 
 const adjustHeight = () => {
     if (notificationRef.value) {
@@ -29,6 +29,24 @@ const adjustHeight = () => {
         notificationRef.value.style.height = `${height}px`;
     }
 };
+
+watch(() => props.show, (newValue) => {
+    if (newValue) {
+        showNotification();
+    } else {
+        isVisible.value = false;
+    }
+}, { immediate: true });
+
+onMounted(() => {
+    if (props.show) {
+        showNotification();
+    }
+});
+
+onBeforeUnmount(() => {
+    if (timer) clearTimeout(timer);
+});
 </script>
 
 <template>
@@ -44,6 +62,7 @@ const adjustHeight = () => {
     </Transition>
 </template>
 
+
 <style lang="scss" scoped>
 .notification {
     width: 20%;
@@ -55,7 +74,7 @@ const adjustHeight = () => {
     padding: 15px;
     border: 2px solid $main-color;
     border-radius: 5px;
-    box-shadow: 0 2px 10px $sub-color;
+    box-shadow: 0 2px 10px $main-color;
     z-index: 1000;
     word-wrap: break-word;
     overflow: hidden;
