@@ -34,7 +34,7 @@ describe("RankingCard", () => {
     });
   };
 
-  it("正しくレンダリングされる", () => {
+  it("コンポーネントが正しくレンダリングされること", () => {
     const wrapper = mountComponent({
       difficultyName: "Easy",
       rankings: mockRankings,
