@@ -78,10 +78,11 @@ class GetPastScores(APIView):
         if serializer.is_valid():
             """有効データの取得"""
             score_data = serializer.validated_data
+            user_id = score_data['user_id']
             lang_id = score_data['lang']  # 言語ID
             diff_id = score_data['diff']  # 難易度ID
             """最新のデータ30件取得"""
-            scores = Score.objects.filter(lang_id=lang_id,
+            scores = Score.objects.filter(user_id=user_id, lang_id=lang_id,
                                           diff_id=diff_id).order_by('-created_at')[:30]
             """スコアをシリアライズ"""
             scores_data = ScoreSerializer(scores, many=True).data
