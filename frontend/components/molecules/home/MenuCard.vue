@@ -4,7 +4,6 @@ import Title from '~/components/atoms/texts/Title.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
-import Loading from '~/composables/ui/useLoading.vue';
 import { useRouter } from '#app';
 
 const { logout } = await useLogout();
