@@ -39,6 +39,7 @@ class ScoreSerializer(serializers.ModelSerializer):
 
 class PastScoreSerializer(serializers.Serializer):
     """過去スコア取得用のシリアライザー"""
+    user_id = serializers.UUIDField(write_only=True)
     lang_id = serializers.PrimaryKeyRelatedField(source='lang',
                                                  queryset=Lang.objects.all(),
                                                  write_only=True)
@@ -48,12 +49,14 @@ class PastScoreSerializer(serializers.Serializer):
 
     class Meta:
         model = Score
-        fields = ['lang_id', 'diff_id']
+        fields = ['user_id', 'lang_id', 'diff_id']
 
     def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
         lang = validated_data.pop('lang')
         diff = validated_data.pop('diff')
 
-        logger.debug(f"lang: {lang}, diff: {diff}")
+        logger.debug(f"user_id: {user_id}, lang: {lang}, diff: {diff}")
 
-        return Score.objects.create(lang=lang, diff=diff, **validated_data)
+        user = get_object_or_404(User, user_id=user_id)
+        return Score.objects.create(user=user, lang=lang, diff=diff, **validated_data)
