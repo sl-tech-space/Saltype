@@ -43,7 +43,7 @@ export function useMistype() {
    * 各キーのミスタイプ数をリクエストを送るjson形式に変換
    * @returns json
    */
-  const formatMistypeData = () => {
+  const _formatMistypeData = () => {
     return Object.entries(mistypeCount.value).map(
       ([miss_char, miss_count]) => ({
         miss_char,
@@ -62,7 +62,7 @@ export function useMistype() {
         return;
       }
 
-      const missData = formatMistypeData();
+      const missData = _formatMistypeData();
 
       const dataToSend = {
         user_id: user.value.user_id,

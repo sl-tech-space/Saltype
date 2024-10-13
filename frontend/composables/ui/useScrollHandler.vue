@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * １画面スクロールハンドラー
+ */
 const handleScroll = (event: WheelEvent) => {
   if (event.deltaY > 0) {
     // 下スクロール
