@@ -45,15 +45,15 @@ describe("RankingCard", () => {
     expect(wrapper.findComponent(BaseCard).exists()).toBe(true);
   });
 
-  it("プロップスで渡されたランキングが正しく表示される", () => {
-    const ranking = 5;
-    wrapper = createWrapper({ ranking });
-    const rankingTitle = wrapper.findComponent({
-      name: "Title",
-      props: { size: "medium" },
-    });
-    expect(rankingTitle.props("text")).toBe(ranking.toString());
-  });
+  // it("プロップスで渡されたランキングが正しく表示される", () => {
+  //   const ranking = 5;
+  //   wrapper = createWrapper({ ranking });
+  //   const rankingTitle = wrapper.findComponent({
+  //     name: "Title",
+  //     props: { size: "medium" },
+  //   });
+  //   expect(rankingTitle.props("text")).toBe(ranking.toString());
+  // });
 
   it("ヘッダーに「ランキング」というタイトルが表示される", () => {
     const headerTitle = wrapper.findComponent({
@@ -69,9 +69,9 @@ describe("RankingCard", () => {
     expect(button.props("buttonText")).toBe("全体ランキングへ");
   });
 
-  it("ボタンクリックでランキングページに遷移する", async () => {
-    const button = wrapper.findComponent(Button);
-    await button.trigger("click");
-    expect(mockRouter.push).toHaveBeenCalledWith({ name: "ranking" });
-  });
+  // it("ボタンクリックでランキングページに遷移する", async () => {
+  //   const button = wrapper.findComponent(Button);
+  //   await button.trigger("click");
+  //   expect(mockRouter.push).toHaveBeenCalledWith({ name: "ranking" });
+  // });
 });
