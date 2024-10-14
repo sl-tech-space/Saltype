@@ -32,10 +32,6 @@ class ScoreService:
     def calculate_score(self, typing_count, accuracy):
         """スコアを計算"""
         score = typing_count * ScoreService.BASE_SCORE_MULTIPLIER * accuracy
-        print(f"Typing Count: {typing_count}")  # 値を明確に表示
-        print(f"Accuracy: {accuracy}")
-        print(f"Calculated Score (before rounding): {score}")
-
         return round(score)
 
     @HandleExceptions()

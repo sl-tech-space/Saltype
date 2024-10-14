@@ -27,7 +27,7 @@ class HandleExceptions:
                 return Response({'error': 'データベースエラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except Exception as e:
-                logger.error(f"Unexpected error: {e}")
+                logger.exception("Unexpected error occurred")
                 return Response({'error': '予期せぬエラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
