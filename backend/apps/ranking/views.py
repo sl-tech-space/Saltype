@@ -9,31 +9,26 @@ from .serializers import RankingSerializer
 
 
 class GetRanking(APIView):
-    """言語IDと難易度IDに基づいてユーザをスコアで並べて取得"""
+    """言語IDと難易度IDに基づいてユーザをスコア順で取得"""
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
-        """リクエストから送信されたデータをもとにシリアライズインスタンス作成"""
         serializer = RankingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if serializer.is_valid():
-            ranking_data = serializer.validated_data
-            lang_id = ranking_data['lang_id']  # 言語ID
-            diff_id = ranking_data['diff_id']  # 難易度ID
-            ranking_count = ranking_data['ranking_count']  # ランキング上限
-            """ 言語IDと難易度IDに基づいてスコアをフィルタリング """
-            filtered_scores = Score.objects.filter(lang_id=lang_id,
-                                                   diff_id=diff_id).select_related('user')
-            """ スコアを降順で取得 """
-            scores = filtered_scores.order_by('-score')[:ranking_count]
-            """ スコアのリストをフロントに返すために必要なデータに変換 """
-            ranking_response_data = [{
-                'user_id': score_entry.user.user_id,
-                'username': score_entry.user.username,
-                'score': score_entry.score
-            } for score_entry in scores]
+        ranking_data = serializer.validated_data
+        lang_id = ranking_data['lang_id']
+        diff_id = ranking_data['diff_id']
+        ranking_count = ranking_data['ranking_count']
+        """スコアを降順で取得し、ランキングデータを作成"""
+        scores = Score.objects.filter(lang_id=lang_id, diff_id=diff_id) \
+            .select_related('user').order_by('-score')[:ranking_count]
 
-            return Response({'ranking_data': ranking_response_data}, status=status.HTTP_200_OK)
+        ranking_response_data = [{
+            'user_id': score_entry.user.user_id,
+            'username': score_entry.user.username,
+            'score': score_entry.score
+        } for score_entry in scores]
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'ranking_data': ranking_response_data}, status=status.HTTP_200_OK)
