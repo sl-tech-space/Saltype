@@ -20,7 +20,7 @@ class ScoreProcess(APIView):
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
         serializer = ScoreSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)  # バリデーションエラーは自動で処理
+        serializer.is_valid(raise_exception=True)
         return self.process_score(serializer.validated_data)
 
     def process_score(self, score_data):
