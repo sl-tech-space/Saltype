@@ -1,8 +1,7 @@
 import logging
 
-from apps.common.models import Score, User
+from apps.common.models import Rank, Score, User
 from apps.common.utils import HandleExceptions
-from django.db import transaction
 from django.db.models import Avg
 
 logger = logging.getLogger(__name__)
@@ -33,6 +32,10 @@ class ScoreService:
     def calculate_score(self, typing_count, accuracy):
         """スコアを計算"""
         score = typing_count * ScoreService.BASE_SCORE_MULTIPLIER * accuracy
+        print(f"Typing Count: {typing_count}")  # 値を明確に表示
+        print(f"Accuracy: {accuracy}")
+        print(f"Calculated Score (before rounding): {score}")
+
         return round(score)
 
     @HandleExceptions()
@@ -43,29 +46,19 @@ class ScoreService:
                                                  diff_id=self.diff_id).order_by(
                                                      '-score', '-created_at').first()
 
-        if old_highest_score is None or score >= old_highest_score.score:
-            return True, score if old_highest_score is None else old_highest_score.score
-
+        if old_highest_score is None or score > old_highest_score.score:
+            return True, score
+        elif score == old_highest_score.score:
+            return True, old_highest_score.score
         return False, old_highest_score.score
-
-    @transaction.atomic
-    @HandleExceptions()
-    def update_rank(self, score, is_high_score):
-        """ランク更新処理"""
-        rank = self.determine_rank(score)
-
-        if is_high_score:
-            user = User.objects.get(user_id=self.user_id)
-            user.rank = rank
-            user.save()
-
-        return rank
 
     def determine_rank(self, score):
         """ランク判定処理"""
         ranks = [(1000, "社長"), (900, "取締役"), (700, "部長"), (500, "課長"), (300, "係長"), (100, "主任"),
                  (0, "メンバー")]
-        return next(rank for threshold, rank in ranks if score >= threshold)
+        rank_name = next(rank for threshold, rank in ranks if score >= threshold)
+
+        return rank_name
 
     def get_ranking_position(self, score):
         """ランキング取得(タイ順位を採用)"""
