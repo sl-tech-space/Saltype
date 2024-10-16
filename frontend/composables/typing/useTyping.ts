@@ -28,6 +28,9 @@ export function useTyping(language: string, difficultyLevel: string) {
   const { resetMistypeStats, countMistype, sendMistypeDataToServer } =
     useMistype();
 
+  /**
+   * タイピング結果取得変数
+   */
   const typingResults = reactive({
     totalCorrectTypedCount: 0,
     totalMistypedCount: 0,
@@ -43,6 +46,53 @@ export function useTyping(language: string, difficultyLevel: string) {
       typingResults.typingAccuracy = typingAccuracy.value;
     }
   );
+
+  /**
+   * 正タイプ率計算
+   */
+  const typingAccuracy = computed(() => {
+    const total =
+      typingResults.totalCorrectTypedCount + typingResults.totalMistypedCount;
+    return total > 0
+      ? Number((typingResults.totalCorrectTypedCount / total).toFixed(2))
+      : 0;
+  });
+
+  /**
+   * 現在の文章を出力
+   */
+  const currentSentence = computed(() => {
+    const sentence = sentencesData.value[currentIndex.value];
+    return sentence
+      ? {
+          sentence: sentence,
+          patterns: patterns.value,
+        }
+      : null;
+  });
+
+  /**
+   * 初期化処理
+   */
+  const initialize = async () => {
+    const { sentences } = useSentence(language, difficultyLevel);
+
+    try {
+      const data = await sentences();
+      if (Array.isArray(data) && data.length > 0) {
+        sentencesData.value = data;
+        resetMistypeStats();
+        _resetTypingStats();
+        await _updatePatterns();
+        _updateColoredText();
+      }
+    } catch (e) {
+      console.error("文章の取得に失敗しました:");
+    }
+  };
+
+  // 将来実装予定
+  const sendTypingDataToServer = () => {};
 
   /**
    * タイピング開始処理
@@ -78,34 +128,6 @@ export function useTyping(language: string, difficultyLevel: string) {
     );
 
     router.push({ name: "score" });
-  };
-
-  /**
-   * 現在の文章を出力
-   */
-  const currentSentence = computed(() => {
-    const sentence = sentencesData.value[currentIndex.value];
-    return sentence
-      ? {
-          sentence: sentence,
-          patterns: patterns.value,
-        }
-      : null;
-  });
-
-  /**
-   * 次の文章を表示
-   */
-  const _nextSentence = () => {
-    if (currentIndex.value < sentencesData.value.length - 1) {
-      currentIndex.value++;
-      currentInputIndex.value = 0;
-      currentInput.value = "";
-      currentPatternIndex.value = 0;
-      _updatePatterns();
-    } else {
-      isTypingStarted.value = false;
-    }
   };
 
   /**
@@ -167,6 +189,21 @@ export function useTyping(language: string, difficultyLevel: string) {
     return "incorrect";
   };
 
+  /**
+   * 次の文章を表示
+   */
+  const _nextSentence = () => {
+    if (currentIndex.value < sentencesData.value.length - 1) {
+      currentIndex.value++;
+      currentInputIndex.value = 0;
+      currentInput.value = "";
+      currentPatternIndex.value = 0;
+      _updatePatterns();
+    } else {
+      isTypingStarted.value = false;
+    }
+  };
+
   const _updatePatterns = async () => {
     const { getPatternList, getAllCombinations } = useSentencePattern();
     if (language === "1") {
@@ -201,17 +238,6 @@ export function useTyping(language: string, difficultyLevel: string) {
   };
 
   /**
-   * 正タイプ率の計算処理
-   */
-  const typingAccuracy = computed(() => {
-    const total =
-      typingResults.totalCorrectTypedCount + typingResults.totalMistypedCount;
-    return total > 0
-      ? Number((typingResults.totalCorrectTypedCount / total).toFixed(2))
-      : 0;
-  });
-
-  /**
    * 合計タイプ数を初期化
    */
   const _resetTypingStats = () => {
@@ -220,29 +246,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     resetMistypeStats();
   };
 
-  /**
-   * 初期化処理
-   */
-  const initialize = async () => {
-    const { sentences } = useSentence(language, difficultyLevel);
-
-    try {
-      const data = await sentences();
-      if (Array.isArray(data) && data.length > 0) {
-        sentencesData.value = data;
-        resetMistypeStats();
-        _resetTypingStats();
-        await _updatePatterns();
-        _updateColoredText();
-      }
-    } catch (e) {
-      console.error("文章の取得に失敗しました:");
-    }
-  };
-
   return {
-    typingAccuracy,
-    sentencesData,
     currentSentence,
     coloredText,
     isTypingStarted,
