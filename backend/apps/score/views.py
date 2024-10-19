@@ -13,35 +13,25 @@ from .services import ScoreService
 
 logger = logging.getLogger(__name__)
 
-from django.shortcuts import get_object_or_404
-
 
 class ScoreInsert(APIView):
     permission_classes = [AllowAny]
 
-    @HandleExceptions()
     def post(self, request, *args, **kwargs):
         serializer = ScoreInsertSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        """スコア計算"""
+
         score_service = ScoreService(user_id=serializer.validated_data['user_id'],
                                      lang_id=serializer.validated_data['lang'],
                                      diff_id=serializer.validated_data['diff'])
         score = score_service.calculate_score(serializer.validated_data['typing_count'],
                                               serializer.validated_data['accuracy'])
+        try:
+            user = User.objects.get(user_id=serializer.validated_data['user_id'])
+        except User.DoesNotExist:
+            return Response({'error': '指定されたユーザーは存在しません。'}, status=status.HTTP_404_NOT_FOUND)
 
-        user = get_object_or_404(User, user_id=serializer.validated_data['user_id'])
-        """スコアを作成"""
-        new_score = Score.objects.create(user=user,
-                                         lang=serializer.validated_data['lang'],
-                                         diff=serializer.validated_data['diff'],
-                                         score=score)
-
-        return Response({
-            'score_id': new_score.score_id,
-            'score': score
-        },
-                        status=status.HTTP_201_CREATED)
+        return Response({'score': score}, status=status.HTTP_201_CREATED)
 
 
 class ScoreProcess(APIView):
@@ -54,15 +44,13 @@ class ScoreProcess(APIView):
         return self.process_score(serializer.validated_data)
 
     def process_score(self, score_data):
-        """最も最近インサートされたスコアを取得"""
         recent_score = Score.objects.filter(
             user_id=score_data['user_id'], lang_id=score_data['lang'],
             diff_id=score_data['diff']).order_by('-created_at').first()
-        """ScoreServiceを初期化"""
+
         score_service = ScoreService(score_data['user_id'], score_data['lang'], score_data['diff'])
-        """平均スコアの取得"""
         average_score = score_service.get_average_score()
-        """スコア情報を使って最高スコア判定とランク判定"""
+
         score = recent_score.score if recent_score else 0
         is_high_score, new_highest_score = score_service.is_new_high_score(score)
         rank = score_service.determine_rank(score)
@@ -95,11 +83,25 @@ class RankUpdate(APIView):
         return self.update_rank(serializer.validated_data)
 
     def update_rank(self, data):
-        user = User.objects.get(user_id=data['user_id'])
-        rank = Rank.objects.get(rank=data['new_rank'])
+        try:
+            user = User.objects.get(user_id=data['user_id'])
+        except User.DoesNotExist:
+            return Response({'error': 'ユーザーが見つかりません。'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            rank = Rank.objects.filter(rank=data['new_rank']).first()
+        except Rank.DoesNotExist:
+            return Response({'error': '指定されたランクは存在しません。'}, status=status.HTTP_404_NOT_FOUND)
+
         user.rank = rank
         user.save()
-        return Response({"message": "ランク更新成功"}, status=status.HTTP_200_OK)
+
+        rank_data = {
+            'rank_id': rank.rank_id,
+            'rank': rank.rank,
+        }
+
+        return Response(rank_data, status=status.HTTP_200_OK)
 
 
 class PastScoresSelect(APIView):

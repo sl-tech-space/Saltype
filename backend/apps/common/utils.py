@@ -1,6 +1,7 @@
 import logging
 
 from django.db import DatabaseError, IntegrityError
+from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -28,7 +29,7 @@ class HandleExceptions:
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             except Exception as e:
                 logger.exception("Unexpected error occurred")
-                return Response({'error': '予期せぬエラーが発生しました。'},
+                return Response({'error': 'パラメータが適切ではありません'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return wrapper

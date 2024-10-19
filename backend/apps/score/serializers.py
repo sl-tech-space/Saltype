@@ -60,8 +60,8 @@ class ScoreSerializer(BaseScoreSerializer):
 
 
 class RankUpdateSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField()
-    new_rank = serializers.CharField()
+    user_id = serializers.UUIDField(write_only=True)
+    new_rank = serializers.CharField(write_only=True)
 
 
 class PastScoreSerializer(serializers.Serializer):
