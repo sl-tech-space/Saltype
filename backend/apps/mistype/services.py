@@ -36,5 +36,5 @@ class MistypeService:
         return inserted_data
 
     def get_topmisstypes(self, user_id, count):
-        """ミスタイプを降順で取得"""
+        """トップミスタイプ取得"""
         return Miss.objects.filter(user_id=user_id).order_by('-miss_count')[:count]

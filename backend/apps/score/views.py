@@ -13,6 +13,36 @@ from .services import ScoreService
 
 logger = logging.getLogger(__name__)
 
+from django.shortcuts import get_object_or_404
+
+
+class ScoreInsert(APIView):
+    permission_classes = [AllowAny]
+
+    @HandleExceptions()
+    def post(self, request, *args, **kwargs):
+        serializer = ScoreInsertSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        """スコア計算"""
+        score_service = ScoreService(user_id=serializer.validated_data['user_id'],
+                                     lang_id=serializer.validated_data['lang'],
+                                     diff_id=serializer.validated_data['diff'])
+        score = score_service.calculate_score(serializer.validated_data['typing_count'],
+                                              serializer.validated_data['accuracy'])
+
+        user = get_object_or_404(User, user_id=serializer.validated_data['user_id'])
+        """スコアを作成"""
+        new_score = Score.objects.create(user=user,
+                                         lang=serializer.validated_data['lang'],
+                                         diff=serializer.validated_data['diff'],
+                                         score=score)
+
+        return Response({
+            'score_id': new_score.score_id,
+            'score': score
+        },
+                        status=status.HTTP_201_CREATED)
+
 
 class ScoreProcess(APIView):
     permission_classes = [AllowAny]
@@ -24,13 +54,16 @@ class ScoreProcess(APIView):
         return self.process_score(serializer.validated_data)
 
     def process_score(self, score_data):
+        """最も最近インサートされたスコアを取得"""
+        recent_score = Score.objects.filter(
+            user_id=score_data['user_id'], lang_id=score_data['lang'],
+            diff_id=score_data['diff']).order_by('-created_at').first()
+        """ScoreServiceを初期化"""
         score_service = ScoreService(score_data['user_id'], score_data['lang'], score_data['diff'])
-
-        average_score = score_service.get_average_score(score_data.get('user_id'),
-                                                        score_data.get('lang'),
-                                                        score_data.get('diff'))
-        score = score_service.calculate_score(score_data.get('typing_count', 0),
-                                              score_data.get('accuracy', 1.0))
+        """平均スコアの取得"""
+        average_score = score_service.get_average_score()
+        """スコア情報を使って最高スコア判定とランク判定"""
+        score = recent_score.score if recent_score else 0
         is_high_score, new_highest_score = score_service.is_new_high_score(score)
         rank = score_service.determine_rank(score)
         ranking_position = score_service.get_ranking_position(score)
@@ -50,22 +83,6 @@ class ScoreProcess(APIView):
                 'ranking_position': ranking_position,
             },
             status=status.HTTP_200_OK)
-
-
-class ScoreInsert(APIView):
-    permission_classes = [AllowAny]
-
-    @HandleExceptions()
-    def post(self, request, *args, **kwargs):
-        serializer = ScoreInsertSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        new_score = serializer.save()
-
-        return Response({
-            'message': 'スコアインサート成功',
-            'score_id': new_score.score_id
-        },
-                        status=status.HTTP_201_CREATED)
 
 
 class RankUpdate(APIView):

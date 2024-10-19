@@ -23,8 +23,7 @@ class InsertMisTypes(APIView):
             validated_data = serializer.validated_data
             user_id = validated_data['user_id']
             miss_data = validated_data['miss_data']
-
-            # インスタンスを作成してからメソッドを呼び出す
+            """インスタンスを作成してからメソッドを呼び出す"""
             mistype_service = MistypeService()
             inserted_data = mistype_service.insert_mistypes(user_id, miss_data)
             return Response(inserted_data, status=status.HTTP_201_CREATED)
@@ -42,8 +41,7 @@ class GetTopMisTypes(APIView):
         if serializer.is_valid():
             user_id = serializer.validated_data['user_id']
             count = serializer.validated_data['count']
-
-            # インスタンスを作成してからメソッドを呼び出す
+            """インスタンスを作成してからメソッドを呼び出す"""
             mistype_service = MistypeService()
             miss_chars = mistype_service.get_topmisstypes(user_id, count)
 

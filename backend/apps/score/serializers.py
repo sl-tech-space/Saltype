@@ -22,6 +22,24 @@ class BaseScoreSerializer(serializers.ModelSerializer):
         fields = ['user_id', 'lang_id', 'diff_id']
 
 
+class ScoreInsertSerializer(BaseScoreSerializer):
+    """ Scoreインスタンスをインサートするためのシリアライザークラス """
+    typing_count = serializers.IntegerField(required=True)
+    accuracy = serializers.FloatField(required=True)
+
+    class Meta(BaseScoreSerializer.Meta):
+        fields = BaseScoreSerializer.Meta.fields + ['typing_count', 'accuracy']
+
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        user = get_object_or_404(User, user_id=user_id)
+        lang = validated_data.pop('lang')
+        diff = validated_data.pop('diff')
+        validated_data['user'] = user
+
+        return Score.objects.create(user=user, lang=lang, diff=diff, **validated_data)
+
+
 class ScoreSerializer(BaseScoreSerializer):
     """ Scoreモデルのシリアライザークラス """
     typing_count = serializers.IntegerField(write_only=True)
@@ -39,23 +57,6 @@ class ScoreSerializer(BaseScoreSerializer):
 
         user = get_object_or_404(User, user_id=user_id)
         return Score.objects.create(user=user, **validated_data)
-
-
-class ScoreInsertSerializer(BaseScoreSerializer):
-    """ Scoreインスタンスをインサートするためのシリアライザークラス """
-    score = serializers.IntegerField(write_only=True)
-
-    class Meta(BaseScoreSerializer.Meta):
-        fields = BaseScoreSerializer.Meta.fields + ['score']
-
-    def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
-        score = validated_data.pop('score')
-
-        user = get_object_or_404(User, user_id=user_id)
-
-        logger.debug(f"user_id: {user_id}, score: {score}")
-        return Score.objects.create(user=user, score=score, **validated_data)
 
 
 class RankUpdateSerializer(serializers.Serializer):
