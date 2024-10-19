@@ -8,7 +8,7 @@ class RankingSerializer(serializers.Serializer):
     ranking_count = serializers.IntegerField(default=10)
 
     def validate_ranking_count(self, value):
-        """ranking_count が正の整数であることをバリデーション"""
+
         if value <= 0:
-            raise serializers.ValidationError("ranking_count は正の整数である必要があります。")
+            raise serializers.ValidationError(("ranking_countは正の整数である必要があります。"))
         return value

@@ -27,9 +27,12 @@ class HandleExceptions:
                 logger.error(f"Database error: {e}")
                 return Response({'error': 'データベースエラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Http404 as e:
+                logger.warning(f"Http404 occurred: {e}")
+                raise e
             except Exception as e:
                 logger.exception("Unexpected error occurred")
-                return Response({'error': 'パラメータが適切ではありません'},
+                return Response({'error': '内部エラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return wrapper

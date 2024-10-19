@@ -1,11 +1,7 @@
-import logging
-
 from apps.common.utils import HandleExceptions
 from django.db import transaction
 
 from .models import Miss
-
-logger = logging.getLogger(__name__)
 
 
 class MistypeService:
@@ -35,6 +31,6 @@ class MistypeService:
 
         return inserted_data
 
-    def get_topmisstypes(self, user_id, count):
+    def get_top_mistypes(self, user_id, count):
         """トップミスタイプ取得"""
         return Miss.objects.filter(user_id=user_id).order_by('-miss_count')[:count]
