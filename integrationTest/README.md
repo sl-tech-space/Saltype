@@ -6,3 +6,4 @@ python -m venv venv
 venv\Scripts\activate (windows)
 source venv/bin/activate (mac, linux)
 pip install selenium
+pip install pytest
