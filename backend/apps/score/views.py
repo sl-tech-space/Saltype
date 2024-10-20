@@ -15,8 +15,10 @@ class ScoreInsert(APIView):
     def post(self, request, *args, **kwargs):
         serializer = ScoreInsertSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         score_instance = serializer.create(serializer.validated_data)
         return Response({'score': score_instance.score}, status=status.HTTP_201_CREATED)
+
 
 
 class ScoreProcess(APIView):

@@ -3,6 +3,7 @@ import Input from "~/components/atoms/inputs/Input.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Image from "~/components/atoms/imgs/Image.vue";
 import Field from "~/components/molecules/common/ValidateField.vue";
+import Loading from "~/composables/ui/useLoading.vue";
 import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
 import { Form } from "vee-validate";
 import * as yup from "yup";
@@ -25,7 +26,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required().min(8).label("パスワード"),
 });
 
-const { login } = await useLogin()
+const { login, isLoading } = useLogin()
 
 const handleSubmit = async () => {
   await login(email.value, password.value);
@@ -73,6 +74,7 @@ onMounted(() => {
       <Button type="submit" button-text="ログイン" border="main-color" :rounded="true" :disabled="!valid" />
     </div>
   </Form>
+  <Loading :is-loading="isLoading" />
   <BaseNotification message="ログアウトしました" content="また来てね！" :show="showNotification" />
 </template>
 

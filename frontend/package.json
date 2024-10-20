@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@nuxt/http": "^0.6.4",
@@ -37,7 +39,12 @@
     "yup-locale-ja": "^1.0.0"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "^3.14.3",
+    "@testing-library/vue": "^8.1.0",
     "@types/swiper": "^5.4.3",
-    "sass": "^1.77.8"
+    "@vitest/coverage-v8": "^2.1.2",
+    "happy-dom": "^15.7.4",
+    "sass": "^1.77.8",
+    "vitest": "^2.1.2"
   }
 }

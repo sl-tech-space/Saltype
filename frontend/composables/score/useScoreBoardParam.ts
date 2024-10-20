@@ -17,7 +17,7 @@ export function useScoreBoardParam() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/score/insert`,
+        `${config.public.baseURL}/api/score/process/`,
         {
           method: "POST",
           headers: {
@@ -39,7 +39,44 @@ export function useScoreBoardParam() {
 
       const data = await response.json();
 
+      const isRankUpdate: boolean = data.is_high_score;
+
+      if (isRankUpdate) {
+        _userRankUpdate(selectedLanguage, selectedDifficulty);
+      }
+
       return data;
+    } catch (e) {}
+  };
+
+  const _userRankUpdate = async (
+    selectedLanguage: number,
+    selectedDifficulty: number
+  ) => {
+    try {
+      if (!user.value) {
+        console.error("ユーザ情報が存在しません");
+        return;
+      }
+
+      const response = await fetch(
+        `${config.public.baseURL}/api/score/process/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.value.user_id,
+            lang_id: Number(selectedLanguage),
+            diff_id: Number(selectedDifficulty),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("ユーザのランク更新に失敗しました");
+      }
     } catch (e) {}
   };
 

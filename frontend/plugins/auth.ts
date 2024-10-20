@@ -9,6 +9,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   await nuxtApp.hooks.callHook("app:created", app);
 
   const token = useCookie("auth_token").value;
+  
   if (token) {
     try {
       const response = await fetch(`${config.public.baseURL}/api/auth-token/`, {

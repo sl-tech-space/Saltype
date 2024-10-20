@@ -2,15 +2,13 @@
 import CursorEffect from "~/composables/ui/useCursorEffect.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
-import Loading from "~/composables/ui/useLoading.vue";
 import Title from "~/components/atoms/texts/Title.vue";
+import { useAuthToken } from "~/composables/auth/useAuthToken";
 
-let isLoading = ref(true);
+const { authToken } = useAuthToken();
 
 onMounted(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 500);
+  authToken();
 });
 
 onMounted(() => {
@@ -29,7 +27,6 @@ onMounted(() => {
       <GoogleAuth />
     </div>
   </div>
-  <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>

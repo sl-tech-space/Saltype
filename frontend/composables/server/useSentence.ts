@@ -44,7 +44,7 @@ export function useSentence(
 
   const sentences = async () => {
     try {
-      const response = await fetch("/api/random-sentences", {
+      const response = await fetch("/api/random-sentences/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

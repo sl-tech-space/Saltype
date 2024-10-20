@@ -1,7 +1,5 @@
-import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useRuntimeConfig } from "nuxt/app";
-import { useUser } from "../conf/useUser";
+import { useAuthToken } from "./useAuthToken";
 
 interface GoogleUserInfo {
   email: string;
@@ -13,11 +11,10 @@ interface GoogleUserInfo {
  * @returns user, error, loginWithGoogle
  */
 export const useGoogleAuth = () => {
+  const { authToken } = useAuthToken();
   const config = useRuntimeConfig();
   const user = ref<GoogleUserInfo | null>(null);
-  const router = useRouter();
   const error = ref<Error | null>(null);
-  const { setUser } = useUser();
 
   const loginWithGoogle = async (): Promise<void> => {
     try {
@@ -29,49 +26,49 @@ export const useGoogleAuth = () => {
         scope:
           "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile",
         callback: async (response: any) => {
-          if (response.access_token) {
-            const userInfo = await $fetch<GoogleUserInfo>(
-              "https://www.googleapis.com/oauth2/v3/userinfo",
+          if (!response.access_token) {
+            throw new Error("ユーザ情報が存在しません");
+          }
+
+          const userInfo = await $fetch<GoogleUserInfo>(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            {
+              headers: { Authorization: `Bearer ${response.access_token}` },
+            }
+          );
+
+          if (userInfo) {
+            const response = await fetch(
+              `${config.public.baseURL}/api/google-auth/`,
               {
-                headers: { Authorization: `Bearer ${response.access_token}` },
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  username: userInfo.name,
+                  email: userInfo.email,
+                }),
               }
             );
 
-            if (userInfo) {
-              const response = await fetch(
-                `${config.public.baseURL}/api/google-auth/`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    username: userInfo.name,
-                    email: userInfo.email,
-                  }),
-                }
-              );
-
-              if (!response.ok) {
-                console.log(response.json);
-                throw new Error("認証に失敗");
-              }
-
-              const data = await response.json();
-
-              if (!data.token) {
-                throw new Error("トークンが存在しません");
-              }
-
-              useCookie("auth_token").value = data.token;
-              router.push({ name: "home" });
-            } else {
-              throw new Error("ユーザ情報が存在しません");
+            if (!response.ok) {
+              throw new Error("認証に失敗");
             }
+
+            const data = await response.json();
+
+            if (!data.token) {
+              throw new Error("トークンが存在しません");
+            }
+
+            useCookie("auth_token").value = data.token;
+            await nextTick();
+
+            await authToken();
           }
         },
       });
-
       client.requestAccessToken();
     } catch (e) {
       error.value =

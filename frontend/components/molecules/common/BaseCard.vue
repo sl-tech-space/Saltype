@@ -36,11 +36,11 @@ const props = withDefaults(defineProps<Props>(), {
         <div class="card-header">
             <slot name="card-header" />
         </div>
-        <Separator :color="props.sepColor" width="large" margin="none" :visible="props.headerSep" />
+        <Separator v-if="props.headerSep" :color="props.sepColor" width="large" margin="none" />
         <div class="card-body">
             <slot name="card-body" />
         </div>
-        <Separator :color="props.sepColor" width="large" margin="none" :visible="props.footerSep" />
+        <Separator v-if="props.footerSep" :color="props.sepColor" width="large" margin="none" />
         <div class="card-footer" v-if="needFooter">
             <slot name="card-footer" />
         </div>

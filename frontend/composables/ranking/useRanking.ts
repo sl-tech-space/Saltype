@@ -44,7 +44,7 @@ export function useRanking() {
     limit: Number
   ) => {
     try {
-      const response = await fetch(`${config.public.baseURL}/api/ranking`, {
+      const response = await fetch(`${config.public.baseURL}/api/ranking/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,16 +1,16 @@
-import { ref } from "vue";
+import { useAuthToken } from "./useAuthToken";
 
 /**
  * オリジナルフォームログイン処理
  * @returns login, isLoading, error
  */
-export async function useLogin() {
+export function useLogin() {
+  const { authToken } = useAuthToken();
   const config = useRuntimeConfig();
   const router = useRouter();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
-  //オリジナルフォームログイン処理
   const login = async (email: string, password: string) => {
     isLoading.value = true;
     error.value = null;
@@ -28,18 +28,25 @@ export async function useLogin() {
         signal: AbortSignal.timeout(5000),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.token) {
-          useCookie("auth_token").value = data.token;
-          router.push({ name: "home" });
-        } else {
-          error.value = "トークンが発行されませんでした";
-        }
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
         error.value = errorData.message || "ログインに失敗しました。";
+        return;
       }
+
+      const data = await response.json();
+
+      if (!data.token) {
+        error.value = "トークンが発行されませんでした";
+        return;
+      }
+
+      useCookie("auth_token").value = data.token;
+      await nextTick();
+
+      await authToken();
+
+      router.push({ name: "home" });
     } catch (e) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
