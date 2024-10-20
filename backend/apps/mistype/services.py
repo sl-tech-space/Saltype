@@ -15,6 +15,10 @@ class MistypeService:
         for data in miss_data:
             miss_char = data.get('miss_char')
             miss_count = data.get('miss_count', 0)
+            """miss_charがアルファベットかどうかをチェック"""
+            if not miss_char.isalpha() or len(miss_char) != 1:
+                continue
+
             miss_instance, created = Miss.objects.get_or_create(user_id=user_id,
                                                                 miss_char=miss_char,
                                                                 defaults={'miss_count': miss_count})
