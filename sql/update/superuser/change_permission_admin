@@ -1,3 +1,0 @@
-UPDATE user
-SET permission = 0
-WHERE username = 'superuser';
