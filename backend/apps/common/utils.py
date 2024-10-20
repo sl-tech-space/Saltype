@@ -1,6 +1,7 @@
 import logging
 
 from django.db import DatabaseError, IntegrityError
+from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -26,9 +27,12 @@ class HandleExceptions:
                 logger.error(f"Database error: {e}")
                 return Response({'error': 'データベースエラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Http404 as e:
+                logger.warning(f"Http404 occurred: {e}")
+                raise e
             except Exception as e:
                 logger.exception("Unexpected error occurred")
-                return Response({'error': '予期せぬエラーが発生しました。'},
+                return Response({'error': '内部エラーが発生しました。'},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return wrapper

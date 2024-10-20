@@ -1,10 +1,8 @@
-import logging
-
-from apps.common.models import Diff, Lang, Score, User
+from apps.common.models import Diff, Lang, Rank, Score, User
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-logger = logging.getLogger(__name__)
+from .services import ScoreService
 
 
 class BaseScoreSerializer(serializers.ModelSerializer):
@@ -23,7 +21,6 @@ class BaseScoreSerializer(serializers.ModelSerializer):
 
 
 class ScoreInsertSerializer(BaseScoreSerializer):
-    """ Scoreインスタンスをインサートするためのシリアライザークラス """
     typing_count = serializers.IntegerField(required=True)
     accuracy = serializers.FloatField(required=True)
 
@@ -31,17 +28,21 @@ class ScoreInsertSerializer(BaseScoreSerializer):
         fields = BaseScoreSerializer.Meta.fields + ['typing_count', 'accuracy']
 
     def create(self, validated_data):
+        """スコアインスタンスを作成する"""
         user_id = validated_data.pop('user_id')
         user = get_object_or_404(User, user_id=user_id)
         lang = validated_data.pop('lang')
         diff = validated_data.pop('diff')
-        validated_data['user'] = user
-
-        return Score.objects.create(user=user, lang=lang, diff=diff, **validated_data)
+        """スコア計算"""
+        score_service = ScoreService(user_id=user_id, lang_id=lang.pk, diff_id=diff.pk)
+        score_value = score_service.calculate_score(validated_data['typing_count'],
+                                                    validated_data['accuracy'])
+        """Scoreインスタンス作成"""
+        return Score.objects.create(user=user, lang=lang, diff=diff, score=score_value)
 
 
 class ScoreSerializer(BaseScoreSerializer):
-    """ Scoreモデルのシリアライザークラス """
+    score = serializers.IntegerField(read_only=True)
     typing_count = serializers.IntegerField(write_only=True)
     accuracy = serializers.FloatField(write_only=True)
 
@@ -49,23 +50,25 @@ class ScoreSerializer(BaseScoreSerializer):
         fields = BaseScoreSerializer.Meta.fields + ['score', 'typing_count', 'accuracy']
 
     def create(self, validated_data):
+        """スコアインスタンス作成処理"""
         user_id = validated_data.pop('user_id')
-        typing_count = validated_data.pop('typing_count')
-        accuracy = validated_data.pop('accuracy')
-
-        logger.debug(f"user_id: {user_id}, typing_count: {typing_count}, accuracy: {accuracy}")
-
         user = get_object_or_404(User, user_id=user_id)
+        """Scoreインスタンス作成"""
         return Score.objects.create(user=user, **validated_data)
 
 
 class RankUpdateSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField()
-    new_rank = serializers.CharField()
+    user_id = serializers.UUIDField(write_only=True)
+    new_rank = serializers.CharField(write_only=True)
+
+    def validate_new_rank(self, value):
+        """指定されたランクが存在するか確認するバリデーション"""
+        if not Rank.objects.filter(rank=value).exists():
+            raise serializers.ValidationError("指定されたランクは存在しません。")
+        return value
 
 
 class PastScoreSerializer(serializers.Serializer):
-    """過去スコア取得用のシリアライザー"""
     user_id = serializers.UUIDField()
     lang_id = serializers.PrimaryKeyRelatedField(source='lang',
                                                  queryset=Lang.objects.all(),

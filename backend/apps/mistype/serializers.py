@@ -19,15 +19,20 @@ class MissTypeSerializer(serializers.Serializer):
         for item in value:
             miss_char = item.get('miss_char')
             miss_count = item.get('miss_count')
-            if not miss_char or not miss_char.isalpha() or len(miss_char) != 1:
+
+            # ミスタイプ文字の検証
+            if not miss_char or not isinstance(
+                    miss_char, str) or len(miss_char) != 1 or not miss_char.isalpha():
                 raise serializers.ValidationError("ミスタイプ文字は1文字のアルファベットである必要があります。")
-            if miss_count is None or miss_count < 0:
-                raise serializers.ValidationError("ミスタイプカウントは0以上でなければなりません。")
+
+            # ミスタイプカウントの検証
+            if miss_count is None or not isinstance(miss_count, int) or miss_count < 0:
+                raise serializers.ValidationError("ミスタイプカウントは0以上の整数でなければなりません。")
 
         return value
 
 
-class UserIDSerializer(serializers.Serializer):
-    """ユーザーIDのバリデーション用シリアライザー"""
+class TopMistypesSerializer(serializers.Serializer):
+    """ミスタイプ取得リクエスト用シリアライザー"""
     user_id = serializers.UUIDField()
     count = serializers.IntegerField(default=3)

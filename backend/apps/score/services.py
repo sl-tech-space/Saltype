@@ -2,7 +2,9 @@ import logging
 
 from apps.common.models import Rank, Score, User
 from apps.common.utils import HandleExceptions
+from django.db import transaction
 from django.db.models import Avg
+from django.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +23,13 @@ class ScoreService:
         self.lang_id = lang_id
         self.diff_id = diff_id
 
+    @HandleExceptions()
+    def get_recent_score(self):
+        """直近のスコアを取得する処理"""
+        return Score.objects.filter(user_id=self.user_id,
+                                    lang_id=self.lang_id,
+                                    diff_id=self.diff_id).order_by('-created_at').first()
+
     def get_average_score(self):
         """平均スコア取得処理"""
         average_score = Score.objects.filter(user_id=self.user_id,
@@ -31,9 +40,8 @@ class ScoreService:
 
     def calculate_score(self, typing_count, accuracy):
         """スコア計算処理"""
-        """入力値が不正な場合、スコアは0"""
-        if typing_count < 0 or accuracy < 0:
-            return 0
+        if typing_count < 0 or not (0 <= accuracy <= 1):
+            raise ValueError("不正な入力値が含まれています。")
         score = typing_count * ScoreService.BASE_SCORE_MULTIPLIER * accuracy
         return round(score)
 
@@ -55,9 +63,21 @@ class ScoreService:
         """ランク判定処理"""
         ranks = [(1000, "社長"), (900, "取締役"), (700, "部長"), (500, "課長"), (300, "係長"), (100, "主任"),
                  (0, "メンバー")]
-        rank_name = next(rank for threshold, rank in ranks if score >= threshold)
+        return next(rank for threshold, rank in ranks if score >= threshold)
 
-        return rank_name
+    @transaction.atomic
+    def update_user_rank(self, new_rank):
+        """ユーザーのランクを更新する処理"""
+        user = get_object_or_404(User, user_id=self.user_id)
+        rank = get_object_or_404(Rank, rank=new_rank)
+
+        user.rank = rank
+        user.save()
+
+        return {
+            'rank_id': rank.rank_id,
+            'rank': rank.rank,
+        }
 
     def get_ranking_position(self, score):
         """ランキング取得(タイ順位を採用)"""
@@ -66,3 +86,9 @@ class ScoreService:
                                                   score__gt=score).count()
 
         return higher_score_count + 1
+
+    def get_past_scores(self):
+        """過去のスコアを取得する処理"""
+        return Score.objects.filter(user_id=self.user_id,
+                                    lang_id=self.lang_id,
+                                    diff_id=self.diff_id).order_by('-created_at')[:30]
