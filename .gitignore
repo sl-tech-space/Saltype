@@ -2,6 +2,7 @@ node_modules
 mysql-data/
 postgres-data/
 __pycache__/
+**/__pycache__/
 *.sock
 *.env
 *.py[cod]

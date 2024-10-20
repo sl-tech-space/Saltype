@@ -28,18 +28,18 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    session: {
+      expiryInSeconds: 60 * 60 * 24,
+      rolling: true,
+      sameSite: "lax",
+      httpOnly: true,
+    },
     cryptoKey:
       process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString("hex"),
     public: {
       baseURL: "http://localhost:8000", //Django REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
-  },
-  session: {
-    expiryInSeconds: 60 * 60 * 24,
-    rolling: true,
-    sameSite: "lax",
-    httpOnly: true,
   },
   vite: {
     css: {

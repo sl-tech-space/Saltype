@@ -2,6 +2,7 @@ import { ref, computed } from "vue";
 import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
 import { useMistype } from "./useMistype";
+import { useUser } from "../conf/useUser";
 
 /**
  * タイピング画面処理
@@ -15,6 +16,7 @@ import { useMistype } from "./useMistype";
  */
 export function useTyping(language: string, difficultyLevel: string) {
   const router = useRouter();
+  const config = useRuntimeConfig();
   const sentencesData = ref<Array<[string, string]>>([]);
   const currentIndex = ref(0);
   const patterns = ref<string[]>([]);
@@ -27,6 +29,7 @@ export function useTyping(language: string, difficultyLevel: string) {
   const isCountdownActive = ref(false);
   const { resetMistypeStats, countMistype, sendMistypeDataToServer } =
     useMistype();
+  const { user } = useUser();
 
   /**
    * タイピング結果取得変数
@@ -91,8 +94,40 @@ export function useTyping(language: string, difficultyLevel: string) {
     }
   };
 
-  // 将来実装予定
-  const sendTypingDataToServer = () => {};
+  /**
+   * タイピング結果送信
+   */
+  const _sendTypingDataToServer = async () => {
+    const indexOffset = 1;
+
+    try {
+      if (!user.value) {
+        console.error("ユーザ情報が存在しません");
+        return;
+      }
+
+      const response = await fetch(
+        `${config.public.baseURL}/api/score/insert/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.value.user_id,
+            lang_id: Number(localStorage.getItem("language")) + indexOffset,
+            diff_id: Number(localStorage.getItem("difficulty")) + indexOffset,
+            typing_count: typingResults.totalCorrectTypedCount,
+            accuracy: typingResults.typingAccuracy,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("スコアの送信に失敗");
+      }
+    } catch (e) {}
+  };
 
   /**
    * タイピング開始処理
@@ -117,6 +152,7 @@ export function useTyping(language: string, difficultyLevel: string) {
   const finishTyping = () => {
     isTypingStarted.value = false;
     sendMistypeDataToServer();
+    _sendTypingDataToServer();
 
     localStorage.setItem(
       "totalCorrectTypedCount",
