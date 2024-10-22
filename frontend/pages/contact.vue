@@ -5,7 +5,7 @@ import ContactCard from '~/components/organisms/contact/ContactCard.vue';
 
 onMounted(() => {
   useHead({
-    title: "ホーム"
+    title: "ご要望"
   })
 })
 </script>
