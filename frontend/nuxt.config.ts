@@ -66,5 +66,10 @@ export default defineNuxtConfig({
         exclude: ["node_modules", ".nuxt", "coverage"],
       },
     },
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
   },
 });
