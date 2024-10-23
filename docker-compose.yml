@@ -33,6 +33,7 @@ services:
       - SQL_PASSWORD=${DB_PASSWORD}
       - SQL_HOST=${DB_HOST}
       - SQL_PORT=${DB_PORT}
+      - PYTHONIOENCODING=utf-8
     depends_on:
       - db
 
@@ -45,6 +46,8 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:
