@@ -9,3 +9,5 @@ pip install selenium<br>
 pip install pytest<br>
 <br>
 またはrequirements.txtから依存関係をインストール
+
+### ✓DBのみDocker環境にすること
