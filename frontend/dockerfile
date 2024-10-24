@@ -6,19 +6,12 @@ COPY package*.json ./
 
 RUN npm install
 
-# 本番環境用
-# COPY . .
-# RUN npm run build
-
 ENV HOST 0.0.0.0
 
 # 開発環境用
 ENV CHOKIDAR_USEPOLLING=true
 
 EXPOSE 3000
-
-# 本番環境用
-# CMD [ "npm", "run", "production" ]
 
 # 開発環境用
 CMD [ "npm", "run", "dev" ]

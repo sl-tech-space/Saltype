@@ -107,7 +107,7 @@ export function useTyping(language: string, difficultyLevel: string) {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/score/insert/`,
+        `${config.public.baseURL}/api/django/score/insert/`,
         {
           method: "POST",
           headers: {
