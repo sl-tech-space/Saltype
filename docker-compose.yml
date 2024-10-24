@@ -9,16 +9,23 @@ services:
     depends_on:
       - frontend
       - backend
+    networks:
+      - frontend-net
+      - backend-net
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    volumes:
+      - ./frontend/server/data:/app/dist/data
     container_name: saltype-nuxt
     environment:
       - HOST=0.0.0.0
     depends_on:
       - backend
+    networks:
+      - frontend-net
 
   backend:
     build:
@@ -40,6 +47,8 @@ services:
       - PYTHONIOENCODING=utf-8
     depends_on:
       - db
+    networks:
+      - backend-net
 
   db:
     image: postgres:14
@@ -52,6 +61,15 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
+    networks:
+      - backend-net
+
+networks:
+  frontend-net:
+    driver: bridge
+
+  backend-net:
+    driver: bridge
 
 volumes:
   postgres_data:

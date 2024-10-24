@@ -69,8 +69,6 @@ export function useMistype() {
         miss_data: missData,
       };
 
-      console.log(dataToSend);
-
       const response = await fetch(
         `${config.public.baseURL}/api/django/mistypes/insert/`,
         {

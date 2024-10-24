@@ -4,14 +4,13 @@ import path from "path";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const language = body.language as string;
-  const difficultyLevel = body.difficultyLevel as string;
+  const language: string = body.language;
+  const difficultyLevel: string = body.difficultyLevel;
   const count = body.count || 100; // デフォルトで100文取得
 
-  const filePath = path.resolve(
+  const filePath = path.join(
     process.cwd(),
-    "server",
-    "data",
+    "dist/data",
     `${language}`,
     `${difficultyLevel}.json`
   );
