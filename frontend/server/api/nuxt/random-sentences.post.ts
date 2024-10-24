@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const difficultyLevel = body.difficultyLevel as string;
   const count = body.count || 100; // デフォルトで100文取得
 
-  const filePath = path.join(
+  const filePath = path.resolve(
     process.cwd(),
     "server",
     "data",
@@ -30,6 +30,6 @@ export default defineEventHandler(async (event) => {
 
     return selectedSentences;
   } catch (e) {
-    console.log("文章取得失敗");
+    console.log("文章取得失敗", e);
   }
 });

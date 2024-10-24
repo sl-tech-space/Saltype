@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   components: true,
   compatibilityDate: "2024-09-20",
   devtools: { enabled: false },
-  modules: ["@sidebase/nuxt-session", "@nuxt/test-utils/module"],
+  modules: ["@sidebase/nuxt-session"],
   routeRules: {
     "/": { prerender: true }, // SSG
     "/login": { ssr: false }, // CSR
@@ -37,7 +37,7 @@ export default defineNuxtConfig({
     cryptoKey:
       process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString("hex"),
     public: {
-      baseURL: "http://localhost:8000", //Django REST Framework接続
+      baseURL: "http://localhost", //Django REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
@@ -56,6 +56,7 @@ export default defineNuxtConfig({
         "@vueuse/core",
         "vue-chartjs",
         "chart.js",
+        'defu'
       ],
     },
     test: {

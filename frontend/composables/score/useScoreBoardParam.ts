@@ -17,7 +17,7 @@ export function useScoreBoardParam() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/score/process/`,
+        `${config.public.baseURL}/api/django/score/process/`,
         {
           method: "POST",
           headers: {
@@ -60,7 +60,7 @@ export function useScoreBoardParam() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/score/process/`,
+        `${config.public.baseURL}/api/django/score/process/`,
         {
           method: "POST",
           headers: {
