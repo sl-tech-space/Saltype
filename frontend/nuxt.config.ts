@@ -37,7 +37,7 @@ export default defineNuxtConfig({
     cryptoKey:
       process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString("hex"),
     public: {
-      baseURL: "http://localhost", //Django REST Framework接続
+      baseURL: "http://localhost:8000", //Django REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },

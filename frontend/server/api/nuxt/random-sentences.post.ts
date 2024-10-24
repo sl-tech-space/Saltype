@@ -10,11 +10,12 @@ export default defineEventHandler(async (event) => {
 
   const filePath = path.join(
     process.cwd(),
-    "dist/data",
+    "server",
+    "data",
     `${language}`,
     `${difficultyLevel}.json`
   );
-
+  
   try {
     const fileContent = await fs.readFile(filePath, "utf-8");
     const data = JSON.parse(fileContent);
