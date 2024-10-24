@@ -10,7 +10,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     
     if (token) {
       try {
-        const response = await fetch(`${config.public.baseURL}/api/auth-token/`, {
+        const response = await fetch(`${config.public.baseURL}/api/django/auth-token/`, {
           headers: {
             Authorization: `Token ${token}`,
           },
