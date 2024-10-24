@@ -62,7 +62,7 @@ onUnmounted(() => {
         </div>
         <Separator color="sub-color" width="medium" />
     </main>
-    <Loading :isLoading="isLoading" />
+    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>
