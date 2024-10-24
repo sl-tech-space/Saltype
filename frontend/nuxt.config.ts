@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ["@sidebase/nuxt-session"],
   routeRules: {
-    "/": { prerender: true }, // SSG
+    "/": { ssr: true }, // SSR
     "/login": { ssr: false }, // CSR
     "/home": { ssr: true }, // SSR
     "/typing": { ssr: true }, // SSR
