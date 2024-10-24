@@ -1,17 +1,33 @@
-FROM node:20
+# ビルドステージ
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
+ENV NODE_ENV=production
+
+# 必要なビルドツールをインストール
+RUN apk add --no-cache python3 make g++
+
+# 依存関係のコピーとインストール
 COPY package*.json ./
+RUN npm install --production
 
-RUN npm install
+# ソースコードのコピーとビルド
+COPY . .
+RUN npm run build
 
-ENV HOST 0.0.0.0
+# 実行ステージ
+FROM node:20-alpine
 
-# 開発環境用
-ENV CHOKIDAR_USEPOLLING=true
+WORKDIR /app
+
+# ビルドステージから必要なファイルをコピー
+COPY --from=build /app/.output ./.output
+COPY --from=build /app/node_modules ./node_modules
+
+ENV HOST=0.0.0.0
+ENV PORT=3000
 
 EXPOSE 3000
 
-# 開発環境用
-CMD [ "npm", "run", "dev" ]
+CMD ["node", ".output/server/index.mjs"]

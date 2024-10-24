@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "start": "nuxt start",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -23,6 +24,7 @@
     "@vee-validate/rules": "^4.13.2",
     "@vueuse/core": "^11.1.0",
     "chart.js": "^4.4.4",
+    "defu": "^6.1.4",
     "embla-carousel": "^8.2.1",
     "embla-carousel-vue": "^8.2.1",
     "emiel": "^0.1.5",
