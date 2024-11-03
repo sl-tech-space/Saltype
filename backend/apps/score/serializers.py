@@ -1,78 +1,43 @@
-from apps.common.models import Diff, Lang, Rank, Score, User
+from apps.common.models import Diff, Lang, Rank, User
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-
-from .services import ScoreService
-
-
-class BaseScoreSerializer(serializers.ModelSerializer):
-    """ Scoreモデルの基底シリアライザークラス """
-    user_id = serializers.UUIDField(write_only=True)
-    lang_id = serializers.PrimaryKeyRelatedField(source='lang',
-                                                 queryset=Lang.objects.all(),
-                                                 write_only=True)
-    diff_id = serializers.PrimaryKeyRelatedField(source='diff',
-                                                 queryset=Diff.objects.all(),
-                                                 write_only=True)
-
-    class Meta:
-        model = Score
-        fields = ['user_id', 'lang_id', 'diff_id']
+from rest_framework.exceptions import ValidationError
 
 
-class ScoreInsertSerializer(BaseScoreSerializer):
-    typing_count = serializers.IntegerField(required=True)
-    accuracy = serializers.FloatField(required=True)
+class ScoreSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField(required=False)
+    lang_id = serializers.IntegerField(required=False)
+    diff_id = serializers.IntegerField(required=False)
+    typing_count = serializers.IntegerField(required=False)
+    accuracy = serializers.FloatField(required=False)
+    score = serializers.IntegerField(required=False)
+    new_rank = serializers.CharField(write_only=True, required=False)
 
-    class Meta(BaseScoreSerializer.Meta):
-        fields = BaseScoreSerializer.Meta.fields + ['typing_count', 'accuracy']
+    def validate(self, attrs):
+        if 'user_id' in attrs:
+            user = get_object_or_404(User, pk=attrs['user_id'])
+            attrs['user'] = user
 
-    def create(self, validated_data):
-        """スコアインスタンスを作成する"""
-        user_id = validated_data.pop('user_id')
-        user = get_object_or_404(User, user_id=user_id)
-        lang = validated_data.pop('lang')
-        diff = validated_data.pop('diff')
-        """スコア計算"""
-        score_service = ScoreService(user_id=user_id, lang_id=lang.pk, diff_id=diff.pk)
-        score_value = score_service.calculate_score(validated_data['typing_count'],
-                                                    validated_data['accuracy'])
-        """Scoreインスタンス作成"""
-        return Score.objects.create(user=user, lang=lang, diff=diff, score=score_value)
+        if 'lang_id' in attrs:
+            lang = get_object_or_404(Lang, pk=attrs['lang_id'])
+            attrs['lang'] = lang
 
+        if 'diff_id' in attrs:
+            diff = get_object_or_404(Diff, pk=attrs['diff_id'])
+            attrs['diff'] = diff
 
-class ScoreSerializer(BaseScoreSerializer):
-    score = serializers.IntegerField(read_only=True)
-    typing_count = serializers.IntegerField(write_only=True)
-    accuracy = serializers.FloatField(write_only=True)
+        if 'typing_count' in attrs and attrs['typing_count'] < 0:
+            raise ValidationError({"typing_count": "タイプ数は0以上でなければなりません。"})
 
-    class Meta(BaseScoreSerializer.Meta):
-        fields = BaseScoreSerializer.Meta.fields + ['score', 'typing_count', 'accuracy']
+        if 'accuracy' in attrs and not (0 <= attrs['accuracy'] <= 1):
+            raise ValidationError({"accuracy": "精度は0から1の間でなければなりません。"})
 
-    def create(self, validated_data):
-        """スコアインスタンス作成処理"""
-        user_id = validated_data.pop('user_id')
-        user = get_object_or_404(User, user_id=user_id)
-        """Scoreインスタンス作成"""
-        return Score.objects.create(user=user, **validated_data)
+        if 'new_rank' in attrs:
+            rank_id = self.get_rank_id(attrs['new_rank'])
+            attrs['rank_id'] = rank_id
 
+        return attrs
 
-class RankUpdateSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField(write_only=True)
-    new_rank = serializers.CharField(write_only=True)
-
-    def validate_new_rank(self, value):
-        """指定されたランクが存在するか確認するバリデーション"""
-        if not Rank.objects.filter(rank=value).exists():
-            raise serializers.ValidationError("指定されたランクは存在しません。")
-        return value
-
-
-class PastScoreSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField()
-    lang_id = serializers.PrimaryKeyRelatedField(source='lang',
-                                                 queryset=Lang.objects.all(),
-                                                 write_only=True)
-    diff_id = serializers.PrimaryKeyRelatedField(source='diff',
-                                                 queryset=Diff.objects.all(),
-                                                 write_only=True)
+    def get_rank_id(self, rank_name):
+        rank = get_object_or_404(Rank, rank=rank_name)
+        return rank.rank_id

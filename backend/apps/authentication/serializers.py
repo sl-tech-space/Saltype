@@ -1,24 +1,11 @@
-from apps.common.models import User
-from django.contrib.auth import authenticate
-from django.db import transaction
+from django.contrib.auth import authenticate, get_user_model
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-from django.contrib.auth import get_user_model
 
 
 class UserLoginSerializer(serializers.Serializer):
-    """
-    リクエストのバリデーション、ログインを行う
-
-    Raises:
-        serializers.ValidationError: メールアドレス、パスワードが未入力
-        serializers.ValidationError: メールアドレスまたはパスワードが不一致
-        serializers.ValidationError: ユーザが存在しない
-
-    Returns:
-        data: 認証されたユーザの情報を返す
-    """
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
@@ -29,6 +16,8 @@ class UserLoginSerializer(serializers.Serializer):
         if not email or not password:
             msg = _('メールアドレスとパスワードを入力してください。')
             raise serializers.ValidationError(msg, code='authorization')
+
+        self.validate_min_length(password)
 
         user = authenticate(request=self.context.get('request'), username=email, password=password)
 
@@ -43,31 +32,19 @@ class UserLoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
 
+    def validate_min_length(self, value, min_length=8):
+        if len(value) < min_length:
+            raise ValidationError(f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字")
+
+
 class UserSerializer(ModelSerializer):
+
     class Meta:
         model = get_user_model()
         fields = ['user_id', 'username', 'email']
 
+
 class GoogleAuthSerializer(serializers.Serializer):
-    """
-    Google認証
-    バリデーションとユーザ作成を担う
-    """
     email = serializers.EmailField()
     username = serializers.CharField(max_length=150)
     picture = serializers.URLField(required=False, allow_blank=True)
-
-    class Meta:
-        model = User
-
-    @transaction.atomic
-    def create(self, validated_data):
-        email = validated_data['email']
-        username = validated_data['username']
-
-        user, created = User.objects.get_or_create(email=email)
-        if created:
-            user.username = username
-            user.save()
-
-        return user

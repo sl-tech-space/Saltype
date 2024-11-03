@@ -3,9 +3,9 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/django/', include('apps.authentication.urls')),
-    path('api/django/', include('apps.mistype.urls')),
-    path('api/django/', include('apps.score.urls')),
-    path('api/django/', include('apps.ranking.urls')),
-    path('api/django/', include('apps.request.urls')),
+    path('api/django/authentication/', include('apps.authentication.urls')),
+    path('api/django/mistype/', include('apps.mistype.urls')),
+    path('api/django/score/', include('apps.score.urls')),
+    path('api/django/ranking/', include('apps.ranking.urls')),
+    path('api/django/request/', include('apps.request.urls')),
 ]

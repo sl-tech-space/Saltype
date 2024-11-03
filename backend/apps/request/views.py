@@ -1,5 +1,5 @@
-from apps.common.email_utils import RequestEmail
-from apps.common.utils import HandleExceptions
+from apps.common.util.email import RequestEmail
+from apps.common.util.exception_handler import HandleExceptions
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -22,5 +22,11 @@ class SubmitRequest(APIView):
             request_content = serializer.validated_data['request_content']
             request_email = RequestEmail(user_id, request_content)
             request_email.send_request_email()
-            return Response({'message': '要望送信成功'}, status=status.HTTP_200_OK)
+            return self.format_response('要望送信成功', status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def format_response(self, message, http_status):
+        """レスポンスをフォーマットして生成"""
+        return Response({'status': 'success',\
+                         'message': message},\
+                         status=http_status)

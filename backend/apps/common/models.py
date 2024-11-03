@@ -1,6 +1,5 @@
 import uuid
 
-from apps.authentication.validators import validate_min_length
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -61,7 +60,7 @@ class User(AbstractUser):
     rank = models.ForeignKey('Rank', on_delete=models.SET_NULL, null=True, blank=True)
     username = models.CharField(max_length=150, unique=True, validators=[username_validator])
     email = models.EmailField(max_length=254, unique=True)
-    password = models.CharField(max_length=100, validators=[validate_min_length])
+    password = models.CharField(max_length=100)
     permission = models.PositiveIntegerField(choices=PERMISSON.choices, default=PERMISSON.MEMBER)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
