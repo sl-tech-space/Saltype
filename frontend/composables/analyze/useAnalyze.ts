@@ -18,7 +18,7 @@ export function useAnalyze() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/mistypes/top/`,
+        `${config.public.baseURL}/api/django/mistype/top/`,
         {
           method: "POST",
           headers: {
@@ -75,7 +75,7 @@ export function useAnalyze() {
       const data = await response.json();
 
       return data;
-    } catch (e) {}
+    } catch (e) { }
   };
 
   return {

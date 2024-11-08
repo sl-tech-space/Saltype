@@ -13,7 +13,7 @@ export function useAuthToken() {
     }
 
     try {
-      const response = await fetch(`${config.public.baseURL}/api/django/auth-token/`, {
+      const response = await fetch(`${config.public.baseURL}/api/django/authentication/auth-token/`, {
         headers: {
           Authorization: `Token ${useCookie("auth_token").value}`,
         },

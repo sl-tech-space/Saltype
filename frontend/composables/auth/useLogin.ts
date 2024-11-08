@@ -16,7 +16,7 @@ export function useLogin() {
     error.value = null;
 
     try {
-      const response = await fetch(`${config.public.baseURL}/api/django/login/`, {
+      const response = await fetch(`${config.public.baseURL}/api/django/authentication/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

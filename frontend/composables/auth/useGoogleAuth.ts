@@ -39,7 +39,7 @@ export const useGoogleAuth = () => {
 
           if (userInfo) {
             const response = await fetch(
-              `${config.public.baseURL}/api/django/google-auth/`,
+              `${config.public.baseURL}/api/django/authentication/google-auth/`,
               {
                 method: "POST",
                 headers: {

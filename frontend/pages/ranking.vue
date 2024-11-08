@@ -27,11 +27,11 @@ onMounted(() => {
   <div class="page">
     <RankingHeader title="ランキング" />
   </div>
-  <div class="second-page">
+  <div class="page">
     <RankingHeader title="日本語" />
     <JapaneseRankingCard :rankings-by-combination="japaneseRankings" />
   </div>
-  <div class="second-page">
+  <div class="page">
     <RankingHeader title="英語" />
     <EnglishRankingCard :rankings-by-combination="englishRankings" />
   </div>
@@ -40,10 +40,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page {
-  @extend %full-page;
-}
-
-.second-page {
   @extend %full-page;
 }
 </style>
