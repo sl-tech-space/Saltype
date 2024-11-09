@@ -8,17 +8,20 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import (GoogleAuthSerializer, UserLoginSerializer, UserSerializer)
+from .serializers import GoogleAuthSerializer, UserLoginSerializer, UserSerializer
 
 
 class LoginView(APIView):
     """オリジナルフォームからのログインを行う"""
+
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        serializer = UserLoginSerializer(data=request.data, context={'request': request})
+        serializer = UserLoginSerializer(
+            data=request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data["user"]
         token = self._get_or_create_token(user)
         return self.format_response(user, token, status.HTTP_200_OK)
 
@@ -30,17 +33,19 @@ class LoginView(APIView):
         """レスポンスをフォーマットして生成"""
         return Response(
             {
-                'status': 'success',
-                'user_id': user.user_id,
-                'email': user.email,
-                'username': user.username,
-                'token': token.key
+                "status": "success",
+                "user_id": user.user_id,
+                "email": user.email,
+                "username": user.username,
+                "token": token.key,
             },
-            status=http_status)
+            status=http_status,
+        )
 
 
 class CheckTokenView(APIView):
     """トークンを使った自動ログイン"""
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -51,6 +56,7 @@ class CheckTokenView(APIView):
 
 class GoogleAuthView(APIView):
     """Google認証 認証と同時にDBにユーザを作成"""
+
     permission_classes = [AllowAny]
 
     @HandleExceptions()
@@ -65,8 +71,8 @@ class GoogleAuthView(APIView):
     @transaction.atomic
     def _create_or_update_user(self, validated_data):
         """ユーザーをデータベースに作成または更新する"""
-        email = validated_data['email']
-        username = validated_data['username']
+        email = validated_data["email"]
+        username = validated_data["username"]
 
         user, created = User.objects.get_or_create(email=email)
         if created:
@@ -79,10 +85,11 @@ class GoogleAuthView(APIView):
         """レスポンスをフォーマットして生成"""
         return Response(
             {
-                'status': 'success',
-                'user_id': user.user_id,
-                'email': user.email,
-                'username': user.username,
-                'token': token.key
+                "status": "success",
+                "user_id": user.user_id,
+                "email": user.email,
+                "username": user.username,
+                "token": token.key,
             },
-            status=http_status)
+            status=http_status,
+        )

@@ -15,17 +15,25 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Miss',
+            name="Miss",
             fields=[
-                ('miss_id', models.AutoField(primary_key=True, serialize=False)),
-                ('miss_char', models.CharField(max_length=1)),
-                ('miss_count', models.IntegerField(default=0)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                ("miss_id", models.AutoField(primary_key=True, serialize=False)),
+                ("miss_char", models.CharField(max_length=1)),
+                ("miss_count", models.IntegerField(default=0)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'db_table': 't_miss',
+                "db_table": "t_miss",
             },
         ),
     ]

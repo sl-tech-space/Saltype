@@ -43,6 +43,7 @@ class User(AbstractUser):
         - first_name, last_name, groups, user_permissions, last_login フィールドは使用しない
         - ユーザー作成時に自動的に認証トークンが生成される
     """
+
     username_validator = UnicodeUsernameValidator()
 
     class PERMISSON(models.IntegerChoices):
@@ -57,11 +58,15 @@ class User(AbstractUser):
     last_login = None
 
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    rank = models.ForeignKey('Rank', on_delete=models.SET_NULL, null=True, blank=True)
-    username = models.CharField(max_length=150, unique=True, validators=[username_validator])
+    rank = models.ForeignKey("Rank", on_delete=models.SET_NULL, null=True, blank=True)
+    username = models.CharField(
+        max_length=150, unique=True, validators=[username_validator]
+    )
     email = models.EmailField(max_length=254, unique=True)
     password = models.CharField(max_length=100)
-    permission = models.PositiveIntegerField(choices=PERMISSON.choices, default=PERMISSON.MEMBER)
+    permission = models.PositiveIntegerField(
+        choices=PERMISSON.choices, default=PERMISSON.MEMBER
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     del_flg = models.BooleanField(default=False)
@@ -105,10 +110,11 @@ class Lang(models.Model):
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
         del_flg (BooleanField): 削除フラグ
-    
+
     :return: 言語
     :rtype: str
     """
+
     lang_id = models.AutoField(primary_key=True)
     lang = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -129,10 +135,11 @@ class Diff(models.Model):
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
         del_flg (BooleanField): 削除フラグ
-    
+
     :return: 難易度
     :rtype: str
     """
+
     diff_id = models.AutoField(primary_key=True)
     diff = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -153,10 +160,11 @@ class Rank(models.Model):
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
         del_flg (BooleanField): 削除フラグ
-    
+
     Meta:
         db_table (str): データベーステーブル名
     """
+
     rank_id = models.AutoField(primary_key=True)
     rank = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -179,20 +187,46 @@ class Score(models.Model):
         diff (ForeignKey): 難易度設定（Diffモデルへの外部キー）
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
-    
+
     Meta:
         db_table (str): データベーステーブル名
     """
+
     score_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.SET_NULL,
-                             null=True,
-                             blank=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
     score = models.IntegerField(default=0)
-    lang = models.ForeignKey('Lang', on_delete=models.SET_NULL, null=True, blank=True)
-    diff = models.ForeignKey('Diff', on_delete=models.SET_NULL, null=True, blank=True)
+    lang = models.ForeignKey("Lang", on_delete=models.SET_NULL, null=True, blank=True)
+    diff = models.ForeignKey("Diff", on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "t_score"
+
+
+class Miss(models.Model):
+    """
+    ミスタイプテーブル定義
+
+    Attributes:
+        miss_id (AutoField): ミスタイプID
+        user (UUIDField): ユーザーID
+        miss_char (CharField): ミスタイプされた文字
+        miss_count (IntegerField): ミスタイプされた回数
+        created_at (DateTimeField): 作成日時
+        updated_at (DateTimeField): 更新日時
+    """
+
+    miss_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    miss_char = models.CharField(max_length=1)
+    miss_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "t_miss"
