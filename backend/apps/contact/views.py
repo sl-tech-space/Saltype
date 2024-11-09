@@ -1,11 +1,11 @@
-from apps.common.util.email import RequestEmail
+from apps.common.util.email import ContactEmail
 from apps.common.util.exception_handler import HandleExceptions
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import RequestSerializer
+from .serializers import ContactSerializer
 
 
 class SubmitRequestView(APIView):

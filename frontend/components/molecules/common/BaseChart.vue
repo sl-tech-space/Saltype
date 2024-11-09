@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, onMounted } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -23,7 +24,7 @@ ChartJS.register(
 );
 
 const props = defineProps<{
-    scores: { score: number }[];
+    scores: number[];
 }>();
 
 // チャートデータの計算
@@ -32,7 +33,7 @@ const chartData = computed(() => ({
     datasets: [
         {
             label: '',
-            data: props.scores.map(item => item.score),
+            data: props.scores.reverse(),
             borderColor: '#0099ff',
             tension: 0.1
         }
@@ -53,7 +54,6 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
             },
         },
         x: {
-            reverse: true,
             ticks: {
                 maxRotation: 0,
                 autoSkip: true,

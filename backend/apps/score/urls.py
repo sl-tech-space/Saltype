@@ -5,7 +5,7 @@ from .views import (
     PastScoresView,
     ScoreInsertView,
     UserRankingView,
-    UserRankUpdateView,
+    UserRankView,
 )
 
 urlpatterns = [
@@ -13,5 +13,5 @@ urlpatterns = [
     path("ranking/", UserRankingView.as_view(), name="user_ranking"),
     path("past-scores/", PastScoresView.as_view(), name="past_scores"),
     path("average/", AverageScoreView.as_view(), name="average_score"),
-    path("rank/update/", UserRankUpdateView.as_view(), name="update_rank"),
+    path("rank/", UserRankView.as_view(), name="update_rank"),
 ]

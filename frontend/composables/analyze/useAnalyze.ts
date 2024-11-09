@@ -26,7 +26,7 @@ export function useAnalyze() {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            count: limit,
+            limit: limit,
           }),
         }
       );
@@ -37,7 +37,7 @@ export function useAnalyze() {
 
       const data = await response.json();
 
-      typoFrequency.value = data;
+      typoFrequency.value = data.top_mistypes;
     } catch (e) {
       console.error(e);
     }
@@ -54,7 +54,7 @@ export function useAnalyze() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/select/pastscores/`,
+        `${config.public.baseURL}/api/django/score/past-scores/`,
         {
           method: "POST",
           headers: {
@@ -74,8 +74,10 @@ export function useAnalyze() {
 
       const data = await response.json();
 
-      return data;
-    } catch (e) { }
+      return data.scores;
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return {
