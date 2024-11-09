@@ -16,17 +16,20 @@ export function useLogin() {
     error.value = null;
 
     try {
-      const response = await fetch(`${config.public.baseURL}/api/django/authentication/login/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-        signal: AbortSignal.timeout(5000),
-      });
+      const response = await fetch(
+        `${config.public.baseURL}/api/django/authentication/login/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+          signal: AbortSignal.timeout(5000),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

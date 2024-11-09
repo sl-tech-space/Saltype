@@ -1,5 +1,5 @@
 import { useUser } from "../conf/useUser";
-import type { ScoreBoardData } from '~/types/scoreBoard';
+import type { ScoreBoardData } from "~/types/scoreBoard";
 
 export function useScoreBoardParam() {
   const config = useRuntimeConfig();
@@ -8,13 +8,13 @@ export function useScoreBoardParam() {
 
   /**
    * 全データを集約、各関数の呼び出し
-   * @param selectedLanguage 
-   * @param selectedDifficulty 
+   * @param selectedLanguage
+   * @param selectedDifficulty
    * @returns Promise
    */
   const getParam = async (
     selectedLanguage: number,
-    selectedDifficulty: number,
+    selectedDifficulty: number
   ): Promise<ScoreBoardData | null | undefined> => {
     try {
       await _waitForUser();
@@ -24,19 +24,28 @@ export function useScoreBoardParam() {
         return;
       }
 
-      const rankingData = await _getRanking(selectedLanguage, selectedDifficulty);
+      const rankingData = await _getRanking(
+        selectedLanguage,
+        selectedDifficulty
+      );
 
-      const averageData = await _getAverageScore(selectedLanguage, selectedDifficulty);
+      const averageData = await _getAverageScore(
+        selectedLanguage,
+        selectedDifficulty
+      );
 
-      const userRankData = await _getUserRank(selectedLanguage, selectedDifficulty);
+      const userRankData = await _getUserRank(
+        selectedLanguage,
+        selectedDifficulty
+      );
 
       scoreBoardData.value = {
         is_high_score: userRankData.is_highest,
         rank: userRankData.rank_name,
         ranking_position: rankingData.ranking_position,
         score: Number(localStorage.getItem("score")),
-        average_score: averageData.average_score
-      }
+        average_score: averageData.average_score,
+      };
 
       return scoreBoardData.value;
     } catch (e) {
@@ -46,8 +55,8 @@ export function useScoreBoardParam() {
 
   /**
    * ランキングを取得
-   * @param selectedLanguage 
-   * @param selectedDifficulty 
+   * @param selectedLanguage
+   * @param selectedDifficulty
    * @returns Promise
    */
   const _getRanking = async (
@@ -66,7 +75,7 @@ export function useScoreBoardParam() {
             user_id: user.value?.user_id,
             lang_id: Number(selectedLanguage),
             diff_id: Number(selectedDifficulty),
-            score: Number(localStorage.getItem("score"))
+            score: Number(localStorage.getItem("score")),
           }),
         }
       );
@@ -78,15 +87,15 @@ export function useScoreBoardParam() {
       const data = await response.json();
 
       return data;
-    } catch(e) {
+    } catch (e) {
       // error
     }
-  }
+  };
 
   /**
    * 平均スコアを取得
-   * @param selectedLanguage 
-   * @param selectedDifficulty 
+   * @param selectedLanguage
+   * @param selectedDifficulty
    * @returns Promise
    */
   const _getAverageScore = async (
@@ -116,15 +125,15 @@ export function useScoreBoardParam() {
       const data = await response.json();
 
       return data;
-    } catch(e) {
+    } catch (e) {
       // error
     }
-  }
-  
+  };
+
   /**
    * ユーザのランクを取得
-   * @param selectedLanguage 
-   * @param selectedDifficulty 
+   * @param selectedLanguage
+   * @param selectedDifficulty
    * @returns Promise
    */
   const _getUserRank = async (
@@ -143,7 +152,7 @@ export function useScoreBoardParam() {
             user_id: user.value?.user_id,
             lang_id: Number(selectedLanguage),
             diff_id: Number(selectedDifficulty),
-            score: Number(localStorage.getItem("score"))
+            score: Number(localStorage.getItem("score")),
           }),
         }
       );
@@ -155,25 +164,25 @@ export function useScoreBoardParam() {
       const data = await response.json();
 
       return data;
-    } catch(e) {
+    } catch (e) {
       // error
     }
-  }
+  };
 
-    /**
+  /**
    * ユーザ情報が利用可能になるまで待機する関数
    */
-    const _waitForUser = async () => {
-      return new Promise<void>((resolve) => {
-        // user.value が利用可能になるまで監視
-        const interval = setInterval(() => {
-          if (user.value) {
-            clearInterval(interval);
-            resolve(); // ユーザ情報が取得できたら解決
-          }
-        }, 100);
-      });
-    };
+  const _waitForUser = async () => {
+    return new Promise<void>((resolve) => {
+      // user.value が利用可能になるまで監視
+      const interval = setInterval(() => {
+        if (user.value) {
+          clearInterval(interval);
+          resolve(); // ユーザ情報が取得できたら解決
+        }
+      }, 100);
+    });
+  };
 
   return {
     getParam,

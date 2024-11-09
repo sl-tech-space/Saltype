@@ -6,18 +6,20 @@ export function useAuthToken() {
   const router = useRouter();
 
   const authToken = async () => {
-
     if (!useCookie("auth_token").value) {
       clearUser();
       return;
     }
 
     try {
-      const response = await fetch(`${config.public.baseURL}/api/django/authentication/auth-token/`, {
-        headers: {
-          Authorization: `Token ${useCookie("auth_token").value}`,
-        },
-      });
+      const response = await fetch(
+        `${config.public.baseURL}/api/django/authentication/auth-token/`,
+        {
+          headers: {
+            Authorization: `Token ${useCookie("auth_token").value}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         useCookie("auth_token").value = null;
