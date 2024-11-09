@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class RankingConfig(AppConfig):
+class ContactConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "apps.ranking"
+    name = "apps.contact"
