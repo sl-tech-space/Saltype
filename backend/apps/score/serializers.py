@@ -11,7 +11,6 @@ class ScoreSerializer(serializers.Serializer):
     typing_count = serializers.IntegerField(required=False)
     accuracy = serializers.FloatField(required=False)
     score = serializers.IntegerField(required=False)
-    new_rank = serializers.CharField(write_only=True, required=False)
 
     def validate(self, attrs):
         if "user_id" in attrs:
@@ -35,10 +34,6 @@ class ScoreSerializer(serializers.Serializer):
             raise ValidationError(
                 {"accuracy": "精度は0から1の間でなければなりません。"}
             )
-
-        if "new_rank" in attrs:
-            rank_id = self.get_rank_id(attrs["new_rank"])
-            attrs["rank_id"] = rank_id
 
         return attrs
 

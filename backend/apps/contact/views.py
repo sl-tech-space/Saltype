@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from .serializers import RequestSerializer
 
 
-class SubmitRequest(APIView):
+class SubmitRequestView(APIView):
     """リクエスト送信処理"""
 
     permission_classes = [AllowAny]
