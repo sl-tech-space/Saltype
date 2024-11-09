@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from .exception_handler import HandleExceptions
 
 
-class RequestEmail:
+class ContactEmail:
 
     def __init__(self, user_id, request_content):
         """初期化処理"""

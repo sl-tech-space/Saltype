@@ -107,7 +107,7 @@ export function useTyping(language: string, difficultyLevel: string) {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/insert/`,
+        `${config.public.baseURL}/api/django/score/`,
         {
           method: "POST",
           headers: {
@@ -126,6 +126,10 @@ export function useTyping(language: string, difficultyLevel: string) {
       if (!response.ok) {
         throw new Error("スコアの送信に失敗");
       }
+
+      const data = await response.json();
+
+      localStorage.setItem("score", data.score);
     } catch (e) {}
   };
 

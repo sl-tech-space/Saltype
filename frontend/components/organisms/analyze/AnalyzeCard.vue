@@ -9,7 +9,7 @@ const { typoFrequency, getTypoFrequencyByLimitParam, getPastScores } = useAnalyz
 const { generateAllCombinations } = useLanguageAndDifficulty();
 
 // 各設定ごとのスコアを保持するためのreactive変数
-const scoresByCombination = ref<Record<string, Array<{ score: number }>>>({});
+const scoresByCombination = ref<Record<string, { scores: number[] }>>({});
 const limit = 10;
 const isLoading = ref(true);
 
@@ -19,7 +19,8 @@ onMounted(async () => {
     // すべての組み合わせで過去３０回のスコアを取得
     for (const { languageId, difficultyId } of allCombinations) {
         const key = `${languageId}-${difficultyId}`;
-        scoresByCombination.value[key] = await getPastScores(languageId, difficultyId);
+        const result: number[] = await getPastScores(languageId, difficultyId);
+        scoresByCombination.value[key] = { scores: result };
     }
 
     await getTypoFrequencyByLimitParam(limit);

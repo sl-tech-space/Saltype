@@ -1,73 +1,108 @@
 import { useUser } from "../conf/useUser";
+import type { ScoreBoardData } from '~/types/scoreBoard';
 
 export function useScoreBoardParam() {
   const config = useRuntimeConfig();
   const { user } = useUser();
+  const scoreBoardData = ref<ScoreBoardData | null>();
 
+  /**
+   * 全データを集約、各関数の呼び出し
+   * @param selectedLanguage 
+   * @param selectedDifficulty 
+   * @returns Promise
+   */
   const getParam = async (
     selectedLanguage: number,
     selectedDifficulty: number,
-    totalCorrectTypedCount: number,
-    typingAccuracy: number
-  ) => {
+  ): Promise<ScoreBoardData | null | undefined> => {
     try {
+      await _waitForUser();
+
       if (!user.value) {
         console.error("ユーザ情報が存在しません");
         return;
       }
 
-      const response = await fetch(
-        `${config.public.baseURL}/api/django/score/process/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user.value.user_id,
-            lang_id: Number(selectedLanguage),
-            diff_id: Number(selectedDifficulty),
-            typing_count: Number(totalCorrectTypedCount),
-            accuracy: Number(typingAccuracy),
-          }),
-        }
-      );
+      const rankingData = await _getRanking(selectedLanguage, selectedDifficulty);
 
-      if (!response.ok) {
-        throw new Error("スコアボードデータの取得に失敗しました");
+      const averageData = await _getAverageScore(selectedLanguage, selectedDifficulty);
+
+      const userRankData = await _getUserRank(selectedLanguage, selectedDifficulty);
+
+      scoreBoardData.value = {
+        is_high_score: userRankData.is_highest,
+        rank: userRankData.rank_name,
+        ranking_position: rankingData.ranking_position,
+        score: Number(localStorage.getItem("score")),
+        average_score: averageData.average_score
       }
 
-      const data = await response.json();
-
-      const isRankUpdate: boolean = data.is_high_score;
-
-      if (isRankUpdate) {
-        _userRankUpdate(selectedLanguage, selectedDifficulty);
-      }
-
-      return data;
-    } catch (e) {}
+      return scoreBoardData.value;
+    } catch (e) {
+      // error
+    }
   };
 
-  const _userRankUpdate = async (
+  /**
+   * ランキングを取得
+   * @param selectedLanguage 
+   * @param selectedDifficulty 
+   * @returns Promise
+   */
+  const _getRanking = async (
     selectedLanguage: number,
     selectedDifficulty: number
   ) => {
     try {
-      if (!user.value) {
-        console.error("ユーザ情報が存在しません");
-        return;
-      }
-
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/process/`,
+        `${config.public.baseURL}/api/django/score/ranking/`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_id: user.value.user_id,
+            user_id: user.value?.user_id,
+            lang_id: Number(selectedLanguage),
+            diff_id: Number(selectedDifficulty),
+            score: Number(localStorage.getItem("score"))
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("ランキングの取得に失敗しました");
+      }
+
+      const data = await response.json();
+
+      return data;
+    } catch(e) {
+      // error
+    }
+  }
+
+  /**
+   * 平均スコアを取得
+   * @param selectedLanguage 
+   * @param selectedDifficulty 
+   * @returns Promise
+   */
+  const _getAverageScore = async (
+    selectedLanguage: number,
+    selectedDifficulty: number
+  ) => {
+    try {
+      const response = await fetch(
+        `${config.public.baseURL}/api/django/score/average/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.value?.user_id,
             lang_id: Number(selectedLanguage),
             diff_id: Number(selectedDifficulty),
           }),
@@ -75,10 +110,70 @@ export function useScoreBoardParam() {
       );
 
       if (!response.ok) {
-        throw new Error("ユーザのランク更新に失敗しました");
+        throw new Error("平均スコアの取得に失敗しました");
       }
-    } catch (e) {}
-  };
+
+      const data = await response.json();
+
+      return data;
+    } catch(e) {
+      // error
+    }
+  }
+  
+  /**
+   * ユーザのランクを取得
+   * @param selectedLanguage 
+   * @param selectedDifficulty 
+   * @returns Promise
+   */
+  const _getUserRank = async (
+    selectedLanguage: number,
+    selectedDifficulty: number
+  ) => {
+    try {
+      const response = await fetch(
+        `${config.public.baseURL}/api/django/score/rank/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.value?.user_id,
+            lang_id: Number(selectedLanguage),
+            diff_id: Number(selectedDifficulty),
+            score: Number(localStorage.getItem("score"))
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("ランクの取得に失敗しました");
+      }
+
+      const data = await response.json();
+
+      return data;
+    } catch(e) {
+      // error
+    }
+  }
+
+    /**
+   * ユーザ情報が利用可能になるまで待機する関数
+   */
+    const _waitForUser = async () => {
+      return new Promise<void>((resolve) => {
+        // user.value が利用可能になるまで監視
+        const interval = setInterval(() => {
+          if (user.value) {
+            clearInterval(interval);
+            resolve(); // ユーザ情報が取得できたら解決
+          }
+        }, 100);
+      });
+    };
 
   return {
     getParam,

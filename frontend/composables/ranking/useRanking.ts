@@ -52,7 +52,7 @@ export function useRanking() {
         body: JSON.stringify({
           lang_id: language,
           diff_id: difficulty,
-          ranking_limit: limit,
+          limit: limit,
         }),
       });
 

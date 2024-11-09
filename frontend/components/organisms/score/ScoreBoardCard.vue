@@ -4,46 +4,25 @@ import RankCard from '~/components/molecules/score/RankCard.vue';
 import RankingCard from '~/components/molecules/score/RankingCard.vue';
 import ScoreCard from '~/components/molecules/score/ScoreCard.vue';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
-
-interface ScoreBoardData {
-    highest_score: number;
-    is_high_score: boolean;
-    rank: string;
-    ranking_position: number;
-    score: number;
-    average_score: number;
-}
+import type { ScoreBoardData } from '~/types/scoreBoard';
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
-const totalCorrectTypedCount = ref(0);
-const typingAccuracy = ref(0);
-const scoreBoardData = ref<ScoreBoardData | null>(null);
+const scoreBoardData = ref<ScoreBoardData | null>();
 const { getParam } = useScoreBoardParam();
 
 onMounted(async () => {
     const storedLanguage = localStorage.getItem("language");
     const storedDifficulty = localStorage.getItem("difficulty");
-    const storedTotalCorrectTypedCount = localStorage.getItem("totalCorrectTypedCount");
-    const storedTypingAccuracy = localStorage.getItem("typingAccuracy")
 
-    if (storedLanguage && storedDifficulty &&
-        storedTotalCorrectTypedCount && storedTypingAccuracy) {
+    if (storedLanguage && storedDifficulty) {
         selectedLanguage.value = Number(storedLanguage) + 1;
         selectedDifficulty.value = Number(storedDifficulty) + 1;
-        totalCorrectTypedCount.value = Number(storedTotalCorrectTypedCount);
-        typingAccuracy.value = Number(storedTypingAccuracy);
 
-        try {
-            scoreBoardData.value = await getParam(
-                selectedLanguage.value,
-                selectedDifficulty.value,
-                totalCorrectTypedCount.value,
-                typingAccuracy.value
-            );
-        } catch (error) {
-            console.error('Failed to fetch ScoreBoard data:', error);
-        }
+        scoreBoardData.value = await getParam(
+            selectedLanguage.value,
+            selectedDifficulty.value,
+        );
     }
 });
 </script>

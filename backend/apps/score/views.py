@@ -289,7 +289,7 @@ class UserRankingView(ScoreView):
         return {"status": "success", "ranking_position": ranking_position}
 
 
-class UserRankUpdateView(ScoreView):
+class UserRankView(ScoreView):
     """
     スコアに基づいてランクを決定し、ユーザーのランクを更新するAPIビュークラス。
     """

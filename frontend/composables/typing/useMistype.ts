@@ -3,7 +3,7 @@ import { useUser } from "../conf/useUser";
 
 /**
  * ミスタイプキー処理
- * @returns     mistypeCount,　totalMistypes,　countMistype,
+ * @returns mistypeCount,　totalMistypes,　countMistype,
  * resetMistypeStats, sendMistypeDataToServer,
  */
 export function useMistype() {
@@ -62,15 +62,15 @@ export function useMistype() {
         return;
       }
 
-      const missData = _formatMistypeData();
+      const mistypes = _formatMistypeData();
 
       const dataToSend = {
         user_id: user.value.user_id,
-        miss_data: missData,
+        mistypes: mistypes,
       };
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/mistypes/insert/`,
+        `${config.public.baseURL}/api/django/mistype/`,
         {
           method: "POST",
           headers: {
