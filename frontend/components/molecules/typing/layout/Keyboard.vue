@@ -88,53 +88,142 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .keyboard-layout {
-    @include horizontal-centered-flex;
-    padding: 20px;
+  @include horizontal-centered-flex;
+  padding: 20px;
+  width: 65%;
+  max-width: 1200px;
+  margin: 0 auto;
 
-    .keyboard {
-        border: 1px solid $sub-color;
-        border-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 0 10px $translucent-black;
+  .keyboard {
+    border: 1px solid $sub-color;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 10px $translucent-black;
+    width: 100%;
+  }
+
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .key {
+    width: 40px;
+    height: 40px;
+    border: 1px solid $translucent-white;
+    border-radius: 5px;
+    color: $main-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    margin: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.key-correct {
+      color: $correct-color;
+      border-color: $correct-color;
     }
 
-    .keyboard-row {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 5px;
+    &.key-incorrect {
+      color: $incorrect-color;
+      border-color: $incorrect-color;
     }
+  }
+
+  .key-wide {
+    width: 60px;
+  }
+
+  .key-extra-wide {
+    width: 200px;
+  }
+}
+
+/* responsive */
+@media (max-width: 1200px) {
+  .keyboard-layout {
+    width: 70%;
 
     .key {
-        width: 40px;
-        height: 40px;
-        border: 1px solid $translucent-white;
-        border-radius: 5px;
-        color: $main-color;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 12px;
-        margin: 0 2px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-
-        &.key-correct {
-            color: $correct-color;
-            border-color: $correct-color;
-        }
-
-        &.key-incorrect {
-            color: $incorrect-color;
-            border-color: $incorrect-color;
-        }
+      width: 35px;
+      height: 35px;
+      font-size: 11px;
     }
 
     .key-wide {
-        width: 60px;
+      width: 55px;
     }
 
     .key-extra-wide {
-        width: 200px;
+      width: 180px;
     }
+  }
+}
+
+@media (max-width: 992px) {
+  .keyboard-layout {
+    width: 90%;
+
+    .key {
+      width: 25px;
+      height: 25px;
+      font-size: 10px;
+    }
+
+    .key-wide {
+      width: 50px;
+    }
+
+    .key-extra-wide {
+      width: 150px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .keyboard-layout {
+    .key {
+      width: 25px;
+      height: 25px;
+      font-size: 9px;
+    }
+
+    .key-wide {
+      width: 40px;
+    }
+
+    .key-extra-wide {
+      width: 120px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .keyboard-layout {
+    padding: 10px;
+
+    .keyboard {
+      padding: 5px;
+    }
+
+    .key {
+      width: 20px;
+      height: 20px;
+      font-size: 8px;
+      margin: 1px;
+    }
+
+    .key-wide {
+      width: 30px;
+    }
+
+    .key-extra-wide {
+      width: 80px;
+    }
+  }
 }
 </style>
