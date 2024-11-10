@@ -12,25 +12,55 @@ from .serializers import GoogleAuthSerializer, UserLoginSerializer, UserSerializ
 
 
 class LoginView(APIView):
-    """オリジナルフォームからのログインを行う"""
+    """
+    ユーザーがオリジナルフォームからログインするためのAPIビュークラス。
+    """
 
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        serializer = UserLoginSerializer(
-            data=request.data, context={"request": request}
-        )
+        """
+        POSTメソッドでログイン処理を行う。
+
+        Args:
+            request: クライアントからのリクエストオブジェクト。
+
+        Returns:
+            Response: 認証結果を含むHTTPレスポンス。
+        """
+        serializer = UserLoginSerializer(data=request.data,
+                                         context={"request": request})
         serializer.is_valid(raise_exception=True)
+
         user = serializer.validated_data["user"]
         token = self._get_or_create_token(user)
+
         return self.format_response(user, token, status.HTTP_200_OK)
 
     def _get_or_create_token(self, user):
-        """ユーザーのトークンを取得または作成"""
+        """
+        ユーザーのトークンを取得または新規作成。
+
+        Args:
+            user: 認証されたユーザーオブジェクト。
+
+        Returns:
+            Token: ユーザーのトークンオブジェクト。
+        """
         return Token.objects.get_or_create(user=user)[0]
 
     def format_response(self, user, token, http_status):
-        """レスポンスをフォーマットして生成"""
+        """
+        レスポンスデータをフォーマット。
+
+        Args:
+            user: ユーザーオブジェクト。
+            token: 認証トークン。
+            http_status: HTTPステータスコード。
+
+        Returns:
+            Response: フォーマットされたHTTPレスポンスオブジェクト。
+        """
         return Response(
             {
                 "status": "success",
@@ -44,33 +74,65 @@ class LoginView(APIView):
 
 
 class CheckTokenView(APIView):
-    """トークンを使った自動ログイン"""
+    """
+    トークンを使用した自動ログインAPIビュークラス。
+    """
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        """
+        GETメソッドでユーザー情報を返す。
+
+        Args:
+            request: クライアントからのリクエストオブジェクト。
+
+        Returns:
+            Response: ユーザー情報を含むHTTPレスポンス。
+        """
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
 
 class GoogleAuthView(APIView):
-    """Google認証 認証と同時にDBにユーザを作成"""
+    """
+    Google認証APIビュークラス。
+    """
 
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request):
+        """
+        POSTメソッドでGoogle認証処理を行う。
+
+        Args:
+            request: クライアントからのリクエストオブジェクト。
+
+        Returns:
+            Response: 認証結果を含むHTTPレスポンス。
+        """
         serializer = GoogleAuthSerializer(data=request.data)
+
         if serializer.is_valid():
             user = self._create_or_update_user(serializer.validated_data)
             token, _ = Token.objects.get_or_create(user=user)
             return self.format_response(user, token, status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
     def _create_or_update_user(self, validated_data):
-        """ユーザーをデータベースに作成または更新する"""
+        """
+        Google認証データを使用してユーザーを作成または更新。
+
+        Args:
+            validated_data: 検証済みデータ。
+
+        Returns:
+            User: 作成または更新されたユーザーオブジェクト。
+        """
         email = validated_data["email"]
         username = validated_data["username"]
 
@@ -82,7 +144,17 @@ class GoogleAuthView(APIView):
         return user
 
     def format_response(self, user, token, http_status):
-        """レスポンスをフォーマットして生成"""
+        """
+        レスポンスデータをフォーマット。
+
+        Args:
+            user: ユーザーオブジェクト。
+            token: 認証トークン。
+            http_status: HTTPステータスコード。
+
+        Returns:
+            Response: フォーマットされたHTTPレスポンスオブジェクト。
+        """
         return Response(
             {
                 "status": "success",

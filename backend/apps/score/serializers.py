@@ -26,14 +26,10 @@ class ScoreSerializer(serializers.Serializer):
             attrs["diff"] = diff
 
         if "typing_count" in attrs and attrs["typing_count"] < 0:
-            raise ValidationError(
-                {"typing_count": "タイプ数は0以上でなければなりません。"}
-            )
+            raise ValidationError({"typing_count": "タイプ数は0以上でなければなりません。"})
 
         if "accuracy" in attrs and not (0 <= attrs["accuracy"] <= 1):
-            raise ValidationError(
-                {"accuracy": "精度は0から1の間でなければなりません。"}
-            )
+            raise ValidationError({"accuracy": "精度は0から1の間でなければなりません。"})
 
         return attrs
 
