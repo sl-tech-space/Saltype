@@ -1,20 +1,3 @@
-<template>
-    <div class="keyboard-layout">
-        <div class="keyboard">
-            <div v-for="(row, rowIndex) in keyboardLayout" :key="rowIndex" class="keyboard-row">
-                <div v-for="key in row" :key="key.code" class="key" :class="{
-                    'key-wide': key.wide,
-                    'key-extra-wide': key.extraWide,
-                    'key-correct': correctKeys.includes(key.code),
-                    'key-incorrect': incorrectKeys.includes(key.code)
-                }">
-                    {{ key.label }}
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 interface Key {
     label: string;
@@ -85,6 +68,23 @@ onUnmounted(() => {
     $bus.$off('key-press');
 });
 </script>
+
+<template>
+    <div class="keyboard-layout">
+        <div class="keyboard">
+            <div v-for="(row, rowIndex) in keyboardLayout" :key="rowIndex" class="keyboard-row">
+                <div v-for="key in row" :key="key.code" class="key" :class="{
+                    'key-wide': key.wide,
+                    'key-extra-wide': key.extraWide,
+                    'key-correct': correctKeys.includes(key.code),
+                    'key-incorrect': incorrectKeys.includes(key.code)
+                }">
+                    {{ key.label }}
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
 
 <style lang="scss" scoped>
 .keyboard-layout {

@@ -56,7 +56,7 @@ export default defineNuxtConfig({
         "@vueuse/core",
         "vue-chartjs",
         "chart.js",
-        'defu'
+        "defu",
       ],
     },
     test: {

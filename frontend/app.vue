@@ -1,4 +1,9 @@
+<script setup lang="ts">
+import CustomStyles from './composables/ui/useCustomStyles.vue';
+</script>
+
 <template>
+  <CustomStyles />
   <NuxtPage />
 </template>
 
