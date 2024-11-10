@@ -54,6 +54,8 @@ const props = withDefaults(defineProps<Props>(), {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    margin: 0.5rem;
+    transition: box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -76,24 +78,25 @@ const props = withDefaults(defineProps<Props>(), {
     color: $sub-color;
 }
 
+// 基本のカードサイズ設定
 .card-width--small {
-    width: 22%;
+    width: calc(22% - 1rem);
 }
 
 .card-width--medium {
-    width: 30%;
+    width: calc(30% - 1rem);
 }
 
 .card-width--large {
-    width: 45%;
+    width: calc(45% - 1rem);
 }
 
 .card-width--xl {
-    width: 70%;
+    width: calc(70% - 1rem);
 }
 
 .card-width--full {
-    width: 100%;
+    width: calc(100% - 1rem);
 }
 
 .card-height--small {
@@ -132,8 +135,92 @@ section {
     }
 
     .card-body {
-        height: 70%;
+        flex: 1;
         overflow-y: hidden;
+    }
+}
+
+/* responsive */
+@media (min-width: 1200px) and (max-width: 1600px) {
+    .card-width--small {
+        width: calc(25% - 1rem);
+    }
+
+    .card-width--medium {
+        width: calc(33.333% - 1rem);
+    }
+
+    .card-width--large {
+        width: calc(50% - 1rem);
+    }
+
+    .card-width--xl {
+        width: calc(75% - 1rem);
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .card-width--small {
+        width: calc(33.333% - 1rem);
+    }
+
+    .card-width--medium {
+        width: calc(50% - 1rem);
+    }
+
+    .card-width--large {
+        width: calc(66.666% - 1rem);
+    }
+
+    .card-width--xl {
+        width: calc(80% - 1rem);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .card-width--small {
+        width: calc(50% - 1rem);
+    }
+
+    .card-width--medium {
+        width: calc(66.666% - 1rem);
+    }
+
+    .card-width--large,
+    .card-width--xl {
+        width: calc(100% - 1rem);
+    }
+}
+
+@media (max-height: 900px) {
+    .card-height--medium {
+        height: 50%;
+    }
+
+    .card-height--large {
+        height: 70%;
+    }
+
+    .card-height--xl {
+        height: 90%;
+    }
+}
+
+@media (max-height: 700px) {
+    .card-height--small {
+        height: 30%;
+    }
+
+    .card-height--medium {
+        height: 60%;
+    }
+
+    .card-height--large {
+        height: 80%;
+    }
+
+    .card-height--xl {
+        height: 95%;
     }
 }
 </style>
