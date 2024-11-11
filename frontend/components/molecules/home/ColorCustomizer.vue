@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Label from '~/components/atoms/labels/Label.vue';
 import Input from '~/components/atoms/inputs/Input.vue';
-import { useColorStore, setColor } from '~/store/colorStore'
+import { useColorStore } from '~/store/colorStore'
 
-const colorStore = useColorStore()
+const { colorStore, setColor } = useColorStore()
 
 const customLabels = {
     textColor: "テキストの色設定",
@@ -22,7 +22,8 @@ const updateColor = (name: string, event: Event) => {
 <template>
     <div v-for="(color, name) in colorStore" :key="name" class="palette">
         <Label :for="name" color="white" :label="customLabels[name] + ' :'" />
-        <Input :id="name" type="color" :value="color" width="large" @input="(event: Event) => updateColor(name, event)" />
+        <Input :id="name" type="color" :value="color" width="large"
+            @input="(event: Event) => updateColor(name, event)" />
     </div>
 </template>
 
@@ -30,7 +31,5 @@ const updateColor = (name: string, event: Event) => {
 .palette {
     margin-top: 5%;
     @include vertical-flex;
-
-
 }
 </style>

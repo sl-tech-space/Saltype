@@ -1,7 +1,6 @@
-import { loadColors } from "~/store/colorStore";
+import { useColorStore } from "~/store/colorStore";
 
 export default defineNuxtPlugin(() => {
-  if (import.meta.client) {
-    loadColors();
-  }
+  const { loadColors } = useColorStore();
+  loadColors();
 });

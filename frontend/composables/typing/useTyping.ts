@@ -1,6 +1,7 @@
 import { ref, computed } from "vue";
 import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
+import { useInputPattern } from "./japanese/useInputPattern";
 import { useMistype } from "./useMistype";
 import { useUser } from "../conf/useUser";
 
@@ -30,6 +31,10 @@ export function useTyping(language: string, difficultyLevel: string) {
   const { resetMistypeStats, countMistype, sendMistypeDataToServer } =
     useMistype();
   const { user } = useUser();
+  const { getPatternArray, getVowelPatternArray } = useInputPattern();
+  // TODO 許容文字列
+  const permitActionLetters = getPatternArray();
+  const vowelPattern = getVowelPatternArray();
 
   /**
    * タイピング結果取得変数
@@ -204,24 +209,47 @@ export function useTyping(language: string, difficultyLevel: string) {
 
     const currentPatterns = currentSentence.value.patterns;
 
-    for (let i = 0; i < currentPatterns.length; i++) {
-      const expectedChar = currentPatterns[i][currentInputIndex.value];
-      if (event.key === expectedChar) {
-        currentInput.value += event.key;
-        currentInputIndex.value++;
-        currentPatternIndex.value = i;
-        typingResults.totalCorrectTypedCount++;
-        _updateColoredText();
+    for (const pattern of currentPatterns) {
+      const expectedChar = pattern[currentInputIndex.value];
+      if (event.key !== expectedChar) continue;
 
-        if (
-          currentInputIndex.value ===
-          currentPatterns[currentPatternIndex.value].length
-        ) {
-          _nextSentence();
-        }
+      currentInput.value += event.key;
+      currentInputIndex.value++;
+      currentPatternIndex.value = currentPatterns.indexOf(pattern);
+      typingResults.totalCorrectTypedCount++;
+      _updateColoredText();
 
-        return "correct";
+      const nextExpectedChar = pattern[currentInputIndex.value];
+
+      if (vowelPattern.includes(event.key)) {
+        patterns.value = currentPatterns.filter((p) => {
+          const lastChar = p[currentInputIndex.value];
+          const basePermitActionTwoLetter = p.slice(
+            currentInputIndex.value,
+            currentInputIndex.value + 2
+          );
+          const basePermitActionThreeLetter = p.slice(
+            currentInputIndex.value,
+            currentInputIndex.value + 3
+          );
+
+          return (
+            lastChar === expectedChar ||
+            lastChar === nextExpectedChar ||
+            permitActionLetters.some(
+              ([_, romajiArray]) =>
+                romajiArray.includes(basePermitActionTwoLetter) ||
+                romajiArray.includes(basePermitActionThreeLetter)
+            )
+          );
+        });
       }
+
+      if (currentInputIndex.value === pattern.length) {
+        _nextSentence();
+      }
+
+      return "correct";
     }
 
     countMistype(event.key);
@@ -244,8 +272,12 @@ export function useTyping(language: string, difficultyLevel: string) {
     }
   };
 
+  /**
+   * 文章パターンの更新
+   */
   const _updatePatterns = async () => {
     const { getPatternList, getAllCombinations } = useSentencePattern();
+
     if (language === "1") {
       // 日本語パターン
       patterns.value = await getAllCombinations(
@@ -257,6 +289,7 @@ export function useTyping(language: string, difficultyLevel: string) {
         await getPatternList(sentencesData.value[currentIndex.value][0])
       );
     }
+
     _updateColoredText();
   };
 

@@ -1,9 +1,11 @@
 import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../server/useUserInfo";
 import type { ScoreBoardData } from "~/types/scoreBoard";
 
 export function useScoreBoardParam() {
   const config = useRuntimeConfig();
   const { user } = useUser();
+  const { waitForUser } = useUserInfo();
   const scoreBoardData = ref<ScoreBoardData | null>();
 
   /**
@@ -17,7 +19,7 @@ export function useScoreBoardParam() {
     selectedDifficulty: number
   ): Promise<ScoreBoardData | null | undefined> => {
     try {
-      await _waitForUser();
+      await waitForUser();
 
       if (!user.value) {
         console.error("ユーザ情報が存在しません");
@@ -167,21 +169,6 @@ export function useScoreBoardParam() {
     } catch (e) {
       // error
     }
-  };
-
-  /**
-   * ユーザ情報が利用可能になるまで待機する関数
-   */
-  const _waitForUser = async () => {
-    return new Promise<void>((resolve) => {
-      // user.value が利用可能になるまで監視
-      const interval = setInterval(() => {
-        if (user.value) {
-          clearInterval(interval);
-          resolve(); // ユーザ情報が取得できたら解決
-        }
-      }, 100);
-    });
   };
 
   return {

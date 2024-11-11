@@ -10,14 +10,17 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     if (token) {
       try {
-        const response = await fetch(`${config.public.baseURL}/api/django/authentication/auth-token/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${config.public.baseURL}/api/django/authentication/auth-token/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Invalid token');
+          throw new Error("Invalid token");
         }
 
         const userData = await response.json();
@@ -39,15 +42,15 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   };
 
-  nuxtApp.hooks.hook('app:created', () => {
-    initAuth().catch(error => {
+  nuxtApp.hooks.hook("app:created", () => {
+    initAuth().catch((error) => {
       console.error("認証初期化エラー:", error);
     });
   });
 
   return {
     provide: {
-      initAuth
-    }
+      initAuth,
+    },
   };
 });

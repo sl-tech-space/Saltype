@@ -198,11 +198,18 @@ export function useInputPattern() {
     ["ー", ["-"]],
   ];
 
+  const vowelInputPattern: string[] = ["a", "i", "u", "e", "o"];
+
   function getPatternArray() {
     return japaneseInputPattern;
   }
 
+  function getVowelPatternArray() {
+    return vowelInputPattern;
+  }
+
   return {
     getPatternArray,
+    getVowelPatternArray,
   };
 }
