@@ -1,8 +1,10 @@
 import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../server/useUserInfo";
 
 export function useAnalyze() {
   const config = useRuntimeConfig();
   const { user } = useUser();
+  const { waitForUser } = useUserInfo();
   const typoFrequency = ref<TypoFrequency[]>([]);
 
   interface TypoFrequency {
@@ -12,6 +14,8 @@ export function useAnalyze() {
 
   const getTypoFrequencyByLimitParam = async (limit: Number) => {
     try {
+      await waitForUser();
+
       if (!user.value) {
         console.error("ユーザ情報が存在しません");
         return;
@@ -48,6 +52,8 @@ export function useAnalyze() {
     selectedDifficulty: Number
   ) => {
     try {
+      await waitForUser();
+
       if (!user.value) {
         console.error("ユーザ情報が存在しません");
         return;

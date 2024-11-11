@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { useColorStore } from '~/store/colorStore';
 import { Line } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -23,6 +23,8 @@ ChartJS.register(
     Legend
 );
 
+const { colorStore } = useColorStore();
+
 const props = defineProps<{
     scores: number[];
 }>();
@@ -34,7 +36,7 @@ const chartData = computed(() => ({
         {
             label: '',
             data: props.scores.reverse(),
-            borderColor: '#0099ff',
+            borderColor: `${colorStore.value.mainColor}`,
             tension: 0.1
         }
     ]

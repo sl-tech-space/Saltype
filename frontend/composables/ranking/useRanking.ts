@@ -44,17 +44,20 @@ export function useRanking() {
     limit: Number
   ) => {
     try {
-      const response = await fetch(`${config.public.baseURL}/api/django/ranking/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          lang_id: language,
-          diff_id: difficulty,
-          limit: limit,
-        }),
-      });
+      const response = await fetch(
+        `${config.public.baseURL}/api/django/ranking/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            lang_id: language,
+            diff_id: difficulty,
+            limit: limit,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("ランキングデータ取得に失敗しました");

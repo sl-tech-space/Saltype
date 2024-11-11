@@ -153,4 +153,104 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* responsive */
+@media (max-width: 1200px) {
+  .button-width--large {
+    width: 140px;
+  }
+
+  .button-width--same-as-input-large {
+    width: 300px;
+  }
+}
+
+@media (max-width: 992px) {
+  .button-width--medium {
+    width: 100px;
+  }
+
+  .button-width--large {
+    width: 120px;
+  }
+
+  .button-width--same-as-input-large {
+    width: 250px;
+  }
+
+  .button-height--large {
+    height: 45px;
+  }
+}
+
+@media (max-width: 768px) {
+  .button-width--small {
+    width: 70px;
+  }
+
+  .button-width--medium {
+    width: 90px;
+  }
+
+  .button-width--large {
+    width: 110px;
+  }
+
+  .button-width--same-as-input-large {
+    width: 200px;
+  }
+
+  .button-height--medium {
+    height: 35px;
+  }
+
+  .button-height--large {
+    height: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .button-width--small {
+    width: 60px;
+  }
+
+  .button-width--medium {
+    width: 80px;
+  }
+
+  .button-width--large {
+    width: 100px;
+  }
+
+  .button-width--same-as-input-large {
+    width: 100%;
+  }
+
+  .button-height--small {
+    height: 28px;
+  }
+
+  .button-height--medium {
+    height: 32px;
+  }
+
+  .button-height--large {
+    height: 36px;
+  }
+
+  button {
+    font-size: 14px;
+  }
+}
+
+@media (hover: hover) {
+  button:hover {
+    border-color: $hover-color;
+    cursor: pointer;
+
+    &:disabled {
+      border-color: $disabled-color;
+    }
+  }
+}
 </style>

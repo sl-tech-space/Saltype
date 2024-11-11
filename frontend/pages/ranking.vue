@@ -8,10 +8,15 @@ import Loading from "~/composables/ui/useLoading.vue";
 import { useRanking } from '~/composables/ranking/useRanking';
 
 const { isLoading, japaneseRankings, englishRankings, getRankingByLimitParam } = useRanking();
-const rankingDataLimit = 5;
+const rankingDataLimit: number = 5;
+const isTouchpad = ref<boolean>(false);
 
 onMounted(async () => {
   await getRankingByLimitParam(rankingDataLimit);
+
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    isTouchpad.value = true;
+  }
 });
 
 onMounted(() => {
@@ -22,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <CursorEffect />
+  <CursorEffect v-if="!isTouchpad"/>
   <ScrollHandler />
   <div class="page">
     <RankingHeader title="ランキング" />

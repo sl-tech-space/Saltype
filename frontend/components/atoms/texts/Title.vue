@@ -36,16 +36,58 @@ const props = withDefaults(defineProps<Props>(), {
   color: $sub-color;
 }
 
-/** title text size **/
 .title--small {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem);
 }
 
 .title--medium {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 2vw + 1rem, 2.5rem);
 }
 
 .title--large {
-  font-size: 3rem;
+  font-size: clamp(2.5rem, 2.5vw + 1rem, 3rem);
+}
+
+/* responsive */
+@media (min-width: 1200px) and (max-width: 1600px) {
+  .title--small {
+    font-size: clamp(1.75rem, 1.75vw + 0.9rem, 2.25rem);
+  }
+
+  .title--medium {
+    font-size: clamp(2.25rem, 2.25vw + 0.9rem, 2.75rem);
+  }
+
+  .title--large {
+    font-size: clamp(2.75rem, 2.75vw + 0.9rem, 3.25rem);
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .title--small {
+    font-size: clamp(1.5rem, 1.5vw + 0.8rem, 2rem);
+  }
+
+  .title--medium {
+    font-size: clamp(2rem, 2vw + 0.8rem, 2.5rem);
+  }
+
+  .title--large {
+    font-size: clamp(2.5rem, 2.5vw + 0.8rem, 3rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .title--small {
+    font-size: clamp(1.25rem, 1.25vw + 0.7rem, 1.75rem);
+  }
+
+  .title--medium {
+    font-size: clamp(1.75rem, 1.75vw + 0.7rem, 2.25rem);
+  }
+
+  .title--large {
+    font-size: clamp(2.25rem, 2.25vw + 0.7rem, 2.75rem);
+  }
 }
 </style>
