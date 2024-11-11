@@ -9,23 +9,48 @@ from .serializers import ContactSerializer
 
 
 class SubmitRequestView(APIView):
-    """リクエスト送信処理"""
-
+    """
+    要望送信APIビュークラス。
+    """
     permission_classes = [AllowAny]
 
     @HandleExceptions()
     def post(self, request):
-        """リクエストから送信されたデータをもとにシリアライズインスタンスを作成"""
+        """
+        POSTメソッドで要望リクエストを処理。
+
+        Args:
+            request: クライアントからのリクエストオブジェクト。
+
+        Returns:
+            Response: 処理結果を含むHTTPレスポンス。
+        """
         serializer = ContactSerializer(data=request.data)
+
         if serializer.is_valid():
-            """有効データを取得"""
             user_id = serializer.validated_data["user_id"]
             request_content = serializer.validated_data["request_content"]
+
             request_email = ContactEmail(user_id, request_content)
             request_email.send_request_email()
+
             return self.format_response("要望送信成功", status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def format_response(self, message, http_status):
-        """レスポンスをフォーマットして生成"""
-        return Response({"status": "success", "message": message}, status=http_status)
+        """
+        フォーマットされたレスポンスを生成。
+
+        Args:
+            message: レスポンスに含めるメッセージ。
+            http_status: HTTPステータスコード。
+
+        Returns:
+            Response: フォーマットされたHTTPレスポンスオブジェクト。
+        """
+        return Response({
+            "status": "success",
+            "message": message
+        },
+                        status=http_status)
