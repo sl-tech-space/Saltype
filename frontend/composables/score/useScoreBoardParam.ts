@@ -1,11 +1,13 @@
 import { useUser } from "../conf/useUser";
-import { useUserInfo } from "../server/useUserInfo";
-import type { ScoreBoardData } from "~/types/scoreBoard";
+import type { ScoreBoardData } from "~/types/score";
 
+/**
+ * タイピング結果画面処理
+ * @returns getParam
+ */
 export function useScoreBoardParam() {
   const config = useRuntimeConfig();
-  const { user } = useUser();
-  const { waitForUser } = useUserInfo();
+  const { user, waitForUser } = useUser();
   const scoreBoardData = ref<ScoreBoardData | null>();
 
   /**

@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import CursorEffect from "~/composables/ui/useCursorEffect.vue";
-import ScrollHandler from "~/composables/ui/useScrollHandler.vue";
+import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
+import ScrollHandler from "~/components/molecules/common/ui/ScrollHandler.vue";
 import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
 import JapaneseRankingCard from "~/components/organisms/ranking/JapaneseRankingCard.vue";
 import EnglishRankingCard from "~/components/organisms/ranking/EnglishRankingCard.vue";
-import Loading from "~/composables/ui/useLoading.vue";
+import Loading from "~/components/molecules/common/ui/Loading.vue";
+import PageIndicator from "~/components/molecules/common/ui/PageIndicator.vue";
 import { useRanking } from '~/composables/ranking/useRanking';
 
-const { isLoading, japaneseRankings, englishRankings, getRankingByLimitParam } = useRanking();
+const { 
+  isLoading, dailyJapaneseRankings, dailyEnglishRankings,
+  japaneseRankings, englishRankings,
+  getRankingByLimitParam, getDailyRankingByLimitParam 
+} = useRanking();
+
 const rankingDataLimit: number = 5;
+const dailyRankingDataLimit: number = 1;
 const isTouchpad = ref<boolean>(false);
 
 onMounted(async () => {
+  await getDailyRankingByLimitParam(dailyRankingDataLimit);
   await getRankingByLimitParam(rankingDataLimit);
 
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
@@ -27,8 +35,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <CursorEffect v-if="!isTouchpad"/>
+  <CursorEffect v-if="!isTouchpad" />
   <ScrollHandler />
+  <PageIndicator :total-pages=3 />
   <div class="page">
     <RankingHeader title="ランキング" />
   </div>

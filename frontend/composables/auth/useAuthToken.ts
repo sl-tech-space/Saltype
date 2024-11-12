@@ -1,5 +1,9 @@
 import { useUser } from "../conf/useUser";
 
+/**
+ * ログイン時のトークン認証処理
+ * @returns authToken
+ */
 export function useAuthToken() {
   const { setUser, clearUser } = useUser();
   const config = useRuntimeConfig();

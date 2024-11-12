@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import LoginPage from "~/pages/login.vue";
-import CursorEffect from "~/composables/ui/useCursorEffect.vue";
+import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
 import Title from "~/components/atoms/texts/Title.vue";

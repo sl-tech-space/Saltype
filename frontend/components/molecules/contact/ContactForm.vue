@@ -2,7 +2,7 @@
 import Textarea from '~/components/atoms/inputs/Textarea.vue';
 import Field from '../common/ValidateField.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
-import Loading from '~/composables/ui/useLoading.vue';
+import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '../common/BaseNotification.vue';
 import { useContact } from '~/composables/contact/useContact';
 import { Form } from 'vee-validate';

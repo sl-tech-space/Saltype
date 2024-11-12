@@ -4,7 +4,7 @@ import { nextTick } from "vue";
 import Analyze from "~/components/organisms/analyze/AnalyzeCard.vue";
 import TypoFrequencyCard from "~/components/molecules/analyze/TypoFrequencyCard.vue";
 import GrowthChartCard from "~/components/molecules/analyze/GrowthChartCard.vue";
-import Loading from "~/composables/ui/useLoading.vue";
+import Loading from "~/components/molecules/common/ui/Loading.vue";
 
 // モックの設定
 vi.mock("~/composables/analyze/useAnalyze", () => ({

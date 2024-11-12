@@ -25,6 +25,12 @@ export default defineNuxtConfig({
           defer: true,
         },
       ],
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      meta: [
+        { name: 'description', content: 'This is a typing practice app.' },
+        { name: 'keywords', content: 'typing, practice, japanese, english, ranking' },
+      ]
     },
   },
   runtimeConfig: {

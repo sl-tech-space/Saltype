@@ -3,7 +3,7 @@ import Input from "~/components/atoms/inputs/Input.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Image from "~/components/atoms/imgs/Image.vue";
 import Field from "~/components/molecules/common/ValidateField.vue";
-import Loading from "~/composables/ui/useLoading.vue";
+import Loading from "~/components/molecules/common/ui/Loading.vue";
 import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
 import { Form } from "vee-validate";
 import * as yup from "yup";

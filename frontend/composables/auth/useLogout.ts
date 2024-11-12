@@ -10,6 +10,9 @@ export async function useLogout() {
   const router = useRouter();
   const { clearUser } = useUser();
 
+  /**
+   * ログアウト処理
+   */
   const logout = async () => {
     try {
       useCookie("auth_token").value = null;

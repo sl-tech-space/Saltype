@@ -11,6 +11,11 @@ export function useLogin() {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
+  /**
+   * ログイン処理
+   * @param email 
+   * @param password 
+   */
   const login = async (email: string, password: string) => {
     isLoading.value = true;
     error.value = null;

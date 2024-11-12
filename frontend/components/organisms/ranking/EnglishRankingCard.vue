@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BaseRankingCard from '~/components/molecules/ranking/BaseRankingCard.vue';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
-import type { RankingItem } from '~/composables/ranking/useRankingTypes';
+import type { RankingItem } from '~/types/ranking';
 
 interface Props {
     rankingsByCombination: Record<string, RankingItem[]>;

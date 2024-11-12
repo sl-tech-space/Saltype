@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import RankingPage from "~/pages/ranking.vue";
-import CursorEffect from "~/composables/ui/useCursorEffect.vue";
-import ScrollHandler from "~/composables/ui/useScrollHandler.vue";
+import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
+import ScrollHandler from "~/components/molecules/common/ui/ScrollHandler.vue";
 import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
 import JapaneseRankingCard from "~/components/organisms/ranking/JapaneseRankingCard.vue";
 import EnglishRankingCard from "~/components/organisms/ranking/EnglishRankingCard.vue";
-import Loading from "~/composables/ui/useLoading.vue";
+import Loading from "~/components/molecules/common/ui/Loading.vue";
 
 // useRankingのモック
 vi.mock("~/composables/ranking/useRanking", () => ({

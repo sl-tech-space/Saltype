@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TypoFrequencyCard from '~/components/molecules/analyze/TypoFrequencyCard.vue';
 import GrowthChartCard from '~/components/molecules/analyze/GrowthChartCard.vue';
-import Loading from '~/composables/ui/useLoading.vue';
+import Loading from '~/components/molecules/common/ui/Loading.vue';
 import { useAnalyze } from '~/composables/analyze/useAnalyze';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
 
