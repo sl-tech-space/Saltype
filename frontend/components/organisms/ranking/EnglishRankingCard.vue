@@ -5,6 +5,7 @@ import type { RankingItem } from '~/types/ranking';
 
 interface Props {
     rankingsByCombination: Record<string, RankingItem[]>;
+    rankingDataLimit: number;
 }
 
 const props = defineProps<Props>();
@@ -26,7 +27,8 @@ const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): Rankin
         <div class="ranking-cards">
             <BaseRankingCard v-for="id in englishDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
-                :rankings="objectToArray(props.rankingsByCombination[id] || [])" />
+                :rankings="objectToArray(props.rankingsByCombination[id] || [])" width="medium" height="full"
+                :limit=rankingDataLimit :is-footer="true" />
         </div>
     </div>
 </template>

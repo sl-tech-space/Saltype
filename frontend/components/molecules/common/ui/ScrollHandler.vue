@@ -18,18 +18,22 @@ const handleScroll = (event: WheelEvent) => {
   }
   addScrollListener(); // スクロール後にリスナーを再度追加
 };
+
 const addScrollListener = () => {
   window.addEventListener("wheel", handleScroll, {
     once: true,
   });
 };
+
 const removeScrollListener = () => {
   window.removeEventListener("wheel", handleScroll);
 };
+
 onMounted(() => {
   document.body.style.overflow = "hidden"; // bodyのスクロールを禁止
   addScrollListener();
 });
+
 onUnmounted(() => {
   document.body.style.overflow = ""; // bodyのスクロールを元に戻す
   removeScrollListener();
