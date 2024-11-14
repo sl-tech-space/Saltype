@@ -1,11 +1,20 @@
 import { useUser } from "../conf/useUser";
 
+/**
+ * 要望画面処理
+ * @returns isLoading, sendContentToServer
+ */
 export function useContact() {
   const config = useRuntimeConfig();
   const { user } = useUser();
   const isLoading = ref(false);
   const message = ref("");
 
+  /**
+   * サーバーに要望内容を送信
+   * @param content
+   * @returns message.value
+   */
   const sendContentToServer = async (content: string): Promise<string> => {
     isLoading.value = true;
 

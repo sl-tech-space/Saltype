@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import TypingPage from "~/pages/typing.vue";
-import CursorEffect from "~/composables/ui/useCursorEffect.vue";
+import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
 import TypingHeader from "~/components/organisms/typing/TypingHeader.vue";
 import TypingScreen from "~/components/organisms/typing/TypingScreen.vue";
 

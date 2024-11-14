@@ -3,11 +3,15 @@ import BaseCard from '../common/BaseCard.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
-import type { RankingItem } from '~/composables/ranking/useRankingTypes';
+import type { RankingItem } from '~/types/ranking';
 
 interface Props {
     difficultyName: string;
     rankings: RankingItem[] | RankingItem[][];
+    width: "medium" | "small" | "large" | "xl" | "full";
+    height: "medium" | "small" | "large" | "xl" | "full";
+    limit: number;
+    isFooter?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -19,7 +23,7 @@ const topRankings = computed(() => {
 </script>
 
 <template>
-    <BaseCard width="medium" height="full">
+    <BaseCard :width=props.width :height=props.height>
         <template #card-header>
             <div class="header-content">
                 <Title size="small" :text="props.difficultyName" />
@@ -29,7 +33,7 @@ const topRankings = computed(() => {
             <div class="body-content">
                 <div class="body-container">
                     <ul class="ranking-list">
-                        <li v-for="index in 5" :key="index" class="ranking-item">
+                        <li v-for="index in props.limit" :key="index" class="ranking-item">
                             <Text v-if="topRankings[index - 1]" size="large" color="main-color">
                                 {{ index }}位&nbsp;:&nbsp;{{ topRankings[index - 1].username }}&ensp;スコア&nbsp;:&nbsp;{{
                                     topRankings[index - 1].score }}
@@ -42,7 +46,7 @@ const topRankings = computed(() => {
                 </div>
             </div>
         </template>
-        <template #card-footer>
+        <template #card-footer v-if="props.isFooter">
             <div class="footer-content">
                 <Button border="main-color" width="same-as-input-large" height="medium" background="none"
                     :rounded="true" button-text="もっと見る" />

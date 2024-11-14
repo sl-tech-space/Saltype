@@ -3,7 +3,7 @@ import { useTyping } from "~/composables/typing/useTyping";
 import Text from "~/components/atoms/texts/Text.vue";
 import Title from "~/components/atoms/texts/Title.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
-import Loading from "~/composables/ui/useLoading.vue";
+import Loading from "~/components/molecules/common/ui/Loading.vue";
 import { useEventListener } from "@vueuse/core";
 
 const route = useRoute();

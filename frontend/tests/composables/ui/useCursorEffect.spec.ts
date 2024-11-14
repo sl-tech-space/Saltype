@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
-import CursorComponent from "~/composables/ui/useCursorEffect.vue";
+import CursorComponent from "~/components/molecules/common/ui/CursorEffect.vue";
 
 describe("CursorComponent", () => {
   let wrapper: any;

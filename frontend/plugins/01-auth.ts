@@ -30,7 +30,6 @@ export default defineNuxtPlugin((nuxtApp) => {
           await router.push({ name: "home" });
         }
       } catch (e) {
-        console.error("トークン検証エラー:", e);
         useCookie("auth_token").value = null;
         clearUser();
         try {
@@ -42,7 +41,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   };
 
-  nuxtApp.hooks.hook("app:created", () => {
+  nuxtApp.hooks.hook("app:mounted", async () => {
     initAuth().catch((error) => {
       console.error("認証初期化エラー:", error);
     });

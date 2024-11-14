@@ -1,10 +1,6 @@
 import { useRuntimeConfig } from "nuxt/app";
 import { useAuthToken } from "./useAuthToken";
-
-interface GoogleUserInfo {
-  email: string;
-  name: string;
-}
+import type { GoogleUserInfo } from "~/types/user";
 
 /**
  * Google認証処理
@@ -16,6 +12,9 @@ export const useGoogleAuth = () => {
   const user = ref<GoogleUserInfo | null>(null);
   const error = ref<Error | null>(null);
 
+  /**
+   * Google認証処理
+   */
   const loginWithGoogle = async (): Promise<void> => {
     try {
       const google = (window as any).google;

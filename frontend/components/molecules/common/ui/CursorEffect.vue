@@ -39,5 +39,6 @@ onUnmounted(() => {
   transition: transform 0.1s ease, box-shadow 0.2s ease;
   transform: translate(-50%, -50%);
   mix-blend-mode: exclusion;
+  z-index: 2000;
 }
 </style>

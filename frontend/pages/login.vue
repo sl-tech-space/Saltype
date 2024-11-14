@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CursorEffect from "~/composables/ui/useCursorEffect.vue";
+import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
 import Title from "~/components/atoms/texts/Title.vue";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CursorEffect from '~/composables/ui/useCursorEffect.vue';
+import CursorEffect from '~/components/molecules/common/ui/CursorEffect.vue';
 import ContactHeader from '~/components/organisms/contact/ContactHeader.vue';
 import ContactCard from '~/components/organisms/contact/ContactCard.vue';
 

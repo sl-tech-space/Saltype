@@ -4,7 +4,7 @@ import RankCard from '~/components/molecules/score/RankCard.vue';
 import RankingCard from '~/components/molecules/score/RankingCard.vue';
 import ScoreCard from '~/components/molecules/score/ScoreCard.vue';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
-import type { ScoreBoardData } from '~/types/scoreBoard';
+import type { ScoreBoardData } from '~/types/score';
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);

@@ -1,17 +1,20 @@
 import { useUser } from "../conf/useUser";
-import { useUserInfo } from "../server/useUserInfo";
+import type { TypoFrequency } from "~/types/analyze";
 
+/**
+ * 分析情報画面処理
+ * @returns typoFrequency, getTypoFrequencyByLimitParam, getPastScores,
+ */
 export function useAnalyze() {
   const config = useRuntimeConfig();
-  const { user } = useUser();
-  const { waitForUser } = useUserInfo();
+  const { user, waitForUser } = useUser();
   const typoFrequency = ref<TypoFrequency[]>([]);
 
-  interface TypoFrequency {
-    miss_char: string;
-    miss_count: number;
-  }
-
+  /**
+   * ミスタイプTOP{N}の取得
+   * @param limit
+   * @returns
+   */
   const getTypoFrequencyByLimitParam = async (limit: Number) => {
     try {
       await waitForUser();
@@ -47,6 +50,12 @@ export function useAnalyze() {
     }
   };
 
+  /**
+   * 過去データの取得
+   * @param selectedLanguage
+   * @param selectedDifficulty
+   * @returns data.scores
+   */
   const getPastScores = async (
     selectedLanguage: Number,
     selectedDifficulty: Number
