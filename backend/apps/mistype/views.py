@@ -47,7 +47,7 @@ class MistypeView(APIView):
         raise NotImplementedError("サブクラスはhandle_requestメソッドを実装する必要があります")
 
 
-class InsertMistypeDataView(MistypeView):
+class MistypeDataView(MistypeView):
     """
     ミスタイプの挿入または更新を行うクラス。
     """

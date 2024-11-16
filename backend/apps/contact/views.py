@@ -34,11 +34,11 @@ class SubmitRequestView(APIView):
             request_email = ContactEmail(user_id, request_content)
             request_email.send_request_email()
 
-            return self.format_response("要望送信成功", status.HTTP_200_OK)
+            return self.format_response(status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def format_response(self, message, http_status):
+    def format_response(self, http_status):
         """
         フォーマットされたレスポンスを生成。
 
@@ -49,8 +49,4 @@ class SubmitRequestView(APIView):
         Returns:
             Response: フォーマットされたHTTPレスポンスオブジェクト。
         """
-        return Response({
-            "status": "success",
-            "message": message
-        },
-                        status=http_status)
+        return Response({"status": "success"}, status=http_status)
