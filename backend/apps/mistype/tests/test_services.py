@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 import pytest
 from apps.mistype.models import Miss
 from apps.mistype.services import MistypeService

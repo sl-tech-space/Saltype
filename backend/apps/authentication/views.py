@@ -8,7 +8,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import GoogleAuthSerializer, UserLoginSerializer, UserSerializer
+from .serializers import (
+    GoogleAuthSerializer,
+    UserLoginSerializer,
+    UserSerializer,
+)
 
 
 class LoginView(APIView):
@@ -28,8 +32,9 @@ class LoginView(APIView):
         Returns:
             Response: 認証結果を含むHTTPレスポンス。
         """
-        serializer = UserLoginSerializer(data=request.data,
-                                         context={"request": request})
+        serializer = UserLoginSerializer(
+            data=request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data["user"]

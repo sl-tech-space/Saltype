@@ -5,10 +5,12 @@ class MistypeSerializer(serializers.Serializer):
     """
     ミスタイプの挿入とトップミスタイプの取得用シリアライザー。
     """
+
     user_id = serializers.UUIDField(write_only=True)  # ユーザーID（UUID形式）
-    mistypes = serializers.ListField(child=serializers.DictField(),
-                                     required=False)  #ミスタイプ情報(list)
-    limit = serializers.IntegerField(required=False)  #取得上限(int)
+    mistypes = serializers.ListField(
+        child=serializers.DictField(), required=False
+    )  # ミスタイプ情報(list)
+    limit = serializers.IntegerField(required=False)  # 取得上限(int)
 
     def validate(self, attrs):
         """
@@ -28,15 +30,21 @@ class MistypeSerializer(serializers.Serializer):
 
             # `mistypes` が空リストの場合はエラー
             if not mistypes:
-                raise serializers.ValidationError("ミスタイプデータは空であってはいけません。")
+                raise serializers.ValidationError(
+                    "ミスタイプデータは空であってはいけません。"
+                )
 
             for item in mistypes:
                 miss_count = item.get("miss_count")
 
                 # ミスタイプのカウントが`None`、整数でない、または負の値であればエラー
-                if (miss_count is None or not isinstance(miss_count, int)
-                        or miss_count < 0):
+                if (
+                    miss_count is None
+                    or not isinstance(miss_count, int)
+                    or miss_count < 0
+                ):
                     raise serializers.ValidationError(
-                        "ミスタイプのカウントは正の整数でなければなりません。")
+                        "ミスタイプのカウントは正の整数でなければなりません。"
+                    )
 
         return attrs

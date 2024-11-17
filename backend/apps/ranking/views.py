@@ -12,6 +12,7 @@ class RankingView(APIView):
     """
     ランキング情報を取得するためのAPIビュークラス。
     """
+
     permission_classes = [AllowAny]
 
     @HandleExceptions()
@@ -30,8 +31,7 @@ class RankingView(APIView):
 
         ranking_datas = self.get_ranking_data(serializer.validated_data)
 
-        return Response(self.format_response(ranking_datas),
-                        status=status.HTTP_200_OK)
+        return Response(self.format_response(ranking_datas), status=status.HTTP_200_OK)
 
     def get_ranking_data(self, validated_data):
         """
@@ -66,13 +66,15 @@ class RankingView(APIView):
             list: 取得したスコアオブジェクトのリスト。
         """
         return list(
-            Score.objects.filter(lang_id=lang_id,
-                                 diff_id=diff_id).select_related("user").only(
-                                     "user__user_id", "user__username",
-                                     "score").order_by("-score")[:limit])
+            Score.objects.filter(lang_id=lang_id, diff_id=diff_id)
+            .select_related("user")
+            .only("user__user_id", "user__username", "score")
+            .order_by("-score")[:limit]
+        )
 
-    def get_daily_ranking(self, lang_id: int, diff_id: int, date: str,
-                          limit: int) -> list:
+    def get_daily_ranking(
+        self, lang_id: int, diff_id: int, date: str, limit: int
+    ) -> list:
         """
         日別ランキングを取得するメソッド。
 
@@ -87,10 +89,12 @@ class RankingView(APIView):
         """
         return list(
             Score.objects.filter(
-                lang_id=lang_id, diff_id=diff_id,
-                created_at__date=date).select_related("user").only(
-                    "user__user_id", "user__username",
-                    "score").order_by("-score")[:limit])
+                lang_id=lang_id, diff_id=diff_id, created_at__date=date
+            )
+            .select_related("user")
+            .only("user__user_id", "user__username", "score")
+            .order_by("-score")[:limit]
+        )
 
     def format_response(self, ranking_datas):
         """
@@ -102,8 +106,11 @@ class RankingView(APIView):
         Returns:
             list: フォーマット済みのランキングデータのリスト。
         """
-        return [{
-            "user_id": ranking_data.user.user_id,
-            "username": ranking_data.user.username,
-            "score": ranking_data.score,
-        } for ranking_data in ranking_datas]
+        return [
+            {
+                "user_id": ranking_data.user.user_id,
+                "username": ranking_data.user.username,
+                "score": ranking_data.score,
+            }
+            for ranking_data in ranking_datas
+        ]

@@ -12,6 +12,7 @@ class SubmitRequestView(APIView):
     """
     要望送信APIビュークラス。
     """
+
     permission_classes = [AllowAny]
 
     @HandleExceptions()

@@ -8,6 +8,7 @@ class ScoreSerializer(serializers.Serializer):
     """
     スコア関連のデータをシリアライズおよびバリデーションするためのクラス。
     """
+
     user_id = serializers.UUIDField(required=False)  # ユーザーID（UUID形式）
     lang_id = serializers.IntegerField(required=False)  # 言語ID（整数）
     diff_id = serializers.IntegerField(required=False)  # 難易度ID（整数）
@@ -18,13 +19,13 @@ class ScoreSerializer(serializers.Serializer):
     def validate(self, attrs):
         """
         受け取ったデータに対してバリデーションを実行。
-        
+
         Args:
             attrs: シリアライズされるデータの辞書。
-        
+
         Returns:
             attrs: バリデーション後のデータ（エラーがなければそのまま返却）。
-        
+
         Raises:
             ValidationError: バリデーションエラーがあった場合に発生。
         """
@@ -45,26 +46,30 @@ class ScoreSerializer(serializers.Serializer):
 
         # タイピング数が指定されており、0未満であればエラー
         if "typing_count" in attrs and attrs["typing_count"] < 0:
-            raise ValidationError({"typing_count": "タイプ数は0以上でなければなりません。"})
+            raise ValidationError(
+                {"typing_count": "タイプ数は0以上でなければなりません。"}
+            )
 
         # 精度が指定されており、0から1の範囲外であればエラー
         if "accuracy" in attrs and not (0 <= attrs["accuracy"] <= 1):
-            raise ValidationError({"accuracy": "精度は0から1の間でなければなりません。"})
+            raise ValidationError(
+                {"accuracy": "精度は0から1の間でなければなりません。"}
+            )
 
         return attrs
 
     def get_rank_id(self, rank_name):
         """
         ランク名からランクIDを取得するメソッド。
-        
+
         ランク名に対応するランクIDをデータベースから取得し、返します。
-        
+
         Args:
             rank_name: ランクの名前（文字列）。
-        
+
         Returns:
             int: 対応するランクのID。
-        
+
         Raises:
             Http404: ランク名が存在しない場合、404エラーを発生させます。
         """

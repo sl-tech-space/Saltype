@@ -1,4 +1,3 @@
-from typing import Optional
 from apps.common.models import Score, User
 from apps.common.util.exception_handler import HandleExceptions
 from django.db import transaction

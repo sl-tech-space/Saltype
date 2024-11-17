@@ -44,7 +44,9 @@ class MistypeView(APIView):
         Raises:
             NotImplementedError: サブクラスでこのメソッドが未実装の場合に発生。
         """
-        raise NotImplementedError("サブクラスはhandle_requestメソッドを実装する必要があります")
+        raise NotImplementedError(
+            "サブクラスはhandle_requestメソッドを実装する必要があります"
+        )
 
 
 class MistypeDataView(MistypeView):
@@ -71,8 +73,8 @@ class MistypeDataView(MistypeView):
 
     @transaction.atomic
     def insert_mistypes(
-            self, user_id: int,
-            mistypes_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        self, user_id: int, mistypes_data: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         ミスタイプのデータベースへの挿入または更新。
 
@@ -100,7 +102,8 @@ class MistypeDataView(MistypeView):
 
         # miss_charをキーにしてデータを取得または新規作成
         miss_instance, created = Miss.objects.get_or_create(
-            miss_char=miss_char, defaults={"miss_count": miss_count})
+            miss_char=miss_char, defaults={"miss_count": miss_count}
+        )
 
         # 既存データがあればカウントを更新
         miss_instance.miss_count += miss_count
@@ -111,8 +114,7 @@ class MistypeDataView(MistypeView):
             "miss_count": miss_instance.miss_count,
         }
 
-    def format_response(self,
-                        inserted_data: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def format_response(self, inserted_data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         挿入または更新されたミスタイプデータのフォーマット。
 
@@ -147,8 +149,7 @@ class TopMistypesView(MistypeView):
         top_mistypes = self.get_top_mistypes(user_id, limit)
         return self.format_response(top_mistypes)
 
-    def get_top_mistypes(self, user_id: int,
-                         limit: int) -> List[Dict[str, Any]]:
+    def get_top_mistypes(self, user_id: int, limit: int) -> List[Dict[str, Any]]:
         """
         ユーザーのトップミスタイプを取得。
 
@@ -159,14 +160,14 @@ class TopMistypesView(MistypeView):
         Returns:
             List: トップミスタイプデータのリスト。
         """
-        return [{
-            "miss_char": miss.miss_char,
-            "miss_count": miss.miss_count
-        } for miss in Miss.objects.filter(
-            user_id=user_id).order_by("-miss_count")[:limit]]
+        return [
+            {"miss_char": miss.miss_char, "miss_count": miss.miss_count}
+            for miss in Miss.objects.filter(user_id=user_id).order_by("-miss_count")[
+                :limit
+            ]
+        ]
 
-    def format_response(self, top_mistypes: List[Dict[str,
-                                                      Any]]) -> Dict[str, Any]:
+    def format_response(self, top_mistypes: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         トップミスタイプデータのフォーマット。
 

@@ -25,7 +25,7 @@ class HandleExceptions:
                 return self.handle_database_error()
             except Http404:
                 return self.handle_http404_error()
-            except Exception as e:
+            except Exception:
                 logger.exception("Unexpected error occurred")
                 return Response(
                     {"error": "内部エラーが発生しました。"},

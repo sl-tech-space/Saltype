@@ -4,7 +4,6 @@ import pytest
 from apps.common.models import Diff, Lang, Score
 from apps.score.services import ScoreService
 from django.contrib.auth import get_user_model
-from django.db.models import Avg
 
 User = get_user_model()
 

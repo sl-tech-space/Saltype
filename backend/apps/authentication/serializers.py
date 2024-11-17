@@ -6,21 +6,29 @@ from rest_framework.serializers import ModelSerializer
 
 
 class UserLoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True, style={"input_type": "password"})
+    """
+    ユーザーログイン用シリアライザ。
+    """
+
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(
+        write_only=True, required=True, style={"input_type": "password"}
+    )
 
     def validate(self, data):
+        """
+        `email` と `password` が正しいか検証します。
+        """
         email = data.get("email")
         password = data.get("password")
 
-        if not email or not password:
-            msg = _("メールアドレスとパスワードを入力してください。")
-            raise serializers.ValidationError(msg, code="authorization")
-
         self.validate_min_length(password)
 
+        # ユーザー認証
         user = authenticate(
-            request=self.context.get("request"), username=email, password=password
+            request=self.context.get("request"),
+            username=email,
+            password=password,
         )
 
         if user is None:
@@ -35,6 +43,9 @@ class UserLoginSerializer(serializers.Serializer):
         return data
 
     def validate_min_length(self, value, min_length=8):
+        """
+        パスワードの長さが `min_length` 以上であることを検証します。
+        """
         if len(value) < min_length:
             raise ValidationError(
                 f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字"
@@ -42,13 +53,24 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(ModelSerializer):
+    """
+    ユーザーデータのシリアライザ。
+    """
 
     class Meta:
         model = get_user_model()
         fields = ["user_id", "username", "email"]
+        extra_kwargs = {
+            "email": {"read_only": True},
+        }
 
 
 class GoogleAuthSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    username = serializers.CharField(max_length=150)
+    """
+    Google認証用シリアライザ。
+    `email`, `username`, `picture` を受け取ります。
+    """
+
+    email = serializers.EmailField(required=True)
+    username = serializers.CharField(max_length=150, required=True)
     picture = serializers.URLField(required=False, allow_blank=True)
