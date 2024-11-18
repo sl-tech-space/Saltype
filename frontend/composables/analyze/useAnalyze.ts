@@ -69,7 +69,7 @@ export function useAnalyze() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/past-scores/`,
+        `${config.public.baseURL}/api/django/score/past/`,
         {
           method: "POST",
           headers: {
