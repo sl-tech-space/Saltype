@@ -10,14 +10,15 @@ const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 const scoreBoardData = ref<ScoreBoardData | null>();
 const { getParam } = useScoreBoardParam();
+const id = ref<string>("");
 
 onMounted(async () => {
-    const storedLanguage = localStorage.getItem("language");
-    const storedDifficulty = localStorage.getItem("difficulty");
+    id.value = localStorage.getItem("gameModeId") as string;
+    const splitedId = splitId(id.value);
 
-    if (storedLanguage && storedDifficulty) {
-        selectedLanguage.value = Number(storedLanguage) + 1;
-        selectedDifficulty.value = Number(storedDifficulty) + 1;
+    if (splitedId) {
+        selectedLanguage.value = splitedId.left;
+        selectedDifficulty.value = splitedId.right;
 
         scoreBoardData.value = await getParam(
             selectedLanguage.value,
@@ -35,7 +36,9 @@ onMounted(async () => {
             <RankCard :rank="scoreBoardData?.rank || 'データなし'" />
         </div>
         <div class="bottom-card">
-            <RetryCard />
+            <ClientOnly>
+                <RetryCard :id="id" />
+            </ClientOnly>
             <RankingCard :ranking="scoreBoardData?.ranking_position || 0" />
         </div>
     </main>

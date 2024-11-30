@@ -16,7 +16,7 @@ interface Props {
     height?: "small" | "medium" | "large" | "xl" | "full",
     headerSep?: boolean
     footerSep?: boolean
-    needFooter?: boolean
+    isFooter?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
     height: "medium",
     headerSep: true,
     footerSep: true,
-    needFooter: true
+    isFooter: true
 });
 </script>
 
@@ -41,7 +41,7 @@ const props = withDefaults(defineProps<Props>(), {
             <slot name="card-body" />
         </div>
         <Separator v-if="props.footerSep" :color="props.sepColor" width="large" margin="none" />
-        <div class="card-footer" v-if="needFooter">
+        <div class="card-footer" v-if="isFooter">
             <slot name="card-footer" />
         </div>
     </section>

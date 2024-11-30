@@ -11,7 +11,7 @@ const props = defineProps<Props>();
 const router = useRouter();
 
 const handleNavigateToRanking = async () => {
-    router.push({ name: "ranking" });
+    await router.push({ name: "ranking" });
 }
 </script>
 

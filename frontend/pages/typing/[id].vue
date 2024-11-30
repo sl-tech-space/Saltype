@@ -4,22 +4,22 @@ import TypingHeader from '~/components/organisms/typing/TypingHeader.vue';
 import TypingScreen from '~/components/organisms/typing/TypingScreen.vue';
 
 onMounted(() => {
-  useHead({
-    title: "タイピング"
-  })
+    useHead({
+        title: "タイピング"
+    })
 })
 </script>
 
 <template>
-  <CursorEffect />
-  <div class="page">
-    <TypingHeader />
-    <TypingScreen />
-  </div>
+    <CursorEffect />
+    <div class="page">
+        <TypingHeader />
+        <TypingScreen />
+    </div>
 </template>
 
 <style lang="scss" scoped>
 .page {
-  @extend %full-page;
+    @extend %full-page;
 }
 </style>

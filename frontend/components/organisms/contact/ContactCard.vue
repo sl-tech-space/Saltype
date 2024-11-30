@@ -6,7 +6,7 @@ import ContactForm from '~/components/molecules/contact/ContactForm.vue';
 
 <template>
     <div class="contact-card">
-        <BaseCard width="large" height="xl" :footer-sep="false" :need-footer="false">
+        <BaseCard width="large" height="xl" :footer-sep="false" :is-footer="false">
             <template #card-header>
                 <div class="header-content">
                     <Title size="small" text="要望内容を入力してください" />

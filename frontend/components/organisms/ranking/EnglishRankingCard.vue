@@ -28,7 +28,7 @@ const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): Rankin
             <BaseRankingCard v-for="id in englishDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
                 :rankings="objectToArray(props.rankingsByCombination[id] || [])" width="medium" height="full"
-                :limit=rankingDataLimit :is-footer="true" />
+                :limit=rankingDataLimit :is-footer="true" :id="id" :is-padding="true" />
         </div>
     </div>
 </template>

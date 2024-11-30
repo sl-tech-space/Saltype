@@ -8,27 +8,16 @@ import Button from '~/components/atoms/buttons/Button.vue';
 import { useRouter } from '#app';
 
 const router = useRouter();
-
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
-const handleStart = async () => {
-    try {
+const handleStart = () => {
+    selectedLanguage.value += 1;
+    selectedDifficulty.value += 1;
+    const id: string = joinWithHyphen(selectedLanguage.value.toString(), selectedDifficulty.value.toString());
+    localStorage.setItem("gameModeId", id);
 
-        localStorage.setItem("language", selectedLanguage.value.toString());
-        localStorage.setItem("difficulty", selectedDifficulty.value.toString())
-
-        router.push({
-            name: "typing",
-            query: {
-                language: selectedLanguage.value + 1,
-                difficultyLevel: selectedDifficulty.value + 1,
-            },
-        });
-
-    } catch (error) {
-        console.error("Navigation failed:", error);
-    }
+    router.push({ name: `typing-id`, params: { id: id } });
 };
 </script>
 

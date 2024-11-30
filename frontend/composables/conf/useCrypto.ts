@@ -1,4 +1,4 @@
-import { encryptData, decryptData } from "~/utils/crypto";
+import { encryptData, decryptData } from "~/utils/cryptoUtils";
 
 /**
  * クライアントサイドデータの暗号化、復号化

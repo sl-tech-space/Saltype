@@ -5,6 +5,7 @@ import { useLanguageAndDifficulty } from "~/composables/typing/useLanguageAndDif
  * ランキング画面処理
  * @returns isLoading, getRankingByLimitParam,
  * japaneseRankings, englishRankings,
+ * rankingDetails, getRankingDetailsByIdAndLimitParam, detailsTitle,
  * dailyJapaneseRankings, dailyEnglishRankings
  */
 export function useRanking() {
@@ -17,6 +18,8 @@ export function useRanking() {
   const englishRankings = ref<Record<string, RankingItem[]>>({});
   const dailyJapaneseRankings = ref<Record<string, RankingItem[]>>({});
   const dailyEnglishRankings = ref<Record<string, RankingItem[]>>({});
+  const rankingDetails = ref<RankingItem[]>([]);
+  const detailsTitle = ref<string>();
 
   /**
    * 全言語、全難易度のランキングデータ取得
@@ -45,7 +48,7 @@ export function useRanking() {
   };
 
   /**
-   * 全言語、全難易度、今日のランキングデータ取得
+   * 今日のランキングデータ(全言語、全難易度)取得
    * @param limit
    */
   const getDailyRankingByLimitParam = async (limit: number) => {
@@ -53,12 +56,17 @@ export function useRanking() {
 
     // 日付取得
     const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
+    const formattedDate = today.toISOString().split("T")[0];
 
     // すべての組み合わせでランキングデータを取得
     for (const { languageId, difficultyId } of allCombinations) {
       const key = `${languageId}-${difficultyId}`;
-      const rankings = await _getRanking(languageId, difficultyId, limit, formattedDate);
+      const rankings = await _getRanking(
+        languageId,
+        difficultyId,
+        limit,
+        formattedDate
+      );
       rankingsByCombination.value[key] = rankings;
 
       switch (key.charAt(0)) {
@@ -73,6 +81,27 @@ export function useRanking() {
   };
 
   /**
+   * 指定した言語＋難易度のランキング詳細データ取得
+   * @param id
+   * @param limit
+   */
+  const getRankingDetailsByIdAndLimitParam = async (
+    id: string,
+    limit: number
+  ) => {
+    const splitedId = splitId(id);
+
+    const rankings = await _getRanking(splitedId.left, splitedId.right, limit);
+
+    rankingDetails.value = rankings;
+
+    detailsTitle.value =
+      convertNumberToJapaneseLanguageName(splitedId.left.toString()) +
+      " - " +
+      convertNumberToJapaneseDifficultyLevelName(splitedId.right.toString());
+  };
+
+  /**
    * ランキングデータ取得
    * @param language
    * @param difficulty
@@ -81,9 +110,9 @@ export function useRanking() {
    * @returns data
    */
   const _getRanking = async (
-    language: Number,
-    difficulty: Number,
-    limit: Number,
+    language: number,
+    difficulty: number,
+    limit: number,
     date?: string
   ) => {
     try {
@@ -121,7 +150,10 @@ export function useRanking() {
     englishRankings,
     dailyJapaneseRankings,
     dailyEnglishRankings,
+    rankingDetails,
+    detailsTitle,
     getRankingByLimitParam,
-    getDailyRankingByLimitParam
+    getDailyRankingByLimitParam,
+    getRankingDetailsByIdAndLimitParam,
   };
 }

@@ -15,7 +15,7 @@ export function useAnalyze() {
    * @param limit
    * @returns
    */
-  const getTypoFrequencyByLimitParam = async (limit: Number) => {
+  const getTypoFrequencyByLimitParam = async (limit: number) => {
     try {
       await waitForUser();
 
@@ -57,8 +57,8 @@ export function useAnalyze() {
    * @returns data.scores
    */
   const getPastScores = async (
-    selectedLanguage: Number,
-    selectedDifficulty: Number
+    selectedLanguage: number,
+    selectedDifficulty: number
   ) => {
     try {
       await waitForUser();

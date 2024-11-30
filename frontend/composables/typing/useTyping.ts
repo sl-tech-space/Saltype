@@ -101,13 +101,16 @@ export function useTyping(language: string, difficultyLevel: string) {
    * タイピング結果送信
    */
   const _sendTypingDataToServer = async () => {
-    const indexOffset = 1;
-
     try {
       if (!user.value) {
-        console.error("ユーザ情報が存在しません");
-        return;
+        throw new Error("ユーザ情報が存在しません");
       }
+
+      const id = localStorage.getItem("gameModeId");
+      if (!id) {
+        throw new Error("選択した難易度は存在しません");
+      }
+      const splitedId = splitId(id);
 
       const response = await fetch(
         `${config.public.baseURL}/api/django/score/`,
@@ -118,8 +121,8 @@ export function useTyping(language: string, difficultyLevel: string) {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            lang_id: Number(localStorage.getItem("language")) + indexOffset,
-            diff_id: Number(localStorage.getItem("difficulty")) + indexOffset,
+            lang_id: splitedId.left,
+            diff_id: splitedId.right,
             typing_count: typingResults.totalCorrectTypedCount,
             accuracy: typingResults.typingAccuracy,
           }),

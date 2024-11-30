@@ -7,8 +7,9 @@ import Loading from "~/components/molecules/common/ui/Loading.vue";
 import { useEventListener } from "@vueuse/core";
 
 const route = useRoute();
-const language = ref(route.query.language as string || "0");
-const difficultyLevel = ref(route.query.difficultyLevel as string || "0");
+const splitedId = splitId(route.params.id as string);
+const language = ref(splitedId.left.toString());
+const difficultyLevel = ref(splitedId.right.toString());
 let isLoading = ref(false);
 
 const {
@@ -51,20 +52,30 @@ onUnmounted(() => {
     <main class="sentence-container">
         <div>
             <div v-if="currentSentence">
-                <div v-if="!isTypingStarted">
-                    <Title color="main-color" size="medium"
-                        :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />
+                <div v-if="splitedId.left === 1">
+                    <Title color="main-color" size="medium" :text="isTypingStarted ? currentSentence.sentence[0]
+                        : (isCountdownActive ? countdown.toString() : 'Enterキーで開始します')" />
+                    <template v-if="isTypingStarted">
+                        <Text color="main-color" size="large" :text="currentSentence.sentence[1]" />
+                        <Text color="main-color" size="large" v-html="coloredText" />
+                    </template>
                 </div>
-                <div v-else>
-                    <Title color="main-color" size="small" v-html="coloredText" />
-                    <Text color="main-color" size="large" :text="currentSentence.sentence[1]" />
+                <div v-if="splitedId.left === 2">
+                    <div v-if="!isTypingStarted">
+                        <Title color="main-color" size="medium"
+                            :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />
+                    </div>
+                    <div v-else>
+                        <Title color="main-color" size="small" v-html="coloredText" />
+                        <Text color="main-color" size="large" :text="currentSentence.sentence[1]" />
+                    </div>
                 </div>
             </div>
             <Text v-else color="main-color" size="large" text="Loading..." />
         </div>
         <Separator color="sub-color" width="medium" />
     </main>
-    <Loading :isLoading="isLoading" />
+    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>

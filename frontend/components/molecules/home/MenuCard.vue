@@ -15,7 +15,7 @@ const router = useRouter();
 const showModal = ref(false);
 
 const navigateToRoute = async (routeName: string) => {
-    router.push({ name: routeName });
+    await router.push({ name: routeName });
 };
 
 const navigateToRanking = () => navigateToRoute("ranking");

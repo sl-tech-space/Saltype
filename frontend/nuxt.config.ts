@@ -10,10 +10,11 @@ export default defineNuxtConfig({
     "/": { ssr: true }, // SSR
     "/login": { ssr: false }, // CSR
     "/home": { ssr: true }, // SSR
-    "/typing": { ssr: true }, // SSR
+    "/typing/:id": { ssr: true }, // SSR
     "/score": { ssr: true }, // SSR
     "/analyze": { ssr: true }, // SSR
     "/ranking": { isr: 300 }, // ISR 5minutes
+    "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
   },
   app: {
@@ -41,7 +42,7 @@ export default defineNuxtConfig({
       httpOnly: true,
     },
     cryptoKey:
-      process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString("hex"),
+      crypto.randomBytes(32).toString("hex"),
     public: {
       baseURL: "http://localhost:8000", //Django REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,

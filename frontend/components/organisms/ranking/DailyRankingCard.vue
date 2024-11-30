@@ -35,14 +35,14 @@ const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): Rankin
             <BaseRankingCard v-for="id in japaneseDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
                 :rankings="objectToArray(props.dailyJapaneseRankingsByCombination[id] || [])" width="medium"
-                height="full" :limit=props.dailyRankingDataLimit />
+                height="full" :limit=props.dailyRankingDataLimit :is-footer="false" :is-margin="true" />
         </div>
         <Title size="small" text="英語" class="daily-champion-title" />
         <div class="ranking-cards">
             <BaseRankingCard v-for="id in englishDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
                 :rankings="objectToArray(props.dailyEnglishRankingsByCombination[id] || [])" width="medium"
-                height="full" :limit=props.dailyRankingDataLimit />
+                height="full" :limit=props.dailyRankingDataLimit :is-footer="false" :is-margin="true" />
         </div>
     </div>
 </template>
