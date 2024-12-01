@@ -1,6 +1,10 @@
 import os
+import ssl
 from pathlib import Path
+
+import certifi
 from dotenv import load_dotenv
+
 from .base import *
 
 """.envを読み込む"""

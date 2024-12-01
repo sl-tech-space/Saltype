@@ -62,8 +62,6 @@ class ScoreSerializer(serializers.Serializer):
         """
         ランク名からランクIDを取得するメソッド。
 
-        ランク名に対応するランクIDをデータベースから取得し、返します。
-
         Args:
             rank_name: ランクの名前（文字列）。
 
