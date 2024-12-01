@@ -37,7 +37,11 @@ export default defineNuxtConfig({
     cryptoKey:
       process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString("hex"),
     public: {
-      baseURL: "http://localhost", //Django REST Framework接続
+      baseURL: [
+        "http://localhost",
+        "http://13.55.129.14",
+        "https://13.55.129.14",
+      ], //Django REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
@@ -46,6 +50,7 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           additionalData: '@use "@/assets/styles/variables.scss" as *;',
+          api: "modern-compiler",
         },
       },
     },
@@ -56,7 +61,7 @@ export default defineNuxtConfig({
         "@vueuse/core",
         "vue-chartjs",
         "chart.js",
-        'defu'
+        "defu",
       ],
     },
     test: {

@@ -2,4 +2,5 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# 本番環境用に編集
+# ALLOWED_HOSTS = ['13.55.129.14']
