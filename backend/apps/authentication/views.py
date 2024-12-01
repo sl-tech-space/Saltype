@@ -22,6 +22,7 @@ class LoginView(APIView):
 
     permission_classes = [AllowAny]
 
+    @HandleExceptions()
     def post(self, request, *args, **kwargs):
         """
         POSTメソッドでログイン処理を行う。
