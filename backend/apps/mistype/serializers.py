@@ -8,7 +8,7 @@ class MistypeSerializer(serializers.Serializer):
 
     user_id = serializers.UUIDField(write_only=True)  # ユーザーID（UUID形式）
     mistypes = serializers.ListField(
-        child=serializers.DictField(), required=False
+        child=serializers.DictField(), required=False, allow_empty=True
     )  # ミスタイプ情報(list)
     limit = serializers.IntegerField(required=False)  # 取得上限(int)
 
@@ -27,12 +27,6 @@ class MistypeSerializer(serializers.Serializer):
         """
         if "mistypes" in attrs:
             mistypes = attrs["mistypes"]
-
-            # `mistypes` が空リストの場合はエラー
-            if not mistypes:
-                raise serializers.ValidationError(
-                    "ミスタイプデータは空であってはいけません。"
-                )
 
             for item in mistypes:
                 miss_count = item.get("miss_count")
