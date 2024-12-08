@@ -92,11 +92,6 @@ class ScoreSelectView(BaseScoreView):
             past_scores = self.get_past_scores(validated_data)
             return self.format_response({"scores": past_scores})
 
-        else:
-            return self.format_response(
-                {"message": "Invalid action specified."}, status="error"
-            )
-
     def get_average_score(self, validated_data: dict):
         """
         特定の条件で平均スコアを計算。
