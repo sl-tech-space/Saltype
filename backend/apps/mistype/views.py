@@ -13,7 +13,7 @@ class MistypeView(BaseMistypeView):
         action = validated_data.get("action")
         user_id = validated_data.get("user_id")  # ユーザーIDを取得
 
-        if action == "insert":
+        if action == "insert_mistypes":
             # mistypesが存在しない場合は空のリストを渡す
             mistypes = validated_data.get("mistypes", [])
             result = [self.update_or_create_mistype(data, user_id) for data in mistypes]
@@ -21,7 +21,7 @@ class MistypeView(BaseMistypeView):
                 {"mistypes": result},
                 status="success" if result else "failure",
             )
-        elif action == "get_top":
+        elif action == "get_top_mistypes":
             top_mistypes = Miss.objects.filter(user_id=user_id).order_by("-miss_count")[
                 : validated_data.get("limit")
             ]

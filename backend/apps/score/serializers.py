@@ -11,8 +11,8 @@ class ScoreSerializer(serializers.Serializer):
 
     action = serializers.ChoiceField(
         choices=[
-            "average_score",
-            "past_scores",
+            "get_average_score",
+            "get_past_scores",
             "get_ranking",
             "update_rank",
         ],  # action の選択肢を制限
@@ -65,8 +65,8 @@ class ScoreSerializer(serializers.Serializer):
 
         # action が指定されている場合、許可されたアクションを確認
         allowed_actions = [
-            "average_score",
-            "past_scores",
+            "get_average_score",
+            "get_past_scores",
             "get_ranking",
             "update_rank",
         ]

@@ -84,11 +84,11 @@ class ScoreSelectView(BaseScoreView):
         """
         action = validated_data.get("action")
 
-        if action == "average_score":  # 平均スコアを取得
+        if action == "get_average_score":  # 平均スコアを取得
             average_score = self.get_average_score(validated_data)
             return self.format_response({"average_score": round(average_score)})
 
-        elif action == "past_scores":  # 過去のスコアを取得
+        elif action == "get_past_scores":  # 過去のスコアを取得
             past_scores = self.get_past_scores(validated_data)
             return self.format_response({"scores": past_scores})
 

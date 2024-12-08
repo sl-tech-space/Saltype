@@ -8,8 +8,8 @@ class MistypeSerializer(serializers.Serializer):
 
     action = serializers.ChoiceField(
         choices=[
-            "insert",
-            "get_top",
+            "insert_mistypes",
+            "get_top_mistypes",
         ],  # action の選択肢を制限
         required=False,
     )
@@ -24,7 +24,7 @@ class MistypeSerializer(serializers.Serializer):
         操作に基づいて入力データを検証する。
         """
         action = attrs.get("action")
-        if action not in ["insert", "get_top"]:
+        if action not in ["insert_mistypes", "get_top_mistypes"]:
             raise serializers.ValidationError("無効なアクションが指定されました。")
 
         if "mistypes" in attrs:

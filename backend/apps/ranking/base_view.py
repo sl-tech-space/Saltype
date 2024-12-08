@@ -61,8 +61,6 @@ class BaseRankingView(APIView):
         # メッセージがあれば追加
         if message:
             response["message"] = message
-
-        # `data` キーを使わずにレスポンスデータを直接追加
         response.update(response_data)
 
         return response

@@ -52,7 +52,6 @@ class BaseScoreView(APIView):
             response_data: レスポンスデータ
             status: レスポンスのステータス（デフォルトは"success"）。
             message: エラーメッセージなど、オプションのメッセージ。
-
         Returns:
             dict: フォーマットされたレスポンスデータ
         """
@@ -62,7 +61,6 @@ class BaseScoreView(APIView):
         if message:
             response["message"] = message
 
-        # `data` キーを使わずにレスポンスデータを直接追加
         response.update(response_data)
 
         return response
