@@ -5,7 +5,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 INSTALLED_APPS = [
     "apps.common",
-    "apps.useradmin",
     "apps.authentication",
     "apps.mistype",
     "apps.score",

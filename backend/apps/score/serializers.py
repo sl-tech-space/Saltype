@@ -9,6 +9,15 @@ class ScoreSerializer(serializers.Serializer):
     スコア関連のデータをシリアライズおよびバリデーションするためのクラス。
     """
 
+    action = serializers.ChoiceField(
+        choices=[
+            "average_score",
+            "past_scores",
+            "get_ranking",
+            "update_rank",
+        ],  # action の選択肢を制限
+        required=False,
+    )
     user_id = serializers.UUIDField(required=False)  # ユーザーID（UUID形式）
     lang_id = serializers.IntegerField(required=False)  # 言語ID（整数）
     diff_id = serializers.IntegerField(required=False)  # 難易度ID（整数）
@@ -54,19 +63,15 @@ class ScoreSerializer(serializers.Serializer):
                 {"accuracy": "精度は0から1の間でなければなりません。"}
             )
 
+        # action が指定されている場合、許可されたアクションを確認
+        allowed_actions = [
+            "average_score",
+            "past_scores",
+            "get_ranking",
+            "update_rank",
+        ]
+        action = attrs.get("action")
+        if action and action not in allowed_actions:
+            raise serializers.ValidationError("無効なアクションが指定されました。")
+
         return attrs
-
-    def get_rank_id(self, rank_name):
-        """
-        ランク名からランクIDを取得するメソッド。
-
-        Args:
-            rank_name: ランクの名前（文字列）。
-        Returns:
-            int: 対応するランクのID。
-        Raises:
-            Http404: ランク名が存在しない場合、404エラーを発生させます。
-        """
-        # ランク名に対応するランクオブジェクトをデータベースから取得
-        rank = get_object_or_404(Rank, rank=rank_name)
-        return rank.rank_id
