@@ -1,9 +1,9 @@
 from apps.common.util.email import ContactEmail
 from rest_framework.permissions import AllowAny
-from .base_view import BaseRequestView
+from .base_view import BaseContactView
 
 
-class RequestView(BaseRequestView):
+class ContactView(BaseContactView):
     """
     要望送信APIビュークラス。
     BaseScoreViewを継承して、要望送信処理を実装。

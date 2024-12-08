@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from .serializers import ContactSerializer
 
 
-class BaseRequestView(APIView):
+class BaseContactView(APIView):
     """
     スコアに関連する操作のためのスーパークラス。
     """
