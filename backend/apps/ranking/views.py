@@ -22,7 +22,6 @@ class RankingView(APIView):
 
         Args:
             request: HTTPリクエストオブジェクト。
-
         Returns:
             Response: フォーマットされたランキングデータを含むHTTPレスポンス。
         """

@@ -22,10 +22,8 @@ class ScoreSerializer(serializers.Serializer):
 
         Args:
             attrs: シリアライズされるデータの辞書。
-
         Returns:
             attrs: バリデーション後のデータ（エラーがなければそのまま返却）。
-
         Raises:
             ValidationError: バリデーションエラーがあった場合に発生。
         """
@@ -64,10 +62,8 @@ class ScoreSerializer(serializers.Serializer):
 
         Args:
             rank_name: ランクの名前（文字列）。
-
         Returns:
             int: 対応するランクのID。
-
         Raises:
             Http404: ランク名が存在しない場合、404エラーを発生させます。
         """

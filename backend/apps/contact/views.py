@@ -22,7 +22,6 @@ class SubmitRequestView(APIView):
 
         Args:
             request: クライアントからのリクエストオブジェクト。
-
         Returns:
             Response: 処理結果を含むHTTPレスポンス。
         """

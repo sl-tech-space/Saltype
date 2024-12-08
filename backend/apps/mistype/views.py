@@ -30,7 +30,6 @@ class MistypeView(APIView):
         """
         serializer = MistypeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         response_data = self.handle_request(serializer.validated_data)
         return Response(response_data, status=status.HTTP_200_OK)
 
@@ -54,7 +53,7 @@ class MistypeDataView(MistypeView):
     ミスタイプの挿入または更新を行うクラス。
     """
 
-    def handle_request(self, validated_data: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_request(self, validated_data: Dict[str, Any]):
         """
         ミスタイプの挿入または更新を行う処理。
 
@@ -64,30 +63,26 @@ class MistypeDataView(MistypeView):
         Returns:
             Dict: 挿入または更新されたデータのレスポンス。
         """
-        user_id = validated_data.get("user_id")
-        mistypes_data = validated_data.get("mistypes")
-
         # ミスタイプデータを挿入または更新
-        inserted_data = self.insert_mistypes(user_id, mistypes_data)
+        inserted_data = self.insert_mistypes(
+            validated_data.get("user_id"), validated_data.get("mistypes")
+        )
         return self.format_response(inserted_data)
 
     @transaction.atomic
-    def insert_mistypes(
-        self, user_id: int, mistypes_data: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+    def insert_mistypes(self, user_id: int, mistypes_data: List[Dict[str, Any]]):
         """
         ミスタイプのデータベースへの挿入または更新。
 
         Args:
             user_id: ユーザーID。
             mistypes_data: ミスタイプデータのリスト。
-
         Returns:
             List: 挿入または更新されたミスタイプデータのリスト。
         """
         return [self.update_or_create_mistype(data) for data in mistypes_data]
 
-    def update_or_create_mistype(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def update_or_create_mistype(self, data: Dict[str, Any]):
         """
         個々のミスタイプデータを挿入または更新。
 
@@ -114,7 +109,7 @@ class MistypeDataView(MistypeView):
             "miss_count": miss_instance.miss_count,
         }
 
-    def format_response(self, inserted_data: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def format_response(self, inserted_data: List[Dict[str, Any]]):
         """
         挿入または更新されたミスタイプデータのフォーマット。
 
@@ -132,31 +127,28 @@ class TopMistypesView(MistypeView):
     ユーザーのトップミスタイプを取得するクラス。
     """
 
-    def handle_request(self, validated_data: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_request(self, validated_data: Dict[str, Any]):
         """
         検証済みのデータを使用してトップミスタイプを取得。
 
         Args:
             validated_data: バリデーション済みのデータ。
-
         Returns:
             Dict: トップミスタイプデータのレスポンス。
         """
-        user_id = validated_data["user_id"]
-        limit = validated_data["limit"]
-
         # トップミスタイプデータを取得
-        top_mistypes = self.get_top_mistypes(user_id, limit)
+        top_mistypes = self.get_top_mistypes(
+            validated_data["user_id"], validated_data["limit"]
+        )
         return self.format_response(top_mistypes)
 
-    def get_top_mistypes(self, user_id: int, limit: int) -> List[Dict[str, Any]]:
+    def get_top_mistypes(self, user_id: int, limit: int):
         """
         ユーザーのトップミスタイプを取得。
 
         Args:
             user_id: ユーザーID。
             limit: 取得する件数の上限。
-
         Returns:
             List: トップミスタイプデータのリスト。
         """
@@ -167,7 +159,7 @@ class TopMistypesView(MistypeView):
             ]
         ]
 
-    def format_response(self, top_mistypes: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def format_response(self, top_mistypes: List[Dict[str, Any]]):
         """
         トップミスタイプデータのフォーマット。
 

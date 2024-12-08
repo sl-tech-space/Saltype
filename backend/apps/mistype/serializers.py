@@ -18,10 +18,8 @@ class MistypeSerializer(serializers.Serializer):
 
         Args:
             attrs (dict): シリアライズされたデータ（リクエストの内容）。
-
         Returns:
             dict: バリデーションされたデータ（エラーがなければそのままのデータを返却）。
-
         Raises:
             ValidationError: 入力データに誤りがある場合に発生。
         """
