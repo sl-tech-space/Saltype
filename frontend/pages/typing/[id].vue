@@ -5,7 +5,7 @@ import TypingScreen from '~/components/organisms/typing/TypingScreen.vue';
 
 onMounted(() => {
     useHead({
-        title: "タイピング"
+        title: "タイピング | Saltype"
     })
 })
 </script>

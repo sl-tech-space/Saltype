@@ -26,7 +26,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required().min(8).label("パスワード"),
 });
 
-const { login, isLoading } = useLogin()
+const { login, isLoading, error } = useLogin()
 
 const handleSubmit = async () => {
   await login(email.value, password.value);
@@ -34,10 +34,17 @@ const handleSubmit = async () => {
 
 const route = useRoute();
 const showNotification = ref(false);
+const showErrorNotification = ref(false);
 
 const handleLogout = () => {
   showNotification.value = true;
 }
+
+watch(error, (newError) => {
+  if (newError) {
+    showErrorNotification.value = true;
+  }
+});
 
 onMounted(() => {
   showNotification.value = false;
@@ -76,6 +83,7 @@ onMounted(() => {
   </Form>
   <Loading :is-loading="isLoading" />
   <BaseNotification message="ログアウトしました" content="また来てね！" :show="showNotification" />
+  <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

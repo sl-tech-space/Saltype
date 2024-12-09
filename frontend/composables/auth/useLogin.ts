@@ -38,14 +38,14 @@ export function useLogin() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        error.value = errorData.message || "ログインに失敗しました。";
+        error.value = errorData.error || "ログインに失敗しました。";
         return;
       }
 
       const data = await response.json();
 
       if (!data.token) {
-        error.value = "トークンが発行されませんでした";
+        error.value = "トークンが発行されませんでした。";
         return;
       }
 
@@ -54,7 +54,7 @@ export function useLogin() {
 
       await authToken();
 
-      router.push({ name: "home" });
+      await router.push({ name: "home" });
     } catch (e) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";

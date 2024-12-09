@@ -5,7 +5,7 @@ import HomeCard from '~/components/organisms/home/HomeCard.vue';
 
 onMounted(() => {
   useHead({
-    title: "ホーム"
+    title: "ホーム | Saltype"
   })
 })
 </script>

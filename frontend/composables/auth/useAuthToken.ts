@@ -35,7 +35,6 @@ export function useAuthToken() {
 
       router.push({ name: "home" });
     } catch (e) {
-      console.error("トークン検証エラー:");
       useCookie("auth_token").value = null;
       clearUser();
     }

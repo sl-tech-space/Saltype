@@ -26,13 +26,11 @@ onMounted(async () => {
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
     isTouchpad.value = true;
   }
-});
 
-onMounted(() => {
   useHead({
-    title: "ランキング"
+    title: "ランキング | Saltype"
   })
-})
+});
 </script>
 
 <template>

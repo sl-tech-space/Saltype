@@ -179,13 +179,13 @@ textarea {
     white-space: pre-wrap;
     word-wrap: break-word;
     resize: none;
-    font-size: 1rem;
+    font-size: 1.2rem;
     padding: 10px;
     box-sizing: border-box;
-}
 
-textarea:focus {
-    border-color: $hover-color;
-    outline: none;
+    &:focus {
+        border-color: $hover-color;
+        outline: none;
+    }
 }
 </style>

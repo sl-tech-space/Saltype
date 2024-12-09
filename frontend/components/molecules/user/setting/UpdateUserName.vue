@@ -1,0 +1,75 @@
+<script setup lang="ts">
+import BaseCard from '../../common/BaseCard.vue';
+import Text from '~/components/atoms/texts/Text.vue';
+import Button from '~/components/atoms/buttons/Button.vue';
+import Input from '~/components/atoms/inputs/Input.vue';
+import Field from '../../common/ValidateField.vue';
+import Title from '~/components/atoms/texts/Title.vue';
+import { Form } from 'vee-validate';
+import * as yup from "yup";
+
+const name = ref("");
+
+const validationSchema = yup.object().shape({
+    name: yup.string().required().label("ユーザ名"),
+});
+
+const handleSubmit = async () => {
+
+};
+</script>
+
+<template>
+    <BaseCard width="xl" height="xl" :footer-sep="false">
+        <template #card-header>
+            <div class="header-content">
+                <Title size="small" text="ユーザ名変更" class="card-text" />
+            </div>
+        </template>
+        <template #card-body>
+            <Form :validation-schema="validationSchema" v-slot="{ meta: { valid } }" @submit="handleSubmit">
+                <Text size="large">
+                    現在のユーザ名&nbsp;:&nbsp;
+                </Text>
+                <Field v-model="name" name="name" class="field">
+                    <template #input="{ field }">
+                        <Input type="text" id="text" v-bind="field" placeholder="&nbsp;新しいユーザ名" border="main-color"
+                            width="large" :rounded="true" />
+                    </template>
+                </Field>
+                <div class="buttons">
+                    <Button type="reset" button-text="リセット" border="main-color" :rounded="true" />
+                    <Button type="submit" button-text="送信" border="main-color" :rounded="true" :disabled="!valid" />
+                </div>
+            </Form>
+        </template>
+    </BaseCard>
+</template>
+
+<style lang="scss" scoped>
+.header-content {
+    margin-left: 4%;
+}
+
+Form {
+    width: 100%;
+    margin-top: 10%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    .field {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        margin-top: 3%;
+        margin-bottom: 30px;
+    }
+
+    .buttons {
+        width: 60%;
+        display: flex;
+        justify-content: space-around;
+    }
+}
+</style>

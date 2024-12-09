@@ -5,7 +5,7 @@ import AnalyzeCard from '~/components/organisms/analyze/AnalyzeCard.vue';
 
 onMounted(() => {
   useHead({
-    title: "分析情報"
+    title: "分析情報 | Saltype"
   })
 })
 </script>

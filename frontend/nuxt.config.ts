@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     "/ranking": { isr: 300 }, // ISR 5minutes
     "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
+    "/user/setting": { ssr: false } // CSR
   },
   app: {
     head: {
