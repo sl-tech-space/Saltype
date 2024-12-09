@@ -1,53 +1,29 @@
 from apps.common.util.email import ContactEmail
-from apps.common.util.exception_handler import HandleExceptions
-from rest_framework import status
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-from .serializers import ContactSerializer
+from .base_view import BaseContactView
 
 
-class SubmitRequestView(APIView):
+class ContactView(BaseContactView):
     """
     要望送信APIビュークラス。
+    BaseScoreViewを継承して、要望送信処理を実装。
     """
 
     permission_classes = [AllowAny]
 
-    @HandleExceptions()
-    def post(self, request):
+    def handle_request(self, validated_data):
         """
-        POSTメソッドで要望リクエストを処理。
+        バリデーション済みデータに基づいて要望を送信する処理を実装。
 
         Args:
-            request: クライアントからのリクエストオブジェクト。
-
+            validated_data: ContactSerializer で検証されたリクエストデータ。
         Returns:
-            Response: 処理結果を含むHTTPレスポンス。
+            dict: 処理結果を返す辞書。
         """
-        serializer = ContactSerializer(data=request.data)
+        # メール送信処理
+        request_email = ContactEmail(
+            validated_data["user_id"], validated_data["request_content"]
+        )
+        request_email.send_request_email()
 
-        if serializer.is_valid():
-            user_id = serializer.validated_data["user_id"]
-            request_content = serializer.validated_data["request_content"]
-
-            request_email = ContactEmail(user_id, request_content)
-            request_email.send_request_email()
-
-            return self.format_response(status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def format_response(self, http_status):
-        """
-        フォーマットされたレスポンスを生成。
-
-        Args:
-            message: レスポンスに含めるメッセージ。
-            http_status: HTTPステータスコード。
-
-        Returns:
-            Response: フォーマットされたHTTPレスポンスオブジェクト。
-        """
-        return Response({"status": "success"}, status=http_status)
+        return self.format_response({"message": "要望が正常に送信されました。"})

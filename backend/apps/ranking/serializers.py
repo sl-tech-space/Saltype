@@ -14,4 +14,5 @@ class RankingSerializer(serializers.Serializer):
         limit = attrs.get("limit")
         if limit <= 0:
             raise serializers.ValidationError("limitは正の整数である必要があります。")
+
         return attrs
