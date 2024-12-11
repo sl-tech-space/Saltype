@@ -123,7 +123,54 @@ class ScoreSelectView(BaseScoreView):
 
 class UserRankingView(BaseScoreView):
     """
-    ユーザーのスコアに基づくランキング位置の取得またはランクの更新を行うAPIビュークラス。
+    ユーザーのスコアに基づくランキング位置を取得するためのAPIビュークラス。
+    """
+
+    def handle_request(self, validated_data: dict):
+        """
+        ユーザーのスコアに基づくランキング位置を取得。
+
+        Args:
+            validated_data: バリデーションを通過したリクエストデータ。
+        Returns:
+            dict: ランキング位置を含むレスポンスデータ。
+        """
+        ranking_position = self.get_ranking_position(validated_data)
+        return self.format_response(ranking_position)
+
+    def get_ranking_position(self, validated_data: dict) -> int:
+        """
+        ユーザーのスコアよりも高いスコアの数を数え、ランキング位置を決定。
+
+        Args:
+            validated_data: バリデーションを通過したリクエストデータ。
+        Returns:
+            int: ユーザーのランキング位置（1位からの順位）。
+        """
+        # validated_data から動的にフィルタリングする
+        higher_score_count = Score.objects.filter(
+            score__gt=validated_data["score"],
+            **{key: validated_data[key] for key in ["user_id", "lang_id", "diff_id"]},
+        ).count()
+
+        # ランキング位置（1位からの順位）を計算
+        return higher_score_count + 1
+
+    def format_response(self, ranking_position: int) -> dict:
+        """
+        ランキング位置をレスポンス形式でフォーマット。
+
+        Args:
+            ranking_position: ユーザーのランキング位置。
+        Returns:
+            dict: ランキング位置を含むレスポンスデータ。
+        """
+        return {"status": "success", "ranking_position": ranking_position}
+
+
+class UserRankView(BaseScoreView):
+    """
+    スコアに基づいてランクを決定し、ユーザーのランクを更新するAPIビュークラス。
     """
 
     RANKS = {
@@ -138,60 +185,24 @@ class UserRankingView(BaseScoreView):
 
     def handle_request(self, validated_data: dict):
         """
-        アクションに基づいてランキング位置の取得またはランクの更新を実行。
+        ユーザーのスコアに基づいてランクを決定し、最高スコアであればランクを更新するリクエストを処理。
 
         Args:
             validated_data: バリデーションを通過したリクエストデータ。
         Returns:
-            dict: 処理結果を含むレスポンスデータ。
-        """
-        action = validated_data.get("action")
-
-        if action == "get_ranking":
-            ranking_position = self.get_ranking_position(validated_data)
-            return self.format_response({"ranking_position": ranking_position})
-
-        elif action == "update_rank":
-            return self.process_rank_update(validated_data)
-
-    def get_ranking_position(self, validated_data: dict):
-        """
-        ユーザーのスコアよりも高いスコアの数を数え、ランキング位置を決定。
-
-        Args:
-            validated_data: バリデーションを通過したリクエストデータ。
-        Returns:
-            int: ユーザーのランキング位置（1位からの順位）。
-        """
-        higher_score_count = Score.objects.filter(
-            score__gt=validated_data["score"],
-            **{key: validated_data[key] for key in ["user_id", "lang_id", "diff_id"]},
-        ).count()
-
-        # ランキング位置（1位からの順位）を計算
-        return higher_score_count + 1
-
-    def process_rank_update(self, validated_data: dict):
-        """
-        スコアに基づいてランクを決定し、最高スコアならランクを更新。
-
-        Args:
-            validated_data: バリデーションを通過したリクエストデータ。
-        Returns:
-            dict: ランク決定および更新結果を含むレスポンスデータ。
+            dict: ランク決定と更新結果を含むレスポンスデータ。
         """
         # スコアに基づいてランクを決定
         rank_name = self.determine_rank(validated_data["score"])
 
         # 最高スコア判定
-        is_highest = self.is_new_highest_score(validated_data)
-        if is_highest:
+        if self.is_highest_score(validated_data):
             # ランクIDを取得して更新
-            self.set_user_rank(
-                validated_data["user_id"],
-                list(self.RANKS.values()).index(rank_name) + 1,
-            )
-        return self.format_response({"is_highest": is_highest, "rank_name": rank_name})
+            rank_id = self.get_rank_id_by_name(rank_name)
+            self.update_user_rank(validated_data["user_id"], rank_id)
+
+            return self.format_response(True, rank_name)
+        return self.format_response(False, rank_name)
 
     def determine_rank(self, score: int):
         """
@@ -202,12 +213,13 @@ class UserRankingView(BaseScoreView):
         Returns:
             str: 決定されたランク名。
         """
+        # ランクをスコア順にソートし、スコア以上の最初のランクを返す
         for threshold, rank in sorted(self.RANKS.items(), reverse=True):
             if score >= threshold:
                 return rank
         return "メンバー"
 
-    def is_new_highest_score(self, validated_data: dict):
+    def is_highest_score(self, validated_data: dict):
         """
         ユーザーの最高スコアを取得し、提供されたスコアと比較。
 
@@ -222,7 +234,19 @@ class UserRankingView(BaseScoreView):
 
         return highest_score is None or validated_data["score"] > highest_score
 
-    def set_user_rank(self, user_id: int, rank_id: int):
+    def get_rank_id_by_name(self, rank_name: str):
+        """
+        ランク名に基づいてランクIDを取得。
+
+        Args:
+            rank_name: ランク名。
+
+        Returns:
+            int: ランクID。
+        """
+        return list(self.RANKS.values()).index(rank_name) + 1
+
+    def update_user_rank(self, user_id: int, rank_id: int):
         """
         ユーザーのランクを更新。
 
@@ -233,3 +257,19 @@ class UserRankingView(BaseScoreView):
         user = User.objects.get(user_id=user_id)
         user.rank_id = rank_id
         user.save()
+
+    def format_response(self, is_highest: bool, rank_name: str):
+        """
+        ランク決定および更新結果をレスポンス形式でフォーマット。
+
+        Args:
+            is_highest: 最高スコアかどうか。
+            rank_name: 新しいランク名。
+        Returns:
+            dict: フォーマットされたレスポンスデータ。
+        """
+        return {
+            "status": "success",
+            "is_highest": is_highest,
+            "rank_name": rank_name,
+        }
