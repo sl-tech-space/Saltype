@@ -25,7 +25,7 @@ export function useAnalyze() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/mistype/top/`,
+        `${config.public.baseURL}/api/django/mistype/`,
         {
           method: "POST",
           headers: {
@@ -34,6 +34,7 @@ export function useAnalyze() {
           body: JSON.stringify({
             user_id: user.value.user_id,
             limit: limit,
+            action: "get_top_mistypes",
           }),
         }
       );
@@ -69,7 +70,7 @@ export function useAnalyze() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/past/`,
+        `${config.public.baseURL}/api/django/score/select/`,
         {
           method: "POST",
           headers: {
@@ -79,6 +80,7 @@ export function useAnalyze() {
             user_id: user.value.user_id,
             lang_id: selectedLanguage,
             diff_id: selectedDifficulty,
+            action: "get_past_scores",
           }),
         }
       );

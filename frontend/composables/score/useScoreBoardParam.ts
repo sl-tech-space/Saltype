@@ -69,7 +69,7 @@ export function useScoreBoardParam() {
   ) => {
     try {
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/ranking/`,
+        `${config.public.baseURL}/api/django/score/userranking/`,
         {
           method: "POST",
           headers: {
@@ -108,7 +108,7 @@ export function useScoreBoardParam() {
   ) => {
     try {
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/average/`,
+        `${config.public.baseURL}/api/django/score/select/`,
         {
           method: "POST",
           headers: {
@@ -118,6 +118,7 @@ export function useScoreBoardParam() {
             user_id: user.value?.user_id,
             lang_id: Number(selectedLanguage),
             diff_id: Number(selectedDifficulty),
+            action: "get_average_score",
           }),
         }
       );
@@ -146,7 +147,7 @@ export function useScoreBoardParam() {
   ) => {
     try {
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/rank/`,
+        `${config.public.baseURL}/api/django/score/userrank/`,
         {
           method: "POST",
           headers: {
