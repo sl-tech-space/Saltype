@@ -66,8 +66,6 @@ const handleStart = () => {
     }
 
     .body-content {
-        margin-top: 10%;
-
         .body-content-container {
             @include horizontal-centered-flex;
         }

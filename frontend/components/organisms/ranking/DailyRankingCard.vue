@@ -50,6 +50,7 @@ const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): Rankin
 <style lang="scss" scoped>
 .ranking-cards-container {
     width: 100%;
+    height: 80vh;
     @include vertical-centered-flex;
 
     .daily-champion-title {

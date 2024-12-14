@@ -132,10 +132,10 @@ const handleLogout = async () => {
         @include horizontal-flex;
 
         .menu-list {
-            margin-top: 10%;
+            margin-top: 5%;
 
             li {
-                margin-top: 10%;
+                margin-top: 2%;
                 list-style-type: none;
 
                 p:hover {

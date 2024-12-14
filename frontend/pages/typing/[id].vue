@@ -21,5 +21,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page {
     @extend %full-page;
+    @include hidden;
 }
 </style>
