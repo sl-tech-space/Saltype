@@ -168,8 +168,12 @@ defineEmits(["update:modelValue"]);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-input:focus {
-  border-color: $hover-color;
-  outline: none;
+input {
+  font-size: 1.2rem;
+
+  &:focus {
+    border-color: $hover-color;
+    outline: none;
+  }
 }
 </style>

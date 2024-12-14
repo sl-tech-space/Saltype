@@ -16,11 +16,7 @@ const selectedDifficultyText = ref("");
 const isDisabled = ref(true);
 
 const handleStart = () => {
-    try {
-        router.push({ name: `typing-id`, params: { id: props.id } });
-    } catch (error) {
-        console.error("Navigation failed:", error);
-    }
+    router.push({ name: `typing-id`, params: { id: props.id } });
 };
 
 onMounted(() => {

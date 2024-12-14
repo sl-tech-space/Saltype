@@ -32,7 +32,7 @@ export function useRanking() {
     for (const { languageId, difficultyId } of allCombinations) {
       const key = `${languageId}-${difficultyId}`;
       const rankings = await _getRanking(languageId, difficultyId, limit);
-      rankingsByCombination.value[key] = rankings;
+      rankingsByCombination.value[key] = rankings.data;
 
       switch (key.charAt(0)) {
         case "1":
@@ -67,7 +67,7 @@ export function useRanking() {
         limit,
         formattedDate
       );
-      rankingsByCombination.value[key] = rankings;
+      rankingsByCombination.value[key] = rankings.data;
 
       switch (key.charAt(0)) {
         case "1":
@@ -93,7 +93,7 @@ export function useRanking() {
 
     const rankings = await _getRanking(splitedId.left, splitedId.right, limit);
 
-    rankingDetails.value = rankings;
+    rankingDetails.value = rankings.data;
 
     detailsTitle.value =
       convertNumberToJapaneseLanguageName(splitedId.left.toString()) +

@@ -119,17 +119,6 @@ AUTHENTICATION_BACKENDS = (
 
 STATIC_URL = "/static/"
 
-# """Session Settings"""
-# SESSION_COOKIE_AGE = 1209600  # 2weeks
-
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-
-# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-
-# #SESSION_COOKIE_SECURE = True  # HTTPS
-# SESSION_COOKIE_HTTPONLY = True
-# SESSION_COOKIE_SAMESITE = 'Lax'
-
 """Google Authentication Settings"""
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")

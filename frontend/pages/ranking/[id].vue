@@ -11,11 +11,9 @@ const limit = 21;
 onMounted(async () => {
     const id = route.params.id as string;
     await getRankingDetailsByIdAndLimitParam(id, limit);
-})
 
-onMounted(() => {
     useHead({
-        title: "ランキング詳細"
+        title: "ランキング詳細 | Saltype"
     })
 })
 </script>
@@ -30,7 +28,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page {
-    overflow: hidden;
     @extend %full-page;
+    @include hidden;
 }
 </style>

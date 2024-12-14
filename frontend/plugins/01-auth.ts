@@ -34,17 +34,15 @@ export default defineNuxtPlugin((nuxtApp) => {
         clearUser();
         try {
           await router.push({ name: "login" });
-        } catch (routeError) {
-          console.error("ルーティングエラー:", routeError);
+        } catch (e) {
+          throw new Error("ルーティングエラー");
         }
       }
     }
   };
 
   nuxtApp.hooks.hook("app:mounted", async () => {
-    initAuth().catch((error) => {
-      console.error("認証初期化エラー:", error);
-    });
+    initAuth().catch(() => {});
   });
 
   return {

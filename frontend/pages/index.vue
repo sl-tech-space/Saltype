@@ -5,7 +5,7 @@ let isLoading = ref(true);
 
 onMounted(() => {
   useHead({
-    title: "Welcome"
+    title: "Saltypeへようこそ!!"
   })
 })
 </script>

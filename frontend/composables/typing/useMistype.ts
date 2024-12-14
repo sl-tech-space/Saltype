@@ -67,6 +67,7 @@ export function useMistype() {
       const dataToSend = {
         user_id: user.value.user_id,
         mistypes: mistypes,
+        action: "insert_mistypes"
       };
 
       const response = await fetch(

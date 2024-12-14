@@ -5,7 +5,7 @@ import ContactCard from '~/components/organisms/contact/ContactCard.vue';
 
 onMounted(() => {
   useHead({
-    title: "ご要望"
+    title: "ご要望 | Saltype"
   })
 })
 </script>

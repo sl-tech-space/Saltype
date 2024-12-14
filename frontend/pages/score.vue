@@ -5,7 +5,7 @@ import ScoreBoardCard from '~/components/organisms/score/ScoreBoardCard.vue';
 
 onMounted(() => {
   useHead({
-    title: "スコア"
+    title: "スコア | Saltype"
   })
 })
 </script>
