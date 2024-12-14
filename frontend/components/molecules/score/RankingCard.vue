@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BaseCard from '../common/BaseCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
+import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 
 interface Props {
@@ -19,7 +20,7 @@ const handleNavigateToRanking = async () => {
     <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
-                <Title size="small" text="ランキング" class="card-text" />
+                <Text size="large" text="ランキング" class="card-text" />
             </div>
         </template>
         <template #card-body>

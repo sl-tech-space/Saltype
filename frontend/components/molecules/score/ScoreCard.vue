@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BaseCard from '../common/BaseCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
+import Text from '~/components/atoms/texts/Text.vue';
 
 interface Props {
     yourTotalScore: number,
@@ -14,7 +15,7 @@ const props = defineProps<Props>();
     <BaseCard width="large" height="full" :footer-sep="false" class=in-score-card>
         <template #card-header>
             <div class="header-content">
-                <Title size="small" text="スコア・平均スコア" class="card-text" />
+                <Text size="large" text="スコア・平均スコア" class="card-text" />
             </div>
         </template>
         <template #card-body>
@@ -35,7 +36,7 @@ const props = defineProps<Props>();
     }
 
     .body-content {
-        margin-top: 10px;
+        margin-top: 5px;
         @include horizontal-centered-flex;
     }
 

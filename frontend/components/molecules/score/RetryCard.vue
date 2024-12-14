@@ -36,7 +36,7 @@ onMounted(() => {
     <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
-                <Title size="small" text="リトライ" class="card-text" />
+                <Text size="large" text="リトライ" class="card-text" />
             </div>
         </template>
         <template #card-body>

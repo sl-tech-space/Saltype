@@ -24,9 +24,7 @@ onMounted(async () => {
   await getDailyRankingByLimitParam(dailyRankingDataLimit);
   await getRankingByLimitParam(rankingDataLimit);
 
-  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-    isTouchpad.value = true;
-  }
+  isTouchpad.value = window.matchMedia("(pointer: coarse)").matches;
 
   useHead({
     title: "ランキング | Saltype"
