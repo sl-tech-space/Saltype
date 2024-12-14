@@ -10,6 +10,7 @@ INSTALLED_APPS = [
     "apps.score",
     "apps.ranking",
     "apps.contact",
+    "apps.user",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
