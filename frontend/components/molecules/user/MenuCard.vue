@@ -27,13 +27,11 @@ const slideToUpdatePassword = () => {
         </template>
         <template #card-body>
             <div class="body-content">
-                <ul class="menu-list">
-                    <li>
-                        <Text text="ユーザ情報" size="large" @click="slideToUserInfo" />
-                        <Text text="ユーザ名変更" size="large" @click="slideToUpdateUserName" />
-                        <Text text="パスワード変更" size="large" @click="slideToUpdatePassword" />
-                    </li>
-                </ul>
+                <div class="menu-list">
+                    <Text text="ユーザ情報" size="large" @click="slideToUserInfo" />
+                    <Text text="ユーザ名変更" size="large" @click="slideToUpdateUserName" />
+                    <Text text="パスワード変更" size="large" @click="slideToUpdatePassword" />
+                </div>
             </div>
         </template>
     </BaseCard>
@@ -46,21 +44,20 @@ const slideToUpdatePassword = () => {
     }
 
     .body-content {
+        height: 100%;
         @include horizontal-flex;
 
         .menu-list {
-            margin-top: 10%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            list-style-type: none;
 
-            li {
-                list-style-type: none;
-
-                p {
-                    margin-top: 10%;
-
-                    &:hover {
-                        color: $hover-color;
-                        cursor: pointer;
-                    }
+            p {
+                &:hover {
+                    color: $hover-color;
+                    cursor: pointer;
                 }
             }
         }

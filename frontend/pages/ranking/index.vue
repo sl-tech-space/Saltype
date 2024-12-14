@@ -15,6 +15,7 @@ const {
   getRankingByLimitParam, getDailyRankingByLimitParam
 } = useRanking();
 
+const rankingTitle = "ランキング<br>";
 const rankingDataLimit: number = 5;
 const dailyRankingDataLimit: number = 1;
 const isTouchpad = ref<boolean>(false);
@@ -38,16 +39,16 @@ onMounted(async () => {
   <ScrollHandler />
   <PageIndicator :total-pages=3 />
   <div class="page">
-    <RankingHeader title="ランキング" />
+    <RankingHeader :title="rankingTitle + '本日のチャンピオン'" />
     <DailyRankingCard :daily-japanese-rankings-by-combination="dailyJapaneseRankings"
       :daily-english-rankings-by-combination="dailyEnglishRankings" :daily-ranking-data-limit="dailyRankingDataLimit" />
   </div>
   <div class="page">
-    <RankingHeader title="日本語" />
+    <RankingHeader :title="rankingTitle + '日本語'" />
     <JapaneseRankingCard :rankings-by-combination="japaneseRankings" :ranking-data-limit="rankingDataLimit" />
   </div>
   <div class="page">
-    <RankingHeader title="英語" />
+    <RankingHeader :title="rankingTitle + '英語'" />
     <EnglishRankingCard :rankings-by-combination="englishRankings" :ranking-data-limit="rankingDataLimit" />
   </div>
   <Loading :is-loading="isLoading" />

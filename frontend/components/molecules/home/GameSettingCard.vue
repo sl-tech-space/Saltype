@@ -66,7 +66,12 @@ const handleStart = () => {
     }
 
     .body-content {
+        height: 100%;
+        @include horizontal-flex;
+        align-items: center;
+
         .body-content-container {
+            margin-top: 10px;
             @include horizontal-centered-flex;
         }
     }

@@ -43,6 +43,7 @@ const handleNavigateToRanking = async () => {
     }
 
     .body-content {
+        margin-top: 10px;
         @include horizontal-centered-flex;
     }
 

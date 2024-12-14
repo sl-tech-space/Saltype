@@ -39,87 +39,59 @@ const props = withDefaults(defineProps<Props>(), {
 
 /** text size **/
 .text--small {
-  font-size: clamp(10px, 0.75vw + 7px, 12px);
+  font-size: 14px;
 }
 
 .text--medium {
-  font-size: clamp(12px, 0.875vw + 9px, 14px);
+  font-size: 16px;
 }
 
 .text--large {
-  font-size: clamp(14px, 1vw + 11px, 18px);
+  font-size: 18px;
 }
 
-/* responsive */
-@media (min-width: 1200px) and (max-width: 1600px) {
+/* PC用のメディアクエリ */
+@media (min-width: 1200px) {
   .text--small {
-    font-size: clamp(11px, 0.8125vw + 7.5px, 13px);
+    font-size: 14px;
   }
 
   .text--medium {
-    font-size: clamp(13px, 0.9375vw + 9.5px, 15px);
+    font-size: 16px;
   }
 
   .text--large {
-    font-size: clamp(16px, 1.125vw + 11.5px, 20px);
+    font-size: 18px;
   }
 }
 
-@media (min-width: 992px) and (max-width: 1199px) {
-  .text--small {
-    font-size: clamp(10px, 0.6875vw + 7px, 12px);
-  }
-
-  .text--medium {
-    font-size: clamp(12px, 0.8125vw + 9px, 14px);
-  }
-
-  .text--large {
-    font-size: clamp(15px, 1.0625vw + 11px, 18px);
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .text--small {
-    font-size: clamp(9px, 0.625vw + 6.5px, 11px);
-  }
-
-  .text--medium {
-    font-size: clamp(11px, 0.75vw + 8.5px, 13px);
-  }
-
-  .text--large {
-    font-size: clamp(13px, 0.9375vw + 10.5px, 16px);
-  }
-}
-
-/* Adjustments for 1366px to 1440px */
+/* 13インチノートPC (1366x768) */
 @media (min-width: 1366px) and (max-width: 1440px) {
   .text--small {
-    font-size: clamp(11px, 0.8vw + 7px, 13px);
+    font-size: 13px;
   }
 
   .text--medium {
-    font-size: clamp(13px, 0.9vw + 9px, 15px);
+    font-size: 15px;
   }
 
   .text--large {
-    font-size: clamp(16px, 1.1vw + 11px, 20px);
+    font-size: 17px;
   }
 }
 
-/* Adjustments for 1440px to 1920px */
-@media (min-width: 1440px) and (max-width: 1920px) {
+/* 15.6インチノートPC (1920x1080) */
+@media (min-width: 1920px) {
   .text--small {
-    font-size: clamp(12px, 0.85vw + 7.5px, 14px);
+    font-size: 15px;
   }
 
   .text--medium {
-    font-size: clamp(14px, 0.95vw + 9.5px, 16px);
+    font-size: 17px;
   }
 
   .text--large {
-    font-size: clamp(18px, 1.2vw + 11.5px, 22px);
+    font-size: 19px;
   }
 }
 </style>

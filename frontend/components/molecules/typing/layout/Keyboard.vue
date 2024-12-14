@@ -90,7 +90,6 @@ onUnmounted(() => {
 .keyboard-layout {
   @include horizontal-centered-flex;
   padding: 20px;
-  width: 65%;
   max-width: 1200px;
   margin: 0 auto;
 
@@ -118,7 +117,7 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 12px;
+    font-size: 11px;
     margin: 2px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -146,12 +145,10 @@ onUnmounted(() => {
 /* responsive */
 @media (max-width: 1200px) {
   .keyboard-layout {
-    width: 60%;
-
     .key {
-      width: 30px;
-      height: 30px;
-      font-size: 11px;
+      width: 25px;
+      height: 25px;
+      font-size: 8px;
     }
 
     .key-wide {
@@ -166,12 +163,10 @@ onUnmounted(() => {
 
 @media (max-width: 992px) {
   .keyboard-layout {
-    width: 70%;
-
     .key {
       width: 20px;
       height: 20px;
-      font-size: 10px;
+      font-size: 8px;
     }
 
     .key-wide {
@@ -189,7 +184,7 @@ onUnmounted(() => {
     .key {
       width: 15px;
       height: 15px;
-      font-size: 9px;
+      font-size: 5px;
     }
 
     .key-wide {
@@ -213,7 +208,7 @@ onUnmounted(() => {
     .key {
       width: 15px;
       height: 15px;
-      font-size: 9px;
+      font-size: 5px;
       margin: 1px;
     }
 

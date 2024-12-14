@@ -35,6 +35,7 @@ const props = defineProps<Props>();
     }
 
     .body-content {
+        margin-top: 10px;
         @include horizontal-centered-flex;
     }
 
