@@ -200,11 +200,11 @@ export function useInputPattern() {
 
   const vowelInputPattern: string[] = ["a", "i", "u", "e", "o"];
 
-  function getPatternArray() {
+  function getPatternArray(): [string, string[]][] {
     return japaneseInputPattern;
   }
 
-  function getVowelPatternArray() {
+  function getVowelPatternArray(): string[] {
     return vowelInputPattern;
   }
 

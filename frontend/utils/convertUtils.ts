@@ -1,3 +1,5 @@
+import type { RankingItem } from "~/types/ranking";
+
 /**
  * 受け渡した文字の変換(英語)
  * 1 → japanese, 2 → english
@@ -71,3 +73,16 @@ export function convertNumberToJapaneseDifficultyLevelName(
     difficultyMap[difficultyLevelCode.toLowerCase()] || difficultyLevelCode
   );
 }
+
+/**
+ * ランキングデータをオブジェクトから配列に変換
+ * 元データが配列の場合は変換しない
+ * @param obj 
+ * @returns RankingItem
+ */
+export function objectToArray(obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] {
+  if (Array.isArray(obj)) {
+      return obj;
+  }
+  return Object.values(obj);
+};

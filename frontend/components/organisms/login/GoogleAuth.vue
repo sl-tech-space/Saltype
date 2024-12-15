@@ -13,7 +13,6 @@ const config = useRuntimeConfig();
 const showErrorNotification = ref(false);
 
 const { loginWithGoogle, isLoading, error } = useGoogleAuth();
-
 const handleLoginWithGoogle = async (): Promise<void> => {
   await loginWithGoogle();
 }

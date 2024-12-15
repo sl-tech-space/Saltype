@@ -1,4 +1,4 @@
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../conf/useUserInfo";
 import type { TypoFrequency } from "~/types/analyze";
 
 /**
@@ -7,20 +7,25 @@ import type { TypoFrequency } from "~/types/analyze";
  */
 export function useAnalyze() {
   const config = useRuntimeConfig();
-  const { user, waitForUser } = useUser();
+  const { user, waitForUser } = useUserInfo();
   const typoFrequency = ref<TypoFrequency[]>([]);
+  const scoresByCombination = ref<Record<string, { scores: number[] }>>({});
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
 
   /**
    * ミスタイプTOP{N}の取得
    * @param limit
    * @returns
    */
-  const getTypoFrequencyByLimitParam = async (limit: number) => {
+  const getTypoFrequencyByLimitParam = async (limit: number): Promise<void> => {
+    isLoading.value = true;
+
     try {
       await waitForUser();
 
       if (!user.value) {
-        console.error("ユーザ情報が存在しません");
+        error.value = "ユーザ情報が存在しません";
         return;
       }
 
@@ -36,18 +41,21 @@ export function useAnalyze() {
             limit: limit,
             action: "get_top_mistypes",
           }),
+          signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
-        throw new Error("ミスタイプ頻度の取得に失敗しました");
+        error.value = "ミスタイプ頻度の取得に失敗しました";
+        return;
       }
 
       const data = await response.json();
 
       typoFrequency.value = data.top_mistypes;
     } catch (e) {
-      console.error(e);
+      error.value =
+        "ネットワークエラーが発生しました。接続を確認してください。";
     }
   };
 
@@ -61,11 +69,13 @@ export function useAnalyze() {
     selectedLanguage: number,
     selectedDifficulty: number
   ) => {
+    isLoading.value = true;
+
     try {
       await waitForUser();
 
       if (!user.value) {
-        console.error("ユーザ情報が存在しません");
+        error.value = "ユーザ情報が存在しません";
         return;
       }
 
@@ -86,19 +96,24 @@ export function useAnalyze() {
       );
 
       if (!response.ok) {
-        throw new Error("過去のスコア取得に失敗しました");
+        error.value = "過去のスコア取得に失敗しました";
+        return;
       }
 
       const data = await response.json();
 
       return data.scores;
     } catch (e) {
-      console.error(e);
+      error.value =
+        "ネットワークエラーが発生しました。接続を確認してください。";
     }
   };
 
   return {
     typoFrequency,
+    scoresByCombination,
+    isLoading,
+    error,
     getTypoFrequencyByLimitParam,
     getPastScores,
   };

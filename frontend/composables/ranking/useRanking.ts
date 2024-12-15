@@ -3,7 +3,7 @@ import { useLanguageAndDifficulty } from "~/composables/typing/useLanguageAndDif
 
 /**
  * ランキング画面処理
- * @returns isLoading, getRankingByLimitParam,
+ * @returns isLoading, error, getRankingByLimitParam,
  * japaneseRankings, englishRankings,
  * rankingDetails, getRankingDetailsByIdAndLimitParam, detailsTitle,
  * dailyJapaneseRankings, dailyEnglishRankings
@@ -13,6 +13,7 @@ export function useRanking() {
   const { generateAllCombinations } = useLanguageAndDifficulty();
 
   const isLoading = ref(true);
+  const error = ref<string | null>(null);
   const rankingsByCombination = ref<Record<string, RankingItem[]>>({});
   const japaneseRankings = ref<Record<string, RankingItem[]>>({});
   const englishRankings = ref<Record<string, RankingItem[]>>({});
@@ -25,7 +26,7 @@ export function useRanking() {
    * 全言語、全難易度のランキングデータ取得
    * @param limit
    */
-  const getRankingByLimitParam = async (limit: number) => {
+  const getRankingByLimitParam = async (limit: number): Promise<void> => {
     const allCombinations = generateAllCombinations();
 
     // すべての組み合わせでランキングデータを取得
@@ -51,7 +52,7 @@ export function useRanking() {
    * 今日のランキングデータ(全言語、全難易度)取得
    * @param limit
    */
-  const getDailyRankingByLimitParam = async (limit: number) => {
+  const getDailyRankingByLimitParam = async (limit: number): Promise<void> => {
     const allCombinations = generateAllCombinations();
 
     // 日付取得
@@ -88,7 +89,7 @@ export function useRanking() {
   const getRankingDetailsByIdAndLimitParam = async (
     id: string,
     limit: number
-  ) => {
+  ): Promise<void> => {
     const splitedId = splitId(id);
 
     const rankings = await _getRanking(splitedId.left, splitedId.right, limit);
@@ -131,21 +132,26 @@ export function useRanking() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body),
+          signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
-        throw new Error("ランキングデータ取得に失敗しました");
+        error.value = "ランキングデータ取得に失敗しました";
       }
 
       const data = await response.json();
 
       return data;
-    } catch (e) {}
+    } catch (e) {
+      error.value =
+        "ネットワークエラーが発生しました。接続を確認してください。";
+    }
   };
 
   return {
     isLoading,
+    error,
     japaneseRankings,
     englishRankings,
     dailyJapaneseRankings,

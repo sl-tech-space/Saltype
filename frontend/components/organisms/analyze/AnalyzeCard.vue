@@ -2,16 +2,18 @@
 import TypoFrequencyCard from '~/components/molecules/analyze/TypoFrequencyCard.vue';
 import GrowthChartCard from '~/components/molecules/analyze/GrowthChartCard.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
+import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useAnalyze } from '~/composables/analyze/useAnalyze';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
+import { useErrorNotification } from '~/composables/conf/useError';
 
-const { typoFrequency, getTypoFrequencyByLimitParam, getPastScores } = useAnalyze();
-const { generateAllCombinations } = useLanguageAndDifficulty();
-
-// 各設定ごとのスコアを保持するためのreactive変数
-const scoresByCombination = ref<Record<string, { scores: number[] }>>({});
 const limit = 10;
-const isLoading = ref(true);
+
+const { typoFrequency, scoresByCombination,
+    isLoading, error,
+    getTypoFrequencyByLimitParam, getPastScores } = useAnalyze();
+const { generateAllCombinations } = useLanguageAndDifficulty();
+const { showErrorNotification } = useErrorNotification(error);
 
 onMounted(async () => {
     const allCombinations = generateAllCombinations();
@@ -39,6 +41,7 @@ onMounted(async () => {
         </div>
     </main>
     <Loading :isLoading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

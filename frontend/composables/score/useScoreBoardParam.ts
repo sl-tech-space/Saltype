@@ -1,14 +1,16 @@
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../conf/useUserInfo";
 import type { ScoreBoardData } from "~/types/score";
 
 /**
  * タイピング結果画面処理
- * @returns getParam
+ * @returns getParam, isLoading, error
  */
 export function useScoreBoardParam() {
   const config = useRuntimeConfig();
-  const { user, waitForUser } = useUser();
+  const { user, waitForUser } = useUserInfo();
   const scoreBoardData = ref<ScoreBoardData | null>();
+  const error = ref<string | null>(null);
+  const isLoading = ref(false);
 
   /**
    * 全データを集約、各関数の呼び出し
@@ -20,11 +22,13 @@ export function useScoreBoardParam() {
     selectedLanguage: number,
     selectedDifficulty: number
   ): Promise<ScoreBoardData | null | undefined> => {
+    isLoading.value = true;
+
     try {
       await waitForUser();
 
       if (!user.value) {
-        console.error("ユーザ情報が存在しません");
+        error.value = "ユーザ情報が存在しません";
         return;
       }
 
@@ -53,7 +57,10 @@ export function useScoreBoardParam() {
 
       return scoreBoardData.value;
     } catch (e) {
-      // error
+      error.value =
+        "ネットワークエラーが発生しました。接続を確認してください。";
+    } finally {
+      isLoading.value = false;
     }
   };
 
@@ -81,18 +88,20 @@ export function useScoreBoardParam() {
             diff_id: Number(selectedDifficulty),
             score: Number(localStorage.getItem("score")),
           }),
+          signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
-        throw new Error("ランキングの取得に失敗しました");
+        error.value = "ランキングの取得に失敗しました";
+        return;
       }
 
       const data = await response.json();
 
       return data;
     } catch (e) {
-      // error
+      error.value = "ランキングの取得に失敗しました";
     }
   };
 
@@ -120,18 +129,20 @@ export function useScoreBoardParam() {
             diff_id: Number(selectedDifficulty),
             action: "get_average_score",
           }),
+          signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
-        throw new Error("平均スコアの取得に失敗しました");
+        error.value = "平均スコアの取得に失敗しました";
+        return;
       }
 
       const data = await response.json();
 
       return data;
     } catch (e) {
-      // error
+      error.value = "平均スコアの取得に失敗しました";
     }
   };
 
@@ -159,22 +170,26 @@ export function useScoreBoardParam() {
             diff_id: Number(selectedDifficulty),
             score: Number(localStorage.getItem("score")),
           }),
+          signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
-        throw new Error("ランクの取得に失敗しました");
+        error.value = "ランクの取得に失敗しました";
+        return;
       }
 
       const data = await response.json();
 
       return data;
     } catch (e) {
-      // error
+      error.value = "ランクの取得に失敗しました";
     }
   };
 
   return {
     getParam,
+    isLoading,
+    error
   };
 }

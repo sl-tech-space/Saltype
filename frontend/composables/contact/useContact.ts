@@ -1,4 +1,4 @@
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../conf/useUserInfo";
 
 /**
  * 要望画面処理
@@ -6,7 +6,7 @@ import { useUser } from "../conf/useUser";
  */
 export function useContact() {
   const config = useRuntimeConfig();
-  const { user } = useUser();
+  const { user } = useUserInfo();
   const isLoading = ref(false);
   const message = ref("");
 
@@ -35,6 +35,7 @@ export function useContact() {
             user_id: user.value.user_id,
             request_content: content,
           }),
+          signal: AbortSignal.timeout(10000),
         }
       );
 

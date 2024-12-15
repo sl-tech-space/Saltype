@@ -10,41 +10,47 @@ import * as yup from "yup";
 import { useLogin } from "~/composables/auth/useLogin";
 import EyeRegular from "~/assets/images/login/eye-regular.svg";
 import EyeSlashRegular from "~/assets/images/login/eye-slash-regular.svg";
+import { useErrorNotification } from "~/composables/conf/useError";
 
 const eyeRegular = ref(EyeRegular);
 const eyeSlashRegular = ref(EyeSlashRegular);
 const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
+const showNotification = ref(false);
 
+const route = useRoute();
+const { login, isLoading, error } = useLogin()
+const { showErrorNotification } = useErrorNotification(error);
+
+/**
+ * パスワードの可視・不可視を操作
+ */
 const passVisibility = () => {
   showPassword.value = !showPassword.value;
 };
 
+/**
+ * バリデーションの設定
+ */
 const validationSchema = yup.object().shape({
   email: yup.string().required().email().label("メールアドレス"),
   password: yup.string().required().min(8).label("パスワード"),
 });
 
-const { login, isLoading, error } = useLogin()
-
+/**
+ * ログイン送信処理
+ */
 const handleSubmit = async () => {
   await login(email.value, password.value);
 };
 
-const route = useRoute();
-const showNotification = ref(false);
-const showErrorNotification = ref(false);
-
+/**
+ * ログアウト時の動作
+ */
 const handleLogout = () => {
   showNotification.value = true;
 }
-
-watch(error, (newError) => {
-  if (newError) {
-    showErrorNotification.value = true;
-  }
-});
 
 onMounted(() => {
   showNotification.value = false;

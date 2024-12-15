@@ -27,21 +27,23 @@ const handleSubmit = async () => {
             </div>
         </template>
         <template #card-body>
-            <Form :validation-schema="validationSchema" v-slot="{ meta: { valid } }" @submit="handleSubmit">
-                <Text size="large">
-                    現在のユーザ名&nbsp;:&nbsp;
-                </Text>
-                <Field v-model="name" name="name" class="field">
-                    <template #input="{ field }">
-                        <Input type="text" id="text" v-bind="field" placeholder="&nbsp;新しいユーザ名" border="main-color"
-                            width="large" :rounded="true" />
-                    </template>
-                </Field>
-                <div class="buttons">
-                    <Button type="reset" button-text="リセット" border="main-color" :rounded="true" />
-                    <Button type="submit" button-text="送信" border="main-color" :rounded="true" :disabled="!valid" />
-                </div>
-            </Form>
+            <div class="body-content">
+                <Form :validation-schema="validationSchema" v-slot="{ meta: { valid } }" @submit="handleSubmit">
+                    <Text size="large">
+                        現在のユーザ名&nbsp;:&nbsp;
+                    </Text>
+                    <Field v-model="name" name="name" class="field">
+                        <template #input="{ field }">
+                            <Input type="text" id="text" v-bind="field" placeholder="&nbsp;新しいユーザ名" border="main-color"
+                                width="large" :rounded="true" />
+                        </template>
+                    </Field>
+                    <div class="buttons">
+                        <Button type="reset" button-text="リセット" border="main-color" :rounded="true" />
+                        <Button type="submit" button-text="送信" border="main-color" :rounded="true" :disabled="!valid" />
+                    </div>
+                </Form>
+            </div>
         </template>
     </BaseCard>
 </template>
@@ -51,25 +53,28 @@ const handleSubmit = async () => {
     margin-left: 4%;
 }
 
-Form {
+.body-content {
     width: 100%;
-    margin-top: 10%;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
+    height: 100%;
+    @include vertical-centered-flex;
 
-    .field {
-        display: flex;
-        flex-flow: column;
+    Form {
+        width: 100%;
+        @include vertical-flex;
         align-items: center;
-        margin-top: 3%;
-        margin-bottom: 30px;
-    }
 
-    .buttons {
-        width: 60%;
-        display: flex;
-        justify-content: space-around;
+        .field {
+            @include vertical-flex;
+            align-items: center;
+            margin-top: 3%;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            width: 60%;
+            display: flex;
+            justify-content: space-around;
+        }
     }
 }
 </style>

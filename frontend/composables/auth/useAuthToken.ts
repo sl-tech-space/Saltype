@@ -1,15 +1,15 @@
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../conf/useUserInfo";
 
 /**
  * ログイン時のトークン認証処理
  * @returns authToken
  */
 export function useAuthToken() {
-  const { setUser, clearUser } = useUser();
+  const { setUser, clearUser } = useUserInfo();
   const config = useRuntimeConfig();
   const router = useRouter();
 
-  const authToken = async () => {
+  const authToken = async (): Promise<void> => {
     if (!useCookie("auth_token").value) {
       clearUser();
       return;

@@ -6,19 +6,24 @@ import JapaneseRankingCard from "~/components/organisms/ranking/JapaneseRankingC
 import EnglishRankingCard from "~/components/organisms/ranking/EnglishRankingCard.vue";
 import DailyRankingCard from "~/components/organisms/ranking/DailyRankingCard.vue";
 import Loading from "~/components/molecules/common/ui/Loading.vue";
+import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
 import PageIndicator from "~/components/molecules/common/ui/PageIndicator.vue";
 import { useRanking } from '~/composables/ranking/useRanking';
-
-const {
-  isLoading, dailyJapaneseRankings, dailyEnglishRankings,
-  japaneseRankings, englishRankings,
-  getRankingByLimitParam, getDailyRankingByLimitParam
-} = useRanking();
+import { useErrorNotification } from "~/composables/conf/useError";
 
 const rankingTitle = "ランキング<br>";
 const rankingDataLimit: number = 5;
 const dailyRankingDataLimit: number = 1;
 const isTouchpad = ref<boolean>(false);
+
+const {
+  isLoading, error,
+  dailyJapaneseRankings, dailyEnglishRankings,
+  japaneseRankings, englishRankings,
+  getRankingByLimitParam, getDailyRankingByLimitParam
+} = useRanking();
+
+const { showErrorNotification } = useErrorNotification(error);
 
 onMounted(async () => {
   await getDailyRankingByLimitParam(dailyRankingDataLimit);
@@ -50,6 +55,7 @@ onMounted(async () => {
     <EnglishRankingCard :rankings-by-combination="englishRankings" :ranking-data-limit="rankingDataLimit" />
   </div>
   <Loading :is-loading="isLoading" />
+  <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

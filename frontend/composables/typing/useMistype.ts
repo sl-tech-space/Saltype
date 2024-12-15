@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../conf/useUserInfo";
 
 /**
  * ミスタイプキー処理
@@ -8,13 +8,13 @@ import { useUser } from "../conf/useUser";
  */
 export function useMistype() {
   const config = useRuntimeConfig();
-  const { user } = useUser();
+  const { user } = useUserInfo();
   const mistypeCount = ref<Record<string, number>>({});
 
   /**
    * ミスタイプ合計計算処理
    */
-  const totalMistypes = computed(() => {
+  const totalMistypes = computed((): number => {
     return Object.values(mistypeCount.value).reduce(
       (sum, count) => sum + count,
       0
@@ -25,7 +25,7 @@ export function useMistype() {
    * 各キーのミスタイプ数を計算
    * @param key
    */
-  const countMistype = (key: string) => {
+  const countMistype = (key: string): void => {
     mistypeCount.value = {
       ...mistypeCount.value,
       [key]: (mistypeCount.value[key] || 0) + 1,
@@ -35,7 +35,7 @@ export function useMistype() {
   /**
    * ミスタイプカウントを初期化
    */
-  const resetMistypeStats = () => {
+  const resetMistypeStats = (): void => {
     mistypeCount.value = {};
   };
 
@@ -43,7 +43,10 @@ export function useMistype() {
    * 各キーのミスタイプ数をリクエストを送るjson形式に変換
    * @returns json
    */
-  const _formatMistypeData = () => {
+  const _formatMistypeData = (): {
+    miss_char: string;
+    miss_count: number;
+  }[] => {
     return Object.entries(mistypeCount.value).map(
       ([miss_char, miss_count]) => ({
         miss_char,
@@ -55,11 +58,10 @@ export function useMistype() {
   /**
    * ミスタイプ数送信
    */
-  const sendMistypeDataToServer = async () => {
+  const sendMistypeDataToServer = async (): Promise<void> => {
     try {
       if (!user.value) {
-        console.error("ユーザ情報が存在しません");
-        return;
+        throw new Error();
       }
 
       const mistypes = _formatMistypeData();
@@ -67,7 +69,7 @@ export function useMistype() {
       const dataToSend = {
         user_id: user.value.user_id,
         mistypes: mistypes,
-        action: "insert_mistypes"
+        action: "insert_mistypes",
       };
 
       const response = await fetch(
@@ -78,16 +80,19 @@ export function useMistype() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(dataToSend),
+          signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
         resetMistypeStats();
-        throw new Error("ミスタイプデータの送信に失敗");
+        throw new Error();
       }
 
       resetMistypeStats();
-    } catch (e) {}
+    } catch (e) {
+      throw new Error("ミスタイプデータの送信に失敗");
+    }
   };
 
   return {

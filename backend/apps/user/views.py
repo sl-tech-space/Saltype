@@ -1,6 +1,6 @@
 from django.db import transaction
 from .base_view import BaseUserView
-from django.http import JsonResponse
+from rest_framework.response import Response
 from datetime import date
 from apps.common.models import User, Score, Rank
 

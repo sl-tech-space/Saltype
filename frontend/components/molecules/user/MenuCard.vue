@@ -2,6 +2,13 @@
 import BaseCard from '../common/BaseCard.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Title from '~/components/atoms/texts/Title.vue';
+import Loading from '../common/ui/Loading.vue';
+import BaseNotification from '../common/BaseNotification.vue';
+import { useUser } from '~/composables/user/useUser';
+import { useErrorNotification } from '~/composables/conf/useError';
+
+const { getAllUserInfo, userInfo, isLoading, error } = useUser();
+const { showErrorNotification } = useErrorNotification(error);
 
 const emit = defineEmits(['changeCard']);
 
@@ -16,6 +23,11 @@ const slideToUpdateUserName = () => {
 const slideToUpdatePassword = () => {
     emit('changeCard', 'updatePassword');
 }
+
+onMounted(async () => {
+    await getAllUserInfo();
+    console.log(userInfo)
+});
 </script>
 
 <template>
@@ -35,6 +47,8 @@ const slideToUpdatePassword = () => {
             </div>
         </template>
     </BaseCard>
+    <Loading :is-loading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>
@@ -49,8 +63,7 @@ const slideToUpdatePassword = () => {
 
         .menu-list {
             height: 100%;
-            display: flex;
-            flex-direction: column;
+            @include vertical-flex;
             justify-content: space-around;
             list-style-type: none;
 

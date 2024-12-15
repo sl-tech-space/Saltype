@@ -13,12 +13,11 @@ export function useLogin() {
 
   /**
    * ログイン処理
-   * @param email 
-   * @param password 
+   * @param email
+   * @param password
    */
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<void> => {
     isLoading.value = true;
-    error.value = null;
 
     try {
       const response = await fetch(

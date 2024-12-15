@@ -9,7 +9,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
 const router = useRouter();
 const selectedLanguageText = ref("");
 const selectedDifficultyText = ref("");

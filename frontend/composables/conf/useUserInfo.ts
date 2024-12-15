@@ -2,9 +2,10 @@ import type { UserData } from "~/types/user";
 
 /**
  * ユーザ情報を取り扱う
+ * ストアで管理を行う
  * @returns user, setUser, clearUser, waitForUser
  */
-export function useUser() {
+export function useUserInfo() {
   /**
    * ユーザ定義
    */
@@ -29,7 +30,7 @@ export function useUser() {
    * ユーザ情報が利用可能になるまで待機する関数
    * 最大10秒まで待機し、それを過ぎるとタイムアウトとして処理を中断
    */
-  const waitForUser = async () => {
+  const waitForUser = async (): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(

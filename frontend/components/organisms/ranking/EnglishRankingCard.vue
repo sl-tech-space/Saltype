@@ -9,17 +9,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const { getDifficultyName } = useLanguageAndDifficulty();
-
 const englishDifficultyIds = ['2-1', '2-2', '2-3'];
 
-const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] => {
-    if (Array.isArray(obj)) {
-        return obj;
-    }
-    return Object.values(obj);
-};
+const { getDifficultyName } = useLanguageAndDifficulty();
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 import { useRouter } from "vue-router";
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../conf/useUserInfo";
 
 /**
  * ログアウト処理
@@ -8,12 +8,12 @@ import { useUser } from "../conf/useUser";
  */
 export async function useLogout() {
   const router = useRouter();
-  const { clearUser } = useUser();
+  const { clearUser } = useUserInfo();
 
   /**
    * ログアウト処理
    */
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       useCookie("auth_token").value = null;
       clearUser();
