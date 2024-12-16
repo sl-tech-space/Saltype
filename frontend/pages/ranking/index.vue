@@ -9,7 +9,7 @@ import Loading from "~/components/molecules/common/ui/Loading.vue";
 import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
 import PageIndicator from "~/components/molecules/common/ui/PageIndicator.vue";
 import { useRanking } from '~/composables/ranking/useRanking';
-import { useErrorNotification } from "~/composables/conf/useError";
+import { useErrorNotification } from "~/composables/common/useError";
 
 const rankingTitle = "ランキング<br>";
 const rankingDataLimit: number = 5;

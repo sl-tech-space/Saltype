@@ -1,9 +1,9 @@
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 import type { TypoFrequency } from "~/types/analyze";
 
 /**
  * 分析情報画面処理
- * @returns typoFrequency, getTypoFrequencyByLimitParam, getPastScores,
+ * @returns typoFrequency, getTypoFrequencyByLimit, getPastScores,
  */
 export function useAnalyze() {
   const config = useRuntimeConfig();
@@ -14,11 +14,10 @@ export function useAnalyze() {
   const error = ref<string | null>(null);
 
   /**
-   * ミスタイプTOP{N}の取得
+   * ミスタイプTOP{limit}の取得
    * @param limit
-   * @returns
    */
-  const getTypoFrequencyByLimitParam = async (limit: number): Promise<void> => {
+  const getTypoFrequencyByLimit = async (limit: number): Promise<void> => {
     isLoading.value = true;
 
     try {
@@ -68,7 +67,7 @@ export function useAnalyze() {
   const getPastScores = async (
     selectedLanguage: number,
     selectedDifficulty: number
-  ) => {
+  ): Promise<number[] | undefined> => {
     isLoading.value = true;
 
     try {
@@ -114,7 +113,7 @@ export function useAnalyze() {
     scoresByCombination,
     isLoading,
     error,
-    getTypoFrequencyByLimitParam,
+    getTypoFrequencyByLimit,
     getPastScores,
   };
 }

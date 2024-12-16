@@ -5,13 +5,13 @@ import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useAnalyze } from '~/composables/analyze/useAnalyze';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
-import { useErrorNotification } from '~/composables/conf/useError';
+import { useErrorNotification } from '~/composables/common/useError';
 
 const limit = 10;
 
 const { typoFrequency, scoresByCombination,
     isLoading, error,
-    getTypoFrequencyByLimitParam, getPastScores } = useAnalyze();
+    getTypoFrequencyByLimit, getPastScores } = useAnalyze();
 const { generateAllCombinations } = useLanguageAndDifficulty();
 const { showErrorNotification } = useErrorNotification(error);
 
@@ -21,11 +21,11 @@ onMounted(async () => {
     // すべての組み合わせで過去３０回のスコアを取得
     for (const { languageId, difficultyId } of allCombinations) {
         const key = `${languageId}-${difficultyId}`;
-        const result: number[] = await getPastScores(languageId, difficultyId);
-        scoresByCombination.value[key] = { scores: result };
+        const result: number[] | undefined = await getPastScores(languageId, difficultyId);
+        scoresByCombination.value[key] = { scores: result || [] };
     }
 
-    await getTypoFrequencyByLimitParam(limit);
+    await getTypoFrequencyByLimit(limit);
 
     isLoading.value = false;
 });

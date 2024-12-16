@@ -3,7 +3,7 @@ import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
 import { useInputPattern } from "./japanese/useInputPattern";
 import { useMistype } from "./useMistype";
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * タイピング画面処理

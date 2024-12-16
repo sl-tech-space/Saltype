@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * ミスタイプキー処理

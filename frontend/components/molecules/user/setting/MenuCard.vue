@@ -4,8 +4,9 @@ import Text from '~/components/atoms/texts/Text.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Loading from '../../common/ui/Loading.vue';
 import BaseNotification from '../../common/BaseNotification.vue';
+import { useMenuItems } from '~/composables/common/useMenuItems';
 import { useUser } from '~/composables/user/useUser';
-import { useErrorNotification } from '~/composables/conf/useError';
+import { useErrorNotification } from '~/composables/common/useError';
 
 const { getAllUserInfo, userInfo, isLoading, error } = useUser();
 const { showErrorNotification } = useErrorNotification(error);
@@ -24,8 +25,15 @@ const slideToUpdatePassword = () => {
     emit('changeCard', 'updatePassword');
 }
 
+const { userSettingMenuItems, getAction } = useMenuItems({
+    slideToUserInfo,
+    slideToUpdateUserName,
+    slideToUpdatePassword,
+})
+
 onMounted(async () => {
     await getAllUserInfo();
+    // TODO ユーザ情報取得デバッグ
     console.log(userInfo)
 });
 </script>
@@ -40,9 +48,10 @@ onMounted(async () => {
         <template #card-body>
             <div class="body-content">
                 <div class="menu-list">
-                    <Text text="ユーザ情報" size="large" @click="slideToUserInfo" />
-                    <Text text="ユーザ名変更" size="large" @click="slideToUpdateUserName" />
-                    <Text text="パスワード変更" size="large" @click="slideToUpdatePassword" />
+                    <Text v-for="item in userSettingMenuItems" :key="item.text" size="large"
+                        @click="() => getAction(item.actionKey)?.()">
+                        {{ item.text }}
+                    </Text>
                 </div>
             </div>
         </template>

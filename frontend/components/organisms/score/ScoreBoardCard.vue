@@ -5,7 +5,7 @@ import RankingCard from '~/components/molecules/score/RankingCard.vue';
 import ScoreCard from '~/components/molecules/score/ScoreCard.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
-import { useErrorNotification } from '~/composables/conf/useError';
+import { useErrorNotification } from '~/composables/common/useError';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
 import type { ScoreBoardData } from '~/types/score';
 

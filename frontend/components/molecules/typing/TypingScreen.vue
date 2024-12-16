@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTyping } from "~/composables/typing/useTyping";
-import { useErrorNotification } from "~/composables/conf/useError";
+import { useErrorNotification } from "~/composables/common/useError";
 import Text from "~/components/atoms/texts/Text.vue";
 import Title from "~/components/atoms/texts/Title.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";

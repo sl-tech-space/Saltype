@@ -1,4 +1,4 @@
-import { useUserInfo } from "~/composables/conf/useUserInfo";
+import { useUserInfo } from "~/composables/common/useUserInfo";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();

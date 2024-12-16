@@ -1,4 +1,4 @@
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * ログイン時のトークン認証処理

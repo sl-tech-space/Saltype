@@ -10,7 +10,7 @@ import * as yup from "yup";
 import { useLogin } from "~/composables/auth/useLogin";
 import EyeRegular from "~/assets/images/login/eye-regular.svg";
 import EyeSlashRegular from "~/assets/images/login/eye-slash-regular.svg";
-import { useErrorNotification } from "~/composables/conf/useError";
+import { useErrorNotification } from "~/composables/common/useError";
 
 const eyeRegular = ref(EyeRegular);
 const eyeSlashRegular = ref(EyeSlashRegular);

@@ -1,4 +1,4 @@
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * 要望画面処理
@@ -33,7 +33,7 @@ export function useContact() {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            request_content: content,
+            request_content: content.trim,
           }),
           signal: AbortSignal.timeout(10000),
         }

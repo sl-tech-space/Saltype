@@ -1,4 +1,4 @@
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 import type { ScoreBoardData } from "~/types/score";
 
 /**

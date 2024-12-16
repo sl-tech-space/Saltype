@@ -1,5 +1,5 @@
 import { useRouter } from "vue-router";
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * ログアウト処理

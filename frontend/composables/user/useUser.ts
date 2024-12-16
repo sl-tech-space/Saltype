@@ -1,4 +1,4 @@
-import { useUserInfo } from "../conf/useUserInfo";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * ユーザ設定、ユーザ管理画面の共通関数

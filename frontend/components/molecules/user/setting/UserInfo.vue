@@ -13,7 +13,7 @@ import Title from '~/components/atoms/texts/Title.vue';
         <template #card-body>
             <div class="body-content">
                 <div class="body-content-container">
-                    
+
                 </div>
             </div>
         </template>
@@ -21,5 +21,13 @@ import Title from '~/components/atoms/texts/Title.vue';
 </template>
 
 <style lang="scss" scoped>
+.header-content {
+    margin-left: 4%;
+}
 
+.body-content {
+    width: 100%;
+    height: 100%;
+    @include vertical-centered-flex;
+}
 </style>
