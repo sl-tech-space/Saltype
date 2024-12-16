@@ -8,6 +8,7 @@ import DailyRankingCard from "~/components/organisms/ranking/DailyRankingCard.vu
 import Loading from "~/components/molecules/common/ui/Loading.vue";
 import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
 import PageIndicator from "~/components/molecules/common/ui/PageIndicator.vue";
+import CopyRight from '~/components/atoms/ui/CopyRight.vue';
 import { useRanking } from '~/composables/ranking/useRanking';
 import { useErrorNotification } from "~/composables/common/useError";
 
@@ -56,6 +57,7 @@ onMounted(async () => {
   </div>
   <Loading :is-loading="isLoading" />
   <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
+  <CopyRight />
 </template>
 
 <style lang="scss" scoped>

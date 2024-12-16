@@ -3,6 +3,7 @@ import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
 import LoginHeader from "~/components/organisms/login/LoginHeader.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
+import CopyRight from "~/components/atoms/ui/CopyRight.vue";
 import { useAuthToken } from "~/composables/auth/useAuthToken";
 
 const { authToken } = useAuthToken();
@@ -27,6 +28,7 @@ onMounted(() => {
       <GoogleAuth />
     </div>
   </div>
+  <CopyRight />
 </template>
 
 <style lang="scss" scoped>

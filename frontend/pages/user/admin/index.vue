@@ -2,6 +2,7 @@
 import CursorEffect from '~/components/molecules/common/ui/CursorEffect.vue';
 import UserAdminHeader from '~/components/organisms/user/admin/UserAdminHeader.vue';
 import PaginatedUserList from '~/components/organisms/user/admin/PaginatedUserList.vue';
+import CopyRight from '~/components/atoms/ui/CopyRight.vue';
 
 const items = ref([
     { id: 1, title: '項目1' },
@@ -60,6 +61,7 @@ onMounted(() => {
         <UserAdminHeader />
         <PaginatedUserList :items="items" :items-per-page="10" />
     </div>
+    <CopyRight />
 </template>
 
 <style lang="scss" scoped>
