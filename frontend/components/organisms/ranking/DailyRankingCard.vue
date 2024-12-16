@@ -18,7 +18,7 @@ const { getDifficultyName } = useLanguageAndDifficulty();
 </script>
 
 <template>
-    <div class="ranking-cards-container">
+    <main class="ranking-cards-container">
         <div class="content">
             <Title size="small" text="日本語" />
             <div class="ranking-cards">
@@ -37,7 +37,7 @@ const { getDifficultyName } = useLanguageAndDifficulty();
                     height="full" :limit=props.dailyRankingDataLimit :is-footer="false" :is-margin="true" />
             </div>
         </div>
-    </div>
+    </main>
 </template>
 
 <style lang="scss" scoped>

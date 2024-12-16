@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import BaseCard from '../common/BaseCard.vue';
+import BaseCard from '../../common/BaseCard.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Title from '~/components/atoms/texts/Title.vue';
-import Loading from '../common/ui/Loading.vue';
-import BaseNotification from '../common/BaseNotification.vue';
+import Loading from '../../common/ui/Loading.vue';
+import BaseNotification from '../../common/BaseNotification.vue';
 import { useUser } from '~/composables/user/useUser';
 import { useErrorNotification } from '~/composables/conf/useError';
 

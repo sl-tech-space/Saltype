@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import UserInfo from '~/components/molecules/user/setting/UserInfo.vue';
 import UpdateUserName from '~/components/molecules/user/setting/UpdateUserName.vue';
 import UpdatePassword from '~/components/molecules/user/setting/UpdatePassword.vue';
-import MenuCard from '~/components/molecules/user/MenuCard.vue';
+import MenuCard from '~/components/molecules/user/setting/MenuCard.vue';
 
 const currentCard = ref('userInfo');
 const isReverse = ref(false);

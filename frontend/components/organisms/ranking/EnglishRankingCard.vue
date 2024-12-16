@@ -15,14 +15,14 @@ const { getDifficultyName } = useLanguageAndDifficulty();
 </script>
 
 <template>
-    <div class="ranking-cards-container">
+    <main class="ranking-cards-container">
         <div class="ranking-cards">
             <BaseRankingCard v-for="id in englishDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
                 :rankings="objectToArray(props.rankingsByCombination[id] || [])" width="medium" height="full"
                 :limit=rankingDataLimit :is-footer="true" :id="id" :is-margin="true" />
         </div>
-    </div>
+    </main>
 </template>
 
 <style lang="scss" scoped>
