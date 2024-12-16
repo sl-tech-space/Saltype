@@ -7,7 +7,7 @@ interface Props {
   width?: "small" | "medium" | "large" | "same-as-input-large";
   height?: "small" | "medium" | "large";
   background?: "white" | "black" | "main-color" | "sub-color" | "none";
-  rounded?: boolean;
+  isRounded?: boolean;
   isActive?: boolean;
 }
 
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
   width: "medium",
   height: "medium",
   background: "black",
-  rounded: false,
+  isRounded: false,
   isActive: false,
 });
 
@@ -32,7 +32,7 @@ const emit = defineEmits(['click']);
     `button-width--${props.width}`,
     `button-height--${props.height}`,
     `button-background--${props.background}`,
-    { 'button--rounded': props.rounded },
+    { 'button--rounded': props.isRounded },
     { 'active': props.isActive }
   ]" @click="emit('click')">
     <slot name="any">

@@ -35,12 +35,13 @@ const handleSubmit = async () => {
                     <Field v-model="name" name="name" class="field">
                         <template #input="{ field }">
                             <Input type="text" id="text" v-bind="field" placeholder="&nbsp;新しいユーザ名" border="main-color"
-                                width="large" :rounded="true" />
+                                width="large" :is-rounded="true" />
                         </template>
                     </Field>
                     <div class="buttons">
-                        <Button type="reset" button-text="リセット" border="main-color" :rounded="true" />
-                        <Button type="submit" button-text="送信" border="main-color" :rounded="true" :disabled="!valid" />
+                        <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
+                        <Button type="submit" button-text="送信" border="main-color" :is-rounded="true"
+                            :disabled="!valid" />
                     </div>
                 </Form>
             </div>

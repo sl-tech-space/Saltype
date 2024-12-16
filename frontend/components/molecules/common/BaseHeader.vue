@@ -33,7 +33,7 @@ const onBackClick = () => {
             </div>
             <div class="header-right">
                 <Button v-if="props.title !== 'ホーム'" border="sub-color" width="large" height="medium" background="none"
-                    :rounded="true" button-text="戻る" @click="onBackClick" />
+                    :is-rounded="true" button-text="戻る" @click="onBackClick" />
                 <slot v-else name="header-right" />
             </div>
         </div>

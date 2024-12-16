@@ -51,7 +51,7 @@ const handleSubmit = async () => {
                         <template #input="{ field }">
                             <span>
                                 <Input :type="showOldPassword ? 'text' : 'password'" id="oldPassword" v-bind="field"
-                                    placeholder="&nbsp;現在のパスワード" border="main-color" width="large" :rounded="true" />
+                                    placeholder="&nbsp;現在のパスワード" border="main-color" width="large" :is-rounded="true" />
                                 <Image v-if="showOldPassword" :image-src="eyeSlashRegular" alt="パスワード表示" width="mini"
                                     height="mini" class="eye" @click="togglePasswordVisibility('old')" />
                                 <Image v-else :image-src="eyeRegular" alt="パスワード非表示" width="mini" height="mini"
@@ -63,7 +63,7 @@ const handleSubmit = async () => {
                         <template #input="{ field }">
                             <span>
                                 <Input :type="showNewPassword ? 'text' : 'password'" id="newPassword" v-bind="field"
-                                    placeholder="&nbsp;新しいパスワード" border="main-color" width="large" :rounded="true" />
+                                    placeholder="&nbsp;新しいパスワード" border="main-color" width="large" :is-rounded="true" />
                                 <Image v-if="showNewPassword" :image-src="eyeSlashRegular" alt="パスワード表示" width="mini"
                                     height="mini" class="eye" @click="togglePasswordVisibility('new')" />
                                 <Image v-else :image-src="eyeRegular" alt="パスワード非表示" width="mini" height="mini"
@@ -72,8 +72,9 @@ const handleSubmit = async () => {
                         </template>
                     </Field>
                     <div class="buttons">
-                        <Button type="reset" button-text="リセット" border="main-color" :rounded="true" />
-                        <Button type="submit" button-text="送信" border="main-color" :rounded="true" :disabled="!valid" />
+                        <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
+                        <Button type="submit" button-text="送信" border="main-color" :is-rounded="true"
+                            :disabled="!valid" />
                     </div>
                 </Form>
             </div>

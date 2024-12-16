@@ -10,7 +10,7 @@ interface Props {
   width?: "small" | "medium" | "large";
   height?: "small" | "medium" | "large";
   background?: "white" | "black" | "main-color" | "sub-color";
-  rounded?: boolean;
+  isRounded?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   width: "medium",
   height: "medium",
   background: "black",
-  rounded: false,
+  isRounded: false,
 });
 
 defineEmits(["update:modelValue"]);
@@ -38,7 +38,7 @@ defineEmits(["update:modelValue"]);
         `input-width--${props.width}`,
         `input-height--${props.height}`,
         `input-background--${props.background}`,
-        { 'input--rounded': props.rounded },
+        { 'input--rounded': props.isRounded },
       ]" />
 </template>
 

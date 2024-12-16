@@ -30,8 +30,8 @@ const handleNavigateToRanking = async () => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="全体ランキングへ" @click="handleNavigateToRanking" />
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none"
+                    :is-rounded="true" button-text="全体ランキングへ" @click="handleNavigateToRanking" />
             </div>
         </template>
     </BaseCard>

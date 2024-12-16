@@ -49,8 +49,9 @@ onMounted(() => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="スタート" class="start-button" :disabled="isDisabled" @click="handleStart" />
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none"
+                    :is-rounded="true" button-text="スタート" class="start-button" :disabled="isDisabled"
+                    @click="handleStart" />
             </div>
         </template>
     </BaseCard>

@@ -67,7 +67,7 @@ const { homeMenuItems, getAction } = useMenuItems({
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="large" height="large" background="none" :rounded="true"
+                <Button border="sub-color" width="large" height="large" background="none" :is-rounded="true"
                     button-text="ログアウト" @click="handleLogout" />
             </div>
         </template>

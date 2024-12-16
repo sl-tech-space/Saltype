@@ -32,8 +32,8 @@ const props = defineProps<Props>();
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="ランク詳細" @click="handleOpenModal" />
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none"
+                    :is-rounded="true" button-text="ランク詳細" @click="handleOpenModal" />
             </div>
         </template>
     </BaseCard>

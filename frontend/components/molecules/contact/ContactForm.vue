@@ -29,13 +29,13 @@ const handleSubmit = async () => {
         <Field v-model="contact" name="contact" class="field">
             <template #input="{ field }">
                 <Textarea id="contact" v-bind="field" placeholder="&nbsp;要望内容" border="main-color" width="large"
-                    :rounded="true" class="textarea" />
+                    :is-rounded="true" class="textarea" />
             </template>
         </Field>
 
         <div class="buttons">
-            <Button type="reset" button-text="リセット" border="main-color" :rounded="true" />
-            <Button type="submit" button-text="送信" border="main-color" :rounded="true" :disabled="!valid" />
+            <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
+            <Button type="submit" button-text="送信" border="main-color" :is-rounded="true" :disabled="!valid" />
         </div>
     </Form>
     <Loading :is-loading="isLoading" />

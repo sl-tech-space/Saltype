@@ -65,7 +65,7 @@ onMounted(() => {
     <Field v-model="email" name="email" class="field">
       <template #input="{ field }">
         <Input type="email" id="email" v-bind="field" placeholder="&nbsp;メールアドレス" border="main-color" width="large"
-          :rounded="true" />
+          :is-rounded="true" />
       </template>
     </Field>
 
@@ -73,7 +73,7 @@ onMounted(() => {
       <template #input="{ field }">
         <span>
           <Input :type="showPassword ? 'text' : 'password'" id="password" v-bind="field" placeholder="&nbsp;パスワード"
-            border="main-color" width="large" :rounded="true" />
+            border="main-color" width="large" :is-rounded="true" />
           <Image v-if="showPassword" :image-src="eyeSlashRegular" alt="パスワード表示" width="mini" height="mini" class="eye"
             @click="passVisibility" />
           <Image v-else :image-src="eyeRegular" alt="パスワード非表示" width="mini" height="mini" class="eye"
@@ -83,8 +83,8 @@ onMounted(() => {
     </Field>
 
     <div class="buttons">
-      <Button type="reset" button-text="リセット" border="main-color" :rounded="true" />
-      <Button type="submit" button-text="ログイン" border="main-color" :rounded="true" :disabled="!valid" />
+      <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
+      <Button type="submit" button-text="ログイン" border="main-color" :is-rounded="true" :disabled="!valid" />
     </div>
   </Form>
   <Loading :is-loading="isLoading" />
