@@ -1,35 +1,40 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from apps.common.models import Diff, Lang, User, Score
 
 
 class MistypeSerializer(serializers.Serializer):
     """
-    ミスタイプの挿入とトップミスタイプの取得用シリアライザー。
+    ミスタイプの挿入およびトップミスタイプの取得用シリアライザー。
+    ユーザーIDやミスタイプ情報、取得上限などを検証します。
     """
 
-    action = serializers.ChoiceField(
-        choices=[
-            "insert_mistypes",
-            "get_top_mistypes",
-        ],  # action の選択肢を制限
-        required=False,
-    )
-    user_id = serializers.UUIDField(required=False)  # ユーザーID（UUID形式）
+    user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
     mistypes = serializers.ListField(
         child=serializers.DictField(), required=False, allow_empty=True
-    )  # ミスタイプ情報(list)
-    limit = serializers.IntegerField(required=False)  # 取得上限(int)
+    )  # ミスタイプ情報（リスト形式）
+    limit = serializers.IntegerField(required=False)  # 取得上限
 
     def validate(self, attrs):
         """
-        操作に基づいて入力データを検証する。
+        入力データに対してバリデーションを実行します。
+        ユーザーID、ミスタイプ情報、取得上限の検証を行います。
         """
-        action = attrs.get("action")
-        if action not in ["insert_mistypes", "get_top_mistypes"]:
-            raise serializers.ValidationError("無効なアクションが指定されました。")
 
+        # ユーザーIDの存在を検証
+        if "user_id" in attrs:
+            try:
+                user = User.objects.get(pk=attrs["user_id"])
+                attrs["user"] = user
+            except User.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"user_id": "指定されたユーザーは存在しません。"}
+                )
+
+        # ミスタイプ情報の検証
         if "mistypes" in attrs:
-            mistypes = attrs["mistypes"]
-            for item in mistypes:
+            for item in attrs["mistypes"]:
                 miss_count = item.get("miss_count")
                 if (
                     miss_count is None
@@ -39,5 +44,10 @@ class MistypeSerializer(serializers.Serializer):
                     raise serializers.ValidationError(
                         "ミスタイプのカウントは正の整数でなければなりません。"
                     )
+
+        # limitの検証（正の整数であること）
+        limit = attrs.get("limit")
+        if limit is not None and limit <= 0:
+            raise serializers.ValidationError("limitは正の整数である必要があります。")
 
         return attrs

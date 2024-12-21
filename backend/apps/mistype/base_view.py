@@ -10,6 +10,8 @@ from .serializers import MistypeSerializer
 class BaseMistypeView(APIView):
     """
     ミスタイプに関連する操作のためのスーパークラス。
+    このクラスは、ミスタイプに関するリクエストの処理を共通化するための基底クラスです。
+    サブクラスで具体的な処理を実装する必要があります。
     """
 
     permission_classes = [AllowAny]
@@ -17,50 +19,38 @@ class BaseMistypeView(APIView):
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
         """
-        POSTメソッドでリクエストを処理し、バリデーションを行った後に具体的な処理を呼び出します。
+        POSTメソッドでリクエストを処理し、リクエストデータをバリデーションします。
+
+        バリデーションが成功した場合、`handle_request`メソッドをサブクラスで定義された
+        処理に基づいて呼び出します。
 
         Args:
-            request: HTTPリクエストオブジェクト。
+            request (HttpRequest): HTTPリクエストオブジェクト。
+                リクエストデータが含まれています。
         Returns:
-            Responseオブジェクト: 処理結果をレスポンスとして返します。
+            Response: 処理結果やエラーを含むHTTPレスポンスオブジェクト。
         """
         serializer = MistypeSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        response_data = self.handle_request(serializer.validated_data)
-        return Response(response_data, status=status.HTTP_200_OK)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            score_data = self.handle_request(validated_data)
+            return Response(score_data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def handle_request(self, validated_data):
         """
-        サブクラスで実装するべきリクエストデータの処理メソッド。
+        サブクラスで実装されるべきリクエストデータ処理ロジック。
+
+        サブクラスで具体的な処理を実装する必要があります。
 
         Args:
-            validated_data: バリデーション済みのデータ。
+            validated_data (dict): バリデーションを通過したリクエストデータ。
         Raises:
-            NotImplementedError: サブクラスでこのメソッドが未実装の場合に発生。
+            NotImplementedError: サブクラスがこのメソッドを実装していない場合に発生。
+        Returns:
+            dict: 処理結果を辞書形式で返す。
         """
         raise NotImplementedError(
-            "サブクラスはhandle_requestメソッドを実装する必要があります"
+            "サブクラスは`handle_request`メソッドを実装する必要があります"
         )
-
-    def format_response(self, response_data, status="success", message=None):
-        """
-        レスポンスデータを共通のフォーマットで整形する。
-
-        Args:
-            response_data: レスポンスデータ
-            status: レスポンスのステータス（デフォルトは"success"）。
-            message: エラーメッセージなど、オプションのメッセージ。
-
-        Returns:
-            dict: フォーマットされたレスポンスデータ
-        """
-        response = {"status": status}
-
-        # メッセージがあれば追加
-        if message:
-            response["message"] = message
-
-        # `data` キーを使わずにレスポンスデータを直接追加
-        response.update(response_data)
-
-        return response
