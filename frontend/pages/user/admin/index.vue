@@ -1,50 +1,88 @@
 <script setup lang="ts">
 import CursorEffect from '~/components/molecules/common/ui/CursorEffect.vue';
 import UserAdminHeader from '~/components/organisms/user/admin/UserAdminHeader.vue';
-import PaginatedUserList from '~/components/organisms/user/admin/PaginatedUserList.vue';
+import PaginatedUserList from '~/components/molecules/user/admin/PaginatedUserList.vue';
 import CopyRight from '~/components/atoms/ui/CopyRight.vue';
 
 const items = ref([
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 2, title: '項目2' },
-    { id: 1, title: '項目1' },
-    { id: 10, title: '項目3' },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
+    {
+        userId: "eFX43-tuYWjB69h9@zY", userName: 'テストユーザ',
+        email: 'testuser@example.com',
+        todaysMaxScore: '9999',
+        userRank: 'メンバー',
+    },
 
 ])
 
@@ -59,7 +97,7 @@ onMounted(() => {
     <div class="page">
         <CursorEffect />
         <UserAdminHeader />
-        <PaginatedUserList :items="items" :items-per-page="10" />
+        <PaginatedUserList :items="items" :items-per-page="7" />
     </div>
     <CopyRight />
 </template>
