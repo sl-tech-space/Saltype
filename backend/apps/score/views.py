@@ -1,4 +1,4 @@
-from apps.common.models import Score, User
+from apps.common.models import Score, User, Rank
 from django.db import transaction
 from django.db.models import Avg, Max
 from .base_view import BaseScoreView
@@ -241,6 +241,7 @@ class UpdateUserRankView(BaseScoreView):
         lang_id = validated_data["lang_id"]
         diff_id = validated_data["diff_id"]
         score = validated_data["score"]
+
         # ランクを決定
         rank_name = self.determine_rank(score)
         # 最高スコア判定
@@ -272,7 +273,7 @@ class UpdateUserRankView(BaseScoreView):
                 return rank
         return "メンバー"
 
-    def is_highest_score(self, score: int, user_id: int, lang_id: int, diff_id: int):
+    def is_highest_score(self, user_id: int, lang_id: int, diff_id: int, score: int):
         """
         ユーザーの最高スコアを取得し、提供されたスコアと比較します。
 
@@ -292,7 +293,7 @@ class UpdateUserRankView(BaseScoreView):
 
         return highest_score is None or score > highest_score
 
-    def update_user_rank(self, score: int, user_id: int):
+    def update_user_rank(self, user_id: int, score: int):
         """
         ユーザーのランクを更新します。
         新しいランクを決定し、ユーザーのランクIDを更新します。
@@ -303,6 +304,6 @@ class UpdateUserRankView(BaseScoreView):
         """
         user = User.objects.get(user_id=user_id)
         rank_name = self.determine_rank(score)
-        rank_id = list(self.RANKS.keys())[list(self.RANKS.values()).index(rank_name)]
+        rank_id = Rank.objects.get(rank=rank_name).rank_id
         user.rank_id = rank_id
         user.save()
