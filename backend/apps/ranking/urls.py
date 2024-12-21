@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import RankingView
+from .views import GetRankingView
 
 urlpatterns = [
-    path("", RankingView.as_view(), name="ranking"),
+    path("get/", GetRankingView.as_view(), name="ranking"),
 ]

@@ -9,7 +9,10 @@ from .serializers import RankingSerializer
 
 class BaseRankingView(APIView):
     """
-    ランキングに関連する操作のためのスーパークラス。
+    ランキングに関連する操作を共通化するためのスーパークラス。
+
+    このクラスは、ランキングに関連するリクエスト処理の共通ロジックを提供します。
+    サブクラスで具体的な処理を実装する必要があります。
     """
 
     permission_classes = [AllowAny]
@@ -17,50 +20,37 @@ class BaseRankingView(APIView):
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
         """
-        POSTメソッドでランキング取得リクエストを処理。
+        POSTメソッドでランキング取得リクエストを処理します。
+
+        バリデーションを行った後、サブクラスで実装された`handle_request`メソッドを呼び出し、処理結果を返します。
 
         Args:
-            request: HTTPリクエストオブジェクト。
+            request (HttpRequest): HTTPリクエストオブジェクト。リクエストデータが含まれています。
+
         Returns:
-            Response: フォーマットされたランキングデータを含むHTTPレスポンス。
+            Response: フォーマットされたランキングデータを含むHTTPレスポンスオブジェクト。
         """
         serializer = RankingSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        response_data = self.handle_request(serializer.validated_data)
-        return Response(response_data, status=status.HTTP_200_OK)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            score_data = self.handle_request(validated_data)
+            return Response(score_data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def handle_request(self, validated_data):
         """
         サブクラスで実装されるべきリクエストデータ処理ロジック。
 
+        サブクラスで具体的な処理を実装する必要があります。
+
         Args:
-            validated_data: バリデーションを通過したリクエストデータ。
+            validated_data (dict): バリデーションを通過したリクエストデータ。
         Raises:
-            NotImplementedError: サブクラスで実装が必要な場合に発生。
+            NotImplementedError: サブクラスでこのメソッドが実装されていない場合に発生。
         Returns:
-            dict: 処理結果を返す辞書。
+            dict: 処理結果を返す辞書形式のデータ。
         """
         raise NotImplementedError(
-            "サブクラスはhandle_requestメソッドを実装する必要あり"
+            "サブクラスは`handle_request`メソッドを実装する必要があります"
         )
-
-    def format_response(self, response_data, status="success", message=None):
-        """
-        レスポンスデータを共通のフォーマットで整形する。
-
-        Args:
-            response_data: レスポンスデータ
-            status: レスポンスのステータス（デフォルトは"success"）。
-            message: エラーメッセージなど、オプションのメッセージ。
-
-        Returns:
-            dict: フォーマットされたレスポンスデータ
-        """
-        response = {"status": status}
-
-        # メッセージがあれば追加
-        if message:
-            response["message"] = message
-        response.update(response_data)
-
-        return response
