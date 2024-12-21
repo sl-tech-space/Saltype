@@ -4,7 +4,7 @@ from django.db.models import Avg, Max
 from .base_view import BaseScoreView
 
 
-class ScoreInsertView(BaseScoreView):
+class InsertScoreView(BaseScoreView):
     """
     ユーザーのスコアを挿入するためのAPIビュークラス。
     スコアの計算、データベースへの挿入を行います。
@@ -85,7 +85,7 @@ class ScoreInsertView(BaseScoreView):
         return round(typing_count * self.SCORE_MULTIPLIER * accuracy)
 
 
-class ScoreSelectView(BaseScoreView):
+class GetScoreView(BaseScoreView):
     """
     ユーザーのスコアに関連するリクエストを処理するAPIビュークラス。
     ユーザーの平均スコアや過去のスコアを取得します。
@@ -162,7 +162,7 @@ class ScoreSelectView(BaseScoreView):
         return [score.score for score in scores]
 
 
-class UserRankingView(BaseScoreView):
+class GetUserRankingView(BaseScoreView):
     """
     ユーザーのスコアに基づくランキング位置を取得するためのAPIビュークラス。
     ユーザーのスコアが全体で何位かを計算します。
@@ -211,7 +211,7 @@ class UserRankingView(BaseScoreView):
         return higher_score_count + 1
 
 
-class UserRankView(BaseScoreView):
+class UpdateUserRankView(BaseScoreView):
     """
     スコアに基づいてランクを決定し、ユーザーのランクを更新するAPIビュークラス。
     ユーザーのスコアに基づいて、適切なランクを決定します。
