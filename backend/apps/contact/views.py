@@ -1,4 +1,4 @@
-from apps.common.util.email import ContactEmail
+from apps.contact.email import ContactEmail
 from rest_framework.permissions import AllowAny
 from .base_view import BaseContactView
 
@@ -26,4 +26,4 @@ class ContactView(BaseContactView):
         )
         request_email.send_request_email()
 
-        return self.format_response({"message": "要望が正常に送信されました。"})
+        return {"message": "要望が正常に送信されました。"}

@@ -43,26 +43,3 @@ class BaseContactView(APIView):
         raise NotImplementedError(
             "サブクラスはhandle_requestメソッドを実装する必要あり"
         )
-
-    def format_response(self, response_data, status="success", message=None):
-        """
-        レスポンスデータを共通のフォーマットで整形する。
-
-        Args:
-            response_data: レスポンスデータ
-            status: レスポンスのステータス（デフォルトは"success"）。
-            message: エラーメッセージなど、オプションのメッセージ。
-
-        Returns:
-            dict: フォーマットされたレスポンスデータ
-        """
-        response = {"status": status}
-
-        # メッセージがあれば追加
-        if message:
-            response["message"] = message
-
-        # `data` キーを使わずにレスポンスデータを直接追加
-        response.update(response_data)
-
-        return response
