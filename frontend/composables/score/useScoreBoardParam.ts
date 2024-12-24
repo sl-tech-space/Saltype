@@ -76,7 +76,7 @@ export function useScoreBoardParam() {
   ) => {
     try {
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/userranking/`,
+        `${config.public.baseURL}/api/django/score/get/userranking/`,
         {
           method: "POST",
           headers: {
@@ -117,7 +117,7 @@ export function useScoreBoardParam() {
   ) => {
     try {
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/select/`,
+        `${config.public.baseURL}/api/django/score/get/`,
         {
           method: "POST",
           headers: {
@@ -158,7 +158,7 @@ export function useScoreBoardParam() {
   ) => {
     try {
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/userrank/`,
+        `${config.public.baseURL}/api/django/score/update/userrank/`,
         {
           method: "POST",
           headers: {

@@ -73,7 +73,7 @@ export function useMistype() {
       };
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/mistype/`,
+        `${config.public.baseURL}/api/django/mistype/insert/`,
         {
           method: "POST",
           headers: {

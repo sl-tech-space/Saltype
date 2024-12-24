@@ -1,4 +1,5 @@
 import { useAuthToken } from "./useAuthToken";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * オリジナルフォームログイン処理
@@ -6,9 +7,11 @@ import { useAuthToken } from "./useAuthToken";
  */
 export function useLogin() {
   const { authToken } = useAuthToken();
+  const { user } = useUserInfo();
   const config = useRuntimeConfig();
   const router = useRouter();
   const isLoading = ref(false);
+  const isAdmin = ref(false);
   const error = ref<string | null>(null);
 
   /**
@@ -62,9 +65,44 @@ export function useLogin() {
     }
   };
 
+  /**
+   * 管理者権限があるかどうか確認
+   */
+  const checkAdminPermission = async () => {
+    try {
+      if (!user.value) {
+        error.value = "ユーザ情報が存在しません";
+        return;
+      }
+
+      const response = await useFetch("/api/nuxt/check-admin-permission", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.value.user_id,
+        }),
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (error.value) {
+        error.value = "権限チェックエラー";
+        return;
+      }
+
+      isAdmin.value = true;
+    } catch (e) {
+      error.value =
+        "ネットワークエラーが発生しました。接続を確認してください。";
+    }
+  };
+
   return {
     login,
+    checkAdminPermission,
     isLoading,
+    isAdmin,
     error,
   };
 }

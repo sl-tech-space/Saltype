@@ -25,7 +25,7 @@ export function useContact() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/contact/submit/`,
+        `${config.public.baseURL}/api/django/contact/`,
         {
           method: "POST",
           headers: {

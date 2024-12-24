@@ -121,7 +121,7 @@ export function useTyping(language: string, difficultyLevel: string) {
       const splitedId = splitId(id);
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/`,
+        `${config.public.baseURL}/api/django/score/insert/`,
         {
           method: "POST",
           headers: {
