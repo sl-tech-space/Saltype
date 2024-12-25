@@ -1,36 +1,40 @@
-import { H3Event } from "h3";
+import { H3Event } from 'h3'
+import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const config = useRuntimeConfig();
+  const config = useRuntimeConfig()
+
   try {
-    const body = await readBody(event);
-    const { user_id } = body;
+    const body = await readBody(event)
+    const { user_id } = body
 
     if (!user_id) {
       throw createError({
         statusCode: 400,
-        statusMessage: "ユーザーIDが提供されていません。",
-      });
+        statusMessage: 'ユーザーIDが提供されていません。'
+      })
     }
 
-    const userInfo = await $fetch(`${config.public.baseURL}/user/${user_id}`, {
-      method: "GET",
+    const userInfo = await $fetch<{ permission: number }>(`${config.public.baseURL}/user/${user_id}`, {
       headers: {
-        "Content-Type": "application/json",
-      },
-    });
+        'Content-Type': 'application/json'
+      }
+    })
 
-    if (!userInfo || typeof userInfo.permission !== "number") {
-      throw new Error("ユーザー情報の取得に失敗しました。");
+    if (typeof userInfo.permission !== 'number') {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'ユーザー情報の取得に失敗しました。'
+      })
     }
 
-    const isAdmin = userInfo.permission === 0;
+    const isAdmin = userInfo.permission === 0
 
-    return { isAdmin };
-  } catch (error) {
+    return { isAdmin }
+  } catch (e) {
     throw createError({
       statusCode: 500,
-      statusMessage: "管理者権限チェック中にエラーが発生しました。",
-    });
+      statusMessage: '管理者権限チェック中にエラーが発生しました。'
+    })
   }
-});
+})

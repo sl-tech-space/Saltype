@@ -3,7 +3,8 @@ import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * オリジナルフォームログイン処理
- * @returns login, isLoading, error
+ * @returns login, checkAdminPermission
+ * isLoading, isAdmin, error
  */
 export function useLogin() {
   const { authToken } = useAuthToken();
@@ -71,11 +72,11 @@ export function useLogin() {
   const checkAdminPermission = async () => {
     try {
       if (!user.value) {
-        error.value = "ユーザ情報が存在しません";
+        error.value = "ユーザ情報が存在しません。";
         return;
       }
 
-      const response = await useFetch("/api/nuxt/check-admin-permission", {
+      const response = await fetch("/api/nuxt/check-admin-permission", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,8 +87,8 @@ export function useLogin() {
         signal: AbortSignal.timeout(10000),
       });
 
-      if (error.value) {
-        error.value = "権限チェックエラー";
+      if (!response.ok) {
+        error.value = "権限チェックエラーが発生しました。";
         return;
       }
 
