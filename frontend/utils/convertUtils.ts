@@ -1,4 +1,6 @@
 import type { RankingItem } from "~/types/ranking";
+import type { ApiUserList } from "~/types/user";
+import type { UserList } from "~/types/user";
 
 /**
  * 受け渡した文字の変換(英語)
@@ -80,9 +82,24 @@ export function convertNumberToJapaneseDifficultyLevelName(
  * @param obj 
  * @returns RankingItem
  */
-export function objectToArray(obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] {
+export function objectToRankingItem(obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] {
   if (Array.isArray(obj)) {
-      return obj;
+    return obj;
   }
   return Object.values(obj);
 };
+
+/**
+ * APIで取得したユーザデータを加工
+ * @param apiUser 
+ * @returns UserList
+ */
+export function convertToUserList(apiUser: ApiUserList): UserList {
+  return {
+    userId: apiUser.user_id,
+    userName: apiUser.username,
+    email: apiUser.email,
+    todaysMaxScore: apiUser.highest_score?.toString() ?? '0',
+    userRank: apiUser.rank_name ?? 'N/A',
+  };
+}

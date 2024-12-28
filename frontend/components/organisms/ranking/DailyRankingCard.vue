@@ -24,7 +24,7 @@ const { getDifficultyName } = useLanguageAndDifficulty();
             <div class="ranking-cards">
                 <BaseRankingCard v-for="id in japaneseDifficultyIds" :key="id"
                     :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
-                    :rankings="objectToArray(props.dailyJapaneseRankingsByCombination[id] || [])" width="medium"
+                    :rankings="objectToRankingItem(props.dailyJapaneseRankingsByCombination[id] || [])" width="medium"
                     height="full" :limit=props.dailyRankingDataLimit :is-footer="false" :is-margin="true" />
             </div>
         </div>
@@ -33,7 +33,7 @@ const { getDifficultyName } = useLanguageAndDifficulty();
             <div class="ranking-cards">
                 <BaseRankingCard v-for="id in englishDifficultyIds" :key="id"
                     :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
-                    :rankings="objectToArray(props.dailyEnglishRankingsByCombination[id] || [])" width="medium"
+                    :rankings="objectToRankingItem(props.dailyEnglishRankingsByCombination[id] || [])" width="medium"
                     height="full" :limit=props.dailyRankingDataLimit :is-footer="false" :is-margin="true" />
             </div>
         </div>

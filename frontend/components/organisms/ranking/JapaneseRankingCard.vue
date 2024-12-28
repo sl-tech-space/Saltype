@@ -19,7 +19,7 @@ const { getDifficultyName } = useLanguageAndDifficulty();
         <div class="ranking-cards">
             <BaseRankingCard v-for="id in japaneseDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
-                :rankings="objectToArray(props.rankingsByCombination[id] || [])" width="medium" height="full"
+                :rankings="objectToRankingItem(props.rankingsByCombination[id] || [])" width="medium" height="full"
                 :limit=rankingDataLimit :is-footer="true" :id="id" :is-margin="true" />
         </div>
     </main>

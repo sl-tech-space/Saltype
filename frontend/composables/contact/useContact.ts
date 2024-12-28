@@ -40,7 +40,7 @@ export function useContact() {
       );
 
       if (!response.ok) {
-        throw new Error("要望の送信に失敗しました");
+        message.value = "要望の送信に失敗しました。";
       }
 
       message.value = "送信成功";

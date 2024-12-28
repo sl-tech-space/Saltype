@@ -160,6 +160,10 @@ button:disabled {
   opacity: 0.6;
 }
 
+.active {
+  border-color: $sub-color;
+}
+
 /* responsive */
 @media (max-width: 1200px) {
   .button-width--large {

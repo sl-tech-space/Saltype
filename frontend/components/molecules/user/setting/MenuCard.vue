@@ -8,7 +8,7 @@ import { useMenuItems } from '~/composables/common/useMenuItems';
 import { useUser } from '~/composables/user/useUser';
 import { useErrorNotification } from '~/composables/common/useError';
 
-const { getAllUserInfo, userInfo, isLoading, error } = useUser();
+const { isLoading, error } = useUser();
 const { showErrorNotification } = useErrorNotification(error);
 
 const emit = defineEmits(['changeCard']);
@@ -32,9 +32,6 @@ const { userSettingMenuItems, getAction } = useMenuItems({
 })
 
 onMounted(async () => {
-    await getAllUserInfo();
-    // TODO ユーザ情報取得デバッグ
-    console.log(userInfo)
 });
 </script>
 

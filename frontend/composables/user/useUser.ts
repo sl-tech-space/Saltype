@@ -7,50 +7,44 @@ import { useUserInfo } from "../common/useUserInfo";
 export function useUser() {
   const config = useRuntimeConfig();
   const { user } = useUserInfo();
+  const message = ref("");
   const userInfo = ref();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
-  /**
-   * ストアの情報からユーザ情報をすべて取得
-   * getAllUserInfo, isLoading, error,
-   * @returns getAllUserInfo, userInfo, isLoading, error,
-   */
-  const getAllUserInfo = async () => {
-    isLoading.value = true;
-
+  const updateUserInfo = async (userId: string, userName?: string, password?: string, email?: string): Promise<string> => {
     try {
-      if (!user.value) {
-        throw new Error("ユーザ情報が存在しません");
-      }
-
       const response = await fetch(
-        `${config.public.baseURL}/api/django/user/`,
+        `${config.public.baseURL}/api/django/user/update/`,
         {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            user_id: userId,
+            username: userName,
+            email: email,
+            password: password,
+          }),
           signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        error.value = errorData.error;
-        return;
+        message.value = "保存に失敗しました。";
       }
 
-      userInfo.value = await response.json();
+      message.value = "保存に成功しました。"
     } catch (e) {
-      error.value =
-        "ネットワークエラーが発生しました。接続を確認してください。";
+      message.value = "保存に失敗しました。"
     } finally {
-      isLoading.value = false;
+      return message.value;
     }
-  };
+  }
 
   return {
-    getAllUserInfo,
+    updateUserInfo,
     userInfo,
     isLoading,
     error,
