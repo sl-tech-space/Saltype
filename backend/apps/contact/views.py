@@ -21,9 +21,9 @@ class ContactView(BaseContactView):
             dict: 処理結果を返す辞書。
         """
         # メール送信処理
-        request_email = ContactEmail(
-            validated_data["user_id"], validated_data["request_content"]
-        )
-        request_email.send_request_email()
+        ContactEmail(
+            user_id=validated_data["user_id"],
+            request_content=validated_data["request_content"]
+        ).send_request_email()
 
         return {"message": "要望が正常に送信されました。"}

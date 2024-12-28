@@ -6,19 +6,19 @@ class ContactSerializer(serializers.Serializer):
     user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
     request_content = serializers.CharField(max_length=1000)  # 要望内容
 
+    def validate_user_id(self, value):
+        """
+        ユーザーIDの検証を行います。
+        """
+        try:
+            user = User.objects.get(pk=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("指定されたユーザーは存在しません。")
+        return user
+
     def validate(self, attrs):
         """
         入力データに対してバリデーションを実行します。
-        ユーザーIDの検証を行います。
         """
-
-        # ユーザーIDの存在を検証
-        if "user_id" in attrs:
-            try:
-                user = User.objects.get(pk=attrs["user_id"])
-                attrs["user"] = user
-            except User.DoesNotExist:
-                raise serializers.ValidationError(
-                    {"user_id": "指定されたユーザーは存在しません。"}
-                )
+        attrs["user"] = self.validate_user_id(attrs["user_id"])
         return attrs

@@ -1,7 +1,5 @@
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from apps.common.models import Diff, Lang, User, Score
+from apps.common.models import User
 
 
 class MistypeSerializer(serializers.Serializer):
@@ -23,27 +21,22 @@ class MistypeSerializer(serializers.Serializer):
         """
 
         # ユーザーIDの存在を検証
-        if "user_id" in attrs:
-            try:
-                user = User.objects.get(pk=attrs["user_id"])
-                attrs["user"] = user
-            except User.DoesNotExist:
+        user_id = attrs.get("user_id")
+        if user_id:
+            if not User.objects.filter(pk=user_id).exists():
                 raise serializers.ValidationError(
                     {"user_id": "指定されたユーザーは存在しません。"}
                 )
+            attrs["user"] = User.objects.get(pk=user_id)
 
         # ミスタイプ情報の検証
-        if "mistypes" in attrs:
-            for item in attrs["mistypes"]:
-                miss_count = item.get("miss_count")
-                if (
-                    miss_count is None
-                    or not isinstance(miss_count, int)
-                    or miss_count < 0
-                ):
-                    raise serializers.ValidationError(
-                        "ミスタイプのカウントは正の整数でなければなりません。"
-                    )
+        mistypes = attrs.get("mistypes", [])
+        for item in mistypes:
+            miss_count = item.get("miss_count")
+            if not isinstance(miss_count, int) or miss_count < 0:
+                raise serializers.ValidationError(
+                    "ミスタイプのカウントは正の整数でなければなりません。"
+                )
 
         # limitの検証（正の整数であること）
         limit = attrs.get("limit")

@@ -3,14 +3,13 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from .serializers import ScoreSerializer
 
 
 class BaseScoreView(APIView):
     """
-    スコアに関連する操作のためのスーパークラス。
-    このクラスはスコア関連のリクエストを処理するための共通ロジックを提供します。
+    スコアに関連する操作のための基底クラス。
+    スコア関連のリクエストを処理する共通ロジックを提供します。
     """
 
     permission_classes = [AllowAny]
@@ -26,15 +25,13 @@ class BaseScoreView(APIView):
         Args:
             request: HTTPリクエストオブジェクト。リクエストのデータを含む。
         Returns:
-            Responseオブジェクト: 処理結果やエラーを含むHTTPレスポンス。
+            Response: 処理結果やエラーを含むHTTPレスポンス。
         """
         serializer = ScoreSerializer(data=request.data)
         if serializer.is_valid():
-            validated_data = serializer.validated_data
-            score_data = self.handle_request(validated_data)
+            score_data = self.handle_request(serializer.validated_data)
             return Response(score_data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def handle_request(self, validated_data):
         """
@@ -49,6 +46,4 @@ class BaseScoreView(APIView):
         Returns:
             dict: 処理結果を辞書形式で返す。
         """
-        raise NotImplementedError(
-            "サブクラスはhandle_requestメソッドを実装する必要があります"
-        )
+        raise NotImplementedError("サブクラスは`handle_request`メソッドを実装する必要があります")
