@@ -1,13 +1,10 @@
+from apps.common.util.exception_handler import HandleExceptions
 from django.db import transaction
 from .base_view import BaseUserView
 from django.http import JsonResponse
 from datetime import date
 from apps.common.models import User, Score, Rank
-
-from apps.common.util.exception_handler import HandleExceptions
 from rest_framework.response import Response
-from datetime import date
-from apps.common.models import Score
 
 
 class GetUsersView(BaseUserView):
@@ -73,8 +70,11 @@ class GetUserView(BaseUserView):
     指定したuser_idに基づくユーザー情報を取得するAPIビュー
     """
 
-    def handle_request(self, validated_data: dict):
-        user_id = validated_data["user_id"]
+    def get(self, request, *args, **kwargs):
+        """
+        GETリクエストに基づいて、指定されたuser_idのユーザー情報を取得
+        """
+        user_id = request.query_params.get("user_id")
         user = User.objects.get(user_id=user_id)
 
         # 今日の最高スコアを取得
@@ -89,7 +89,7 @@ class GetUserView(BaseUserView):
             "highest_score": todays_highest_score,
         }
 
-        return user_data
+        return Response({"data": user_data}, status=200)
 
     def get_today_highest_score(self, user):
         """
@@ -116,6 +116,7 @@ class GetUserView(BaseUserView):
             return todays_score.score
         else:
             return None
+
 
 
 class UpdateUserView(BaseUserView):
