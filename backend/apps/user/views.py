@@ -131,16 +131,18 @@ class UpdateUserView(BaseUserView):
         user = validated_data["user"]
         user.username = validated_data.get("username", user.username)
         user.email = validated_data.get("email", user.email)
-        user.password = validated_data.get("password", user.password)
+
+        # passwordがリクエストに含まれていれば更新
+        password = validated_data.get("password")
+        if password:
+            user.password = password
         user.save()
 
-        # 更新したユーザー情報を返す
         return {
             "status": "success",
             "user_id": user.user_id,
             "username": user.username,
             "email": user.email,
-            "password": user.password,
         }
 
 
