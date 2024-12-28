@@ -13,18 +13,16 @@ class UserSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         """
-        受け取ったデータに対してバリデーションを実行。
-
-        Args:
-            attrs: シリアライズされるデータの辞書。
-        Returns:
-            attrs: バリデーション後のデータ（エラーがなければそのまま返却）。
-        Raises:
-            ValidationError: バリデーションエラーがあった場合に発生。
+        受け取ったデータに対してバリデーションを実行します。
+        ユーザー、言語、難易度、タイピング数、精度、アクションに関する検証を行います。
         """
-        # ユーザーIDが指定されている場合、ユーザーオブジェクトを取得
+
+        # ユーザーIDの検証
         if "user_id" in attrs:
-            user = get_object_or_404(User, pk=attrs["user_id"])
-            attrs["user"] = user
+            try:
+                user = User.objects.get(pk=attrs["user_id"])
+                attrs["user"] = user
+            except User.DoesNotExist:
+                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
 
         return attrs
