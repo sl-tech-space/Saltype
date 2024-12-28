@@ -29,17 +29,15 @@ class GetUsersView(BaseUserView):
             todays_highest_score = self.get_today_highest_score(user)
             rank_name = user.rank.rank if user.rank else None
 
-            # 今日の最高スコアが存在するユーザーのみをリストに追加
-            if todays_highest_score is not None:
-                users_data.append(
-                    {
-                        "user_id": user.user_id,
-                        "username": user.username,
-                        "email": user.email,
-                        "rank_name": rank_name,
-                        "highest_score": todays_highest_score,
-                    }
-                )
+            users_data.append(
+                {
+                    "user_id": user.user_id,
+                    "username": user.username,
+                    "email": user.email,
+                    "rank_name": rank_name,
+                    "highest_score": todays_highest_score,
+                }
+            )
 
         return Response({"data": users_data}, status=200)
 
