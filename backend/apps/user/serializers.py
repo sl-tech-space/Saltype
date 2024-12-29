@@ -1,51 +1,45 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.db.models import Q
 from apps.common.models import User
 
 
 class UserSerializer(serializers.Serializer):
     """
-    スコア関連のデータをシリアライズおよびバリデーションするためのクラス。
+    ユーザー関連のデータをシリアライズおよびバリデーションするためのクラス。
+    ユーザーID、ユーザー名、メールアドレス、パスワードなどのデータを検証します。
     """
 
     user_id = serializers.UUIDField(required=True)  # ユーザーID（UUID形式）
     username = serializers.CharField(max_length=150, required=False)  # ユーザー名（最大150文字）
     email = serializers.EmailField(max_length=254, required=False)  # メールアドレス（Email形式）
-    password = serializers.CharField(write_only=True, required=False, max_length=100)  # パスワード
-
-    def validate_user_id(self, value):
-        """
-        ユーザーIDに対する個別バリデーションを実施します。
-        """
-        try:
-            user = User.objects.get(pk=value)  # ユーザーIDが存在するか確認
-        except User.DoesNotExist:
-            raise ValidationError("指定されたユーザーは存在しません。")
-        
-        self.context['user'] = user  
-        return value
-
-    def validate_username(self, value):
-        """
-        ユーザー名に対するバリデーション
-        """
-        if value and not value.isalnum():  # アルファベットと数字のみ許可
-            raise ValidationError("ユーザー名はアルファベットと数字のみで構成される必要があります。")
-        return value
-
-    def validate_email(self, value):
-        """
-        メールアドレスに対するバリデーション
-        """
-        if value and "@" not in value:  # 基本的なメールアドレスの形式チェック
-            raise ValidationError("メールアドレスが無効です。")
-        return value
+    password = serializers.CharField(write_only=True, required=False, max_length=128)  # パスワード
 
     def validate(self, attrs):
         """
         受け取ったデータに対してバリデーションを実行します。
+        ユーザーID、ユーザー名、メールアドレス、パスワードに関する検証を行います。
         """
-        user = self.context.get('user')
-        if user:
-            attrs["user"] = user
+        user_id = attrs.get("user_id")
+        username = attrs.get("username")
+        email = attrs.get("email")
+
+        # ユーザーIDの存在を検証
+        if user_id:
+            try:
+                attrs["user"] = User.objects.get(pk=user_id)
+            except User.DoesNotExist:
+                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
+
+        # ユーザー名とメールアドレスの重複を一度のクエリで検証
+        existing_users = User.objects.filter(
+            Q(username=username) | Q(email=email)
+        ).exclude(user_id=user_id)
+
+        if existing_users.exists():
+            if username and existing_users.filter(username=username).exists():
+                raise ValidationError({"username": "このユーザー名は既に使用されています。"})
+            if email and existing_users.filter(email=email).exists():
+                raise ValidationError({"email": "このメールアドレスは既に使用されています。"})
+
         return attrs

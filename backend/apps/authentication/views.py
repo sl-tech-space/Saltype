@@ -41,7 +41,7 @@ class LoginView(APIView):
         user = serializer.validated_data["user"]
         token = self._get_or_create_token(user)
 
-        return self.format_response(user, token, status.HTTP_200_OK)
+        return self._format_response(user, token, status.HTTP_200_OK)
 
     def _get_or_create_token(self, user):
         """
@@ -53,9 +53,10 @@ class LoginView(APIView):
         Returns:
             Token: ユーザーのトークンオブジェクト。
         """
-        return Token.objects.get_or_create(user=user)[0]
+        token, _ = Token.objects.get_or_create(user=user)
+        return token
 
-    def format_response(self, user, token, http_status):
+    def _format_response(self, user, token, http_status):
         """
         レスポンスデータをフォーマット。
 
@@ -124,7 +125,7 @@ class GoogleAuthView(APIView):
         if serializer.is_valid():
             user = self._create_or_update_user(serializer.validated_data)
             token, _ = Token.objects.get_or_create(user=user)
-            return self.format_response(user, token, status.HTTP_201_CREATED)
+            return self._format_response(user, token, status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -149,7 +150,7 @@ class GoogleAuthView(APIView):
 
         return user
 
-    def format_response(self, user, token, http_status):
+    def _format_response(self, user, token, http_status):
         """
         レスポンスデータをフォーマット。
 

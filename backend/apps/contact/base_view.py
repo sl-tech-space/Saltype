@@ -9,7 +9,7 @@ from .serializers import ContactSerializer
 
 class BaseContactView(APIView):
     """
-    スコアに関連する操作のためのスーパークラス。
+    要望に関連する操作のための基底クラス。
     """
 
     permission_classes = [AllowAny]
@@ -17,12 +17,12 @@ class BaseContactView(APIView):
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
         """
-        POSTメソッドでスコア関連のリクエストを処理。
+        POSTメソッドで要望関連のリクエストを処理。
 
         Args:
             request: HTTPリクエストオブジェクト。
         Returns:
-            Response: 成功時はスコアに関する情報が含まれたレスポンス。
+            Response: 成功時は要望に関する情報が含まれたレスポンス。
         """
         serializer = ContactSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -41,5 +41,5 @@ class BaseContactView(APIView):
             dict: 処理結果を返す辞書。
         """
         raise NotImplementedError(
-            "サブクラスはhandle_requestメソッドを実装する必要あり"
+            "サブクラスはhandle_requestメソッドを実装する必要があります"
         )

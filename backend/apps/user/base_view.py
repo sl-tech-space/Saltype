@@ -3,9 +3,9 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from datetime import date
 from .serializers import UserSerializer
-
+from apps.common.models import Score
 
 class BaseUserView(APIView):
     """
@@ -26,12 +26,31 @@ class BaseUserView(APIView):
         """
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            validated_data = serializer.validated_data
-            score_data = self.handle_request(validated_data)
-            return Response(score_data, status=status.HTTP_201_CREATED)
-        else:
-            # バリデーションに失敗した場合、エラーレスポンスを返す
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(self.handle_request(serializer.validated_data), status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get_today_highest_score(self, user):
+        """
+        ユーザーの今日の最高スコアを取得する共通メソッド。
+
+        Args:
+            user: ユーザーオブジェクト
+        Returns:
+            int or None: 今日の最高スコア（なければNone）
+        """
+        today = date.today()
+
+        # ユーザーの今日の最高スコアを取得
+        todays_score = (
+            Score.objects.filter(
+                user_id=user.user_id,
+                created_at__date=today,
+            )
+            .order_by("-score")
+            .first()
+        )
+
+        return todays_score.score if todays_score else None
 
     def handle_request(self, validated_data):
         """

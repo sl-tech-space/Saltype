@@ -1,4 +1,4 @@
-from typing import List, Any, Dict
+from typing import List, Dict
 from apps.common.models import Miss
 from django.db import transaction
 from .base_view import BaseMistypeView
@@ -10,7 +10,7 @@ class InsertMistypesView(BaseMistypeView):
     ユーザーが発生させたミスタイプを管理するための処理を提供。
     """
 
-    def handle_request(self, validated_data: Dict[str, Any]):
+    def handle_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
         """
         ミスタイプの挿入または更新を行う処理。
 
@@ -31,7 +31,7 @@ class InsertMistypesView(BaseMistypeView):
         return {"status": "success", "inserted_mistypes": inserted_data}
 
     @transaction.atomic
-    def upsert_mistypes(self, user_id: int, mistypes_data: List[Dict[str, Any]]):
+    def upsert_mistypes(self, user_id: int, mistypes_data: List[Dict[str, any]]) -> List[Dict[str, any]]:
         """
         ミスタイプのデータベースへの挿入または更新。
 
@@ -44,7 +44,7 @@ class InsertMistypesView(BaseMistypeView):
         """
         return [self.upsert_mistype(user_id, data) for data in mistypes_data]
 
-    def upsert_mistype(self, user_id: int, data: Dict[str, Any]):
+    def upsert_mistype(self, user_id: int, data: Dict[str, any]) -> Dict[str, any]:
         """
         個々のミスタイプデータを挿入または更新。
 
@@ -59,18 +59,14 @@ class InsertMistypesView(BaseMistypeView):
         miss_count = data.get("miss_count")
 
         # miss_charに一致するMissオブジェクトを取得
-        miss_instances = Miss.objects.filter(miss_char=miss_char, user_id=user_id)
+        miss_instance, created = Miss.objects.get_or_create(
+            miss_char=miss_char, user_id=user_id,
+            defaults={"miss_count": miss_count}
+        )
 
-        if miss_instances.exists():
-            # 一致するレコードが存在する場合、最初の1件だけを更新
-            miss_instance = miss_instances.first()
-            miss_instance.miss_count += miss_count  # 発生回数を加算
+        if not created:
+            miss_instance.miss_count += miss_count
             miss_instance.save()
-        else:
-            # 一致するレコードが存在しない場合、新規作成
-            miss_instance = Miss.objects.create(
-                miss_char=miss_char, miss_count=miss_count
-            )
 
         return {
             "miss_char": miss_instance.miss_char,
@@ -84,7 +80,7 @@ class GetTopMistypesView(BaseMistypeView):
     ユーザーが発生させたミスタイプの中で最も発生回数が多いものを取得。
     """
 
-    def handle_request(self, validated_data: Dict[str, Any]):
+    def handle_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
         """
         検証済みのデータを使用してトップミスタイプを取得。
 
@@ -102,11 +98,9 @@ class GetTopMistypesView(BaseMistypeView):
 
         # トップミスタイプデータを取得
         top_mistypes = self.get_top_mistypes(user_id, limit)
-        if not top_mistypes:
-            return {"status": "not_found", "top_mistypes": []}
-        return {"status": "success", "top_mistypes": top_mistypes}
+        return {"status": "success" if top_mistypes else "not_found", "top_mistypes": top_mistypes}
 
-    def get_top_mistypes(self, user_id: int, limit: int):
+    def get_top_mistypes(self, user_id: int, limit: int) -> List[Dict[str, any]]:
         """
         ユーザーのトップミスタイプを取得。
 
@@ -119,7 +113,5 @@ class GetTopMistypesView(BaseMistypeView):
         """
         return [
             {"miss_char": miss.miss_char, "miss_count": miss.miss_count}
-            for miss in Miss.objects.filter(user_id=user_id).order_by("-miss_count")[
-                :limit
-            ]
+            for miss in Miss.objects.filter(user_id=user_id).order_by("-miss_count")[:limit]
         ]

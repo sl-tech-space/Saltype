@@ -16,17 +16,20 @@ class ContactEmail:
     @HandleExceptions()
     def get_user(self):
         """ユーザ情報取得"""
-        return self.User.objects.get(user_id=self.user_id)
+        try:
+            return self.User.objects.get(pk=self.user_id)
+        except self.User.DoesNotExist:
+            raise ValueError("指定されたユーザーは存在しません。")
 
     def send_request_email(self):
-        username = self.get_user()
-        subject = f"{username}から要望が届いています。"
-        message = f" {username} から:\n\n{self.request_content}\n"
+        user = self.get_user()
+        subject = f"{user.username}から要望が届いています。"
+        message = f"{user.username} から:\n\n{self.request_content}\n"
 
         send_mail(
-            subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            [settings.EMAIL_HOST_USER],
+            subject=subject,
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[settings.EMAIL_HOST_USER],
             fail_silently=False,
         )

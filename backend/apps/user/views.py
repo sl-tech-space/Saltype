@@ -1,11 +1,11 @@
-from apps.common.util.exception_handler import HandleExceptions
-from django.db import transaction
-from .base_view import BaseUserView
-from rest_framework.response import Response
 from datetime import date
-from apps.common.models import User, Score, Rank
+from django.db import transaction
+from django.http import JsonResponse
 from rest_framework.response import Response
 
+from apps.common.models import User, Score, Rank
+from apps.common.util.exception_handler import HandleExceptions
+from .base_view import BaseUserView
 
 class GetUsersView(BaseUserView):
     """
@@ -16,9 +16,8 @@ class GetUsersView(BaseUserView):
     def get(self, request, *args, **kwargs):
         """
         ユーザー情報を全て取得するAPI
-        さらに今日の最高スコアも取得して返す
         """
-        users = User.objects.all()  # 全てのユーザー情報を取得
+        users = User.objects.select_related('rank').all()
         users_data = []
 
         for user in users:
@@ -37,32 +36,6 @@ class GetUsersView(BaseUserView):
             )
 
         return Response({"data": users_data}, status=200)
-
-    def get_today_highest_score(self, user):
-        """
-        ユーザーの今日の最高スコアを取得するメソッド。
-
-        Args:
-            user: ユーザーオブジェクト
-        Returns:
-            int or None: 今日の最高スコア（なければNone）
-        """
-        today = date.today()
-
-        # ユーザーの今日の最高スコアを取得
-        todays_score = (
-            Score.objects.filter(
-                user_id=user.user_id,
-                created_at__date=today,
-            )
-            .order_by("-score")
-            .first()
-        )
-
-        if todays_score:
-            return todays_score.score
-        else:
-            return None
 
 
 class GetUserView(BaseUserView):
@@ -90,33 +63,6 @@ class GetUserView(BaseUserView):
         }
 
         return Response({"data": user_data}, status=200)
-
-    def get_today_highest_score(self, user):
-        """
-        ユーザーの今日の最高スコアを取得するメソッド。
-
-        Args:
-            user: ユーザーオブジェクト
-        Returns:
-            int or None: 今日の最高スコア（なければNone）
-        """
-        today = date.today()
-
-        # ユーザーの今日の最高スコアを取得
-        todays_score = (
-            Score.objects.filter(
-                user_id=user.user_id,
-                created_at__date=today,
-            )
-            .order_by("-score")
-            .first()
-        )
-
-        if todays_score:
-            return todays_score.score
-        else:
-            return None
-
 
 
 class UpdateUserView(BaseUserView):
