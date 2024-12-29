@@ -28,10 +28,11 @@ class BaseScoreView(APIView):
             Response: 処理結果やエラーを含むHTTPレスポンス。
         """
         serializer = ScoreSerializer(data=request.data)
-        if serializer.is_valid():
-            score_data = self.handle_request(serializer.validated_data)
-            return Response(score_data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            self.handle_request(serializer.validated_data),
+            status=status.HTTP_201_CREATED,
+        )
 
     def handle_request(self, validated_data):
         """
@@ -46,4 +47,6 @@ class BaseScoreView(APIView):
         Returns:
             dict: 処理結果を辞書形式で返す。
         """
-        raise NotImplementedError("サブクラスは`handle_request`メソッドを実装する必要があります")
+        raise NotImplementedError(
+            "サブクラスは`handle_request`メソッドを実装する必要があります"
+        )

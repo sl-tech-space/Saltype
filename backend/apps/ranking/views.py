@@ -20,7 +20,7 @@ class GetRankingView(BaseRankingView):
             validated_data (dict): 検証済みのリクエストデータ。
                 - date (date, optional): 日別ランキング取得時の日付
                 - lang_id (int): 言語ID
-                - diff_id (int): 難易度ID 
+                - diff_id (int): 難易度ID
                 - limit (int): 取得件数
 
         Returns:
@@ -50,7 +50,9 @@ class GetRankingView(BaseRankingView):
             ],
         }
 
-    def _get_ranking_data(self, lang_id: int, diff_id: int, limit: int, target_date: date = None) -> list[Score]:
+    def _get_ranking_data(
+        self, lang_id: int, diff_id: int, limit: int, target_date: date = None
+    ) -> list[Score]:
         """
         ランキングデータを取得します。
 

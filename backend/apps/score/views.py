@@ -22,17 +22,14 @@ class InsertScoreView(BaseScoreView):
         Returns:
             dict: スコア挿入結果を含むレスポンスデータ。
         """
-        # 必要なデータを取得
         user = validated_data["user"]
-        lang = validated_data["lang"] 
+        lang = validated_data["lang"]
         diff = validated_data["diff"]
         typing_count = validated_data["typing_count"]
         accuracy = validated_data["accuracy"]
 
-        # スコアを計算
         calculated_score = self.calculate_score(typing_count, accuracy)
 
-        # スコアをデータベースに挿入
         score_data = self.insert_score(
             user.user_id,
             lang.lang_id,
@@ -109,9 +106,7 @@ class GetScoreView(BaseScoreView):
 
         if action == "get_average_score":
             average_score = self.get_average_score(
-                user.user_id,
-                lang.lang_id,
-                diff.diff_id,
+                user.user_id, lang.lang_id, diff.diff_id
             )
             return {
                 "status": "success",
@@ -119,11 +114,7 @@ class GetScoreView(BaseScoreView):
             }
 
         elif action == "get_past_scores":
-            past_scores = self.get_past_scores(
-                user.user_id,
-                lang.lang_id,
-                diff.diff_id,
-            )
+            past_scores = self.get_past_scores(user.user_id, lang.lang_id, diff.diff_id)
             return {"status": "success", "scores": past_scores}
 
     def get_average_score(self, user_id: int, lang_id: int, diff_id: int) -> float:
@@ -185,10 +176,7 @@ class GetUserRankingView(BaseScoreView):
         score = validated_data["score"]
 
         ranking_position = self.get_ranking_position(
-            score,
-            user.user_id,
-            lang.lang_id,
-            diff.diff_id
+            score, user.user_id, lang.lang_id, diff.diff_id
         )
         return {"status": "success", "ranking_position": ranking_position}
 
@@ -249,10 +237,7 @@ class UpdateUserRankView(BaseScoreView):
 
         rank_name = self.determine_rank(score)
         is_highest = self.is_highest_score(
-            user.user_id,
-            lang.lang_id,
-            diff.diff_id,
-            score
+            user.user_id, lang.lang_id, diff.diff_id, score
         )
 
         if is_highest:
@@ -280,7 +265,9 @@ class UpdateUserRankView(BaseScoreView):
                 return rank
         return "メンバー"
 
-    def is_highest_score(self, user_id: int, lang_id: int, diff_id: int, score: int) -> bool:
+    def is_highest_score(
+        self, user_id: int, lang_id: int, diff_id: int, score: int
+    ) -> bool:
         """
         ユーザーの最高スコアを取得し、提供されたスコアと比較します。
 

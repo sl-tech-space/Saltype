@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import RankingSerializer
 
+
 class BaseRankingView(APIView):
     """
     ランキングに関連する操作を共通化するための基底クラス。
@@ -26,10 +27,11 @@ class BaseRankingView(APIView):
             Response: ランキングデータを含むHTTPレスポンスオブジェクト。
         """
         serializer = RankingSerializer(data=request.data)
-        if serializer.is_valid():
-            score_data = self.handle_request(serializer.validated_data)
-            return Response(score_data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            self.handle_request(serializer.validated_data),
+            status=status.HTTP_201_CREATED,
+        )
 
     def handle_request(self, validated_data):
         """
@@ -42,4 +44,6 @@ class BaseRankingView(APIView):
         Returns:
             dict: 処理結果を返す辞書形式のデータ。
         """
-        raise NotImplementedError("サブクラスは`handle_request`メソッドを実装する必要があります")
+        raise NotImplementedError(
+            "サブクラスは`handle_request`メソッドを実装する必要があります"
+        )

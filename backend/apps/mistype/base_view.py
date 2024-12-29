@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import MistypeSerializer
 
+
 class BaseMistypeView(APIView):
     """
     ミスタイプに関連する操作のための基底クラス。
@@ -25,9 +26,11 @@ class BaseMistypeView(APIView):
             Response: 処理結果やエラーを含むHTTPレスポンスオブジェクト。
         """
         serializer = MistypeSerializer(data=request.data)
-        if serializer.is_valid():
-            return Response(self.handle_request(serializer.validated_data), status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            self.handle_request(serializer.validated_data),
+            status=status.HTTP_201_CREATED,
+        )
 
     def handle_request(self, validated_data):
         """
@@ -40,4 +43,6 @@ class BaseMistypeView(APIView):
         Returns:
             dict: 処理結果を辞書形式で返す。
         """
-        raise NotImplementedError("サブクラスは`handle_request`メソッドを実装する必要があります")
+        raise NotImplementedError(
+            "サブクラスは`handle_request`メソッドを実装する必要があります"
+        )

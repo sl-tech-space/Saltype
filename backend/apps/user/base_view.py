@@ -7,6 +7,7 @@ from datetime import date
 from .serializers import UserSerializer
 from apps.common.models import Score
 
+
 class BaseUserView(APIView):
     """
     スコアに関連する操作のためのスーパークラス。
@@ -25,10 +26,12 @@ class BaseUserView(APIView):
             Response: 成功時はスコアに関する情報が含まれたレスポンス。
         """
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            return Response(self.handle_request(serializer.validated_data), status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            self.handle_request(serializer.validated_data),
+            status=status.HTTP_201_CREATED,
+        )
+
     def get_today_highest_score(self, user):
         """
         ユーザーの今日の最高スコアを取得する共通メソッド。

@@ -17,17 +17,27 @@ class HandleExceptions:
             try:
                 return func(request, *args, **kwargs)
             except (ValidationError, ValueError) as e:
-                return self._handle_error(e, "バリデーションエラー", status.HTTP_400_BAD_REQUEST)
+                return self._handle_error(
+                    e, "バリデーションエラー", status.HTTP_400_BAD_REQUEST
+                )
             except IntegrityError as e:
-                return self._handle_error(e, "データ整合性エラー", status.HTTP_422_UNPROCESSABLE_ENTITY)
+                return self._handle_error(
+                    e, "データ整合性エラー", status.HTTP_422_UNPROCESSABLE_ENTITY
+                )
             except DatabaseError as e:
-                return self._handle_error(e, "データベースエラー", status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return self._handle_error(
+                    e, "データベースエラー", status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
             except Http404 as e:
-                return self._handle_error(e, "リソースが見つかりませんでした", status.HTTP_404_NOT_FOUND)
+                return self._handle_error(
+                    e, "リソースが見つかりませんでした", status.HTTP_404_NOT_FOUND
+                )
             except Exception as e:
                 logger.exception("予期しないエラーが発生しました")
                 return Response(
-                    {"error": "内部エラーが発生しました。詳細についてはログを確認してください。"},
+                    {
+                        "error": "内部エラーが発生しました。詳細についてはログを確認してください。"
+                    },
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
 
@@ -40,7 +50,7 @@ class HandleExceptions:
         else:
             logger.error(f"{log_message}: {str(e)}")
             details = str(e)
-        
+
         return Response(
             {"error": log_message, "details": details},
             status=response_status,
