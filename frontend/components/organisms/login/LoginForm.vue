@@ -34,8 +34,8 @@ const passVisibility = () => {
  * バリデーションの設定
  */
 const validationSchema = yup.object().shape({
-  email: yup.string().required().email().label("メールアドレス"),
-  password: yup.string().required().min(8).label("パスワード"),
+  email: yup.string().required().email().max(256).label("メールアドレス"),
+  password: yup.string().required().min(8).max(100).label("パスワード"),
 });
 
 /**

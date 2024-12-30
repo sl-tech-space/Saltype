@@ -14,7 +14,7 @@ const showNotification = ref(false);
 const message = ref("");
 
 const validationSchema = yup.object().shape({
-    contact: yup.string().required().label("要望内容")
+    contact: yup.string().required().max(300).label("要望内容")
 });
 
 const handleSubmit = async () => {

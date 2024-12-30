@@ -41,7 +41,7 @@ export function useLogin() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        error.value = errorData.error || "ログインに失敗しました。";
+        error.value = errorData.details?.non_field_errors?.[0] || "ログインに失敗しました。";
         return;
       }
 

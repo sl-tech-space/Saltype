@@ -29,7 +29,7 @@ export function useAnalyze() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/mistype/get/topmistypes/`,
+        `${config.public.baseURL}/api/django/mistype/topmistypes/`,
         {
           method: "POST",
           headers: {
@@ -79,7 +79,7 @@ export function useAnalyze() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/get/`,
+        `${config.public.baseURL}/api/django/score/`,
         {
           method: "POST",
           headers: {

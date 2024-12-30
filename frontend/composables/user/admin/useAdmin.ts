@@ -17,7 +17,7 @@ export function useAdmin() {
 
         try {
             const response = await fetch(
-                `${config.public.baseURL}/api/django/user/get/`,
+                `${config.public.baseURL}/api/django/user/`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -33,6 +33,8 @@ export function useAdmin() {
 
             const responseData = await response.json();
 
+            // TODO デバッグ
+            console.log(responseData)
             userItems.value = responseData.data;
         } catch (e) {
             error.value = "ネットワークエラーが発生しました。接続を確認してください。";

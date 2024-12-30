@@ -125,7 +125,7 @@ export function useRanking() {
       };
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/ranking/get/`,
+        `${config.public.baseURL}/api/django/ranking/`,
         {
           method: "POST",
           headers: {

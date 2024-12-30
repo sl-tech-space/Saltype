@@ -30,6 +30,7 @@ const emit = defineEmits(['user-updated']);
 
 const showConfirmModal = ref(false);
 const deleteItem = ref<string | null>(null);
+const deleteItemName = ref<string | null>(null);
 
 const currentPage = ref(1);
 const totalPages = computed(() => Math.ceil(props.items.length / props.itemsPerPage));
@@ -63,8 +64,9 @@ const cancelEditing = () => {
     editingItem.value = null;
 };
 
-const confirmDelete = (item: { userId: string; }) => {
+const confirmDelete = (item: { userId: string; userName: string; }) => {
     deleteItem.value = item.userId;
+    deleteItemName.value = item.userName;
     showConfirmModal.value = true;
 };
 
@@ -125,7 +127,8 @@ const cancelDelete = () => {
     <BasePagination :current-page="currentPage" :total-pages="totalPages" @page-change="changePage" />
     <BaseNotification :message="message" :content="`ユーザ名：${editedUserName}\nメールアドレス：${editedEmail}`"
         :show="showNotification" class="u-pre-wrap" />
-    <ConfirmModal :show='showConfirmModal' message='本当にこのユーザーを削除しますか？' @confirm='deleteUser' @cancel='cancelDelete' />
+    <ConfirmModal :show='showConfirmModal' :message="`${deleteItemName}を削除しますか？`" @confirm='deleteUser'
+        @cancel='cancelDelete' />
 </template>
 
 <style lang="scss" scoped>
