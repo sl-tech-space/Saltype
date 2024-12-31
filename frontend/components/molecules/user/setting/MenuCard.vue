@@ -8,7 +8,7 @@ import { useMenuItems } from '~/composables/common/useMenuItems';
 import { useUser } from '~/composables/user/useUser';
 import { useErrorNotification } from '~/composables/common/useError';
 
-const { isLoading, error } = useUser();
+const { isAdmin, isLoading, error } = useUser();
 const { showErrorNotification } = useErrorNotification(error);
 
 const emit = defineEmits(['changeCard']);
@@ -29,7 +29,7 @@ const { userSettingMenuItems, getAction } = useMenuItems({
     slideToUserInfo,
     slideToUpdateUserName,
     slideToUpdatePassword,
-})
+}, isAdmin.value)
 
 onMounted(async () => {
 });

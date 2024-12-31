@@ -8,9 +8,11 @@ import { useLogout } from '~/composables/auth/useLogout';
 import ColorCustomizer from './ColorCustomizer.vue';
 import { useColorStore } from '~/store/colorStore';
 import { useMenuItems } from '~/composables/common/useMenuItems';
+import { useUser } from '~/composables/user/useUser';
 
 const { logout } = await useLogout();
 const { colorStore } = useColorStore();
+const { checkAdminPermission, isAdmin } = useUser();
 const router = useRouter();
 const showModal = ref(false);
 
@@ -32,14 +34,32 @@ const handleLogout = async () => {
     await logout();
 };
 
-const { homeMenuItems, getAction } = useMenuItems({
+const menuItems = ref(useMenuItems({
     navigateToRanking,
     navigateToAnalyze,
     navigateToContact,
     showColorCustomizer,
     navigateToUserSetting,
     navigateToUserAdmin
-})
+}, isAdmin.value));
+
+watchEffect(() => {
+    menuItems.value = useMenuItems({
+        navigateToRanking,
+        navigateToAnalyze,
+        navigateToContact,
+        showColorCustomizer,
+        navigateToUserSetting,
+        navigateToUserAdmin
+    }, isAdmin.value);
+});
+
+const homeMenuItems = computed(() => menuItems.value.homeMenuItems);
+const getAction = computed(() => menuItems.value.getAction);
+
+onMounted(async () => {
+    await checkAdminPermission();
+});
 </script>
 
 <template>

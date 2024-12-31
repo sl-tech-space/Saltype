@@ -9,6 +9,7 @@ export function useUser() {
   const { user, waitForUser } = useUserInfo();
   const message = ref("");
   const userInfo = ref();
+  const isAdmin = ref(false);
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
@@ -51,7 +52,11 @@ export function useUser() {
     }
   }
 
-  const checkAdminPermission = async (userId: string) => {
+  /**
+   * ログイン中ユーザの権限をチェックする
+   */
+  const checkAdminPermission = async (): Promise<void> => {
+    isLoading.value = true;
     try {
       await waitForUser();
 
@@ -61,7 +66,7 @@ export function useUser() {
       }
 
       const response = await fetch(
-        `${config.public.baseURL}/api/django/mistype/topmistypes/`,
+        "/api/nuxt/check-admin-permission/",
         {
           method: "POST",
           headers: {
@@ -69,8 +74,6 @@ export function useUser() {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            limit: limit,
-            action: "get_top_mistypes",
           }),
           signal: AbortSignal.timeout(5000),
         }
@@ -82,15 +85,20 @@ export function useUser() {
       }
 
       const data = await response.json();
+      isAdmin.value = data.isAdmin;
     } catch (e) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
+    } finally {
+      isLoading.value = false;
     }
   };
 
   return {
     updateUserInfo,
+    checkAdminPermission,
     userInfo,
+    isAdmin,
     isLoading,
     error,
   };

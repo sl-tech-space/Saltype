@@ -15,20 +15,21 @@ export default defineEventHandler(async (event: H3Event) => {
       })
     }
 
-    const userInfo = await $fetch<{ permission: number }>(`${config.public.baseURL}/user/${user_id}`, {
+    const response = await $fetch<{ data: { permission: number } }>(`${config.public.baseURL}/api/django/user/${user_id}/`, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
     })
 
-    if (typeof userInfo.permission !== 'number') {
+    if (typeof response.data?.permission !== 'number') {
+      console.error('Unexpected response structure:', response)
       throw createError({
         statusCode: 500,
-        statusMessage: 'ユーザー情報の取得に失敗しました。'
+        statusMessage: 'ユーザー情報の構造が不正です。'
       })
     }
 
-    const isAdmin = userInfo.permission === 0
+    const isAdmin = response.data.permission === 0
 
     return { isAdmin }
   } catch (e) {
