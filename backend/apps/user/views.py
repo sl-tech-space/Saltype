@@ -64,6 +64,7 @@ class GetUserView(BaseUserView):
             "user_id": user.user_id,
             "username": user.username,
             "email": user.email,
+            "permission": user.permission,
             "rank_name": rank_name,
             "highest_score": todays_highest_score,
         }
