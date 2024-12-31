@@ -53,7 +53,7 @@ class GetUserView(BaseUserView):
         """
         GETリクエストに基づいて、指定されたuser_idのユーザー情報を取得
         """
-        user_id = request.query_params.get("user_id")
+        user_id = kwargs.get("user_id")
         user = User.objects.get(user_id=user_id)
 
         # 今日の最高スコアを取得
