@@ -26,8 +26,9 @@ class BaseContactView(APIView):
         """
         serializer = ContactSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        response_data = self.handle_request(serializer.validated_data)
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(
+            self.handle_request(serializer.validated_data), status=status.HTTP_200_OK
+        )
 
     def handle_request(self, validated_data):
         """

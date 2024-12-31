@@ -26,20 +26,29 @@ class UserSerializer(serializers.Serializer):
 
         # ユーザーIDの存在を検証
         if user_id:
-            try:
-                attrs["user"] = User.objects.get(pk=user_id)
-            except User.DoesNotExist:
-                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
+            attrs["user"] = self._get_user_by_id(user_id)
 
         # ユーザー名とメールアドレスの重複を一度のクエリで検証
-        existing_users = User.objects.filter(
-            Q(username=username) | Q(email=email)
-        ).exclude(user_id=user_id)
+        self._check_duplicate_user(username, email, user_id)
 
+        return attrs
+
+    def _get_user_by_id(self, user_id):
+        """
+        ユーザーIDに基づいてユーザーを取得します。
+        """
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
+
+    def _check_duplicate_user(self, username, email, user_id):
+        """
+        ユーザー名とメールアドレスの重複を検証します。
+        """
+        existing_users = User.objects.filter(Q(username=username) | Q(email=email)).exclude(user_id=user_id)
         if existing_users.exists():
             if username and existing_users.filter(username=username).exists():
                 raise ValidationError({"username": "このユーザー名は既に使用されています。"})
             if email and existing_users.filter(email=email).exists():
                 raise ValidationError({"email": "このメールアドレスは既に使用されています。"})
-
-        return attrs

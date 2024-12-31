@@ -31,7 +31,9 @@ class InsertMistypesView(BaseMistypeView):
         return {"status": "success", "inserted_mistypes": inserted_data}
 
     @transaction.atomic
-    def upsert_mistypes(self, user_id: int, mistypes_data: List[Dict[str, any]]) -> List[Dict[str, any]]:
+    def upsert_mistypes(
+        self, user_id: int, mistypes_data: List[Dict[str, any]]
+    ) -> List[Dict[str, any]]:
         """
         ミスタイプのデータベースへの挿入または更新。
 
@@ -60,8 +62,7 @@ class InsertMistypesView(BaseMistypeView):
 
         # miss_charに一致するMissオブジェクトを取得
         miss_instance, created = Miss.objects.get_or_create(
-            miss_char=miss_char, user_id=user_id,
-            defaults={"miss_count": miss_count}
+            miss_char=miss_char, user_id=user_id, defaults={"miss_count": miss_count}
         )
 
         if not created:
@@ -98,7 +99,10 @@ class GetTopMistypesView(BaseMistypeView):
 
         # トップミスタイプデータを取得
         top_mistypes = self.get_top_mistypes(user_id, limit)
-        return {"status": "success" if top_mistypes else "not_found", "top_mistypes": top_mistypes}
+        return {
+            "status": "success" if top_mistypes else "not_found",
+            "top_mistypes": top_mistypes,
+        }
 
     def get_top_mistypes(self, user_id: int, limit: int) -> List[Dict[str, any]]:
         """
@@ -113,5 +117,7 @@ class GetTopMistypesView(BaseMistypeView):
         """
         return [
             {"miss_char": miss.miss_char, "miss_count": miss.miss_count}
-            for miss in Miss.objects.filter(user_id=user_id).order_by("-miss_count")[:limit]
+            for miss in Miss.objects.filter(user_id=user_id).order_by("-miss_count")[
+                :limit
+            ]
         ]

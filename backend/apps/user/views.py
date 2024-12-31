@@ -7,6 +7,7 @@ from apps.common.models import User, Score, Rank
 from apps.common.util.exception_handler import HandleExceptions
 from .base_view import BaseUserView
 
+
 class GetUsersView(BaseUserView):
     """
     ユーザー情報全取得APIビュー
@@ -17,13 +18,18 @@ class GetUsersView(BaseUserView):
         """
         ユーザー情報を全て取得するAPI
         """
-        users = User.objects.select_related('rank').all()
+        users = User.objects.all()
         users_data = []
 
         for user in users:
             # 今日の最高スコアを取得する
             todays_highest_score = self.get_today_highest_score(user)
-            rank_name = user.rank.rank if user.rank else None
+
+            # ランク情報を個別に取得
+            rank_name = None
+            if user.rank_id:
+                rank = Rank.objects.get(rank_id=user.rank_id)
+                rank_name = rank.rank
 
             users_data.append(
                 {
@@ -47,7 +53,7 @@ class GetUserView(BaseUserView):
         """
         GETリクエストに基づいて、指定されたuser_idのユーザー情報を取得
         """
-        user_id = request.query_params.get("user_id")
+        user_id = kwargs.get("user_id")
         user = User.objects.get(user_id=user_id)
 
         # 今日の最高スコアを取得

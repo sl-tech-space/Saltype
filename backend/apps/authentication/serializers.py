@@ -2,43 +2,31 @@ from django.contrib.auth import authenticate, get_user_model
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from apps.common.serializers import BaseSerializer
 
 
-class UserLoginSerializer(serializers.Serializer):
-    """
-    ユーザーログイン用シリアライザ。
-    """
-
+class UserLoginSerializer(BaseSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True, style={"input_type": "password"})
 
     def validate(self, data):
-        """
-        `email` と `password` が正しいか検証します。
-        """
         email = data.get("email")
         password = data.get("password")
-
         self._validate_min_length(password)
 
-        # ユーザー認証
         user = authenticate(request=self.context.get("request"), username=email, password=password)
-
         if user is None:
-            raise serializers.ValidationError(_("メールアドレスまたはパスワードが正しくありません。"), code="authorization")
-
+            raise ValidationError(_("メールアドレスまたはパスワードが正しくありません。"), code="authorization")
         if not user.is_active:
-            raise serializers.ValidationError(_("ユーザーアカウントが無効です。"), code="authorization")
+            raise ValidationError(_("ユーザーアカウントが無効です。"), code="authorization")
 
         data["user"] = user
         return data
 
     def _validate_min_length(self, value, min_length=8):
-        """
-        パスワードの長さが `min_length` 以上であることを検証します。
-        """
         if len(value) < min_length:
             raise ValidationError(f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字")
+
 
 
 class UserSerializer(serializers.ModelSerializer):
