@@ -54,8 +54,8 @@ const startEditing = (item: { userId: string; userName: string; email: string })
 
 const saveEdits = async (item: { userId: string; userName: string; email: string }) => {
     showNotification.value = false;
-    message.value = await updateUserInfo(item.userId, editedUserName.value, editedEmail.value);
-    showNotification.value = true
+    message.value = await updateUserInfo({ userId: item.userId, userName: editedUserName.value, email: editedEmail.value });
+    showNotification.value = true;
     editingItem.value = null;
     emit('user-updated');
 };

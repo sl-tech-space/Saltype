@@ -21,7 +21,21 @@ export function useUser() {
    * @param password 任意
    * @returns message
    */
-  const updateUserInfo = async (userId: string, userName?: string, email?: string, password?: string): Promise<string> => {
+  const updateUserInfo = async ({
+    userId,
+    userName,
+    email,
+    password,
+    newPassword,
+    googleLoginFlg
+  }: {
+    userId: string,
+    userName?: string,
+    email?: string,
+    password?: string,
+    newPassword?: string,
+    googleLoginFlg?: boolean,
+  }): Promise<string> => {
     try {
       const response = await fetch(
         `${config.public.baseURL}/api/django/user/update/`,
@@ -32,9 +46,11 @@ export function useUser() {
           },
           body: JSON.stringify({
             user_id: userId,
-            username: userName,
-            email: email,
-            password: password,
+            ...(userName && { username: userName }),
+            ...(email && { email }),
+            ...(password && { password }),
+            ...(newPassword && { new_password: newPassword }),
+            ...(googleLoginFlg && { google_login: googleLoginFlg }),
           }),
           signal: AbortSignal.timeout(5000),
         }
@@ -42,15 +58,15 @@ export function useUser() {
 
       if (!response.ok) {
         message.value = "保存に失敗しました。";
+      } else {
+        message.value = "保存に成功しました。";
       }
-
-      message.value = "保存に成功しました。"
     } catch (e) {
-      message.value = "保存に失敗しました。"
+      message.value = "保存に失敗しました。";
     } finally {
       return message.value;
     }
-  }
+  };
 
   /**
    * ログイン中ユーザの権限をチェックする

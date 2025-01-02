@@ -33,8 +33,6 @@ export function useAdmin() {
 
             const responseData = await response.json();
 
-            // TODO デバッグ
-            console.log(responseData)
             userItems.value = responseData.data;
         } catch (e) {
             error.value = "ネットワークエラーが発生しました。接続を確認してください。";

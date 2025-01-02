@@ -7,12 +7,12 @@ import PaginatedUserList from '~/components/molecules/user/admin/PaginatedUserLi
 const { getAllUserInfo, userItems } = useAdmin();
 const userArray = ref<UserList[]>([]);
 
-const refreshUserInfo = async () => {
+const refreshAllUserInfo = async () => {
     await getAllUserInfo();
 };
 
 onMounted(async () => {
-    await refreshUserInfo();
+    await refreshAllUserInfo();
 });
 
 watch(userItems, () => {
@@ -21,7 +21,7 @@ watch(userItems, () => {
 </script>
 
 <template>
-    <PaginatedUserList :items="userArray" :items-per-page="2" @user-updated="refreshUserInfo" />
+    <PaginatedUserList :items="userArray" :items-per-page="2" @user-updated="refreshAllUserInfo" />
 </template>
 
 <style lang="scss" scoped></style>
