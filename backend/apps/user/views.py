@@ -56,6 +56,9 @@ class GetUserView(BaseUserView):
         user_id = kwargs.get("user_id")
         user = User.objects.get(user_id=user_id)
 
+        # パスワードの存在有無を確認
+        password_exists = user.has_usable_password()
+
         # 今日の最高スコアを取得
         todays_highest_score = self.get_today_highest_score(user)
         rank_name = user.rank.rank if user.rank else None
@@ -67,6 +70,7 @@ class GetUserView(BaseUserView):
             "permission": user.permission,
             "rank_name": rank_name,
             "highest_score": todays_highest_score,
+            "password_exists": password_exists,
         }
 
         return Response({"data": user_data}, status=200)
@@ -82,26 +86,30 @@ class UpdateUserView(BaseUserView):
         ユーザーの情報を更新するAPI
         """
         user_id = validated_data["user_id"]
+        google_login = validated_data.get("google_login")
         password = validated_data.get("password")
         new_password = validated_data.get("new_password")
+
 
         # ユーザーIDに基づいてユーザーを取得
         user = User.objects.get(user_id=user_id)
 
-        # データベースにパスワードが存在するか確認
-        if user.password:
-            # パスワードが提供されている場合のみ、パスワードの更新を行う
-            if password and new_password:
-                # 現在のパスワードが一致するか確認し、新しいパスワードに更新
-                if user.check_password(password):
-                    user.set_password(new_password)
-                    user.save()
+        password_updated = False
+
+        # パスワードが存在するか確認
+        if google_login:
+            # 現在のパスワードが一致するか確認し、新しいパスワードに更新
+            if user.check_password(password):
+                user.set_password(new_password)
+                user.save()
+                password_updated = True
 
         return {
             "status": "success",
             "user_id": user.user_id,
             "username": user.username,
             "email": user.email,
+            "password_updated": password_updated,
         }
 
 

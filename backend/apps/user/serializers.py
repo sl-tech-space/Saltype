@@ -17,9 +17,13 @@ class UserSerializer(serializers.Serializer):
     email = serializers.EmailField(
         max_length=254, required=False
     )  # メールアドレス（Email形式）
-    password,new_password = serializers.CharField(
+    google_login = serializers.BooleanField(required=False)
+    password = serializers.CharField(
         write_only=True, required=False, max_length=128
     )  # パスワード
+    new_password = serializers.CharField(
+        write_only=True, required=False, max_length=128
+    )  # 新しいパスワード
 
     def validate(self, attrs):
         # ユーザーIDの存在を検証
