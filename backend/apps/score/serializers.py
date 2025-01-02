@@ -3,6 +3,7 @@ from apps.common.models import Diff, Lang, User
 from apps.common.serializers import BaseSerializer
 from rest_framework.exceptions import ValidationError
 
+
 class ScoreSerializer(BaseSerializer):
     ACTION_CHOICES = ["get_average_score", "get_past_scores"]
     action = serializers.ChoiceField(choices=ACTION_CHOICES, required=False)
