@@ -88,12 +88,14 @@ class UpdateUserView(BaseUserView):
         # ユーザーIDに基づいてユーザーを取得
         user = User.objects.get(user_id=user_id)
 
-        # パスワードが提供されている場合のみ、パスワードの更新を行う
-        if password and new_password:
-            # 現在のパスワードが一致するか確認し、新しいパスワードに更新
-            if user.check_password(password):
-                user.set_password(new_password)
-                user.save()
+        # データベースにパスワードが存在するか確認
+        if user.password:
+            # パスワードが提供されている場合のみ、パスワードの更新を行う
+            if password and new_password:
+                # 現在のパスワードが一致するか確認し、新しいパスワードに更新
+                if user.check_password(password):
+                    user.set_password(new_password)
+                    user.save()
 
         return {
             "status": "success",
