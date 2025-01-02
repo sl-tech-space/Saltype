@@ -94,15 +94,21 @@ class UpdateUserView(BaseUserView):
         # ユーザーIDに基づいてユーザーを取得
         user = User.objects.get(user_id=user_id)
 
+        # ユーザー情報の更新
+        user.username = validated_data.get("username", user.username)
+        user.email = validated_data.get("email", user.email)
+
         password_updated = False
 
-        # パスワードが存在するか確認
+        # google_loginがTrueの場合のみパスワードを更新
         if google_login:
             # 現在のパスワードが一致するか確認し、新しいパスワードに更新
             if user.check_password(password):
                 user.set_password(new_password)
-                user.save()
                 password_updated = True
+
+        # 変更を保存
+        user.save()
 
         return {
             "status": "success",

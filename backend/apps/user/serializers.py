@@ -53,7 +53,8 @@ class UserSerializer(serializers.Serializer):
         # パスワードの検証
         password = attrs.get("password")
         new_password = attrs.get("new_password")
-        if password and new_password:
+        google_login = attrs.get("google_login")
+        if google_login and password and new_password:
             user = attrs.get("user")
             if user and not user.check_password(password):
                 raise ValidationError({"password": "現在のパスワードが正しくありません。"})
