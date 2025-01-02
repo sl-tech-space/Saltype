@@ -63,7 +63,7 @@ class User(AbstractUser):
         max_length=150, unique=True, validators=[username_validator]
     )
     email = models.EmailField(max_length=254, unique=True)
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=100, null=True, blank=True)
     permission = models.PositiveIntegerField(
         choices=PERMISSON.choices, default=PERMISSON.MEMBER
     )
