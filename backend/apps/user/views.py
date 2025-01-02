@@ -90,7 +90,6 @@ class UpdateUserView(BaseUserView):
         password = validated_data.get("password")
         new_password = validated_data.get("new_password")
 
-
         # ユーザーIDに基づいてユーザーを取得
         user = User.objects.get(user_id=user_id)
 
@@ -100,9 +99,13 @@ class UpdateUserView(BaseUserView):
 
         password_updated = False
 
-        # google_loginがTrueの場合のみパスワードを更新
+        # google_loginがTrueの場合、パスワードが存在しない場合に新しいパスワードに更新
         if google_login:
-            # 現在のパスワードが一致するか確認し、新しいパスワードに更新
+            if not user.password:
+                user.set_password(new_password)
+                password_updated = True
+        else:
+            # google_loginがFalseの場合、現在のパスワードが一致するか確認し、新しいパスワードに更新
             if user.check_password(password):
                 user.set_password(new_password)
                 password_updated = True
