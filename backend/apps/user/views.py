@@ -56,8 +56,8 @@ class GetUserView(BaseUserView):
         user_id = kwargs.get("user_id")
         user = User.objects.get(user_id=user_id)
 
-        # パスワードの存在有無を確認
-        password_exists = user.has_usable_password()
+        # パスワードの存在有無を確認（NULLかどうかをチェック）
+        password_exists = user.password is not None
 
         # 今日の最高スコアを取得
         todays_highest_score = self.get_today_highest_score(user)
