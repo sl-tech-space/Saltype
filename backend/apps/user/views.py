@@ -81,15 +81,19 @@ class UpdateUserView(BaseUserView):
         """
         ユーザーの情報を更新するAPI
         """
-        user = validated_data["user"]
-        user.username = validated_data.get("username", user.username)
-        user.email = validated_data.get("email", user.email)
-
-        # passwordがリクエストに含まれていれば更新
+        user_id = validated_data["user_id"]
         password = validated_data.get("password")
-        if password:
-            user.password = password
-        user.save()
+        new_password = validated_data.get("new_password")
+
+        # ユーザーIDに基づいてユーザーを取得
+        user = User.objects.get(user_id=user_id)
+
+        # パスワードが提供されている場合のみ、パスワードの更新を行う
+        if password and new_password:
+            # 現在のパスワードが一致するか確認し、新しいパスワードに更新
+            if user.check_password(password):
+                user.set_password(new_password)
+                user.save()
 
         return {
             "status": "success",
