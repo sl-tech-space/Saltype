@@ -12,24 +12,34 @@ const props = defineProps({
 </script>
 
 <template>
-    <BaseCard width="xl" height="xl" class="user-info">
-        <template #card-header>
-            <div class="header-content">
-                <Title size="small" text="ユーザ情報" class="card-text" />
-            </div>
-        </template>
-        <template #card-body>
-            <div class="body-content">
-                <div class="body-content-container">
-                    <Text size="large">ユーザ名&nbsp;:&nbsp;{{ props.userName }}</Text>
-                    <Text size="large">メールアドレス&nbsp;:&nbsp;{{ props.email }}</Text>
+    <div class="component-root">
+        <BaseCard width="xl" height="xl" class="user-info">
+            <template #card-header>
+                <div class="header-content">
+                    <Title size="small" text="ユーザ情報" class="card-text" />
                 </div>
-            </div>
-        </template>
-    </BaseCard>
+            </template>
+            <template #card-body>
+                <div class="body-content">
+                    <div class="body-content-container">
+                        <Text size="large">ユーザ名&nbsp;:&nbsp;{{ props.userName }}</Text>
+                        <Text size="large">メールアドレス&nbsp;:&nbsp;{{ props.email }}</Text>
+                    </div>
+                </div>
+            </template>
+        </BaseCard>
+    </div>
 </template>
 
 <style lang="scss" scoped>
+.component-root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
 .header-content {
     margin-left: 4%;
 }

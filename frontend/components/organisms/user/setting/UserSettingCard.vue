@@ -57,7 +57,6 @@ onMounted(async () => {
 
     .left-card {
         flex: 6;
-        width: 50%;
         display: flex;
         justify-content: flex-end;
         align-items: center;

@@ -9,6 +9,7 @@ import * as yup from "yup";
 import EyeRegular from "~/assets/images/login/eye-regular.svg";
 import EyeSlashRegular from "~/assets/images/login/eye-slash-regular.svg";
 import Title from '~/components/atoms/texts/Title.vue';
+import Text from '~/components/atoms/texts/Text.vue';
 import Image from '~/components/atoms/imgs/Image.vue';
 import { useUser } from '~/composables/user/useUser';
 
@@ -91,6 +92,7 @@ const handleSubmit = async () => {
                                 </span>
                             </template>
                         </Field>
+                        <Text v-else size="large" text="現在のパスワード&nbsp;:&nbsp;未設定" class="password-none" />
                         <Field v-model="newPassword" name="newPassword" class="field">
                             <template #input="{ field }">
                                 <span>
@@ -122,6 +124,9 @@ const handleSubmit = async () => {
 .component-root {
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
 }
 
 .header-content {
@@ -155,5 +160,9 @@ const handleSubmit = async () => {
             justify-content: space-around;
         }
     }
+}
+
+.password-none {
+    margin-bottom: 5%;
 }
 </style>

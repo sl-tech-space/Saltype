@@ -72,6 +72,9 @@ const handleSubmit = async () => {
 .component-root {
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
 }
 
 .header-content {

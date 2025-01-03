@@ -124,7 +124,9 @@ const cancelDelete = () => {
             </li>
         </ul>
     </div>
-    <BasePagination :current-page="currentPage" :total-pages="totalPages" @page-change="changePage" />
+    <div class="pagination-container">
+        <BasePagination :current-page="currentPage" :total-pages="totalPages" @page-change="changePage" />
+    </div>
     <BaseNotification :message="message" :content="`ユーザ名：${editedUserName}\nメールアドレス：${editedEmail}`"
         :show="showNotification" class="u-pre-wrap" />
     <ConfirmModal :show='showConfirmModal' :message="`${deleteItemName}を削除しますか？`" @confirm='deleteUser'
@@ -151,8 +153,8 @@ const cancelDelete = () => {
     width: 100%;
     border: 1px solid $main-color;
     border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 3px;
+    margin-bottom: 5px;
 }
 
 .item-text {
@@ -165,6 +167,17 @@ const cancelDelete = () => {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+}
+
+.pagination-container {
+    position: fixed;
+    bottom: 3%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    z-index: 10;
 }
 
 .edit-input {
