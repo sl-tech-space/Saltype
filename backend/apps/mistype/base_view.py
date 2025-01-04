@@ -12,7 +12,7 @@ class BaseMistypeView(APIView):
     サブクラスで具体的な処理を実装する必要があります。
     """
 
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # 誰でもアクセス可能なパーミッションを設定
 
     @HandleExceptions()
     def post(self, request, *args, **kwargs):

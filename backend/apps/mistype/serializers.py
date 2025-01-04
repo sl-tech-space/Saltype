@@ -5,14 +5,27 @@ from rest_framework.exceptions import ValidationError
 
 
 class MistypeSerializer(BaseSerializer):
-    user_id = serializers.UUIDField()
+    """
+    ユーザーのミスタイプデータを処理するためのシリアライザクラス。
+    ユーザーID、ミスタイプの詳細、制限値のバリデーションを行います。
+    """
+
+    user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
     mistypes = serializers.ListField(
         child=serializers.DictField(), required=False, allow_empty=True
-    )
-    limit = serializers.IntegerField(required=False)
+    )  # ミスタイプのリスト
+    limit = serializers.IntegerField(required=False)  # 制限値
 
     def validate(self, attrs):
-        # ユーザーの存在を確認し、オブジェクトを追加
+        """
+        入力データに対してバリデーションを実行します。
+        ユーザーIDの存在確認、ミスタイプの詳細検証、制限値の確認を行います。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+        Returns:
+            dict: バリデーションを通過したデータ。
+        """
         user_id = attrs.get("user_id")
         if user_id:
             try:
@@ -25,7 +38,10 @@ class MistypeSerializer(BaseSerializer):
             miss_char = item.get("miss_char")
             if not miss_char.isalpha():
                 raise ValidationError("miss_charはアルファベットでなければなりません。")
-            if not isinstance(item.get("miss_count"), int) or item.get("miss_count") < 0:
+            if (
+                not isinstance(item.get("miss_count"), int)
+                or item.get("miss_count") < 0
+            ):
                 raise ValidationError("miss_countは正の整数でなければなりません。")
 
         limit = attrs.get("limit")

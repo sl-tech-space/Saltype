@@ -8,7 +8,7 @@ from .serializers import ScoreSerializer
 
 class BaseScoreView(APIView):
     """
-    スコアに関連する操作のための基底クラス。
+    スコアに関連する操作を共通化するための基底クラス。
     スコア関連のリクエストを処理する共通ロジックを提供します。
     """
 

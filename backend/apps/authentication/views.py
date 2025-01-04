@@ -1,86 +1,55 @@
 from apps.common.models import User
-from apps.common.util.exception_handler import HandleExceptions
 from django.db import transaction
-from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-
-from .serializers import (
-    GoogleAuthSerializer,
-    UserLoginSerializer,
-    UserSerializer,
-)
+from .base_view import BaseAuthView
+from django.conf import settings
 
 
-class LoginView(APIView):
+class LoginView(BaseAuthView):
     """
     ユーザーがオリジナルフォームからログインするためのAPIビュークラス。
     """
 
     permission_classes = [AllowAny]
 
-    @HandleExceptions()
-    def post(self, request, *args, **kwargs):
+    def handle_request(self, validated_data):
         """
-        POSTメソッドでログイン処理を行う。
+        ログインリクエストを処理します。
+        バリデーションを通過したデータを用いてユーザーのトークンを取得または作成し、認証結果を返します。
 
         Args:
-            request: クライアントからのリクエストオブジェクト。
-
+            validated_data (dict): バリデーションを通過したリクエストデータ。
         Returns:
-            Response: 認証結果を含むHTTPレスポンス。
+            dict: 認証結果を含むレスポンスデータ。
         """
-        serializer = UserLoginSerializer(
-            data=request.data, context={"request": request}
-        )
-        serializer.is_valid(raise_exception=True)
-
-        user = serializer.validated_data["user"]
+        user = validated_data["user"]
         token = self._get_or_create_token(user)
 
-        return self._format_response(user, token, status.HTTP_200_OK)
+        return {
+            "status": "success",
+            "user_id": user.user_id,
+            "email": user.email,
+            "username": user.username,
+            "token": token.key,
+        }
 
     def _get_or_create_token(self, user):
         """
-        ユーザーのトークンを取得または新規作成。
+        ユーザーのトークンを取得または新規作成します。
 
         Args:
-            user: 認証されたユーザーオブジェクト。
-
+            user (User): 認証されたユーザーオブジェクト。
         Returns:
             Token: ユーザーのトークンオブジェクト。
         """
         token, _ = Token.objects.get_or_create(user=user)
         return token
 
-    def _format_response(self, user, token, http_status):
-        """
-        レスポンスデータをフォーマット。
 
-        Args:
-            user: ユーザーオブジェクト。
-            token: 認証トークン。
-            http_status: HTTPステータスコード。
-
-        Returns:
-            Response: フォーマットされたHTTPレスポンスオブジェクト。
-        """
-        return Response(
-            {
-                "status": "success",
-                "user_id": user.user_id,
-                "email": user.email,
-                "username": user.username,
-                "token": token.key,
-            },
-            status=http_status,
-        )
-
-
-class CheckTokenView(APIView):
+class CheckTokenView(BaseAuthView):
     """
     トークンを使用した自動ログインAPIビュークラス。
     """
@@ -90,53 +59,66 @@ class CheckTokenView(APIView):
 
     def get(self, request):
         """
-        GETメソッドでユーザー情報を返す。
+        GETメソッドでユーザー情報を返します。
+        リクエストされたユーザー情報を取得し、レスポンスとして返します。
 
         Args:
-            request: クライアントからのリクエストオブジェクト。
-
+            request (Request): クライアントからのリクエストオブジェクト。
         Returns:
             Response: ユーザー情報を含むHTTPレスポンス。
         """
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
+        user = request.user
+        user_data = {
+            "user_id": user.user_id,
+            "username": user.username,
+            "email": user.email,
+        }
+        return Response(user_data)
 
 
-class GoogleAuthView(APIView):
+class GoogleAuthView(BaseAuthView):
     """
     Google認証APIビュークラス。
     """
 
     permission_classes = [AllowAny]
 
-    @HandleExceptions()
-    def post(self, request):
+    def handle_request(self, validated_data):
         """
-        POSTメソッドでGoogle認証処理を行う。
+        Google認証リクエストを処理します。
+        バリデーションを通過したデータを用いてユーザーを作成または更新し、トークンを取得して認証結果を返します。
 
         Args:
-            request: クライアントからのリクエストオブジェクト。
-
+            validated_data (dict): バリデーションを通過したリクエストデータ。
         Returns:
-            Response: 認証結果を含むHTTPレスポンス。
+            dict: 認証結果を含むレスポンスデータ。
         """
-        serializer = GoogleAuthSerializer(data=request.data)
+        user = self.create_or_update_user(validated_data)
+        token, _ = Token.objects.get_or_create(user=user)
 
-        if serializer.is_valid():
-            user = self._create_or_update_user(serializer.validated_data)
-            token, _ = Token.objects.get_or_create(user=user)
-            return self._format_response(user, token, status.HTTP_201_CREATED)
+        admin_emails = settings.ADMIN_EMAILS
+        is_admin = user.email in admin_emails
+        if is_admin:
+            user.permission = 0
+            user.save()
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return {
+            "status": "success",
+            "user_id": user.user_id,
+            "email": user.email,
+            "username": user.username,
+            "token": token.key,
+            "is_admin": is_admin,
+        }
 
     @transaction.atomic
-    def _create_or_update_user(self, validated_data):
+    def create_or_update_user(self, validated_data):
         """
-        Google認証データを使用してユーザーを作成または更新。
+        Google認証データを使用してユーザーを作成または更新します。
+        ユーザーを取得または作成し、必要に応じて更新します。
 
         Args:
-            validated_data: 検証済みデータ。
-
+            validated_data (dict): バリデーションを通過したリクエストデータ。
         Returns:
             User: 作成または更新されたユーザーオブジェクト。
         """
@@ -149,26 +131,3 @@ class GoogleAuthView(APIView):
             user.save()
 
         return user
-
-    def _format_response(self, user, token, http_status):
-        """
-        レスポンスデータをフォーマット。
-
-        Args:
-            user: ユーザーオブジェクト。
-            token: 認証トークン。
-            http_status: HTTPステータスコード。
-
-        Returns:
-            Response: フォーマットされたHTTPレスポンスオブジェクト。
-        """
-        return Response(
-            {
-                "status": "success",
-                "user_id": user.user_id,
-                "email": user.email,
-                "username": user.username,
-                "token": token.key,
-            },
-            status=http_status,
-        )

@@ -17,7 +17,7 @@ class UserSerializer(serializers.Serializer):
     email = serializers.EmailField(
         max_length=254, required=False
     )  # メールアドレス（Email形式）
-    google_login = serializers.BooleanField(required=False)
+    google_login = serializers.BooleanField(required=False)  # Googleログインフラグ
     password = serializers.CharField(
         write_only=True, required=False, max_length=128
     )  # パスワード
@@ -26,6 +26,15 @@ class UserSerializer(serializers.Serializer):
     )  # 新しいパスワード
 
     def validate(self, attrs):
+        """
+        入力データに対してバリデーションを実行します。
+        ユーザーIDの存在確認、ユーザー名とメールアドレスの重複検証、パスワードの検証を行います。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+        Returns:
+            dict: バリデーションを通過したデータ。
+        """
         # ユーザーIDの存在を検証
         user_id = attrs.get("user_id")
         if user_id:
@@ -57,8 +66,14 @@ class UserSerializer(serializers.Serializer):
         if google_login and password and new_password:
             user = attrs.get("user")
             if user and not user.check_password(password):
-                raise ValidationError({"password": "現在のパスワードが正しくありません。"})
+                raise ValidationError(
+                    {"password": "現在のパスワードが正しくありません。"}
+                )
             if password == new_password:
-                raise ValidationError({"new_password": "新しいパスワードは現在のパスワードと異なる必要があります。"})
+                raise ValidationError(
+                    {
+                        "new_password": "新しいパスワードは現在のパスワードと異なる必要があります。"
+                    }
+                )
 
         return attrs
