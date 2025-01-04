@@ -279,11 +279,15 @@ class UpdateUserRankView(BaseScoreView):
         Returns:
             bool: 最高スコアの場合はTrue、それ以外はFalse。
         """
-        highest_score = Score.objects.filter(
+        highest_score_record = Score.objects.filter(
             user_id=user_id,
             lang_id=lang_id,
-            diff_id=diff_id,
-        ).aggregate(Max("score"))["score__max"]
+            diff_id=diff_id
+        ).order_by('-score').first()
+
+        highest_score = highest_score_record.score if highest_score_record else None
+
+        print(highest_score, score)
 
         return highest_score is None or score > highest_score
 
