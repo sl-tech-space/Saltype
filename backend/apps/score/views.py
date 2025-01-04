@@ -241,7 +241,7 @@ class UpdateUserRankView(BaseScoreView):
         )
 
         if is_highest:
-            self.update_user_rank(user.user_id, score,rank_name)
+            self.update_user_rank(user.user_id, score, rank_name)
 
         return {
             "status": "success",
@@ -279,20 +279,16 @@ class UpdateUserRankView(BaseScoreView):
         Returns:
             bool: 最高スコアの場合はTrue、それ以外はFalse。
         """
-        highest_score_record = Score.objects.filter(
+        highest_score = Score.objects.filter(
             user_id=user_id,
             lang_id=lang_id,
             diff_id=diff_id
-        ).order_by('-score').first()
-
-        highest_score = highest_score_record.score if highest_score_record else None
-
-        print(highest_score, score)
+        ).order_by('-score').values_list('score', flat=True).first()
 
         return highest_score is None or score > highest_score
 
     @transaction.atomic
-    def update_user_rank(self, user_id: int, score: int, rank_name:str) -> None:
+    def update_user_rank(self, user_id: int, rank_name: str) -> None:
         """
         ユーザーのランクを更新します。
         新しいランクを決定し、ユーザーのランクIDを更新します。
@@ -302,7 +298,6 @@ class UpdateUserRankView(BaseScoreView):
             user_id (int): ユーザーID。
         """
         user = User.objects.select_for_update().get(user_id=user_id)
-        rank_name = self.determine_rank(score)
         rank = Rank.objects.get(rank=rank_name)
         user.rank_id = rank.rank_id
         user.save()
