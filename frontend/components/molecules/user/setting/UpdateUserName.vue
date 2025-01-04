@@ -75,6 +75,7 @@ const handleSubmit = async () => {
     display: flex;
     justify-content: flex-end;
     margin-left: auto;
+    align-items: center;
 }
 
 .header-content {

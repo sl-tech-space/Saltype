@@ -27,14 +27,14 @@ export function useUser() {
     email,
     password,
     newPassword,
-    googleLoginFlg
+    googleLoginFlg,
   }: {
-    userId: string,
-    userName?: string,
-    email?: string,
-    password?: string,
-    newPassword?: string,
-    googleLoginFlg?: boolean,
+    userId: string;
+    userName?: string;
+    email?: string;
+    password?: string;
+    newPassword?: string;
+    googleLoginFlg?: boolean;
   }): Promise<string> => {
     try {
       const response = await fetch(
@@ -81,19 +81,16 @@ export function useUser() {
         return;
       }
 
-      const response = await fetch(
-        "/api/nuxt/check-admin-permission/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user.value.user_id,
-          }),
-          signal: AbortSignal.timeout(5000),
-        }
-      );
+      const response = await fetch("/api/nuxt/check-admin-permission/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.value.user_id,
+        }),
+        signal: AbortSignal.timeout(5000),
+      });
 
       if (!response.ok) {
         error.value = "ミスタイプ頻度の取得に失敗しました";

@@ -63,6 +63,7 @@ export default defineNuxtConfig({
     cryptoKey: crypto.randomBytes(32).toString("hex"),
     public: {
       baseURL: "http://localhost:8000", //Django REST Framework接続
+      serverSideBaseURL: "http://django:8000", //NuxtサーバサイドからDjango REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
