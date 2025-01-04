@@ -9,7 +9,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
 const router = useRouter();
 const selectedLanguageText = ref("");
 const selectedDifficultyText = ref("");
@@ -36,7 +35,7 @@ onMounted(() => {
     <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
-                <Title size="small" text="リトライ" class="card-text" />
+                <Text size="large" text="リトライ" class="card-text" />
             </div>
         </template>
         <template #card-body>
@@ -50,8 +49,9 @@ onMounted(() => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="スタート" class="start-button" :disabled="isDisabled" @click="handleStart" />
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none"
+                    :is-rounded="true" button-text="スタート" class="start-button" :disabled="isDisabled"
+                    @click="handleStart" />
             </div>
         </template>
     </BaseCard>
@@ -64,6 +64,7 @@ onMounted(() => {
     }
 
     .body-content {
+        margin-top: 10px;
         @include horizontal-centered-flex;
     }
 

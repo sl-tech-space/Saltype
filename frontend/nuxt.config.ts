@@ -16,7 +16,8 @@ export default defineNuxtConfig({
     "/ranking": { isr: 300 }, // ISR 5minutes
     "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
-    "/user/setting": { ssr: false } // CSR
+    "/user/setting": { ssr: false }, // CSR
+    "/user/admin": { ssr: false }, // CSR
   },
   app: {
     head: {
@@ -27,12 +28,29 @@ export default defineNuxtConfig({
           defer: true,
         },
       ],
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
       meta: [
-        { name: 'description', content: 'This is a typing practice app.' },
-        { name: 'keywords', content: 'typing, practice, japanese, english, ranking' },
-      ]
+        {
+          name: "description",
+          content:
+            "Welcome to Saltype!! This is a typing practice app. | Saltypeへようこそ!! 日本語、英語でタイピングに挑戦!! ランキングで競い合おう",
+        },
+        {
+          name: "keywords",
+          content:
+            "typing, practice, japanese, english, ranking | タイピング, タイピング練習, 日本語, 英語, ランキング, 競争",
+        },
+        { property: "og:title", content: "Saltype" },
+        {
+          property: "og:description",
+          content: "日本語と英語でタイピングスキルを向上させよう!!",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+        // { name: "twitter:image", content: "https://ドメイン/assets/images/common/saltype-icon.png" },
+      ],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
   },
   runtimeConfig: {
@@ -42,8 +60,7 @@ export default defineNuxtConfig({
       sameSite: "lax",
       httpOnly: true,
     },
-    cryptoKey:
-      crypto.randomBytes(32).toString("hex"),
+    cryptoKey: crypto.randomBytes(32).toString("hex"),
     public: {
       baseURL: "http://localhost:8000", //Django REST Framework接続
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,

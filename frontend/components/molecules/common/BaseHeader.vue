@@ -33,7 +33,7 @@ const onBackClick = () => {
             </div>
             <div class="header-right">
                 <Button v-if="props.title !== 'ホーム'" border="sub-color" width="large" height="medium" background="none"
-                    :rounded="true" button-text="戻る" @click="onBackClick" />
+                    :is-rounded="true" button-text="戻る" @click="onBackClick" />
                 <slot v-else name="header-right" />
             </div>
         </div>
@@ -45,9 +45,7 @@ const onBackClick = () => {
 header {
     width: 100%;
     height: 25vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    @include vertical-centered-flex;
 
     .header-container {
         display: flex;
@@ -59,10 +57,9 @@ header {
     .header-left,
     .header-center,
     .header-right {
+        @include horizontal-centered-flex;
         flex: 1;
-        display: flex;
         align-items: center;
-        justify-content: center;
     }
 }
 </style>

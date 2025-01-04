@@ -5,10 +5,10 @@ import SaltypeIcon from '~/assets/images/common/saltype-icon.png'
 </script>
 
 <template>
-    <div class="brand">
+    <header class="brand">
         <Icon :src="SaltypeIcon" alt="Saltypeアイコン" width="large" height="large" />
         <Title text="Saltype" size="large" />
-    </div>
+    </header>
 </template>
 
 <style lang="scss" scoped>

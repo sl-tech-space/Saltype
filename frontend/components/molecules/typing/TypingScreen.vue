@@ -1,32 +1,39 @@
 <script setup lang="ts">
 import { useTyping } from "~/composables/typing/useTyping";
+import { useErrorNotification } from "~/composables/common/useError";
 import Text from "~/components/atoms/texts/Text.vue";
 import Title from "~/components/atoms/texts/Title.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
 import Loading from "~/components/molecules/common/ui/Loading.vue";
+import BaseNotification from "../common/BaseNotification.vue";
 import { useEventListener } from "@vueuse/core";
 
 const route = useRoute();
 const splitedId = splitId(route.params.id as string);
 const language = ref(splitedId.left.toString());
 const difficultyLevel = ref(splitedId.right.toString());
-let isLoading = ref(false);
+
+type KeyPressEvent = KeyboardEvent & { result: "correct" | "incorrect" };
 
 const {
     currentSentence,
     coloredText,
-    isTypingStarted,
     countdown,
+    isTypingStarted,
     isCountdownActive,
+    isLoading,
+    error,
     handleKeyPress,
     finishTyping,
     initialize,
 } = useTyping(language.value, difficultyLevel.value);
-
+const { showErrorNotification } = useErrorNotification(error);
 const { $bus } = useNuxtApp();
 
-type KeyPressEvent = KeyboardEvent & { result: "correct" | "incorrect" };
-
+/**
+ * キー入力時の動作
+ * @param event 
+ */
 const emitKeyPress = (event: KeyPressEvent) => {
     const result = handleKeyPress(event);
     $bus.$emit('key-press', { code: event.code, result: result } as KeyPressEvent);
@@ -76,6 +83,7 @@ onUnmounted(() => {
         <Separator color="sub-color" width="medium" />
     </main>
     <Loading :is-loading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

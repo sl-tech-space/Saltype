@@ -5,7 +5,7 @@ import ContactForm from '~/components/molecules/contact/ContactForm.vue';
 </script>
 
 <template>
-    <div class="contact-card">
+    <main class="contact-card">
         <BaseCard width="large" height="xl" :footer-sep="false" :is-footer="false">
             <template #card-header>
                 <div class="header-content">
@@ -18,7 +18,7 @@ import ContactForm from '~/components/molecules/contact/ContactForm.vue';
                 </div>
             </template>
         </BaseCard>
-    </div>
+    </main>
 </template>
 
 <style lang="scss" scoped>

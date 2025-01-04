@@ -22,7 +22,7 @@ const props = defineProps<Props>();
     <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
-                <Title size="small" text="ランク" class="card-text" />
+                <Text size="large" text="ランク" class="card-text" />
             </div>
         </template>
         <template #card-body>
@@ -32,8 +32,8 @@ const props = defineProps<Props>();
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="ランク詳細" @click="handleOpenModal" />
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none"
+                    :is-rounded="true" button-text="ランク詳細" @click="handleOpenModal" />
             </div>
         </template>
     </BaseCard>
@@ -60,6 +60,7 @@ const props = defineProps<Props>();
     }
 
     .body-content {
+        margin-top: 10px;
         @include horizontal-centered-flex;
     }
 

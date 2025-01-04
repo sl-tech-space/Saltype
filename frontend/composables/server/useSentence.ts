@@ -9,7 +9,7 @@ export function useSentence(
   languageCode: string,
   difficultyLevelCode: string,
   count: number = 300
-) {
+): { sentences: () => Promise<Array<[string, string]>> } {
   const convertedLanguage = convertNumberToEnglishLanguageName(languageCode);
   const convertedDifficultyLevel =
     convertNumberToEnglishDifficultyLevelName(difficultyLevelCode);
@@ -26,6 +26,7 @@ export function useSentence(
           difficultyLevel: convertedDifficultyLevel,
           count: count,
         }),
+        signal: AbortSignal.timeout(5000),
       });
 
       if (!response.ok) {
@@ -36,8 +37,7 @@ export function useSentence(
 
       return data;
     } catch (e) {
-      console.error("ネットワークエラーまたはその他例外が発生しました");
-      return null;
+      throw new Error("ネットワークエラーまたはその他例外が発生しました");
     }
   };
 

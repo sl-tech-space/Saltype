@@ -9,28 +9,20 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const { getDifficultyName } = useLanguageAndDifficulty();
-
 const englishDifficultyIds = ['2-1', '2-2', '2-3'];
 
-const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] => {
-    if (Array.isArray(obj)) {
-        return obj;
-    }
-    return Object.values(obj);
-};
+const { getDifficultyName } = useLanguageAndDifficulty();
 </script>
 
 <template>
-    <div class="ranking-cards-container">
+    <main class="ranking-cards-container">
         <div class="ranking-cards">
             <BaseRankingCard v-for="id in englishDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
-                :rankings="objectToArray(props.rankingsByCombination[id] || [])" width="medium" height="full"
+                :rankings="objectToRankingItem(props.rankingsByCombination[id] || [])" width="medium" height="full"
                 :limit=rankingDataLimit :is-footer="true" :id="id" :is-margin="true" />
         </div>
-    </div>
+    </main>
 </template>
 
 <style lang="scss" scoped>

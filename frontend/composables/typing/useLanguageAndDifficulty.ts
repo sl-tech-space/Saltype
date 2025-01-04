@@ -30,7 +30,7 @@ export function useLanguageAndDifficulty() {
   /**
    * 言語一覧取得
    */
-  const getLanguages = () =>
+  const getLanguages = (): { id: number; name: "日本語" | "英語" }[] =>
     Object.entries(languageNames).map(([id, name]) => ({
       id: Number(id),
       name,
@@ -39,7 +39,10 @@ export function useLanguageAndDifficulty() {
   /**
    * 難易度一覧取得
    */
-  const getDifficulties = () =>
+  const getDifficulties = (): {
+    id: number;
+    name: "イージー" | "ノーマル" | "ハード";
+  }[] =>
     Object.entries(difficultyNames).map(([id, name]) => ({
       id: Number(id),
       name,
