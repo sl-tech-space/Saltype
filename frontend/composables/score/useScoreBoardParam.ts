@@ -28,24 +28,14 @@ export function useScoreBoardParam() {
       await waitForUser();
 
       if (!user.value) {
-        error.value = "ユーザ情報が存在しません";
-        return;
+        throw new Error("ユーザ情報が存在しません");
       }
 
-      const rankingData = await _getRanking(
-        selectedLanguage,
-        selectedDifficulty
-      );
-
-      const averageData = await _getAverageScore(
-        selectedLanguage,
-        selectedDifficulty
-      );
-
-      const userRankData = await _getUserRank(
-        selectedLanguage,
-        selectedDifficulty
-      );
+      const [rankingData, averageData, userRankData] = await Promise.all([
+        _getRanking(selectedLanguage, selectedDifficulty),
+        _getAverageScore(selectedLanguage, selectedDifficulty),
+        _getUserRank(),
+      ]);
 
       scoreBoardData.value = {
         is_high_score: userRankData.is_highest,
@@ -152,13 +142,10 @@ export function useScoreBoardParam() {
    * @param selectedDifficulty
    * @returns Promise
    */
-  const _getUserRank = async (
-    selectedLanguage: number,
-    selectedDifficulty: number
-  ) => {
+  const _getUserRank = async () => {
     try {
       const response = await fetch(
-        `${config.public.baseURL}/api/django/score/update/userrank/`,
+        `${config.public.baseURL}/api/django/score/userrank/`,
         {
           method: "POST",
           headers: {
@@ -166,9 +153,6 @@ export function useScoreBoardParam() {
           },
           body: JSON.stringify({
             user_id: user.value?.user_id,
-            lang_id: Number(selectedLanguage),
-            diff_id: Number(selectedDifficulty),
-            score: Number(localStorage.getItem("score")),
           }),
           signal: AbortSignal.timeout(5000),
         }
@@ -190,6 +174,6 @@ export function useScoreBoardParam() {
   return {
     getParam,
     isLoading,
-    error
+    error,
   };
 }
