@@ -10,12 +10,12 @@ class InsertScoreView(BaseScoreView):
     スコアの計算、データベースへの挿入、最高スコアの場合はランクの更新を行います。
     """
     RANKS = {
-        1000: "社長",
-        900: "取締役",
+        900: "社長",
+        800: "取締役",
         700: "部長",
-        500: "課長",
-        300: "係長",
-        100: "主任",
+        600: "課長",
+        500: "係長",
+        400: "主任",
         0: "メンバー",
     }
 
@@ -48,10 +48,10 @@ class InsertScoreView(BaseScoreView):
 
         # 最高ならランク更新
         if is_highest:
-            rank_name = self.determine_rank(calculated_score)
+            rank_name = self.determine_rank(typing_count)
             self.update_user_rank(user.user_id, rank_name)
         else:
-            rank_name = self.determine_rank(calculated_score)
+            rank_name = self.determine_rank(typing_count)
 
         # スコアをインサート
         score_data = self.insert_score(
@@ -108,19 +108,19 @@ class InsertScoreView(BaseScoreView):
         """
         return round(typing_count * self.SCORE_MULTIPLIER * accuracy)
 
-    def determine_rank(self, score: int) -> str:
+    def determine_rank(self, typing_count: int) -> str:
         """
-        スコアに基づいて適切なランクを決定します。
-        ランクはスコア順にソートされ、指定されたスコア以上の最初のランクが選ばれます。
+        タイピング数に基づいて適切なランクを決定します。
+        ランクはタイピング数順にソートされ、指定されたタイピング数以上の最初のランクが選ばれます。
 
         Args:
-            score (int): スコア。
+            typing_count (int): タイピング数。
 
         Returns:
             str: 決定されたランク名。
         """
         for threshold, rank in sorted(self.RANKS.items(), reverse=True):
-            if score >= threshold:
+            if typing_count >= threshold:
                 return rank
         return "メンバー"
 
