@@ -300,5 +300,5 @@ class UpdateUserRankView(BaseScoreView):
         user = User.objects.select_for_update().get(user_id=user_id)
         rank_name = self.determine_rank(score)
         rank = Rank.objects.get(rank=rank_name)
-        user.rank = rank
+        user.rank_id = rank.rank_id
         user.save()
