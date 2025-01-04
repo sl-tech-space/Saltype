@@ -42,7 +42,7 @@ class InsertMistypesView(BaseMistypeView):
         Returns:
             List[Dict[str, any]]: 挿入または更新されたミスタイプデータのリスト。
         """
-        return [self.upsert_mistype(user_id, data) for data in mistypes_data]
+        return [self.upsert_mistype(user_id, data) for data in mistypes_data if data.get("miss_char").isalpha()]
 
     def upsert_mistype(self, user_id: int, data: Dict[str, any]) -> Dict[str, any]:
         """

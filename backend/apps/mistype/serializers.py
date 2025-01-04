@@ -35,9 +35,6 @@ class MistypeSerializer(BaseSerializer):
 
         mistypes = attrs.get("mistypes", [])
         for item in mistypes:
-            miss_char = item.get("miss_char")
-            if not miss_char.isalpha():
-                raise ValidationError("miss_charはアルファベットでなければなりません。")
             if (
                 not isinstance(item.get("miss_count"), int)
                 or item.get("miss_count") < 0
