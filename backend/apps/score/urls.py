@@ -4,12 +4,12 @@ from .views import (
     InsertScoreView,
     GetScoreView,
     GetUserRankingView,
-    UpdateUserRankView,
+    GetUserRankView,
 )
 
 urlpatterns = [
     path("insert/", InsertScoreView.as_view(), name="insert_score"),
     path("", GetScoreView.as_view(), name="get_score"),
     path("userranking/", GetUserRankingView.as_view(), name="get_user_ranking"),
-    path("update/userrank/", UpdateUserRankView.as_view(), name="update_user_rank"),
+    path("userrank/", GetUserRankView.as_view(), name="get_user_rank"),
 ]

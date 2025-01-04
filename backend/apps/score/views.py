@@ -6,21 +6,31 @@ from .base_view import BaseScoreView
 
 class InsertScoreView(BaseScoreView):
     """
-    ユーザーのスコアを挿入するためのAPIビュークラス。
-    スコアの計算、データベースへの挿入を行います。
+    ユーザーのスコアを挿入または更新するためのAPIビュークラス。
+    スコアの計算、データベースへの挿入、最高スコアの場合はランクの更新を行います。
     """
+    RANKS = {
+        1000: "社長",
+        900: "取締役",
+        700: "部長",
+        500: "課長",
+        300: "係長",
+        100: "主任",
+        0: "メンバー",
+    }
 
     SCORE_MULTIPLIER = 10  # スコア計算時の乗数
 
     def handle_request(self, validated_data: dict):
         """
-        スコアを挿入するリクエストを処理します。
+        スコアを挿入または更新するリクエストを処理します。
         引数として提供されたデータに基づいてスコアを計算し、データベースに保存します。
+        最高スコアであればランクを更新します。
 
         Args:
             validated_data (dict): バリデーションを通過したリクエストデータ。
         Returns:
-            dict: スコア挿入結果を含むレスポンスデータ。
+            dict: スコア挿入または更新結果を含むレスポンスデータ。
         """
         user = validated_data["user"]
         lang = validated_data["lang"]
@@ -28,8 +38,22 @@ class InsertScoreView(BaseScoreView):
         typing_count = validated_data["typing_count"]
         accuracy = validated_data["accuracy"]
 
+        # スコアを計算
         calculated_score = self.calculate_score(typing_count, accuracy)
 
+        # 最高スコア判定
+        is_highest = self.is_highest_score(
+            user.user_id, lang.lang_id, diff.diff_id, calculated_score
+        )
+
+        # 最高ならランク更新
+        if is_highest:
+            rank_name = self.determine_rank(calculated_score)
+            self.update_user_rank(user.user_id, rank_name)
+        else:
+            rank_name = self.determine_rank(calculated_score)
+
+        # スコアをインサート
         score_data = self.insert_score(
             user.user_id,
             lang.lang_id,
@@ -43,6 +67,8 @@ class InsertScoreView(BaseScoreView):
             "lang_id": score_data.lang_id,
             "diff_id": score_data.diff_id,
             "score": calculated_score,
+            "is_highest": is_highest,
+            "rank_name": rank_name,
         }
 
     @transaction.atomic
@@ -81,6 +107,59 @@ class InsertScoreView(BaseScoreView):
             int: 計算されたスコア。
         """
         return round(typing_count * self.SCORE_MULTIPLIER * accuracy)
+
+    def determine_rank(self, score: int) -> str:
+        """
+        スコアに基づいて適切なランクを決定します。
+        ランクはスコア順にソートされ、指定されたスコア以上の最初のランクが選ばれます。
+
+        Args:
+            score (int): スコア。
+
+        Returns:
+            str: 決定されたランク名。
+        """
+        for threshold, rank in sorted(self.RANKS.items(), reverse=True):
+            if score >= threshold:
+                return rank
+        return "メンバー"
+
+    def is_highest_score(
+        self, user_id: int, lang_id: int, diff_id: int, score: int
+    ) -> bool:
+        """
+        ユーザーの最高スコアを取得し、提供されたスコアと比較します。
+
+        Args:
+            score (int): 提供されたスコア。
+            user_id (int): ユーザーID。
+            lang_id (int): 言語ID。
+            diff_id (int): 難易度ID。
+        Returns:
+            bool: 最高スコアの場合はTrue、それ以外はFalse。
+        """
+        highest_score = Score.objects.filter(
+            user_id=user_id,
+            lang_id=lang_id,
+            diff_id=diff_id
+        ).order_by('-score').values_list('score', flat=True).first()
+
+        return highest_score is None or score > highest_score
+
+    @transaction.atomic
+    def update_user_rank(self, user_id: int, rank_name: str) -> None:
+        """
+        ユーザーのランクを更新します。
+        新しいランクを決定し、ユーザーのランクIDを更新します。
+
+        Args:
+            score (int): ユーザーのスコア。
+            user_id (int): ユーザーID。
+        """
+        user = User.objects.select_for_update().get(user_id=user_id)
+        rank = Rank.objects.get(rank=rank_name)
+        user.rank_id = rank.rank_id
+        user.save()
 
 
 class GetScoreView(BaseScoreView):
@@ -204,100 +283,23 @@ class GetUserRankingView(BaseScoreView):
         return higher_score_count + 1
 
 
-class UpdateUserRankView(BaseScoreView):
+class GetUserRankView(BaseScoreView):
     """
-    スコアに基づいてランクを決定し、ユーザーのランクを更新するAPIビュークラス。
-    ユーザーのスコアに基づいて、適切なランクを決定します。
+    ユーザーIDに基づいてランクの名前を取得するためのAPIビュークラス。
     """
-
-    RANKS = {
-        1000: "社長",
-        900: "取締役",
-        700: "部長",
-        500: "課長",
-        300: "係長",
-        100: "主任",
-        0: "メンバー",
-    }
 
     def handle_request(self, validated_data: dict):
         """
-        ユーザーのスコアに基づいてランクを決定し、最高スコアであればランクを更新します。
+        ユーザーIDに基づいてランクの名前を取得します。
 
         Args:
             validated_data (dict): バリデーションを通過したリクエストデータ。
-
         Returns:
-            dict: ランク決定と更新結果を含むレスポンスデータ。
+            dict: ユーザーのランクの名前を含むレスポンスデータ。
         """
-        user = validated_data["user"]
-        lang = validated_data["lang"]
-        diff = validated_data["diff"]
-        score = validated_data["score"]
+        user_id = validated_data["user_id"]
+        user = User.objects.get(user_id=user_id)
+        rank_name = user.rank.rank
 
-        rank_name = self.determine_rank(score)
-        is_highest = self.is_highest_score(
-            user.user_id, lang.lang_id, diff.diff_id, score
-        )
+        return {"status": "success", "rank_name": rank_name}
 
-        if is_highest:
-            self.update_user_rank(user.user_id, rank_name)
-
-        return {
-            "status": "success",
-            "is_highest": is_highest,
-            "rank_name": rank_name,
-        }
-
-    def determine_rank(self, score: int) -> str:
-        """
-        スコアに基づいて適切なランクを決定します。
-        ランクはスコア順にソートされ、指定されたスコア以上の最初のランクが選ばれます。
-
-        Args:
-            score (int): スコア。
-
-        Returns:
-            str: 決定されたランク名。
-        """
-        for threshold, rank in sorted(self.RANKS.items(), reverse=True):
-            if score >= threshold:
-                return rank
-        return "メンバー"
-
-    def is_highest_score(
-        self, user_id: int, lang_id: int, diff_id: int, score: int
-    ) -> bool:
-        """
-        ユーザーの最高スコアを取得し、提供されたスコアと比較します。
-
-        Args:
-            score (int): 提供されたスコア。
-            user_id (int): ユーザーID。
-            lang_id (int): 言語ID。
-            diff_id (int): 難易度ID。
-        Returns:
-            bool: 最高スコアの場合はTrue、それ以外はFalse。
-        """
-        highest_score = Score.objects.filter(
-            user_id=user_id,
-            lang_id=lang_id,
-            diff_id=diff_id
-        ).order_by('-score').values_list('score', flat=True).first()
-
-        return highest_score is None or score > highest_score
-
-    @transaction.atomic
-    def update_user_rank(self, user_id: int, rank_name: str) -> None:
-        """
-        ユーザーのランクを更新します。
-        新しいランクを決定し、ユーザーのランクIDを更新します。
-
-        Args:
-            score (int): ユーザーのスコア。
-            user_id (int): ユーザーID。
-        """
-        user = User.objects.select_for_update().get(user_id=user_id)
-        rank = Rank.objects.get(rank=rank_name)
-        user.rank_id = rank.rank_id
-        user.save()

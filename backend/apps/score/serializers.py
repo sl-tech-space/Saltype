@@ -15,8 +15,8 @@ class ScoreSerializer(BaseSerializer):
         choices=ACTION_CHOICES, required=False
     )  # アクションフィールド
     user_id = serializers.UUIDField()  # ユーザーID
-    lang_id = serializers.IntegerField()  # 言語ID
-    diff_id = serializers.IntegerField()  # 難易度ID
+    lang_id = serializers.IntegerField(required=False)  # 言語ID
+    diff_id = serializers.IntegerField(required=False)  # 難易度ID
     typing_count = serializers.IntegerField(required=False, min_value=0)  # タイピング数
     accuracy = serializers.FloatField(
         required=False, min_value=0, max_value=1
