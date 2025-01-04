@@ -241,7 +241,7 @@ class UpdateUserRankView(BaseScoreView):
         )
 
         if is_highest:
-            self.update_user_rank(user.user_id, score, rank_name)
+            self.update_user_rank(user.user_id, rank_name)
 
         return {
             "status": "success",
