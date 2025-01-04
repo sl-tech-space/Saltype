@@ -26,10 +26,14 @@ export function useMistype() {
    * @param key
    */
   const countMistype = (key: string): void => {
-    mistypeCount.value = {
-      ...mistypeCount.value,
-      [key]: (mistypeCount.value[key] || 0) + 1,
-    };
+    const alphabetRegex = /^[a-zA-Z]$/;
+
+    if (alphabetRegex.test(key)) {
+      mistypeCount.value = {
+        ...mistypeCount.value,
+        [key.toLowerCase()]: (mistypeCount.value[key.toLowerCase()] || 0) + 1,
+      };
+    }
   };
 
   /**
