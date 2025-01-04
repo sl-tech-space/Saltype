@@ -2,16 +2,18 @@
 import TypoFrequencyCard from '~/components/molecules/analyze/TypoFrequencyCard.vue';
 import GrowthChartCard from '~/components/molecules/analyze/GrowthChartCard.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
+import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useAnalyze } from '~/composables/analyze/useAnalyze';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
+import { useErrorNotification } from '~/composables/common/useError';
 
-const { typoFrequency, getTypoFrequencyByLimitParam, getPastScores } = useAnalyze();
-const { generateAllCombinations } = useLanguageAndDifficulty();
-
-// 各設定ごとのスコアを保持するためのreactive変数
-const scoresByCombination = ref<Record<string, { scores: number[] }>>({});
 const limit = 10;
-const isLoading = ref(true);
+
+const { typoFrequency, scoresByCombination,
+    isLoading, error,
+    getTypoFrequencyByLimit, getPastScores } = useAnalyze();
+const { generateAllCombinations } = useLanguageAndDifficulty();
+const { showErrorNotification } = useErrorNotification(error);
 
 onMounted(async () => {
     const allCombinations = generateAllCombinations();
@@ -19,11 +21,11 @@ onMounted(async () => {
     // すべての組み合わせで過去３０回のスコアを取得
     for (const { languageId, difficultyId } of allCombinations) {
         const key = `${languageId}-${difficultyId}`;
-        const result: number[] = await getPastScores(languageId, difficultyId);
-        scoresByCombination.value[key] = { scores: result };
+        const result: number[] | undefined = await getPastScores(languageId, difficultyId);
+        scoresByCombination.value[key] = { scores: result || [] };
     }
 
-    await getTypoFrequencyByLimitParam(limit);
+    await getTypoFrequencyByLimit(limit);
 
     isLoading.value = false;
 });
@@ -39,6 +41,7 @@ onMounted(async () => {
         </div>
     </main>
     <Loading :isLoading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

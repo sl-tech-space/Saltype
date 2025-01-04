@@ -13,7 +13,6 @@ const config = useRuntimeConfig();
 const showErrorNotification = ref(false);
 
 const { loginWithGoogle, isLoading, error } = useGoogleAuth();
-
 const handleLoginWithGoogle = async (): Promise<void> => {
   await loginWithGoogle();
 }
@@ -46,10 +45,11 @@ onMounted(() => {
     <Separator color="sub-color" width="small" margin="vertical" />
   </div>
   <div class="google-auth">
-    <Button @click="handleLoginWithGoogle()" button-text="Googleで認証" border="sub-color" width="same-as-input-large"
-      height="large" :rounded="true" class="auth-button">
+    <Button @click="handleLoginWithGoogle()" border="sub-color" width="same-as-input-large" height="large"
+      :is-rounded="true" class="auth-button">
       <template #any>
         <Image :image-src="googleIcon" alt="google-icon" width="mini" height="mini" />
+        Googleで認証
       </template>
     </Button>
   </div>

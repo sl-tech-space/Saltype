@@ -11,10 +11,10 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="typing-screen">
+    <main class="typing-screen">
         <TypingScreen />
         <Keyboard />
-    </div>
+    </main>
 </template>
 
 <style lang="scss" scoped>

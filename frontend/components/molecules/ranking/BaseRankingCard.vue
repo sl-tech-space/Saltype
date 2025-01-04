@@ -71,7 +71,7 @@ onMounted(() => {
         <template #card-footer v-if="props.isFooter">
             <div class="footer-content">
                 <Button border="main-color" width="same-as-input-large" height="medium" background="none"
-                    :rounded="true" button-text="もっと見る" @click="navigateToDetails" />
+                    :is-rounded="true" button-text="もっと見る" @click="navigateToDetails" />
             </div>
         </template>
     </BaseCard>

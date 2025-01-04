@@ -3,13 +3,17 @@ import RetryCard from '~/components/molecules/score/RetryCard.vue';
 import RankCard from '~/components/molecules/score/RankCard.vue';
 import RankingCard from '~/components/molecules/score/RankingCard.vue';
 import ScoreCard from '~/components/molecules/score/ScoreCard.vue';
+import Loading from '~/components/molecules/common/ui/Loading.vue';
+import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
+import { useErrorNotification } from '~/composables/common/useError';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
 import type { ScoreBoardData } from '~/types/score';
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 const scoreBoardData = ref<ScoreBoardData | null>();
-const { getParam } = useScoreBoardParam();
+const { getParam, isLoading, error } = useScoreBoardParam();
+const { showErrorNotification } = useErrorNotification(error);
 const id = ref<string>("");
 
 onMounted(async () => {
@@ -42,6 +46,8 @@ onMounted(async () => {
             <RankingCard :ranking="scoreBoardData?.ranking_position || 0" />
         </div>
     </main>
+    <Loading :is-loading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

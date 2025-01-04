@@ -1,9 +1,9 @@
-import { useUser } from "~/composables/conf/useUser";
+import { useUserInfo } from "~/composables/common/useUserInfo";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
   const router = useRouter();
-  const { setUser, clearUser } = useUser();
+  const { setUser, clearUser } = useUserInfo();
 
   const initAuth = async () => {
     const token = useCookie("auth_token").value;

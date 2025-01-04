@@ -13,9 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <h1 :class="[`title--${props.color}`, `title--${props.size}`]">
-    {{ props.text }}
-  </h1>
+  <h1 :class="[`title--${props.color}`, `title--${props.size}`]" v-html="props.text" />
 </template>
 
 <style lang="scss" scoped>

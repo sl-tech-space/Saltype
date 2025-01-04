@@ -48,8 +48,8 @@ const handleStart = () => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="main-color" width="same-as-input-large" height="large" background="none" :rounded="true"
-                    button-text="スタート" class="start-button" @click="handleStart" />
+                <Button border="main-color" width="same-as-input-large" height="large" background="none"
+                    :is-rounded="true" button-text="スタート" class="start-button" @click="handleStart" />
             </div>
         </template>
     </BaseCard>
@@ -66,9 +66,12 @@ const handleStart = () => {
     }
 
     .body-content {
-        margin-top: 10%;
+        height: 100%;
+        @include horizontal-flex;
+        align-items: center;
 
         .body-content-container {
+            margin-top: 10px;
             @include horizontal-centered-flex;
         }
     }
