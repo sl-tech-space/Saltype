@@ -34,6 +34,7 @@ services:
       - SQL_HOST=${DB_HOST}
       - SQL_PORT=${DB_PORT}
       - PYTHONIOENCODING=utf-8
+      - ADMIN_EMAILS=${ADMIN_EMAILS}
     depends_on:
       - db
 

@@ -6,22 +6,19 @@ from .base_view import BaseMistypeView
 
 class InsertMistypesView(BaseMistypeView):
     """
-    ミスタイプの挿入、更新、またはトップミスタイプを取得するクラス。
-    ユーザーが発生させたミスタイプを管理するための処理を提供。
+    ユーザーのミスタイプを挿入するためのAPIビュークラス。
+    ミスタイプの挿入、更新を行います。
     """
 
     def handle_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
         """
-        ミスタイプの挿入または更新を行う処理。
+        ミスタイプを挿入するリクエストを処理します。
+        引数として提供されたデータに基づいてミスタイプを挿入または更新します。
 
         Args:
-            validated_data: バリデーション済みのリクエストデータ。
-                - "user_id" : ユーザーID
-                - "mistypes" : ミスタイプデータのリスト（各ミスタイプに関する情報）
+            validated_data (Dict[str, any]): バリデーションを通過したリクエストデータ。
         Returns:
-            Dict: 挿入または更新されたデータのレスポンス。
-                - "status" : 処理結果 ("success" が返される)
-                - "inserted_mistypes" : 挿入または更新されたミスタイプデータのリスト
+            Dict[str, any]: ミスタイプ挿入結果を含むレスポンスデータ。
         """
         user_id = validated_data["user_id"]
         mistypes = validated_data["mistypes"]
@@ -35,27 +32,27 @@ class InsertMistypesView(BaseMistypeView):
         self, user_id: int, mistypes_data: List[Dict[str, any]]
     ) -> List[Dict[str, any]]:
         """
-        ミスタイプのデータベースへの挿入または更新。
+        ミスタイプをデータベースに挿入します。
+
+        トランザクションを利用して、ミスタイプの挿入処理を一貫して行います。
 
         Args:
-            user_id: ユーザーID。
-            mistypes_data: ミスタイプデータのリスト（各ミスタイプの情報）
+            user_id (int): ユーザーID。
+            mistypes_data (List[Dict[str, any]]): ミスタイプデータのリスト。
         Returns:
-            List: 挿入または更新されたミスタイプデータのリスト。
-                - 各ミスタイプの "miss_char" と "miss_count" を含む辞書。
+            List[Dict[str, any]]: 挿入または更新されたミスタイプデータのリスト。
         """
         return [self.upsert_mistype(user_id, data) for data in mistypes_data]
 
     def upsert_mistype(self, user_id: int, data: Dict[str, any]) -> Dict[str, any]:
         """
-        個々のミスタイプデータを挿入または更新。
+        個々のミスタイプデータを挿入または更新します。
 
         Args:
-            data: ミスタイプデータ（miss_char, miss_countを含む）
+            user_id (int): ユーザーID。
+            data (Dict[str, any]): ミスタイプデータ。
         Returns:
-            Dict: 挿入または更新されたミスタイプデータ。
-                - "miss_char" : ミスタイプの文字
-                - "miss_count" : 発生回数
+            Dict[str, any]: 挿入または更新されたミスタイプデータ。
         """
         miss_char = data.get("miss_char")
         miss_count = data.get("miss_count")
@@ -86,13 +83,9 @@ class GetTopMistypesView(BaseMistypeView):
         検証済みのデータを使用してトップミスタイプを取得。
 
         Args:
-            validated_data: バリデーション済みのリクエストデータ。
-                - "user_id" : ユーザーID
-                - "limit" : 取得するミスタイプの件数上限
+            validated_data (Dict[str, any]): バリデーション済みのリクエストデータ。
         Returns:
-            Dict: トップミスタイプデータのレスポンス。
-                - "status" : 処理結果 ("success" または "not_found")
-                - "top_mistypes" : トップミスタイプデータのリスト
+            Dict[str, any]: トップミスタイプデータのレスポンス。
         """
         user_id = validated_data["user_id"]
         limit = validated_data["limit"]
@@ -106,14 +99,13 @@ class GetTopMistypesView(BaseMistypeView):
 
     def get_top_mistypes(self, user_id: int, limit: int) -> List[Dict[str, any]]:
         """
-        ユーザーのトップミスタイプを取得。
+        ユーザーのトップミスタイプを取得します。
 
         Args:
-            user_id: ユーザーID
-            limit: 取得するミスタイプの件数上限
+            user_id (int): ユーザーID。
+            limit (int): 取得するミスタイプの件数上限。
         Returns:
-            List: トップミスタイプデータのリスト
-                - 各ミスタイプの "miss_char" と "miss_count" を含む辞書
+            List[Dict[str, any]]: トップミスタイプデータのリスト。
         """
         return [
             {"miss_char": miss.miss_char, "miss_count": miss.miss_count}

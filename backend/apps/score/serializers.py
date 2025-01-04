@@ -5,16 +5,34 @@ from rest_framework.exceptions import ValidationError
 
 
 class ScoreSerializer(BaseSerializer):
-    ACTION_CHOICES = ["get_average_score", "get_past_scores"]
-    action = serializers.ChoiceField(choices=ACTION_CHOICES, required=False)
-    user_id = serializers.UUIDField()
-    lang_id = serializers.IntegerField()
-    diff_id = serializers.IntegerField()
-    typing_count = serializers.IntegerField(required=False, min_value=0)
-    accuracy = serializers.FloatField(required=False, min_value=0, max_value=1)
-    score = serializers.IntegerField(required=False, min_value=0)
+    """
+    スコアデータを処理するためのシリアライザクラス。
+    ユーザーID、言語ID、難易度ID、タイピング数、正確度、スコアのバリデーションを行います。
+    """
+
+    ACTION_CHOICES = ["get_average_score", "get_past_scores"]  # アクションの選択肢
+    action = serializers.ChoiceField(
+        choices=ACTION_CHOICES, required=False
+    )  # アクションフィールド
+    user_id = serializers.UUIDField()  # ユーザーID
+    lang_id = serializers.IntegerField()  # 言語ID
+    diff_id = serializers.IntegerField()  # 難易度ID
+    typing_count = serializers.IntegerField(required=False, min_value=0)  # タイピング数
+    accuracy = serializers.FloatField(
+        required=False, min_value=0, max_value=1
+    )  # 正確度
+    score = serializers.IntegerField(required=False, min_value=0)  # スコア
 
     def validate(self, attrs):
+        """
+        入力データに対してバリデーションを実行します。
+        ユーザー、言語、難易度の存在確認、アクションの検証を行います。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+        Returns:
+            dict: バリデーションを通過したデータ。
+        """
         # ユーザーの存在を確認し、オブジェクトを追加
         user_id = attrs.get("user_id")
         if user_id:

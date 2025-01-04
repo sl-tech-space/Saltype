@@ -10,7 +10,7 @@ from apps.common.models import Score
 
 class BaseUserView(APIView):
     """
-    スコアに関連する操作のためのスーパークラス。
+    ユーザー関連の操作を共通化するための基底クラス。
     """
 
     permission_classes = [AllowAny]
@@ -18,12 +18,14 @@ class BaseUserView(APIView):
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
         """
-        POSTメソッドでスコア関連のリクエストを処理。
+        POSTメソッドでユーザー関連のリクエストを処理します。
+        リクエストデータがバリデーションに成功した場合、`handle_request`メソッドを呼び出して
+        処理結果を返します。バリデーションに失敗した場合はエラーを返します。
 
         Args:
             request: HTTPリクエストオブジェクト。
         Returns:
-            Response: 成功時はスコアに関する情報が含まれたレスポンス。
+            Response: 処理結果やエラーを含むHTTPレスポンス。
         """
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -35,11 +37,12 @@ class BaseUserView(APIView):
     def get_today_highest_score(self, user):
         """
         ユーザーの今日の最高スコアを取得する共通メソッド。
+        指定されたユーザーの今日の最高スコアをデータベースから取得します。
 
         Args:
-            user: ユーザーオブジェクト
+            user: ユーザーオブジェクト。
         Returns:
-            int or None: 今日の最高スコア（なければNone）
+            int or None: 今日の最高スコア（スコアが存在しない場合はNone）。
         """
         today = date.today()
 
@@ -58,14 +61,15 @@ class BaseUserView(APIView):
     def handle_request(self, validated_data):
         """
         サブクラスで実装されるべきリクエストデータ処理ロジック。
+        サブクラスで具体的な処理を実装する必要があります。
 
         Args:
             validated_data: バリデーションを通過したリクエストデータ。
         Raises:
-            NotImplementedError: サブクラスで実装が必要な場合に発生。
+            NotImplementedError: サブクラスがこのメソッドを実装していない場合に発生。
         Returns:
-            dict: 処理結果を返す辞書。
+            dict: 処理結果を辞書形式で返す。
         """
         raise NotImplementedError(
-            "サブクラスはhandle_requestメソッドを実装する必要あり"
+            "サブクラスは`handle_request`メソッドを実装する必要があります"
         )

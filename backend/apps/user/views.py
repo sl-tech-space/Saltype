@@ -1,22 +1,25 @@
-from datetime import date
-from django.db import transaction
-from django.http import JsonResponse
 from rest_framework.response import Response
 
-from apps.common.models import User, Score, Rank
+from apps.common.models import User, Rank
 from apps.common.util.exception_handler import HandleExceptions
 from .base_view import BaseUserView
 
 
 class GetUsersView(BaseUserView):
     """
-    ユーザー情報全取得APIビュー
+    ユーザー情報全取得APIビュークラス。
+    すべてのユーザー情報を取得し、レスポンスとして返します。
     """
 
     @HandleExceptions()
     def get(self, request, *args, **kwargs):
         """
-        ユーザー情報を全て取得するAPI
+        ユーザー情報を全て取得するGETリクエストを処理します。
+
+        Args:
+            request: HTTPリクエストオブジェクト。
+        Returns:
+            Response: ユーザー情報を含むHTTPレスポンス。
         """
         users = User.objects.all()
         users_data = []
@@ -46,12 +49,17 @@ class GetUsersView(BaseUserView):
 
 class GetUserView(BaseUserView):
     """
-    指定したuser_idに基づくユーザー情報を取得するAPIビュー
+    指定したuser_idに基づくユーザー情報を取得するAPIビュークラス。
     """
 
     def get(self, request, *args, **kwargs):
         """
-        GETリクエストに基づいて、指定されたuser_idのユーザー情報を取得
+        指定されたuser_idのユーザー情報を取得するGETリクエストを処理します。
+
+        Args:
+            request: HTTPリクエストオブジェクト。
+        Returns:
+            Response: 指定されたユーザー情報を含むHTTPレスポンス。
         """
         user_id = kwargs.get("user_id")
         user = User.objects.get(user_id=user_id)
@@ -78,12 +86,18 @@ class GetUserView(BaseUserView):
 
 class UpdateUserView(BaseUserView):
     """
-    ユーザー情報更新APIビュー
+    ユーザー情報更新APIビュークラス。
+    ユーザーの情報を更新します。
     """
 
     def handle_request(self, validated_data: dict):
         """
-        ユーザーの情報を更新するAPI
+        ユーザーの情報を更新するリクエストを処理します。
+
+        Args:
+            validated_data (dict): バリデーションを通過したリクエストデータ。
+        Returns:
+            dict: 更新結果を含むレスポンスデータ。
         """
         user_id = validated_data["user_id"]
         google_login = validated_data.get("google_login")
@@ -124,12 +138,18 @@ class UpdateUserView(BaseUserView):
 
 class DeleteUserView(BaseUserView):
     """
-    ユーザー削除APIビュー
+    ユーザー削除APIビュークラス。
+    指定されたユーザーを削除します。
     """
 
     def handle_request(self, validated_data: dict):
         """
-        ユーザーを削除するAPI
+        ユーザーを削除するリクエストを処理します。
+
+        Args:
+            validated_data (dict): バリデーションを通過したリクエストデータ。
+        Returns:
+            dict: 削除結果を含むレスポンスデータ。
         """
         user = User.objects.get(user_id=validated_data["user_id"])
         user.delete()

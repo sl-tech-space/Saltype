@@ -9,7 +9,7 @@ from .serializers import ContactSerializer
 
 class BaseContactView(APIView):
     """
-    要望に関連する操作のための基底クラス。
+    要望に関連する操作を行うための基底クラス。
     """
 
     permission_classes = [AllowAny]
@@ -17,12 +17,12 @@ class BaseContactView(APIView):
     @HandleExceptions()
     def post(self, request, *args, **kwargs):
         """
-        POSTメソッドで要望関連のリクエストを処理。
+        要望に関するリクエストをPOSTメソッドで処理します。
 
         Args:
-            request: HTTPリクエストオブジェクト。
+            request (HTTPリクエストオブジェクト): クライアントからのリクエストデータを含む。
         Returns:
-            Response: 成功時は要望に関する情報が含まれたレスポンス。
+            Response: 成功時には要望に関する情報を含むレスポンスを返します。
         """
         serializer = ContactSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -32,12 +32,10 @@ class BaseContactView(APIView):
 
     def handle_request(self, validated_data):
         """
-        サブクラスで実装されるべきリクエストデータ処理ロジック。
+        サブクラスで実装されるべきリクエストデータの処理ロジック。
 
         Args:
-            validated_data: バリデーションを通過したリクエストデータ。
-        Raises:
-            NotImplementedError: サブクラスで実装が必要な場合に発生。
+            validated_data (dict): バリデーションを通過したリクエストデータ。
         Returns:
             dict: 処理結果を返す辞書。
         """

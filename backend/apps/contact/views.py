@@ -6,21 +6,22 @@ from .base_view import BaseContactView
 class ContactView(BaseContactView):
     """
     要望送信APIビュークラス。
-    BaseScoreViewを継承して、要望送信処理を実装。
+    ユーザーからの要望をメールで送信するための処理を実装します。
     """
 
     permission_classes = [AllowAny]
 
-    def handle_request(self, validated_data):
+    def handle_request(self, validated_data: dict) -> dict:
         """
-        バリデーション済みデータに基づいて要望を送信する処理を実装。
+        要望を送信するリクエストを処理します。
+        バリデーションを通過したデータを用いてメールを送信します。
 
         Args:
-            validated_data: ContactSerializer で検証されたリクエストデータ。
+            validated_data (dict): ContactSerializer で検証されたリクエストデータ。
         Returns:
-            dict: 処理結果を返す辞書。
+            dict: 要望送信結果を含むレスポンスデータ。
         """
-        # メール送信処理
+        # ContactEmailクラスを使用して要望をメールで送信
         request_email = ContactEmail(
             validated_data["user_id"], validated_data["request_content"]
         )
