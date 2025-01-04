@@ -241,7 +241,7 @@ class UpdateUserRankView(BaseScoreView):
         )
 
         if is_highest:
-            self.update_user_rank(user.user_id, score)
+            self.update_user_rank(user.user_id, score,rank_name)
 
         return {
             "status": "success",
@@ -292,7 +292,7 @@ class UpdateUserRankView(BaseScoreView):
         return highest_score is None or score > highest_score
 
     @transaction.atomic
-    def update_user_rank(self, user_id: int, score: int) -> None:
+    def update_user_rank(self, user_id: int, score: int,rank_name:str) -> None:
         """
         ユーザーのランクを更新します。
         新しいランクを決定し、ユーザーのランクIDを更新します。
