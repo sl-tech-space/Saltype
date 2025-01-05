@@ -57,7 +57,10 @@ export function useRanking() {
 
     // 日付取得
     const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0];
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
 
     // すべての組み合わせでランキングデータを取得
     for (const { languageId, difficultyId } of allCombinations) {
@@ -90,16 +93,16 @@ export function useRanking() {
     id: string,
     limit: number
   ): Promise<void> => {
-    const splitedId = splitId(id);
+    const splittedId = splitId(id);
 
-    const rankings = await _getRanking(splitedId.left, splitedId.right, limit);
+    const rankings = await _getRanking(splittedId.left, splittedId.right, limit);
 
     rankingDetails.value = rankings.data;
 
     detailsTitle.value =
-      convertNumberToJapaneseLanguageName(splitedId.left.toString()) +
+      convertNumberToJapaneseLanguageName(splittedId.left.toString()) +
       " - " +
-      convertNumberToJapaneseDifficultyLevelName(splitedId.right.toString());
+      convertNumberToJapaneseDifficultyLevelName(splittedId.right.toString());
   };
 
   /**

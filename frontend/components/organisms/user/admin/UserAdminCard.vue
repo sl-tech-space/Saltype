@@ -75,7 +75,7 @@ const toggleSort = () => {
                     d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
             </svg>
             <Input v-model="searchQuery" type="text" placeholder="ユーザ名またはメールアドレスで検索" border="main-color"
-                :is-rounded="true" width="large" class="search-input" />
+                :is-rounded="true" width="large" class="search-input" autocomplete="off" />
         </div>
         <Button width="large" border="sub-color" background="black" :is-rounded="true"
             :button-text="sortOrder === 'desc' ? `スコア&nbsp;:&nbsp;降順&nbsp;&#9660;` : `スコア&nbsp;:&nbsp;昇順&nbsp;&#9650;`"

@@ -39,8 +39,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <CursorEffect v-if="!isTouchpad" />
-  <ScrollHandler />
+  <CursorEffect />
+  <ScrollHandler v-if="!isTouchpad"  />
   <PageIndicator :total-pages=3 />
   <div class="page">
     <RankingHeader :title="rankingTitle + '本日のチャンピオン'" />
