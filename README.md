@@ -1,4 +1,6 @@
-![Designer](https://github.com/user-attachments/assets/90fa9ae7-1487-46bc-8b17-a797dee76bb4)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/90fa9ae7-1487-46bc-8b17-a797dee76bb4" width="300" alt="Designer">
+</p>
 
 # **Saltype**
 This is a typing practice app.<br>
