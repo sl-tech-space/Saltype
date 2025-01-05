@@ -1,0 +1,8 @@
+#typescript owner
+*.ts @Memolia3
+
+#vue owner
+*.vue @Memolia3
+
+#python owner
+*.py @ryo.matsumura
