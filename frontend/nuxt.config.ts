@@ -1,6 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import crypto from "crypto";
 
+console.log = () => {};
+console.error = () => {};
+console.warn = () => {};
+
 export default defineNuxtConfig({
   components: true,
   compatibilityDate: "2024-09-20",
