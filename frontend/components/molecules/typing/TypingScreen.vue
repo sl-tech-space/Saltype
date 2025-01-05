@@ -9,9 +9,9 @@ import BaseNotification from "../common/BaseNotification.vue";
 import { useEventListener } from "@vueuse/core";
 
 const route = useRoute();
-const splitedId = splitId(route.params.id as string);
-const language = ref(splitedId.left.toString());
-const difficultyLevel = ref(splitedId.right.toString());
+const splittedId = splitId(route.params.id as string);
+const language = ref(splittedId.left.toString());
+const difficultyLevel = ref(splittedId.right.toString());
 
 type KeyPressEvent = KeyboardEvent & { result: "correct" | "incorrect" };
 
@@ -59,7 +59,7 @@ onUnmounted(() => {
     <main class="sentence-container">
         <div>
             <div v-if="currentSentence">
-                <div v-if="splitedId.left === 1">
+                <div v-if="splittedId.left === 1">
                     <Title color="main-color" size="medium" :text="isTypingStarted ? currentSentence.sentence[0]
                         : (isCountdownActive ? countdown.toString() : 'Enterキーで開始します')" />
                     <template v-if="isTypingStarted">
@@ -67,7 +67,7 @@ onUnmounted(() => {
                         <Text color="main-color" size="large" v-html="coloredText" />
                     </template>
                 </div>
-                <div v-if="splitedId.left === 2">
+                <div v-if="splittedId.left === 2">
                     <div v-if="!isTypingStarted">
                         <Title color="main-color" size="medium"
                             :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />

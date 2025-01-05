@@ -23,9 +23,9 @@ onMounted(() => {
         selectedLanguageText.value = "データが存在しません";
         selectedDifficultyText.value = "データが存在しません";
     } else {
-        const splitedId = splitId(props.id);
-        selectedLanguageText.value = convertNumberToJapaneseLanguageName(splitedId.left.toString());
-        selectedDifficultyText.value = convertNumberToJapaneseDifficultyLevelName(splitedId.right.toString());
+        const splittedId = splitId(props.id);
+        selectedLanguageText.value = convertNumberToJapaneseLanguageName(splittedId.left.toString());
+        selectedDifficultyText.value = convertNumberToJapaneseDifficultyLevelName(splittedId.right.toString());
         isDisabled.value = false;
     }
 });
