@@ -10,11 +10,14 @@ export default defineNuxtConfig({
     "/": { ssr: true }, // SSR
     "/login": { ssr: false }, // CSR
     "/home": { ssr: true }, // SSR
-    "/typing": { ssr: true }, // SSR
+    "/typing/:id": { ssr: true }, // SSR
     "/score": { ssr: true }, // SSR
     "/analyze": { ssr: true }, // SSR
     "/ranking": { isr: 300 }, // ISR 5minutes
+    "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
+    "/user/setting": { ssr: false }, // CSR
+    "/user/admin": { ssr: false }, // CSR
   },
   app: {
     head: {
@@ -25,6 +28,29 @@ export default defineNuxtConfig({
           defer: true,
         },
       ],
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+      meta: [
+        {
+          name: "description",
+          content:
+            "Welcome to Saltype!! This is a typing practice app. | Saltypeへようこそ!! 日本語、英語でタイピングに挑戦!! ランキングで競い合おう",
+        },
+        {
+          name: "keywords",
+          content:
+            "typing, practice, japanese, english, ranking | タイピング, タイピング練習, 日本語, 英語, ランキング, 競争",
+        },
+        { property: "og:title", content: "Saltype" },
+        {
+          property: "og:description",
+          content: "日本語と英語でタイピングスキルを向上させよう!!",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+        // { name: "twitter:image", content: "https://ドメイン/assets/images/common/saltype-icon.png" },
+      ],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
   },
   runtimeConfig: {
@@ -34,10 +60,10 @@ export default defineNuxtConfig({
       sameSite: "lax",
       httpOnly: true,
     },
-    cryptoKey:
-      process.env.NUXT_ENCRYPTION_KEY || crypto.randomBytes(32).toString("hex"),
+    cryptoKey: crypto.randomBytes(32).toString("hex"),
     public: {
-      baseURL: "http://localhost", //Django REST Framework接続
+      baseURL: process.env.NUXT_CLIENT_SIDE_URL || 'http://localhost',
+      serverSideBaseURL: process.env.NUXT_SERVER_SIDE_URL || 'http://backend:8000',
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
@@ -46,6 +72,7 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           additionalData: '@use "@/assets/styles/variables.scss" as *;',
+          api: "modern-compiler",
         },
       },
     },
@@ -56,7 +83,7 @@ export default defineNuxtConfig({
         "@vueuse/core",
         "vue-chartjs",
         "chart.js",
-        'defu'
+        "defu",
       ],
     },
     test: {
@@ -69,7 +96,7 @@ export default defineNuxtConfig({
     },
     server: {
       watch: {
-        usePolling: true,
+        usePolling: false,
       },
     },
   },

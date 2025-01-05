@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import CursorEffect from "~/composables/ui/useCursorEffect.vue";
+import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
+import LoginHeader from "~/components/organisms/login/LoginHeader.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
-import Title from "~/components/atoms/texts/Title.vue";
+import CopyRight from "~/components/atoms/ui/CopyRight.vue";
 import { useAuthToken } from "~/composables/auth/useAuthToken";
 
 const { authToken } = useAuthToken();
@@ -13,7 +14,7 @@ onMounted(() => {
 
 onMounted(() => {
   useHead({
-    title: "ログイン"
+    title: "ログイン | Saltype"
   })
 })
 </script>
@@ -22,11 +23,12 @@ onMounted(() => {
   <CursorEffect />
   <div class="page">
     <div class="login">
-      <Title text="ログイン" class="title" />
+      <LoginHeader />
       <LoginForm />
       <GoogleAuth />
     </div>
   </div>
+  <CopyRight />
 </template>
 
 <style lang="scss" scoped>
@@ -37,10 +39,6 @@ onMounted(() => {
 
   .login {
     @include vertical-centered-flex;
-
-    .title {
-      padding-bottom: 30px;
-    }
   }
 }
 </style>

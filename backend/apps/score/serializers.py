@@ -1,78 +1,65 @@
-from apps.common.models import Diff, Lang, Rank, Score, User
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-
-from .services import ScoreService
-
-
-class BaseScoreSerializer(serializers.ModelSerializer):
-    """ Scoreモデルの基底シリアライザークラス """
-    user_id = serializers.UUIDField(write_only=True)
-    lang_id = serializers.PrimaryKeyRelatedField(source='lang',
-                                                 queryset=Lang.objects.all(),
-                                                 write_only=True)
-    diff_id = serializers.PrimaryKeyRelatedField(source='diff',
-                                                 queryset=Diff.objects.all(),
-                                                 write_only=True)
-
-    class Meta:
-        model = Score
-        fields = ['user_id', 'lang_id', 'diff_id']
+from apps.common.models import Diff, Lang, User
+from apps.common.serializers import BaseSerializer
+from rest_framework.exceptions import ValidationError
 
 
-class ScoreInsertSerializer(BaseScoreSerializer):
-    typing_count = serializers.IntegerField(required=True)
-    accuracy = serializers.FloatField(required=True)
+class ScoreSerializer(BaseSerializer):
+    """
+    スコアデータを処理するためのシリアライザクラス。
+    ユーザーID、言語ID、難易度ID、タイピング数、正確度、スコアのバリデーションを行います。
+    """
 
-    class Meta(BaseScoreSerializer.Meta):
-        fields = BaseScoreSerializer.Meta.fields + ['typing_count', 'accuracy']
+    ACTION_CHOICES = ["get_average_score", "get_past_scores"]  # アクションの選択肢
+    action = serializers.ChoiceField(
+        choices=ACTION_CHOICES, required=False
+    )  # アクションフィールド
+    user_id = serializers.UUIDField()  # ユーザーID
+    lang_id = serializers.IntegerField(required=False)  # 言語ID
+    diff_id = serializers.IntegerField(required=False)  # 難易度ID
+    typing_count = serializers.IntegerField(required=False, min_value=0)  # タイピング数
+    accuracy = serializers.FloatField(
+        required=False, min_value=0, max_value=1
+    )  # 正確度
+    score = serializers.IntegerField(required=False, min_value=0)  # スコア
 
-    def create(self, validated_data):
-        """スコアインスタンスを作成する"""
-        user_id = validated_data.pop('user_id')
-        user = get_object_or_404(User, user_id=user_id)
-        lang = validated_data.pop('lang')
-        diff = validated_data.pop('diff')
-        """スコア計算"""
-        score_service = ScoreService(user_id=user_id, lang_id=lang.pk, diff_id=diff.pk)
-        score_value = score_service.calculate_score(validated_data['typing_count'],
-                                                    validated_data['accuracy'])
-        """Scoreインスタンス作成"""
-        return Score.objects.create(user=user, lang=lang, diff=diff, score=score_value)
+    def validate(self, attrs):
+        """
+        入力データに対してバリデーションを実行します。
+        ユーザー、言語、難易度の存在確認、アクションの検証を行います。
 
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+        Returns:
+            dict: バリデーションを通過したデータ。
+        """
+        # ユーザーの存在を確認し、オブジェクトを追加
+        user_id = attrs.get("user_id")
+        if user_id:
+            try:
+                attrs["user"] = User.objects.get(pk=user_id)
+            except User.DoesNotExist:
+                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
 
-class ScoreSerializer(BaseScoreSerializer):
-    score = serializers.IntegerField(read_only=True)
-    typing_count = serializers.IntegerField(write_only=True)
-    accuracy = serializers.FloatField(write_only=True)
+        # 言語の存在を確認し、オブジェクトを追加
+        lang_id = attrs.get("lang_id")
+        if lang_id:
+            try:
+                attrs["lang"] = Lang.objects.get(pk=lang_id)
+            except Lang.DoesNotExist:
+                raise ValidationError({"lang_id": "指定された言語は存在しません。"})
 
-    class Meta(BaseScoreSerializer.Meta):
-        fields = BaseScoreSerializer.Meta.fields + ['score', 'typing_count', 'accuracy']
+        # 難易度の存在を確認し、オブジェクトを追加
+        diff_id = attrs.get("diff_id")
+        if diff_id:
+            try:
+                attrs["diff"] = Diff.objects.get(pk=diff_id)
+            except Diff.DoesNotExist:
+                raise ValidationError({"diff_id": "指定された難易度は存在しません。"})
 
-    def create(self, validated_data):
-        """スコアインスタンス作成処理"""
-        user_id = validated_data.pop('user_id')
-        user = get_object_or_404(User, user_id=user_id)
-        """Scoreインスタンス作成"""
-        return Score.objects.create(user=user, **validated_data)
+        # アクションの検証
+        action = attrs.get("action")
+        if action and action not in self.ACTION_CHOICES:
+            raise ValidationError("無効なアクションが指定されました。")
 
-
-class RankUpdateSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField(write_only=True)
-    new_rank = serializers.CharField(write_only=True)
-
-    def validate_new_rank(self, value):
-        """指定されたランクが存在するか確認するバリデーション"""
-        if not Rank.objects.filter(rank=value).exists():
-            raise serializers.ValidationError("指定されたランクは存在しません。")
-        return value
-
-
-class PastScoreSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField()
-    lang_id = serializers.PrimaryKeyRelatedField(source='lang',
-                                                 queryset=Lang.objects.all(),
-                                                 write_only=True)
-    diff_id = serializers.PrimaryKeyRelatedField(source='diff',
-                                                 queryset=Diff.objects.all(),
-                                                 write_only=True)
+        return attrs

@@ -8,27 +8,16 @@ import Button from '~/components/atoms/buttons/Button.vue';
 import { useRouter } from '#app';
 
 const router = useRouter();
-
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
-const handleStart = async () => {
-    try {
+const handleStart = () => {
+    selectedLanguage.value += 1;
+    selectedDifficulty.value += 1;
+    const id: string = joinWithHyphen(selectedLanguage.value.toString(), selectedDifficulty.value.toString());
+    localStorage.setItem("gameModeId", id);
 
-        localStorage.setItem("language", selectedLanguage.value.toString());
-        localStorage.setItem("difficulty", selectedDifficulty.value.toString())
-
-        router.push({
-            name: "typing",
-            query: {
-                language: selectedLanguage.value + 1,
-                difficultyLevel: selectedDifficulty.value + 1,
-            },
-        });
-
-    } catch (error) {
-        console.error("Navigation failed:", error);
-    }
+    router.push({ name: `typing-id`, params: { id: id } });
 };
 </script>
 
@@ -59,8 +48,8 @@ const handleStart = async () => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="main-color" width="same-as-input-large" height="large" background="none" :rounded="true"
-                    button-text="スタート" class="start-button" @click="handleStart" />
+                <Button border="main-color" width="same-as-input-large" height="large" background="none"
+                    :is-rounded="true" button-text="スタート" class="start-button" @click="handleStart" />
             </div>
         </template>
     </BaseCard>
@@ -77,9 +66,12 @@ const handleStart = async () => {
     }
 
     .body-content {
-        margin-top: 10%;
+        height: 100%;
+        @include horizontal-flex;
+        align-items: center;
 
         .body-content-container {
+            margin-top: 10px;
             @include horizontal-centered-flex;
         }
     }

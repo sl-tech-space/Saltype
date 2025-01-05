@@ -1,54 +1,115 @@
-from apps.common.utils import HandleExceptions
-from rest_framework import status
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-from .serializers import MissTypeSerializer, TopMistypesSerializer
-from .services import MistypeService
+from typing import List, Dict
+from apps.common.models import Miss
+from django.db import transaction
+from .base_view import BaseMistypeView
 
 
-class InsertMisTypes(APIView):
-    """ミスタイプインサート処理"""
-    permission_classes = [AllowAny]
+class InsertMistypesView(BaseMistypeView):
+    """
+    ユーザーのミスタイプを挿入するためのAPIビュークラス。
+    ミスタイプの挿入、更新を行います。
+    """
 
-    @HandleExceptions()
-    def post(self, request, *args, **kwargs):
-        serializer = MissTypeSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def handle_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
+        """
+        ミスタイプを挿入するリクエストを処理します。
+        引数として提供されたデータに基づいてミスタイプを挿入または更新します。
 
-        validated_data = serializer.validated_data
-        user_id = validated_data['user_id']
-        miss_data = validated_data['miss_data']
+        Args:
+            validated_data (Dict[str, any]): バリデーションを通過したリクエストデータ。
+        Returns:
+            Dict[str, any]: ミスタイプ挿入結果を含むレスポンスデータ。
+        """
+        user_id = validated_data["user_id"]
+        mistypes = validated_data["mistypes"]
 
-        mistype_service = MistypeService()
-        inserted_data = mistype_service.insert_mistypes(user_id, miss_data)
+        # ミスタイプデータを挿入または更新
+        inserted_data = self.upsert_mistypes(user_id, mistypes)
+        return {"status": "success", "inserted_mistypes": inserted_data}
 
-        return Response(inserted_data, status=status.HTTP_201_CREATED)
+    @transaction.atomic
+    def upsert_mistypes(
+        self, user_id: int, mistypes_data: List[Dict[str, any]]
+    ) -> List[Dict[str, any]]:
+        """
+        ミスタイプをデータベースに挿入します。
+
+        トランザクションを利用して、ミスタイプの挿入処理を一貫して行います。
+
+        Args:
+            user_id (int): ユーザーID。
+            mistypes_data (List[Dict[str, any]]): ミスタイプデータのリスト。
+        Returns:
+            List[Dict[str, any]]: 挿入または更新されたミスタイプデータのリスト。
+        """
+        return [self.upsert_mistype(user_id, data) for data in mistypes_data]
+
+    def upsert_mistype(self, user_id: int, data: Dict[str, any]) -> Dict[str, any]:
+        """
+        個々のミスタイプデータを挿入または更新します。
+
+        Args:
+            user_id (int): ユーザーID。
+            data (Dict[str, any]): ミスタイプデータ。
+        Returns:
+            Dict[str, any]: 挿入または更新されたミスタイプデータ。
+        """
+        miss_char = data.get("miss_char")
+        miss_count = data.get("miss_count")
+
+        # miss_charに一致するMissオブジェクトを取得
+        miss_instance, created = Miss.objects.get_or_create(
+            miss_char=miss_char, user_id=user_id, defaults={"miss_count": miss_count}
+        )
+
+        if not created:
+            miss_instance.miss_count += miss_count
+            miss_instance.save()
+
+        return {
+            "miss_char": miss_instance.miss_char,
+            "miss_count": miss_instance.miss_count,
+        }
 
 
-class GetTopMisTypes(APIView):
-    """ユーザーのミスタイプ上位N件を取得"""
-    permission_classes = [AllowAny]
+class GetTopMistypesView(BaseMistypeView):
+    """
+    ユーザーのトップミスタイプを取得するクラス。
+    ユーザーが発生させたミスタイプの中で最も発生回数が多いものを取得。
+    """
 
-    @HandleExceptions()
-    def post(self, request, *args, **kwargs):
-        serializer = TopMistypesSerializer(data=request.data)
-        if serializer.is_valid():
-            user_id = serializer.validated_data['user_id']
-            count = serializer.validated_data['count']
-            """インスタンスを作成してからメソッドを呼び出す"""
-            mistype_service = MistypeService()
-            miss_chars = mistype_service.get_top_mistypes(user_id, count)
+    def handle_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
+        """
+        検証済みのデータを使用してトップミスタイプを取得。
 
-            if not miss_chars.exists():
-                return Response({"message": "指定されたユーザーに関連するミスタイプは存在しません"},
-                                status=status.HTTP_204_NO_CONTENT)
+        Args:
+            validated_data (Dict[str, any]): バリデーション済みのリクエストデータ。
+        Returns:
+            Dict[str, any]: トップミスタイプデータのレスポンス。
+        """
+        user_id = validated_data["user_id"]
+        limit = validated_data["limit"]
 
-            miss_chars_data = [{
-                "miss_char": miss.miss_char,
-                "miss_count": miss.miss_count
-            } for miss in miss_chars]
-            return Response(miss_chars_data, status=status.HTTP_200_OK)
+        # トップミスタイプデータを取得
+        top_mistypes = self.get_top_mistypes(user_id, limit)
+        return {
+            "status": "success" if top_mistypes else "not_found",
+            "top_mistypes": top_mistypes,
+        }
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_top_mistypes(self, user_id: int, limit: int) -> List[Dict[str, any]]:
+        """
+        ユーザーのトップミスタイプを取得します。
+
+        Args:
+            user_id (int): ユーザーID。
+            limit (int): 取得するミスタイプの件数上限。
+        Returns:
+            List[Dict[str, any]]: トップミスタイプデータのリスト。
+        """
+        return [
+            {"miss_char": miss.miss_char, "miss_count": miss.miss_count}
+            for miss in Miss.objects.filter(user_id=user_id).order_by("-miss_count")[
+                :limit
+            ]
+        ]

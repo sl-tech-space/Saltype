@@ -6,15 +6,18 @@ import { useRouter } from "#app";
 
 interface Props {
     title?: string
+    onBackClick?: string
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+    onBackClick: "home"
+});
 
 const router = useRouter();
 
-const handleBackToHome = async () => {
-    router.push({ name: "home" })
-};
+const onBackClick = () => {
+    router.push({ name: props.onBackClick });
+}
 </script>
 
 <template>
@@ -30,7 +33,7 @@ const handleBackToHome = async () => {
             </div>
             <div class="header-right">
                 <Button v-if="props.title !== 'ホーム'" border="sub-color" width="large" height="medium" background="none"
-                    :rounded="true" button-text="戻る" @click="handleBackToHome" />
+                    :is-rounded="true" button-text="戻る" @click="onBackClick" />
                 <slot v-else name="header-right" />
             </div>
         </div>
@@ -42,9 +45,7 @@ const handleBackToHome = async () => {
 header {
     width: 100%;
     height: 25vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    @include vertical-centered-flex;
 
     .header-container {
         display: flex;
@@ -56,10 +57,9 @@ header {
     .header-left,
     .header-center,
     .header-right {
+        @include horizontal-centered-flex;
         flex: 1;
-        display: flex;
         align-items: center;
-        justify-content: center;
     }
 }
 </style>

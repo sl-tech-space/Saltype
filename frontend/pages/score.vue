@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import CursorEffect from '~/composables/ui/useCursorEffect.vue';
+import CursorEffect from '~/components/molecules/common/ui/CursorEffect.vue';
 import ScoreHeader from '~/components/organisms/score/ScoreHeader.vue';
 import ScoreBoardCard from '~/components/organisms/score/ScoreBoardCard.vue';
+import CopyRight from '~/components/atoms/ui/CopyRight.vue';
 
 onMounted(() => {
   useHead({
-    title: "スコア"
+    title: "スコア | Saltype"
   })
 })
 </script>
@@ -16,6 +17,7 @@ onMounted(() => {
     <ScoreHeader />
     <ScoreBoardCard />
   </div>
+  <CopyRight />
 </template>
 
 <style lang="scss" scoped>

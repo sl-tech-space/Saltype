@@ -3,47 +3,31 @@ import RetryCard from '~/components/molecules/score/RetryCard.vue';
 import RankCard from '~/components/molecules/score/RankCard.vue';
 import RankingCard from '~/components/molecules/score/RankingCard.vue';
 import ScoreCard from '~/components/molecules/score/ScoreCard.vue';
+import Loading from '~/components/molecules/common/ui/Loading.vue';
+import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
+import { useErrorNotification } from '~/composables/common/useError';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
-
-interface ScoreBoardData {
-    highest_score: number;
-    is_high_score: boolean;
-    rank: string;
-    ranking_position: number;
-    score: number;
-    average_score: number;
-}
+import type { ScoreBoardData } from '~/types/score';
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
-const totalCorrectTypedCount = ref(0);
-const typingAccuracy = ref(0);
-const scoreBoardData = ref<ScoreBoardData | null>(null);
-const { getParam } = useScoreBoardParam();
+const scoreBoardData = ref<ScoreBoardData | null>();
+const { getParam, isLoading, error } = useScoreBoardParam();
+const { showErrorNotification } = useErrorNotification(error);
+const id = ref<string>("");
 
 onMounted(async () => {
-    const storedLanguage = localStorage.getItem("language");
-    const storedDifficulty = localStorage.getItem("difficulty");
-    const storedTotalCorrectTypedCount = localStorage.getItem("totalCorrectTypedCount");
-    const storedTypingAccuracy = localStorage.getItem("typingAccuracy")
+    id.value = localStorage.getItem("gameModeId") as string;
+    const splitedId = splitId(id.value);
 
-    if (storedLanguage && storedDifficulty &&
-        storedTotalCorrectTypedCount && storedTypingAccuracy) {
-        selectedLanguage.value = Number(storedLanguage) + 1;
-        selectedDifficulty.value = Number(storedDifficulty) + 1;
-        totalCorrectTypedCount.value = Number(storedTotalCorrectTypedCount);
-        typingAccuracy.value = Number(storedTypingAccuracy);
+    if (splitedId) {
+        selectedLanguage.value = splitedId.left;
+        selectedDifficulty.value = splitedId.right;
 
-        try {
-            scoreBoardData.value = await getParam(
-                selectedLanguage.value,
-                selectedDifficulty.value,
-                totalCorrectTypedCount.value,
-                typingAccuracy.value
-            );
-        } catch (error) {
-            console.error('Failed to fetch ScoreBoard data:', error);
-        }
+        scoreBoardData.value = await getParam(
+            selectedLanguage.value,
+            selectedDifficulty.value,
+        );
     }
 });
 </script>
@@ -56,10 +40,14 @@ onMounted(async () => {
             <RankCard :rank="scoreBoardData?.rank || 'データなし'" />
         </div>
         <div class="bottom-card">
-            <RetryCard />
+            <ClientOnly>
+                <RetryCard :id="id" />
+            </ClientOnly>
             <RankingCard :ranking="scoreBoardData?.ranking_position || 0" />
         </div>
     </main>
+    <Loading :is-loading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

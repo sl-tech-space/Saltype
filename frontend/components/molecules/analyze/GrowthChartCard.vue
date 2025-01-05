@@ -7,12 +7,12 @@ import Text from '~/components/atoms/texts/Text.vue';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
 
 interface ScoreProps {
-    score: number;
+    scores: number[];
 }
 
 const props = defineProps({
     scoresByCombination: {
-        type: Object as PropType<Record<string, Array<ScoreProps>>>,
+        type: Object as PropType<Record<string, ScoreProps>>,
         required: true
     },
 });
@@ -58,8 +58,8 @@ if (combinations.value.length > 0) {
             <BaseCarousel :slides="combinations.length" :options="{ loop: true }" @slide-change="handleSlideChange"
                 class="body-content">
                 <template v-for="(combination, index) in combinations" :key="combination" #[`slide-${index}`]>
-                    <div v-if="props.scoresByCombination?.[combination]?.length > 0">
-                        <BaseChart :scores="props.scoresByCombination[combination]" />
+                    <div v-if="props.scoresByCombination[combination]?.scores?.length > 0">
+                        <BaseChart :scores="props.scoresByCombination[combination].scores" />
                     </div>
                     <div v-else>
                         <Title size="small" color="main-color" text="データがありません" />

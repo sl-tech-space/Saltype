@@ -2,4 +2,11 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['13.55.129.14', 'nginx']
+
+CORS_ALLOWED_ORIGINS = [
+    'http://nginx',
+    'http://13.55.129.14',
+    'https://13.55.129.14'
+]
+

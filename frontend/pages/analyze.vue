@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import CursorEffect from '~/composables/ui/useCursorEffect.vue';
+import CursorEffect from '~/components/molecules/common/ui/CursorEffect.vue';
 import AnalyzeHeader from '~/components/organisms/analyze/AnalyzeHeader.vue';
 import AnalyzeCard from '~/components/organisms/analyze/AnalyzeCard.vue';
+import CopyRight from '~/components/atoms/ui/CopyRight.vue';
 
 onMounted(() => {
   useHead({
-    title: "分析情報"
+    title: "分析情報 | Saltype"
   })
 })
 </script>
@@ -16,6 +17,7 @@ onMounted(() => {
     <AnalyzeHeader />
     <AnalyzeCard />
   </div>
+  <CopyRight />
 </template>
 
 <style lang="scss" scoped>

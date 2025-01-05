@@ -1,23 +1,29 @@
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../common/useUserInfo";
 
+/**
+ * ログイン時のトークン認証処理
+ * @returns authToken
+ */
 export function useAuthToken() {
-  const { setUser, clearUser } = useUser();
+  const { setUser, clearUser } = useUserInfo();
   const config = useRuntimeConfig();
   const router = useRouter();
 
-  const authToken = async () => {
-
+  const authToken = async (): Promise<void> => {
     if (!useCookie("auth_token").value) {
       clearUser();
       return;
     }
 
     try {
-      const response = await fetch(`${config.public.baseURL}/api/django/auth-token/`, {
-        headers: {
-          Authorization: `Token ${useCookie("auth_token").value}`,
-        },
-      });
+      const response = await fetch(
+        `${config.public.baseURL}/api/django/authentication/auth-token/`,
+        {
+          headers: {
+            Authorization: `Token ${useCookie("auth_token").value}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         useCookie("auth_token").value = null;
@@ -29,7 +35,6 @@ export function useAuthToken() {
 
       router.push({ name: "home" });
     } catch (e) {
-      console.error("トークン検証エラー:");
       useCookie("auth_token").value = null;
       clearUser();
     }

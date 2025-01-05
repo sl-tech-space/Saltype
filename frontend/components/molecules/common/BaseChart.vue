@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useColorStore } from '~/store/colorStore';
 import { Line } from 'vue-chartjs';
 import {
     Chart as ChartJS,
@@ -22,8 +23,10 @@ ChartJS.register(
     Legend
 );
 
+const { colorStore } = useColorStore();
+
 const props = defineProps<{
-    scores: { score: number }[];
+    scores: number[];
 }>();
 
 // チャートデータの計算
@@ -32,8 +35,8 @@ const chartData = computed(() => ({
     datasets: [
         {
             label: '',
-            data: props.scores.map(item => item.score),
-            borderColor: '#0099ff',
+            data: props.scores.reverse(),
+            borderColor: `${colorStore.value.mainColor}`,
             tension: 0.1
         }
     ]
@@ -53,7 +56,6 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
             },
         },
         x: {
-            reverse: true,
             ticks: {
                 maxRotation: 0,
                 autoSkip: true,

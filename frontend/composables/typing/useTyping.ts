@@ -1,17 +1,17 @@
 import { ref, computed } from "vue";
 import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
+import { useInputPattern } from "./japanese/useInputPattern";
 import { useMistype } from "./useMistype";
-import { useUser } from "../conf/useUser";
+import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * タイピング画面処理
  * @param language
  * @param difficultyLevel
- * @returns typingAccuracy, sentencesData,
- * currentSentence, coloredText,
- * isTypingStarted, countdown,
- * isCountdownActive, handleKeyPress,
+ * @returns currentSentence, coloredText, isTypingStarted,
+ * countdown, isCountdownActive, handleKeyPress,
+ * isLoading, error,
  * finishTyping, initialize,
  */
 export function useTyping(language: string, difficultyLevel: string) {
@@ -24,12 +24,17 @@ export function useTyping(language: string, difficultyLevel: string) {
   const currentInput = ref("");
   const currentPatternIndex = ref(0);
   const coloredText = ref("");
-  const isTypingStarted = ref(false);
   const countdown = ref(3);
+  const isTypingStarted = ref(false);
   const isCountdownActive = ref(false);
+  const error = ref<string | null>(null);
+  const isLoading = ref(false);
   const { resetMistypeStats, countMistype, sendMistypeDataToServer } =
     useMistype();
-  const { user } = useUser();
+  const { user } = useUserInfo();
+  const { getPatternArray, getVowelPatternArray } = useInputPattern();
+  const permitActionLetters = getPatternArray();
+  const vowelPattern = getVowelPatternArray();
 
   /**
    * タイピング結果取得変数
@@ -64,20 +69,22 @@ export function useTyping(language: string, difficultyLevel: string) {
   /**
    * 現在の文章を出力
    */
-  const currentSentence = computed(() => {
-    const sentence = sentencesData.value[currentIndex.value];
-    return sentence
-      ? {
-          sentence: sentence,
-          patterns: patterns.value,
-        }
-      : null;
-  });
+  const currentSentence = computed(
+    (): { sentence: [string, string]; patterns: string[] } | null => {
+      const sentence = sentencesData.value[currentIndex.value];
+      return sentence
+        ? {
+            sentence: sentence,
+            patterns: patterns.value,
+          }
+        : null;
+    }
+  );
 
   /**
    * 初期化処理
    */
-  const initialize = async () => {
+  const initialize = async (): Promise<void> => {
     const { sentences } = useSentence(language, difficultyLevel);
 
     try {
@@ -90,21 +97,28 @@ export function useTyping(language: string, difficultyLevel: string) {
         _updateColoredText();
       }
     } catch (e) {
-      console.error("文章の取得に失敗しました:");
+      error.value = "文章の取得に失敗しました";
     }
   };
 
   /**
    * タイピング結果送信
    */
-  const _sendTypingDataToServer = async () => {
-    const indexOffset = 1;
+  const _sendTypingDataToServer = async (): Promise<void> => {
+    isLoading.value = true;
 
     try {
       if (!user.value) {
-        console.error("ユーザ情報が存在しません");
+        error.value = "ユーザ情報が存在しません";
         return;
       }
+
+      const id = localStorage.getItem("gameModeId");
+      if (!id) {
+        error.value = "選択した難易度は存在しません";
+        return;
+      }
+      const splitedId = splitId(id);
 
       const response = await fetch(
         `${config.public.baseURL}/api/django/score/insert/`,
@@ -115,24 +129,35 @@ export function useTyping(language: string, difficultyLevel: string) {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            lang_id: Number(localStorage.getItem("language")) + indexOffset,
-            diff_id: Number(localStorage.getItem("difficulty")) + indexOffset,
+            lang_id: splitedId.left,
+            diff_id: splitedId.right,
             typing_count: typingResults.totalCorrectTypedCount,
             accuracy: typingResults.typingAccuracy,
           }),
+          signal: AbortSignal.timeout(5000),
         }
       );
 
       if (!response.ok) {
-        throw new Error("スコアの送信に失敗");
+        error.value = "スコアの送信に失敗";
+        return;
       }
-    } catch (e) {}
+
+      const data = await response.json();
+
+      localStorage.setItem("score", data.score);
+    } catch (e) {
+      error.value =
+        "ネットワークエラーが発生しました。接続を確認してください。";
+    } finally {
+      isLoading.value = false;
+    }
   };
 
   /**
    * タイピング開始処理
    */
-  const _startTyping = () => {
+  const _startTyping = (): void => {
     isCountdownActive.value = true;
     countdown.value = 3;
     const countdownInterval = setInterval(() => {
@@ -149,7 +174,7 @@ export function useTyping(language: string, difficultyLevel: string) {
   /**
    * タイピング終了処理
    */
-  const finishTyping = () => {
+  const finishTyping = (): void => {
     isTypingStarted.value = false;
     sendMistypeDataToServer();
     _sendTypingDataToServer();
@@ -200,24 +225,47 @@ export function useTyping(language: string, difficultyLevel: string) {
 
     const currentPatterns = currentSentence.value.patterns;
 
-    for (let i = 0; i < currentPatterns.length; i++) {
-      const expectedChar = currentPatterns[i][currentInputIndex.value];
-      if (event.key === expectedChar) {
-        currentInput.value += event.key;
-        currentInputIndex.value++;
-        currentPatternIndex.value = i;
-        typingResults.totalCorrectTypedCount++;
-        _updateColoredText();
+    for (const pattern of currentPatterns) {
+      const expectedChar = pattern[currentInputIndex.value];
+      if (event.key !== expectedChar) continue;
 
-        if (
-          currentInputIndex.value ===
-          currentPatterns[currentPatternIndex.value].length
-        ) {
-          _nextSentence();
-        }
+      currentInput.value += event.key;
+      currentInputIndex.value++;
+      currentPatternIndex.value = currentPatterns.indexOf(pattern);
+      typingResults.totalCorrectTypedCount++;
+      _updateColoredText();
 
-        return "correct";
+      const nextExpectedChar = pattern[currentInputIndex.value];
+
+      if (vowelPattern.includes(event.key)) {
+        patterns.value = currentPatterns.filter((p) => {
+          const lastChar = p[currentInputIndex.value];
+          const basePermitActionTwoLetter = p.slice(
+            currentInputIndex.value,
+            currentInputIndex.value + 2
+          );
+          const basePermitActionThreeLetter = p.slice(
+            currentInputIndex.value,
+            currentInputIndex.value + 3
+          );
+
+          return (
+            lastChar === expectedChar ||
+            lastChar === nextExpectedChar ||
+            permitActionLetters.some(
+              ([_, romajiArray]) =>
+                romajiArray.includes(basePermitActionTwoLetter) ||
+                romajiArray.includes(basePermitActionThreeLetter)
+            )
+          );
+        });
       }
+
+      if (currentInputIndex.value === pattern.length) {
+        _nextSentence();
+      }
+
+      return "correct";
     }
 
     countMistype(event.key);
@@ -228,7 +276,7 @@ export function useTyping(language: string, difficultyLevel: string) {
   /**
    * 次の文章を表示
    */
-  const _nextSentence = () => {
+  const _nextSentence = (): void => {
     if (currentIndex.value < sentencesData.value.length - 1) {
       currentIndex.value++;
       currentInputIndex.value = 0;
@@ -240,8 +288,12 @@ export function useTyping(language: string, difficultyLevel: string) {
     }
   };
 
-  const _updatePatterns = async () => {
+  /**
+   * 文章パターンの更新
+   */
+  const _updatePatterns = async (): Promise<void> => {
     const { getPatternList, getAllCombinations } = useSentencePattern();
+
     if (language === "1") {
       // 日本語パターン
       patterns.value = await getAllCombinations(
@@ -253,13 +305,14 @@ export function useTyping(language: string, difficultyLevel: string) {
         await getPatternList(sentencesData.value[currentIndex.value][0])
       );
     }
+
     _updateColoredText();
   };
 
   /**
    * 文字色を更新
    */
-  const _updateColoredText = () => {
+  const _updateColoredText = (): void => {
     if (!currentSentence.value) return;
 
     const fullText = currentSentence.value.patterns[currentPatternIndex.value];
@@ -276,7 +329,7 @@ export function useTyping(language: string, difficultyLevel: string) {
   /**
    * 合計タイプ数を初期化
    */
-  const _resetTypingStats = () => {
+  const _resetTypingStats = (): void => {
     typingResults.totalCorrectTypedCount = 0;
     typingResults.totalMistypedCount = 0;
     resetMistypeStats();
@@ -285,9 +338,11 @@ export function useTyping(language: string, difficultyLevel: string) {
   return {
     currentSentence,
     coloredText,
-    isTypingStarted,
     countdown,
+    isTypingStarted,
     isCountdownActive,
+    isLoading,
+    error,
     handleKeyPress,
     finishTyping,
     initialize,

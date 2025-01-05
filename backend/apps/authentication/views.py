@@ -1,58 +1,133 @@
-from apps.common.utils import HandleExceptions
-from rest_framework import status
+from apps.common.models import User
+from django.db import transaction
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from .serializers import GoogleAuthSerializer, UserSerializer, UserLoginSerializer
+from .base_view import BaseAuthView
+from django.conf import settings
 
 
-class LoginView(APIView):
-    """オリジナルフォームからのログインを行う"""
+class LoginView(BaseAuthView):
+    """
+    ユーザーがオリジナルフォームからログインするためのAPIビュークラス。
+    """
+
     permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        serializer = UserLoginSerializer(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+    def handle_request(self, validated_data):
+        """
+        ログインリクエストを処理します。
+        バリデーションを通過したデータを用いてユーザーのトークンを取得または作成し、認証結果を返します。
+
+        Args:
+            validated_data (dict): バリデーションを通過したリクエストデータ。
+        Returns:
+            dict: 認証結果を含むレスポンスデータ。
+        """
+        user = validated_data["user"]
+        token = self._get_or_create_token(user)
+
+        return {
+            "status": "success",
+            "user_id": user.user_id,
+            "email": user.email,
+            "username": user.username,
+            "token": token.key,
+        }
+
+    def _get_or_create_token(self, user):
+        """
+        ユーザーのトークンを取得または新規作成します。
+
+        Args:
+            user (User): 認証されたユーザーオブジェクト。
+        Returns:
+            Token: ユーザーのトークンオブジェクト。
+        """
         token, _ = Token.objects.get_or_create(user=user)
-        return Response(
-            {
-                'user_id': user.user_id,
-                'email': user.email,
-                'username': user.username,
-                'token': token.key
-            },
-            status=status.HTTP_200_OK)
+        return token
 
 
-class CheckTokenView(APIView):
-    """リクエストのトークンを使って自動ログインを行う"""
+class CheckTokenView(BaseAuthView):
+    """
+    トークンを使用した自動ログインAPIビュークラス。
+    """
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
 
-class GoogleAuthView(APIView):
-    """Google認証 認証と同時にDBにユーザを作成"""
+    def get(self, request):
+        """
+        GETメソッドでユーザー情報を返します。
+        リクエストされたユーザー情報を取得し、レスポンスとして返します。
+
+        Args:
+            request (Request): クライアントからのリクエストオブジェクト。
+        Returns:
+            Response: ユーザー情報を含むHTTPレスポンス。
+        """
+        user = request.user
+        user_data = {
+            "user_id": user.user_id,
+            "username": user.username,
+            "email": user.email,
+        }
+        return Response(user_data)
+
+
+class GoogleAuthView(BaseAuthView):
+    """
+    Google認証APIビュークラス。
+    """
+
     permission_classes = [AllowAny]
 
-    @HandleExceptions()
-    def post(self, request):
-        serializer = GoogleAuthSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.create(serializer.validated_data)
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response(
-                {
-                    'message': 'User information saved successfully',
-                    'user_id': user.user_id,
-                    'email': user.email,
-                    'username': user.username,
-                    'token': token.key
-                },
-                status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def handle_request(self, validated_data):
+        """
+        Google認証リクエストを処理します。
+        バリデーションを通過したデータを用いてユーザーを作成または更新し、トークンを取得して認証結果を返します。
+
+        Args:
+            validated_data (dict): バリデーションを通過したリクエストデータ。
+        Returns:
+            dict: 認証結果を含むレスポンスデータ。
+        """
+        user = self.create_or_update_user(validated_data)
+        token, _ = Token.objects.get_or_create(user=user)
+
+        admin_emails = settings.ADMIN_EMAILS
+        is_admin = user.email in admin_emails
+        if is_admin:
+            user.permission = 0
+            user.save()
+
+        return {
+            "status": "success",
+            "user_id": user.user_id,
+            "email": user.email,
+            "username": user.username,
+            "token": token.key,
+            "is_admin": is_admin,
+        }
+
+    @transaction.atomic
+    def create_or_update_user(self, validated_data):
+        """
+        Google認証データを使用してユーザーを作成または更新します。
+        ユーザーを取得または作成し、必要に応じて更新します。
+
+        Args:
+            validated_data (dict): バリデーションを通過したリクエストデータ。
+        Returns:
+            User: 作成または更新されたユーザーオブジェクト。
+        """
+        email = validated_data["email"]
+        username = validated_data["username"]
+
+        user, created = User.objects.get_or_create(email=email)
+        if created:
+            user.username = username
+            user.save()
+
+        return user

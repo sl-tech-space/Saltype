@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Loading from "~/composables/ui/useLoading.vue";
+import Loading from "~/components/molecules/common/ui/Loading.vue";
 
 let isLoading = ref(true);
 
 onMounted(() => {
   useHead({
-    title: "Welcome"
+    title: "Saltypeへようこそ!!"
   })
 })
 </script>
