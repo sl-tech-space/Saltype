@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
-import ScrollComponent from "~/composables/ui/useScrollHandler.vue";
+import ScrollComponent from "~/components/molecules/common/ui/ScrollHandler.vue";
 
 describe("スクロールコンポーネント", () => {
   let wrapper: any;

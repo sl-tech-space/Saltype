@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import CursorEffect from '~/composables/ui/useCursorEffect.vue';
+import CursorEffect from '~/components/molecules/common/ui/CursorEffect.vue';
 import ContactHeader from '~/components/organisms/contact/ContactHeader.vue';
 import ContactCard from '~/components/organisms/contact/ContactCard.vue';
+import CopyRight from '~/components/atoms/ui/CopyRight.vue';
 
 onMounted(() => {
   useHead({
-    title: "ご要望"
+    title: "ご要望 | Saltype"
   })
 })
 </script>
@@ -16,6 +17,7 @@ onMounted(() => {
     <ContactHeader />
     <ContactCard />
   </div>
+  <CopyRight />
 </template>
 
 <style lang="scss" scoped>

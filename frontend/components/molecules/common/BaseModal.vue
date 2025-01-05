@@ -35,8 +35,8 @@ const handleCloseModal = () => {
                     </div>
                     <div class="modal-footer">
                         <slot name="modal-footer">
-                            <Button border="sub-color" width="large" height="medium" background="none" :rounded="true"
-                                button-text="閉じる" @click="handleCloseModal" />
+                            <Button border="sub-color" width="large" height="medium" background="none"
+                                :is-rounded="true" button-text="閉じる" @click="handleCloseModal" />
                         </slot>
                     </div>
                 </div>

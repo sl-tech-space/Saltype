@@ -10,7 +10,7 @@ interface Props {
     width?: "small" | "medium" | "large";
     height?: "small" | "medium" | "large";
     background?: "white" | "black" | "main-color" | "sub-color";
-    rounded?: boolean;
+    isRounded?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
     width: "medium",
     height: "medium",
     background: "black",
-    rounded: false,
+    isRounded: false,
 });
 
 defineEmits(["update:modelValue"]);
@@ -36,15 +36,15 @@ const getStringValue = (value: Props['modelValue']): string => {
 </script>
 
 <template>
-    <textarea :id="props.id" :value="getStringValue(modelValue)" :name="props.id"
-        :placeholder="props.placeholder" :required="props.required"
-        @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)" :class="[
+    <textarea :id="props.id" :value="getStringValue(modelValue)" :name="props.id" :placeholder="props.placeholder"
+        :required="props.required" @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
+        :class="[
             `input-text--${props.color}`,
             `input-border--${props.border}`,
             `input-width--${props.width}`,
             `input-height--${props.height}`,
             `input-background--${props.background}`,
-            { 'input--rounded': props.rounded },
+            { 'input--rounded': props.isRounded },
         ]">
     </textarea>
 </template>
@@ -179,13 +179,13 @@ textarea {
     white-space: pre-wrap;
     word-wrap: break-word;
     resize: none;
-    font-size: 1rem;
+    font-size: 1.2rem;
     padding: 10px;
     box-sizing: border-box;
-}
 
-textarea:focus {
-    border-color: $hover-color;
-    outline: none;
+    &:focus {
+        border-color: $hover-color;
+        outline: none;
+    }
 }
 </style>

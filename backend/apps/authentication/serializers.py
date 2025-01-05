@@ -1,73 +1,68 @@
-from apps.common.models import User
-from django.contrib.auth import authenticate
-from django.db import transaction
+from django.contrib.auth import authenticate, get_user_model
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
-from django.contrib.auth import get_user_model
+from apps.common.serializers import BaseSerializer
 
 
-class UserLoginSerializer(serializers.Serializer):
+class AuthenticationSerializer(BaseSerializer):
     """
-    リクエストのバリデーション、ログインを行う
-
-    Raises:
-        serializers.ValidationError: メールアドレス、パスワードが未入力
-        serializers.ValidationError: メールアドレスまたはパスワードが不一致
-        serializers.ValidationError: ユーザが存在しない
-
-    Returns:
-        data: 認証されたユーザの情報を返す
+    認証情報をバリデーションし、ユーザーを認証するためのシリアライザクラス。
     """
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
+    email = serializers.EmailField(required=True)  # メールアドレス
+    password = serializers.CharField(
+        write_only=True, required=False, style={"input_type": "password"}
+    )  # パスワード
+    username = serializers.CharField(max_length=150, required=False)  # ユーザー名
+    picture = serializers.URLField(required=False, allow_blank=True)  # 画像URL
 
     def validate(self, data):
-        email = data.get('email')
-        password = data.get('password')
+        """
+        入力されたデータを検証し、認証を行います。
 
-        if not email or not password:
-            msg = _('メールアドレスとパスワードを入力してください。')
-            raise serializers.ValidationError(msg, code='authorization')
+        Args:
+            data (dict): バリデーション対象のデータ。
 
-        user = authenticate(request=self.context.get('request'), username=email, password=password)
+        Returns:
+            dict: 認証されたユーザーを含むデータ。
+        """
+        email = data.get("email")
+        if not email:
+            raise ValidationError({"email": "メールアドレスが必要です。"})
 
-        if user is None:
-            msg = _('メールアドレスまたはパスワードが正しくありません。')
-            raise serializers.ValidationError(msg, code='authorization')
+        password = data.get("password")
+        if password:
+            self._validate_min_length(password)
+            user = authenticate(
+                request=self.context.get("request"), username=email, password=password
+            )
+            if user is None:
+                raise ValidationError(
+                    _("メールアドレスまたはパスワードが正しくありません。"),
+                    code="authorization",
+                )
+            if not user.is_active:
+                raise ValidationError(
+                    _("ユーザーアカウントが無効です。"), code="authorization"
+                )
+            data["user"] = user
+        else:
+            username = data.get("username")
+            if not username:
+                raise ValidationError({"username": "ユーザー名が必要です。"})
 
-        if not user.is_active:
-            msg = _('ユーザーアカウントが無効です。')
-            raise serializers.ValidationError(msg, code='authorization')
-
-        data['user'] = user
         return data
 
-class UserSerializer(ModelSerializer):
-    class Meta:
-        model = get_user_model()
-        fields = ['user_id', 'username', 'email']
+    def _validate_min_length(self, value, min_length=8):
+        """
+        パスワードの長さを検証します。
 
-class GoogleAuthSerializer(serializers.Serializer):
-    """
-    Google認証
-    バリデーションとユーザ作成を担う
-    """
-    email = serializers.EmailField()
-    username = serializers.CharField(max_length=150)
-    picture = serializers.URLField(required=False, allow_blank=True)
-
-    class Meta:
-        model = User
-
-    @transaction.atomic
-    def create(self, validated_data):
-        email = validated_data['email']
-        username = validated_data['username']
-
-        user, created = User.objects.get_or_create(email=email)
-        if created:
-            user.username = username
-            user.save()
-
-        return user
+        Args:
+            value (str): 検証対象のパスワード。
+            min_length (int): パスワードの最小長。
+        """
+        if len(value) < min_length:
+            raise ValidationError(
+                f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字"
+            )

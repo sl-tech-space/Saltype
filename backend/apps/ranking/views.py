@@ -1,31 +1,80 @@
-from rest_framework import status
+from apps.common.models import Score
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-from .serializers import RankingSerializer
-from .services import RankingService
+from .base_view import BaseRankingView
+from datetime import date
 
 
-class GetRanking(APIView):
-    """言語IDと難易度IDに基づいてユーザをスコア順で取得"""
+class GetRankingView(BaseRankingView):
+    """
+    ランキング情報を取得するためのAPIビュークラス。
+    通常のランキングと日別ランキングを取得する機能を提供します。
+    """
+
     permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        serializer = RankingSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        """ランキングデータ取得"""
-        ranking_data = serializer.validated_data
-        ranking_service = RankingService(lang_id=ranking_data['lang_id'],
-                                         diff_id=ranking_data['diff_id'],
-                                         ranking_count=ranking_data['ranking_count'])
+    def handle_request(self, validated_data: dict) -> dict:
+        """
+        リクエストデータに基づいてランキングデータを取得します。
 
-        scores = ranking_service.get_ranking()
+        Args:
+            validated_data (dict): 検証済みのリクエストデータ。
+                - date (date, optional): 日別ランキング取得時の日付
+                - lang_id (int): 言語ID
+                - diff_id (int): 難易度ID
+                - limit (int): 取得件数
 
-        ranking_response_data = [{
-            'user_id': score_entry.user.user_id,
-            'username': score_entry.user.username,
-            'score': score_entry.score
-        } for score_entry in scores]
+        Returns:
+            dict: ランキングデータを含むレスポンス
+                - status (str): 処理結果のステータス
+                - data (list): ランキングデータのリスト
+                    - user_id (UUID): ユーザーID
+                    - username (str): ユーザー名
+                    - score (int): スコア
+        """
+        target_date = validated_data.get("date")
+        lang_id = validated_data["lang_id"]
+        diff_id = validated_data["diff_id"]
+        limit = validated_data["limit"]
 
-        return Response({'ranking_data': ranking_response_data}, status=status.HTTP_200_OK)
+        ranking_data = self._get_ranking_data(lang_id, diff_id, limit, target_date)
+
+        return {
+            "status": "success",
+            "data": [
+                {
+                    "user_id": data.user.user_id,
+                    "username": data.user.username,
+                    "score": data.score,
+                }
+                for data in ranking_data
+            ],
+        }
+
+    def _get_ranking_data(
+        self, lang_id: int, diff_id: int, limit: int, target_date: date = None
+    ) -> list[Score]:
+        """
+        ランキングデータを取得します。
+
+        Args:
+            lang_id (int): 言語ID
+            diff_id (int): 難易度ID
+            limit (int): 取得件数
+            target_date (date, optional): 日別ランキング取得時の日付
+
+        Returns:
+            list[Score]: スコアオブジェクトのリスト
+        """
+        filter_kwargs = {
+            "lang_id": lang_id,
+            "diff_id": diff_id,
+        }
+        if target_date:
+            filter_kwargs["created_at__date"] = target_date
+
+        return list(
+            Score.objects.filter(**filter_kwargs)
+            .select_related("user")
+            .only("user__user_id", "user__username", "score")
+            .order_by("-score")[:limit]
+        )

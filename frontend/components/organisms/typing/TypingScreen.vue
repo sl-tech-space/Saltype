@@ -1,22 +1,20 @@
 <script setup lang="ts">
-import JpTyping from '~/components/molecules/typing/JpTyping.vue';
-import EngTyping from '~/components/molecules/typing/EngTyping.vue';
+import TypingScreen from '~/components/molecules/typing/TypingScreen.vue';
 import Keyboard from '~/components/molecules/typing/layout/Keyboard.vue';
 
 const route = useRoute();
 const language = ref("")
 
-onMounted(async () => {
+onMounted(() => {
     language.value = route.query.language as string
 });
 </script>
 
 <template>
-    <div class="typing-screen">
-        <JpTyping v-if="language === '1'" />
-        <EngTyping v-else />
+    <main class="typing-screen">
+        <TypingScreen />
         <Keyboard />
-    </div>
+    </main>
 </template>
 
 <style lang="scss" scoped>

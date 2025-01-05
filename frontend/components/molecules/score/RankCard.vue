@@ -16,13 +16,25 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const ranks = [
+    { scoreRange: "900 ~", title: "社長" },
+    { scoreRange: "800 ~ 899", title: "取締役" },
+    { scoreRange: "700 ~ 799", title: "部長" },
+    { scoreRange: "600 ~ 699", title: "課長" },
+    { scoreRange: "500 ~ 599", title: "係長" },
+    { scoreRange: "400 ~ 499", title: "主任" },
+    { scoreRange: "0 ~ 399", title: "メンバー" },
+];
+
+const ranksWithText = ranks.map(rank => `${rank.scoreRange} : ${rank.title}`);
 </script>
 
 <template>
     <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
-                <Title size="small" text="ランク" class="card-text" />
+                <Text size="large" text="ランク" class="card-text" />
             </div>
         </template>
         <template #card-body>
@@ -32,8 +44,8 @@ const props = defineProps<Props>();
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="ランク詳細" @click="handleOpenModal" />
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none"
+                    :is-rounded="true" button-text="ランク詳細" @click="handleOpenModal" />
             </div>
         </template>
     </BaseCard>
@@ -42,13 +54,10 @@ const props = defineProps<Props>();
             <Title size="small" color="main-color" text="ランク詳細" />
         </template>
         <template #modal-body>
-            <Text size="large" text="1000 ~ : 社長" style="margin-top: 5%;" />
-            <Text size="large" text="900 ~ 999 : 取締役" style="margin-top: 5%;" />
-            <Text size="large" text="700 ~ 899 : 部長" style="margin-top: 5%;" />
-            <Text size="large" text="500 ~ 699 : 課長" style="margin-top: 5%;" />
-            <Text size="large" text="300 ~ 499 : 係長" style="margin-top: 5%;" />
-            <Text size="large" text="100 ~ 299 : 主任" style="margin-top: 5%;" />
-            <Text size="large" text="0 ~ 99 : メンバー" style="margin-top: 5%;" />
+            <Text size="large" text="ランクは正タイプ数から判定されます。" style="margin-top: 5%;" />
+            <div v-for="(rank, index) in ranks" :key="index">
+                <Text size="large" :text="`${rank.scoreRange} : ${rank.title}`" style="margin-top: 5%;" />
+            </div>
         </template>
     </BaseModal>
 </template>
@@ -60,6 +69,7 @@ const props = defineProps<Props>();
     }
 
     .body-content {
+        margin-top: 10px;
         @include horizontal-centered-flex;
     }
 

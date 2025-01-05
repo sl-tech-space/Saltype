@@ -1,4 +1,4 @@
-import { encryptData, decryptData } from "~/utils/crypto";
+import { encryptData, decryptData } from "~/utils/cryptoUtils";
 
 /**
  * クライアントサイドデータの暗号化、復号化
@@ -22,6 +22,9 @@ export function useCrypto() {
     return keyData;
   }
 
+  /**
+   * 暗号キー初期化
+   */
   async function initializeCryptoKey() {
     if (!cryptoKey.value) {
       const adjustedKeyData = adjustKeyLength(key);
@@ -35,11 +38,21 @@ export function useCrypto() {
     }
   }
 
+  /**
+   * 暗号化
+   * @param data
+   * @returns encryptData
+   */
   async function encrypt(data: string): Promise<string> {
     await initializeCryptoKey();
     return await encryptData(data, cryptoKey.value!);
   }
 
+  /**
+   * 復号化
+   * @param encryptedData
+   * @returns decryptData
+   */
   async function decrypt(encryptedData: string): Promise<string> {
     await initializeCryptoKey();
     return await decryptData(encryptedData, cryptoKey.value!);

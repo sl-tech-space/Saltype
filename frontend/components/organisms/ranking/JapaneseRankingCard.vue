@@ -1,34 +1,28 @@
 <script setup lang="ts">
 import BaseRankingCard from '~/components/molecules/ranking/BaseRankingCard.vue';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
-import type { RankingItem } from '~/composables/ranking/useRankingTypes';
+import type { RankingItem } from '~/types/ranking';
 
 interface Props {
     rankingsByCombination: Record<string, RankingItem[]>;
+    rankingDataLimit: number;
 }
 
 const props = defineProps<Props>();
-
-const { getDifficultyName } = useLanguageAndDifficulty();
-
 const japaneseDifficultyIds = ['1-1', '1-2', '1-3'];
 
-const objectToArray = (obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] => {
-    if (Array.isArray(obj)) {
-        return obj;
-    }
-    return Object.values(obj);
-};
+const { getDifficultyName } = useLanguageAndDifficulty();
 </script>
 
 <template>
-    <div class="ranking-cards-container">
+    <main class="ranking-cards-container">
         <div class="ranking-cards">
             <BaseRankingCard v-for="id in japaneseDifficultyIds" :key="id"
                 :difficulty-name="getDifficultyName(Number(id.split('-')[1]))"
-                :rankings="objectToArray(props.rankingsByCombination[id] || [])" />
+                :rankings="objectToRankingItem(props.rankingsByCombination[id] || [])" width="medium" height="full"
+                :limit=rankingDataLimit :is-footer="true" :id="id" :is-margin="true" />
         </div>
-    </div>
+    </main>
 </template>
 
 <style lang="scss" scoped>

@@ -1,10 +1,10 @@
-$white: #ffffff;
+$white: var(--text-color); // デフォルトは白。テキストの色設定
 $translucent-white: rgba(255, 255, 255, 0.3);
-$black: #141414;
+$black: var(--background-color); // デフォルトは黒。背景の色設定
 $translucent-black: rgba(0, 0, 0, 0.3);
-$main-color: #0099ff;
-$sub-color: #0044fe;
-$hover-color: #6f42c1;
+$main-color: var(--main-color);
+$sub-color: var(--sub-color);
+$hover-color: var(--hover-color);
 $disabled-color: #363636;
 $correct-color: #59ff59;
 $incorrect-color: #b10000;

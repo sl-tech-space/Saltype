@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BaseCard from '../common/BaseCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
+import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 
 interface Props {
@@ -11,7 +12,7 @@ const props = defineProps<Props>();
 const router = useRouter();
 
 const handleNavigateToRanking = async () => {
-    router.push({ name: "ranking" });
+    await router.push({ name: "ranking" });
 }
 </script>
 
@@ -19,7 +20,7 @@ const handleNavigateToRanking = async () => {
     <BaseCard width="large" height="full" :footer-sep="false" class="in-score-card">
         <template #card-header>
             <div class="header-content">
-                <Title size="small" text="ランキング" class="card-text" />
+                <Text size="large" text="ランキング" class="card-text" />
             </div>
         </template>
         <template #card-body>
@@ -29,8 +30,8 @@ const handleNavigateToRanking = async () => {
         </template>
         <template #card-footer>
             <div class="footer-content">
-                <Button border="sub-color" width="same-as-input-large" height="medium" background="none" :rounded="true"
-                    button-text="全体ランキングへ" @click="handleNavigateToRanking" />
+                <Button border="sub-color" width="same-as-input-large" height="medium" background="none"
+                    :is-rounded="true" button-text="全体ランキングへ" @click="handleNavigateToRanking" />
             </div>
         </template>
     </BaseCard>
@@ -43,6 +44,7 @@ const handleNavigateToRanking = async () => {
     }
 
     .body-content {
+        margin-top: 10px;
         @include horizontal-centered-flex;
     }
 

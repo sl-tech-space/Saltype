@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import ScorePage from "~/pages/score.vue";
-import CursorEffect from "~/composables/ui/useCursorEffect.vue";
+import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
 import ScoreHeader from "~/components/organisms/score/ScoreHeader.vue";
 import ScoreBoardCard from "~/components/organisms/score/ScoreBoardCard.vue";
 

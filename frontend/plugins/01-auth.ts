@@ -1,23 +1,26 @@
-import { useUser } from "~/composables/conf/useUser";
+import { useUserInfo } from "~/composables/common/useUserInfo";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
   const router = useRouter();
-  const { setUser, clearUser } = useUser();
+  const { setUser, clearUser } = useUserInfo();
 
   const initAuth = async () => {
     const token = useCookie("auth_token").value;
-    
+
     if (token) {
       try {
-        const response = await fetch(`${config.public.baseURL}/api/django/auth-token/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${config.public.baseURL}/api/django/authentication/auth-token/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Invalid token');
+          throw new Error("Invalid token");
         }
 
         const userData = await response.json();
@@ -27,27 +30,24 @@ export default defineNuxtPlugin((nuxtApp) => {
           await router.push({ name: "home" });
         }
       } catch (e) {
-        console.error("トークン検証エラー:", e);
         useCookie("auth_token").value = null;
         clearUser();
         try {
           await router.push({ name: "login" });
-        } catch (routeError) {
-          console.error("ルーティングエラー:", routeError);
+        } catch (e) {
+          throw new Error("ルーティングエラー");
         }
       }
     }
   };
 
-  nuxtApp.hooks.hook('app:created', () => {
-    initAuth().catch(error => {
-      console.error("認証初期化エラー:", error);
-    });
+  nuxtApp.hooks.hook("app:mounted", async () => {
+    initAuth().catch(() => {});
   });
 
   return {
     provide: {
-      initAuth
-    }
+      initAuth,
+    },
   };
 });

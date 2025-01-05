@@ -1,10 +1,15 @@
 from django.urls import path
 
-from .views import PastScoresSelect, RankUpdate, ScoreInsert, ScoreProcess
+from .views import (
+    InsertScoreView,
+    GetScoreView,
+    GetUserRankingView,
+    GetUserRankView,
+)
 
 urlpatterns = [
-    path('score/process/', ScoreProcess.as_view(), name='score_process'),
-    path('score/insert/', ScoreInsert.as_view(), name='score-insert'),
-    path('score/select/pastscores/', PastScoresSelect.as_view(), name='pastscores_select'),
-    path('rank/update/', RankUpdate.as_view(), name='rank_update'),
+    path("insert/", InsertScoreView.as_view(), name="insert_score"),
+    path("", GetScoreView.as_view(), name="get_score"),
+    path("userranking/", GetUserRankingView.as_view(), name="get_user_ranking"),
+    path("userrank/", GetUserRankView.as_view(), name="get_user_rank"),
 ]

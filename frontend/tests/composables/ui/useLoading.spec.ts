@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import LoadingComponent from "~/composables/ui/useLoading.vue";
+import LoadingComponent from "~/components/molecules/common/ui/Loading.vue";
 
 describe("LoadingComponent", () => {
   it("isLoadingがtrueの場合、コンポーネントが表示される", () => {
