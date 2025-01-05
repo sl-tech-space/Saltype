@@ -1,4 +1,3 @@
-import { ref, computed } from "vue";
 import { useSentence } from "~/composables/server/useSentence";
 import { useSentencePattern } from "~/composables/typing/japanese/useSentencePattern";
 import { useInputPattern } from "./japanese/useInputPattern";
@@ -118,7 +117,7 @@ export function useTyping(language: string, difficultyLevel: string) {
         error.value = "選択した難易度は存在しません";
         return;
       }
-      const splitedId = splitId(id);
+      const splittedId = splitId(id);
 
       const response = await fetch(
         `${config.public.baseURL}/api/django/score/insert/`,
@@ -129,8 +128,8 @@ export function useTyping(language: string, difficultyLevel: string) {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            lang_id: splitedId.left,
-            diff_id: splitedId.right,
+            lang_id: splittedId.left,
+            diff_id: splittedId.right,
             typing_count: typingResults.totalCorrectTypedCount,
             accuracy: typingResults.typingAccuracy,
           }),

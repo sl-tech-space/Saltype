@@ -100,4 +100,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  cookies: {
+    secure: process.env.NUXT_ENV === 'production',
+    sameSite: "lax",
+    httpOnly: true,
+  },
 });
