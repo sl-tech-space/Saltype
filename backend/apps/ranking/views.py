@@ -46,7 +46,7 @@ class GetRankingView(BaseRankingView):
                     "username": data.user.username,
                     "score": data.score,
                 }
-                for data in ranking_data
+                for data in ranking_data if data.user is not None
             ],
         }
 
