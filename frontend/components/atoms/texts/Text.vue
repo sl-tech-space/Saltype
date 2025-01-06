@@ -50,22 +50,6 @@ const props = withDefaults(defineProps<Props>(), {
   font-size: 18px;
 }
 
-/* PC用のメディアクエリ */
-@media (min-width: 1200px) {
-  .text--small {
-    font-size: 14px;
-  }
-
-  .text--medium {
-    font-size: 16px;
-  }
-
-  .text--large {
-    font-size: 18px;
-  }
-}
-
-/* 13インチノートPC (1366x768) */
 @media (min-width: 1366px) and (max-width: 1440px) {
   .text--small {
     font-size: 13px;
@@ -80,7 +64,6 @@ const props = withDefaults(defineProps<Props>(), {
   }
 }
 
-/* 15.6インチノートPC (1920x1080) */
 @media (min-width: 1920px) {
   .text--small {
     font-size: 15px;
