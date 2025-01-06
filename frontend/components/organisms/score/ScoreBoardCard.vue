@@ -18,11 +18,11 @@ const id = ref<string>("");
 
 onMounted(async () => {
     id.value = localStorage.getItem("gameModeId") as string;
-    const splitedId = splitId(id.value);
+    const splittedId = splitId(id.value);
 
-    if (splitedId) {
-        selectedLanguage.value = splitedId.left;
-        selectedDifficulty.value = splitedId.right;
+    if (splittedId) {
+        selectedLanguage.value = splittedId.left;
+        selectedDifficulty.value = splittedId.right;
 
         scoreBoardData.value = await getParam(
             selectedLanguage.value,
