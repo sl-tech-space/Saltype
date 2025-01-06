@@ -3,6 +3,8 @@ import fs from "fs/promises";
 import path from "path";
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
+  const sentencesPath = config.public.sentencesPath;
   const body = await readBody(event);
   const language: string = body.language;
   const difficultyLevel: string = body.difficultyLevel;
@@ -10,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const filePath = path.join(
     process.cwd(),
-    "dist/data",
+    `${sentencesPath}`,
     `${language}`,
     `${difficultyLevel}.json`
   );

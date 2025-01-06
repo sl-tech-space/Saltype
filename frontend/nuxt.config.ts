@@ -1,15 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import crypto from "crypto";
 
-console.log = () => {};
-console.error = () => {};
-console.warn = () => {};
+if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.error = () => {};
+  console.warn = () => {};
+}
 
 export default defineNuxtConfig({
   components: true,
   compatibilityDate: "2024-09-20",
   devtools: { enabled: false },
-  modules: ["@sidebase/nuxt-session"],
+  modules: [
+    "@sidebase/nuxt-session",
+  ],
   routeRules: {
     "/": { ssr: true }, // SSR
     "/login": { ssr: false }, // CSR
@@ -58,16 +62,19 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    session: {
-      expiryInSeconds: 60 * 60 * 24,
-      rolling: true,
-      sameSite: "lax",
+    cookies: {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       httpOnly: true,
     },
-    cryptoKey: crypto.randomBytes(32).toString("hex"),
+    cryptoKey:
+      process.env.NUXT_CRYPTO_KEY || crypto.randomBytes(32).toString("hex"),
     public: {
-      baseURL: process.env.NUXT_CLIENT_SIDE_URL || 'http://localhost',
-      serverSideBaseURL: process.env.NUXT_SERVER_SIDE_URL || 'http://backend:8000',
+      baseURL: process.env.NUXT_CLIENT_SIDE_URL || "http://localhost:8000",
+      serverSideBaseURL:
+        process.env.NUXT_SERVER_SIDE_URL || "http://django:8000",
+      sentencesPath:
+        process.env.NODE_ENV === "production" ? "dist/data" : "server/data",
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
@@ -100,13 +107,8 @@ export default defineNuxtConfig({
     },
     server: {
       watch: {
-        usePolling: false,
+        usePolling: process.env.NODE_ENV !== "production",
       },
     },
-  },
-  cookies: {
-    secure: process.env.NUXT_ENV === 'production',
-    sameSite: "lax",
-    httpOnly: true,
   },
 });
