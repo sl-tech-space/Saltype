@@ -15,7 +15,7 @@ import { useErrorNotification } from "~/composables/common/useError";
 const rankingTitle = "ランキング<br>";
 const rankingDataLimit: number = 5;
 const dailyRankingDataLimit: number = 1;
-const isTouchpad = ref<boolean>(false);
+const isTouchDevice = ref<boolean>(false);
 
 const {
   isLoading, error,
@@ -30,7 +30,15 @@ onMounted(async () => {
   await getDailyRankingByLimitParam(dailyRankingDataLimit);
   await getRankingByLimitParam(rankingDataLimit);
 
-  isTouchpad.value = window.matchMedia("(pointer: coarse)").matches;
+  const checkTouchDevice = () => {
+    return (
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia('(pointer:coarse)').matches
+    );
+  };
+
+  isTouchDevice.value = checkTouchDevice();
 
   useHead({
     title: "ランキング | Saltype"
@@ -40,7 +48,7 @@ onMounted(async () => {
 
 <template>
   <CursorEffect />
-  <ScrollHandler v-if="!isTouchpad"  />
+  <ScrollHandler v-if="!isTouchDevice"  />
   <PageIndicator :total-pages=3 />
   <div class="page">
     <RankingHeader :title="rankingTitle + '本日のチャンピオン'" />
