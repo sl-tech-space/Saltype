@@ -73,7 +73,7 @@ onUnmounted(() => {
                             :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />
                     </div>
                     <div v-else>
-                        <Title color="main-color" size="small" v-html="coloredText" />
+                        <Title color="main-color" v-html="coloredText" class="english-text" />
                         <Text color="main-color" size="large" :text="currentSentence.sentence[1]" />
                     </div>
                 </div>
@@ -89,5 +89,29 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .sentence-container {
     @extend %typing;
+}
+
+@media (max-width: 1366px) {
+    .english-text {
+        font-size: 1em;
+    }
+}
+
+@media (min-width: 1366px) and (max-width: 1440px) {
+    .english-text {
+        font-size: 1.1em;
+    }
+}
+
+@media (min-width: 1440px) and (max-width: 1670px) {
+    .english-text {
+        font-size: 1.4em;
+    }
+}
+
+@media (min-width: 1670px) {
+    .english-text {
+        font-size: 1.6em;
+    }
 }
 </style>
