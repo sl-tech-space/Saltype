@@ -24,7 +24,7 @@ const props = defineProps<{
         <template #card-body>
             <div class="body-content">
                 <ul>
-                    <li v-for="(item, index) in props.typoFrequency" :key="index" style="margin-top: 10px;">
+                    <li v-for="(item, index) in props.typoFrequency" :key="index" class="typo-list">
                         <Text size="large" color="main-color">
                             {{ index + 1 }}. キー: {{ item.miss_char }}&ensp;回数: {{ item.miss_count }}
                         </Text>
@@ -43,6 +43,10 @@ const props = defineProps<{
 
     .body-content {
         @include horizontal-flex;
+        
+        .typo-list {
+            margin: calc(1vw) 0;
+        }
     }
 
     .footer-content {
