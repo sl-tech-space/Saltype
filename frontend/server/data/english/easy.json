@@ -180,6 +180,730 @@
     ["Do you like eating vegetables?", "野菜を食べるのが好き?."],
     ["I'm nervous about the test.", "テストが心配だ."],
     ["Please show me your ticket.", "チケットを見せてください."],
-    ["I live in the countryside.", "田舎に住んでいます."]
+    ["I live in the countryside.", "田舎に住んでいます."],
+    ["I have a cat at home.", "家に猫がいます。"],
+    ["She likes to play soccer.", "彼女はサッカーをするのが好きです。"],
+    ["We went to the park yesterday.", "昨日、私たちは公園に行きました。"],
+    ["Do you want some tea?", "お茶をいかがですか？"],
+    ["He studies English every day.", "彼は毎日英語を勉強します。"],
+    ["Can you help me, please?", "手伝ってくれませんか？"],
+    ["My father works at a bank.", "私の父は銀行で働いています。"],
+    ["It is sunny and warm today.", "今日は晴れて暖かいです。"],
+    ["I love reading books.", "私は本を読むのが大好きです。"],
+    ["What time do you get up?", "何時に起きますか？"],
+    ["She has two brothers.", "彼女には兄弟が2人います。"],
+    ["I ate pizza for dinner.", "夕食にピザを食べました。"],
+    ["Do you know this song?", "この歌を知っていますか？"],
+    ["He can swim very fast.", "彼はとても速く泳げます。"],
+    ["We are going to the zoo.", "私たちは動物園に行きます。"],
+    ["Please close the door.", "ドアを閉めてください。"],
+    ["Where is your school bag?", "あなたの学校のカバンはどこですか？"],
+    ["I want to visit Japan someday.", "いつか日本を訪れたいです。"],
+    ["She always smiles at me.", "彼女はいつも私に微笑みます。"],
+    ["They are playing in the garden.", "彼らは庭で遊んでいます。"],
+    ["Can I borrow your pen?", "ペンを借りてもいいですか？"],
+    ["The cake was very delicious.", "ケーキはとてもおいしかったです。"],
+    ["He is taller than his brother.", "彼は弟よりも背が高いです。"],
+    ["How do you go to school?", "どうやって学校に行きますか？"],
+    ["I forgot my homework at home.", "宿題を家に忘れました。"],
+    ["There are many flowers in the park.", "公園にはたくさんの花があります。"],
+    [
+      "She bought a new dress yesterday.",
+      "彼女は昨日新しいドレスを買いました。"
+    ],
+    ["Can you speak English?", "英語を話せますか？"],
+    [
+      "My mother makes delicious cookies.",
+      "私の母はおいしいクッキーを作ります。"
+    ],
+    ["The sky is very blue today.", "今日の空はとても青いです。"],
+    ["I like to listen to music.", "音楽を聴くのが好きです。"],
+    ["He is good at playing the guitar.", "彼はギターを弾くのが上手です。"],
+    ["Do you want to join us?", "一緒に参加しませんか？"],
+    ["We often watch movies on weekends.", "週末によく映画を見ます。"],
+    ["My sister is younger than me.", "私の妹は私より年下です。"],
+    ["I need a new pair of shoes.", "新しい靴が必要です。"],
+    ["The train was very crowded.", "電車はとても混んでいました。"],
+    ["What is your favorite sport?", "好きなスポーツは何ですか？"],
+    ["She can dance very well.", "彼女はとても上手に踊れます。"],
+    ["We are going shopping tomorrow.", "明日買い物に行きます。"],
+    ["Please wait here for a moment.", "ここで少し待ってください。"],
+    ["There is a big tree in the garden.", "庭には大きな木があります。"],
+    [
+      "He gave me a beautiful present.",
+      "彼は私に素敵なプレゼントをくれました。"
+    ],
+    [
+      "I like to eat ice cream in summer.",
+      "夏にアイスクリームを食べるのが好きです。"
+    ],
+    ["Do you have any pets at home?", "家にペットはいますか？"],
+    ["She always studies in the evening.", "彼女はいつも夕方に勉強します。"],
+    ["I enjoyed the party very much.", "パーティーをとても楽しみました。"],
+    ["Where did you go last weekend?", "先週末どこに行きましたか？"],
+    [
+      "The river is very clean and beautiful.",
+      "川はとてもきれいで美しいです。"
+    ],
+    ["He usually wakes up at 6 a.m.", "彼は普段朝6時に起きます。"],
+    ["We need to buy some vegetables.", "野菜を少し買う必要があります。"],
+    ["She can run faster than me.", "彼女は私より速く走れます。"],
+    ["What do you want for lunch?", "昼食に何が欲しいですか？"],
+    ["I often visit my grandparents.", "私はよく祖父母を訪ねます。"],
+    [
+      "He is reading a book about history.",
+      "彼は歴史についての本を読んでいます。"
+    ],
+    ["The movie was really interesting.", "映画は本当に面白かったです。"],
+    ["Please turn off the light.", "電気を消してください。"],
+    ["We are having a barbecue tonight.", "今夜バーベキューをします。"],
+    ["She wrote a letter to her friend.", "彼女は友達に手紙を書きました。"],
+    ["I saw a rainbow after the rain.", "雨の後に虹を見ました。"],
+    [
+      "He is watching TV in the living room.",
+      "彼はリビングルームでテレビを見ています。"
+    ],
+    ["What is your favorite color?", "好きな色は何ですか？"],
+    [
+      "We played basketball after school.",
+      "放課後にバスケットボールをしました。"
+    ],
+    ["Can you tell me the way to the station?", "駅への道を教えてくれますか？"],
+    ["My brother likes to draw pictures.", "私の弟は絵を描くのが好きです。"],
+    ["It started to rain suddenly.", "突然雨が降り始めました。"],
+    ["I will call you later.", "後で電話します。"],
+    [
+      "She went to the library to study.",
+      "彼女は勉強するために図書館へ行きました。"
+    ],
+    [
+      "Do you know how to use this machine?",
+      "この機械の使い方を知っていますか？"
+    ],
+    ["There are a lot of stars in the sky.", "空にはたくさんの星があります。"],
+    ["I often take a walk in the morning.", "私は朝によく散歩をします。"],
+    ["He gave me some good advice.", "彼は私に良いアドバイスをくれました。"],
+    ["What time does the train leave?", "電車は何時に出発しますか？"],
+    ["She has a beautiful voice.", "彼女は美しい声をしています。"],
+    [
+      "The children are playing with a ball.",
+      "子どもたちはボールで遊んでいます。"
+    ],
+    ["I bought this jacket at a store.", "このジャケットをお店で買いました。"],
+    ["The dog is sleeping under the table.", "犬はテーブルの下で寝ています。"],
+    ["Do you like chocolate cake?", "チョコレートケーキは好きですか？"],
+    [
+      "We had a picnic by the lake.",
+      "私たちは湖のそばでピクニックをしました。"
+    ],
+    [
+      "She always brings her lunch to school.",
+      "彼女はいつも学校にお弁当を持っていきます。"
+    ],
+    ["I saw a cute bird in the tree.", "木にかわいい鳥を見ました。"],
+    ["He is very kind to everyone.", "彼はみんなにとても親切です。"],
+    ["Can you play the piano?", "ピアノを弾けますか？"],
+    [
+      "We need to finish this work today.",
+      "今日、この仕事を終わらせる必要があります。"
+    ],
+    ["She is waiting for her friend.", "彼女は友達を待っています。"],
+    ["I want to buy a new phone.", "新しい電話を買いたいです。"],
+    ["The flowers in the garden are beautiful.", "庭の花がきれいです。"],
+    ["He was late for school this morning.", "彼は今朝学校に遅れました。"],
+    ["What do you usually eat for breakfast?", "朝食に普段何を食べますか？"],
+    [
+      "The restaurant is famous for its pizza.",
+      "そのレストランはピザで有名です。"
+    ],
+    [
+      "My family went to the beach last weekend.",
+      "先週末、家族で海に行きました。"
+    ],
+    [
+      "She is cooking dinner in the kitchen.",
+      "彼女はキッチンで夕食を作っています。"
+    ],
+    ["Do you like to travel by train?", "電車で旅行するのは好きですか？"],
+    ["He is very good at math.", "彼は数学がとても得意です。"],
+    ["I lost my keys this morning.", "今朝鍵をなくしました。"],
+    ["The shop opens at 10 a.m.", "そのお店は午前10時に開きます。"],
+    ["Can you hear the birds singing?", "鳥が歌っているのが聞こえますか？"],
+    ["I want to learn how to swim.", "泳ぎ方を習いたいです。"],
+    [
+      "She wore a red dress to the party.",
+      "彼女はパーティーに赤いドレスを着ていきました。"
+    ],
+    [
+      "They are building a new house next door.",
+      "隣に新しい家を建てています。"
+    ],
+    ["I need to clean my room today.", "今日、部屋を掃除する必要があります。"],
+    [
+      "He is always very busy on weekdays.",
+      "彼は平日はいつもとても忙しいです。"
+    ],
+    ["The water in the river is very cold.", "川の水はとても冷たいです。"],
+    [
+      "She likes to write stories in her free time.",
+      "彼女は暇な時に物語を書くのが好きです。"
+    ],
+    ["I forgot my umbrella at home.", "傘を家に忘れました。"],
+    [
+      "The children are playing outside now.",
+      "子どもたちは今外で遊んでいます。"
+    ],
+    ["Can you open the window for me?", "窓を開けてくれますか？"],
+    ["He often goes fishing on Sundays.", "彼は日曜日によく釣りに行きます。"],
+    ["I saw a beautiful sunset at the beach.", "海で美しい夕日を見ました。"],
+    [
+      "We need to buy some bread for breakfast.",
+      "朝食用にパンを買う必要があります。"
+    ],
+    ["She has a big smile on her face.", "彼女は大きな笑顔を浮かべています。"],
+    ["What did you eat for lunch today?", "今日の昼食に何を食べましたか？"],
+    ["The baby is sleeping in the bed.", "赤ちゃんがベッドで寝ています。"],
+    ["I want to visit my friend in Tokyo.", "東京にいる友達を訪ねたいです。"],
+    [
+      "He bought a new bicycle yesterday.",
+      "彼は昨日新しい自転車を買いました。"
+    ],
+    ["The movie starts at 7 p.m.", "映画は午後7時に始まります。"],
+    [
+      "She is reading a letter from her friend.",
+      "彼女は友達からの手紙を読んでいます。"
+    ],
+    ["The dog is running in the park.", "犬が公園で走っています。"],
+    ["I want to eat something sweet.", "何か甘いものが食べたいです。"],
+    [
+      "We often take pictures when we travel.",
+      "旅行するときによく写真を撮ります。"
+    ],
+    ["Can you help me with my homework?", "宿題を手伝ってくれますか？"],
+    ["The bus was late this morning.", "今朝バスが遅れました。"],
+    [
+      "She is writing a card for her teacher.",
+      "彼女は先生へのカードを書いています。"
+    ],
+    [
+      "I like to drink coffee in the morning.",
+      "朝にコーヒーを飲むのが好きです。"
+    ],
+    ["He usually goes to bed at 10 p.m.", "彼は普段午後10時に寝ます。"],
+    [
+      "There are many books in the library.",
+      "図書館にはたくさんの本があります。"
+    ],
+    ["The weather is very nice today.", "今日の天気はとても良いです。"],
+    ["I saw a big ship at the port.", "港で大きな船を見ました。"],
+    [
+      "She is learning how to play the violin.",
+      "彼女はバイオリンの弾き方を学んでいます。"
+    ],
+    ["What time does the movie start?", "映画は何時に始まりますか？"],
+    ["We are planning to have a picnic.", "ピクニックをする予定です。"],
+    ["He is fixing his bicycle now.", "彼は今自転車を修理しています。"],
+    ["I like to watch the stars at night.", "夜に星を見るのが好きです。"],
+    [
+      "She gave me a beautiful necklace.",
+      "彼女は私に美しいネックレスをくれました。"
+    ],
+    ["The train station is very crowded.", "駅はとても混雑しています。"],
+    ["I usually go to bed at 11 p.m.", "普段午後11時に寝ます。"],
+    [
+      "He is studying science at the library.",
+      "彼は図書館で科学を勉強しています。"
+    ],
+    ["The weather is very cold today.", "今日の天気はとても寒いです。"],
+    ["Can you come to my house tomorrow?", "明日私の家に来れますか？"],
+    [
+      "She is talking with her friend on the phone.",
+      "彼女は電話で友達と話しています。"
+    ],
+    [
+      "The car is parked in front of the house.",
+      "車が家の前に停まっています。"
+    ],
+    [
+      "I always eat breakfast before school.",
+      "学校の前にいつも朝食を食べます。"
+    ],
+    ["He bought a new watch last week.", "彼は先週新しい時計を買いました。"],
+    ["The flowers in the garden are colorful.", "庭の花はカラフルです。"],
+    ["I want to visit many countries.", "たくさんの国を訪れたいです。"],
+    [
+      "She is painting a picture of a sunset.",
+      "彼女は夕日の絵を描いています。"
+    ],
+    [
+      "The children are playing in the snow.",
+      "子どもたちは雪の中で遊んでいます。"
+    ],
+    [
+      "I usually drink tea in the evening.",
+      "私は夕方にお茶を飲むことが多いです。"
+    ],
+    [
+      "The restaurant has delicious food.",
+      "そのレストランはおいしい食べ物があります。"
+    ],
+    [
+      "He is learning how to drive a car.",
+      "彼は車の運転の仕方を習っています。"
+    ],
+    ["I like to read books before bed.", "寝る前に本を読むのが好きです。"],
+    ["She is playing the piano right now.", "彼女は今ピアノを弾いています。"],
+    [
+      "My father is watching a football game.",
+      "父はサッカーの試合を見ています。"
+    ],
+    [
+      "I need to study for the test tomorrow.",
+      "明日のテストのために勉強する必要があります。"
+    ],
+    ["The dog is barking loudly outside.", "外で犬が大きな声で吠えています。"],
+    [
+      "We are going to have lunch at 12 p.m.",
+      "私たちは午後12時に昼食を取ります。"
+    ],
+    [
+      "She has a lot of friends at school.",
+      "彼女は学校にたくさんの友達がいます。"
+    ],
+    ["I want to learn how to cook better.", "もっと上手に料理を習いたいです。"],
+    [
+      "They are riding their bikes in the park.",
+      "彼らは公園で自転車に乗っています。"
+    ],
+    ["Do you like to play video games?", "ビデオゲームをするのが好きですか？"],
+    [
+      "We had a great time at the party.",
+      "パーティーで楽しい時間を過ごしました。"
+    ],
+    [
+      "She is wearing a beautiful necklace.",
+      "彼女は美しいネックレスをしています。"
+    ],
+    ["My parents are going on a trip next week.", "両親は来週旅行に行きます。"],
+    ["I enjoy singing in the shower.", "シャワーで歌うのが楽しいです。"],
+    ["He is reading a comic book right now.", "彼は今漫画を読んでいます。"],
+    ["I often go to the gym to exercise.", "よくジムに行って運動します。"],
+    [
+      "The teacher gave us a new homework assignment.",
+      "先生は新しい宿題を出しました。"
+    ],
+    [
+      "I like to watch cartoons on weekends.",
+      "週末にアニメを見るのが好きです。"
+    ],
+    ["My brother is good at playing tennis.", "弟はテニスが得意です。"],
+    [
+      "She is making a cake for her birthday.",
+      "彼女は誕生日のためにケーキを作っています。"
+    ],
+    [
+      "I have a lot of homework to do tonight.",
+      "今晩はたくさん宿題があります。"
+    ],
+    ["The baby is playing with her toy.", "赤ちゃんはおもちゃで遊んでいます。"],
+    [
+      "We are going to visit a museum tomorrow.",
+      "明日、博物館を訪れる予定です。"
+    ],
+    ["My friend is coming to my house later.", "友達が後で私の家に来ます。"],
+    ["I like to go fishing on weekends.", "週末に釣りに行くのが好きです。"],
+    [
+      "She is practicing her speech for the school event.",
+      "彼女は学校のイベントのためにスピーチの練習をしています。"
+    ],
+    [
+      "He is fixing the television in the living room.",
+      "彼はリビングルームでテレビを修理しています。"
+    ],
+    [
+      "We are going to have a picnic in the park.",
+      "公園でピクニックをする予定です。"
+    ],
+    [
+      "I need to buy some fruit for breakfast.",
+      "朝食用に果物を買う必要があります。"
+    ],
+    [
+      "The kids are playing with their toys in the room.",
+      "子どもたちは部屋でおもちゃで遊んでいます。"
+    ],
+    ["My father is reading the newspaper.", "父は新聞を読んでいます。"],
+    [
+      "She loves to collect postcards from different places.",
+      "彼女は違う場所からの絵葉書を集めるのが好きです。"
+    ],
+    ["I am going to study English this evening.", "今晩は英語を勉強します。"],
+    [
+      "He is wearing a blue jacket today.",
+      "今日は青いジャケットを着ています。"
+    ],
+    [
+      "They are going to the concert this weekend.",
+      "今週末、彼らはコンサートに行きます。"
+    ],
+    [
+      "We are planning to visit the zoo next month.",
+      "来月、動物園を訪れる予定です。"
+    ],
+    ["She is wearing a new pair of shoes.", "彼女は新しい靴を履いています。"],
+    ["My mother is cooking dinner right now.", "母は今夕食を作っています。"],
+    [
+      "I always take a shower before bed.",
+      "寝る前にいつもシャワーを浴びます。"
+    ],
+    ["The birds are singing in the trees.", "木の中で鳥が歌っています。"],
+    [
+      "I like to watch the sunset by the beach.",
+      "ビーチで夕日を見るのが好きです。"
+    ],
+    ["She is wearing a green hat today.", "今日は緑の帽子をかぶっています。"],
+    [
+      "My brother is very interested in history.",
+      "弟は歴史にとても興味があります。"
+    ],
+    ["We are going to have a meeting at 3 p.m.", "午後3時に会議があります。"],
+    [
+      "She is waiting for the bus at the stop.",
+      "彼女はバス停でバスを待っています。"
+    ],
+    [
+      "I like to draw pictures in my notebook.",
+      "ノートに絵を描くのが好きです。"
+    ],
+    ["The movie was very exciting.", "映画はとても興奮しました。"],
+    [
+      "My parents are watching a movie at home.",
+      "両親は家で映画を見ています。"
+    ],
+    ["I am reading a book about animals.", "動物についての本を読んでいます。"],
+    [
+      "We had a great time at the amusement park.",
+      "遊園地で楽しい時間を過ごしました。"
+    ],
+    [
+      "She is baking cookies in the kitchen.",
+      "彼女はキッチンでクッキーを焼いています。"
+    ],
+    ["I usually walk to school every day.", "私は毎日学校に歩いて行きます。"],
+    ["He is learning how to play chess.", "彼はチェスの遊び方を学んでいます。"],
+    [
+      "We are planning to visit our cousins this summer.",
+      "私たちは今夏、いとこを訪れる予定です。"
+    ],
+    [
+      "She loves playing soccer with her friends.",
+      "彼女は友達とサッカーをするのが大好きです。"
+    ],
+    [
+      "I saw a movie with my family last night.",
+      "昨晩、家族と映画を見ました。"
+    ],
+    [
+      "They are preparing for the school festival.",
+      "彼らは学校の文化祭の準備をしています。"
+    ],
+    [
+      "I need to buy a new book for school.",
+      "学校のために新しい本を買う必要があります。"
+    ],
+    [
+      "She is sitting by the window reading a book.",
+      "彼女は窓のそばに座って本を読んでいます。"
+    ],
+    [
+      "We are going to have a barbecue this weekend.",
+      "今週末にバーベキューをする予定です。"
+    ],
+    [
+      "He enjoys playing video games in his free time.",
+      "彼は暇なときにビデオゲームをするのが楽しみです。"
+    ],
+    [
+      "I went for a walk in the park this morning.",
+      "今朝、公園で散歩をしました。"
+    ],
+    [
+      "She likes to watch movies in the evening.",
+      "彼女は夕方に映画を見るのが好きです。"
+    ],
+    [
+      "My mother is gardening in the backyard.",
+      "母は裏庭でガーデニングをしています。"
+    ],
+    [
+      "He is studying for his math exam.",
+      "彼は数学の試験のために勉強しています。"
+    ],
+    [
+      "We are going to the zoo to see the animals.",
+      "私たちは動物を見るために動物園に行きます。"
+    ],
+    [
+      "She is making a cup of tea for her grandmother.",
+      "彼女はおばあちゃんにお茶を作っています。"
+    ],
+    [
+      "I need to find my shoes before I leave.",
+      "出かける前に靴を見つけなければなりません。"
+    ],
+    [
+      "He is practicing for the school play.",
+      "彼は学校の劇の練習をしています。"
+    ],
+    ["I like to draw pictures of animals.", "動物の絵を描くのが好きです。"],
+    [
+      "We are learning about space in science class.",
+      "私たちは科学の授業で宇宙について学んでいます。"
+    ],
+    [
+      "She is looking for her keys in the living room.",
+      "彼女はリビングルームで鍵を探しています。"
+    ],
+    ["I usually ride my bike to the store.", "普段は自転車でお店に行きます。"],
+    [
+      "They are watching a football match on TV.",
+      "彼らはテレビでサッカーの試合を見ています。"
+    ],
+    [
+      "He likes to play basketball with his friends.",
+      "彼は友達とバスケットボールをするのが好きです。"
+    ],
+    [
+      "I have to clean my room before dinner.",
+      "夕食の前に部屋を掃除しなければなりません。"
+    ],
+    [
+      "She is wearing a beautiful dress to the party.",
+      "彼女はパーティーに美しいドレスを着ていきます。"
+    ],
+    [
+      "We are going to a museum to see the exhibition.",
+      "私たちは展示を見に博物館に行きます。"
+    ],
+    [
+      "He is playing the guitar in his room.",
+      "彼は自分の部屋でギターを弾いています。"
+    ],
+    [
+      "I need to write an email to my teacher.",
+      "先生にメールを書く必要があります。"
+    ],
+    [
+      "She is cleaning the house with her mother.",
+      "彼女は母親と一緒に家を掃除しています。"
+    ],
+    [
+      "I want to learn how to play the drums.",
+      "ドラムの演奏方法を学びたいです。"
+    ],
+    [
+      "The children are playing with their toys.",
+      "子どもたちはおもちゃで遊んでいます。"
+    ],
+    [
+      "We had lunch at a new restaurant today.",
+      "今日、新しいレストランで昼食を食べました。"
+    ],
+    [
+      "He is practicing his speech for tomorrow's event.",
+      "彼は明日のイベントのためにスピーチの練習をしています。"
+    ],
+    [
+      "I like to listen to music while I study.",
+      "勉強中に音楽を聴くのが好きです。"
+    ],
+    [
+      "She is making a birthday card for her friend.",
+      "彼女は友達のために誕生日カードを作っています。"
+    ],
+    ["We are going to watch a movie this evening.", "今晩映画を観る予定です。"],
+    [
+      "He is playing video games on his computer.",
+      "彼はコンピュータでビデオゲームをしています。"
+    ],
+    [
+      "My family is going to the beach this summer.",
+      "私の家族は今夏、海に行く予定です。"
+    ],
+    [
+      "She is studying English to improve her skills.",
+      "彼女は英語のスキルを向上させるために勉強しています。"
+    ],
+    [
+      "I like to spend time with my friends on weekends.",
+      "週末に友達と過ごすのが好きです。"
+    ],
+    [
+      "They are going to the park to play soccer.",
+      "彼らはサッカーをするために公園に行きます。"
+    ],
+    [
+      "I need to buy some milk for breakfast.",
+      "朝食用に牛乳を買う必要があります。"
+    ],
+    ["She is drawing a picture of a mountain.", "彼女は山の絵を描いています。"],
+    [
+      "We are going to have a meeting this afternoon.",
+      "今日の午後に会議があります。"
+    ],
+    [
+      "He is organizing his desk right now.",
+      "彼は今、デスクを整理しています。"
+    ],
+    [
+      "My mother is making soup for dinner.",
+      "母は夕食にスープを作っています。"
+    ],
+    [
+      "I enjoy riding my bike around the neighborhood.",
+      "近所を自転車で回るのが楽しいです。"
+    ],
+    [
+      "She is looking at the stars through a telescope.",
+      "彼女は望遠鏡で星を見ています。"
+    ],
+    ["I usually go to the gym after work.", "普段は仕事の後にジムに行きます。"],
+    [
+      "He is playing with his toys in the room.",
+      "彼は部屋でおもちゃで遊んでいます。"
+    ],
+    [
+      "We are going to the zoo to see the animals.",
+      "私たちは動物を見るために動物園に行きます。"
+    ],
+    [
+      "She is making a cup of tea for her grandmother.",
+      "彼女はおばあちゃんにお茶を作っています。"
+    ],
+    [
+      "I need to find my shoes before I leave.",
+      "出かける前に靴を見つけなければなりません。"
+    ],
+    [
+      "He is practicing for the school play.",
+      "彼は学校の劇の練習をしています。"
+    ],
+    ["I like to draw pictures of animals.", "動物の絵を描くのが好きです。"],
+    [
+      "We are learning about space in science class.",
+      "私たちは科学の授業で宇宙について学んでいます。"
+    ],
+    [
+      "She is looking for her keys in the living room.",
+      "彼女はリビングルームで鍵を探しています。"
+    ],
+    ["I usually ride my bike to the store.", "普段は自転車でお店に行きます。"],
+    [
+      "They are watching a football match on TV.",
+      "彼らはテレビでサッカーの試合を見ています。"
+    ],
+    [
+      "He likes to play basketball with his friends.",
+      "彼は友達とバスケットボールをするのが好きです。"
+    ],
+    [
+      "I have to clean my room before dinner.",
+      "夕食の前に部屋を掃除しなければなりません。"
+    ],
+    [
+      "She is wearing a beautiful dress to the party.",
+      "彼女はパーティーに美しいドレスを着ていきます。"
+    ],
+    [
+      "We are going to a museum to see the exhibition.",
+      "私たちは展示を見に博物館に行きます。"
+    ],
+    [
+      "He is playing the guitar in his room.",
+      "彼は自分の部屋でギターを弾いています。"
+    ],
+    [
+      "I need to write an email to my teacher.",
+      "先生にメールを書く必要があります。"
+    ],
+    [
+      "She is cleaning the house with her mother.",
+      "彼女は母親と一緒に家を掃除しています。"
+    ],
+    [
+      "I want to learn how to play the drums.",
+      "ドラムの演奏方法を学びたいです。"
+    ],
+    [
+      "The children are playing with their toys.",
+      "子どもたちはおもちゃで遊んでいます。"
+    ],
+    [
+      "We had lunch at a new restaurant today.",
+      "今日、新しいレストランで昼食を食べました。"
+    ],
+    [
+      "He is practicing his speech for tomorrow's event.",
+      "彼は明日のイベントのためにスピーチの練習をしています。"
+    ],
+    [
+      "I like to listen to music while I study.",
+      "勉強中に音楽を聴くのが好きです。"
+    ],
+    [
+      "She is making a birthday card for her friend.",
+      "彼女は友達のために誕生日カードを作っています。"
+    ],
+    ["We are going to watch a movie this evening.", "今晩映画を観る予定です。"],
+    [
+      "He is playing video games on his computer.",
+      "彼はコンピュータでビデオゲームをしています。"
+    ],
+    [
+      "My family is going to the beach this summer.",
+      "私の家族は今夏、海に行く予定です。"
+    ],
+    [
+      "She is studying English to improve her skills.",
+      "彼女は英語のスキルを向上させるために勉強しています。"
+    ],
+    [
+      "I like to spend time with my friends on weekends.",
+      "週末に友達と過ごすのが好きです。"
+    ],
+    [
+      "They are going to the park to play soccer.",
+      "彼らはサッカーをするために公園に行きます。"
+    ],
+    [
+      "I need to buy some milk for breakfast.",
+      "朝食用に牛乳を買う必要があります。"
+    ],
+    ["She is drawing a picture of a mountain.", "彼女は山の絵を描いています。"],
+    [
+      "We are going to have a meeting this afternoon.",
+      "今日の午後に会議があります。"
+    ],
+    [
+      "He is organizing his desk right now.",
+      "彼は今、デスクを整理しています。"
+    ],
+    [
+      "My mother is making soup for dinner.",
+      "母は夕食にスープを作っています。"
+    ],
+    [
+      "I enjoy riding my bike around the neighborhood.",
+      "近所を自転車で回るのが楽しいです。"
+    ],
+    [
+      "She is looking at the stars through a telescope.",
+      "彼女は望遠鏡で星を見ています。"
+    ],
+    ["I usually go to the gym after work.", "普段は仕事の後にジムに行きます。"],
+    [
+      "He is playing with his toys in the room.",
+      "彼は部屋でおもちゃで遊んでいます。"
+    ]
   ]
 }
