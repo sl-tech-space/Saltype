@@ -3,18 +3,23 @@ import Input from '~/components/atoms/inputs/Input.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Select from '~/components/atoms/selects/Select.vue';
 import PaginatedUserList from '~/components/molecules/user/admin/PaginatedUserList.vue';
+import Loading from '~/components/molecules/common/ui/Loading.vue';
+import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useAdmin } from '~/composables/user/admin/useAdmin';
 import type { UserList } from '~/types/user';
 import type { ApiUserList } from '~/types/user';
 import { useColorStore } from '~/store/colorStore';
+import { useErrorNotification } from '~/composables/common/useError';
 
-const { getAllUserInfo, userItems } = useAdmin();
-const { colorStore } = useColorStore();
 const userArray = ref<UserList[]>([]);
 const itemsPerPage = 5;
 const searchQuery = ref('');
 const sortOrder = ref<'asc' | 'desc'>('desc');
 const selectedRank = ref('all');
+
+const { getAllUserInfo, userItems, isLoading, error } = useAdmin();
+const { showErrorNotification } = useErrorNotification(error);
+const { colorStore } = useColorStore();
 
 const rankOptions = [
     { value: 'all', label: 'すべて' },
@@ -84,6 +89,8 @@ const toggleSort = () => {
             select-text="ランク&nbsp:&nbsp" />
     </div>
     <PaginatedUserList :items="filteredUsers" :items-per-page="itemsPerPage" @user-updated="refreshAllUserInfo" />
+    <Loading :isLoading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

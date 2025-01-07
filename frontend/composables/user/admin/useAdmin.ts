@@ -36,6 +36,8 @@ export function useAdmin() {
             userItems.value = responseData.data;
         } catch (e) {
             error.value = "ネットワークエラーが発生しました。接続を確認してください。";
+        } finally {
+            isLoading.value = false;
         }
     }
 

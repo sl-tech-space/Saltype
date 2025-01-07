@@ -27,8 +27,11 @@ const {
 const { showErrorNotification } = useErrorNotification(error);
 
 onMounted(async () => {
-  await getDailyRankingByLimitParam(dailyRankingDataLimit);
-  await getRankingByLimitParam(rankingDataLimit);
+  await Promise.all([
+    getDailyRankingByLimitParam(dailyRankingDataLimit),
+    getRankingByLimitParam(rankingDataLimit)
+  ]);
+
 
   const checkTouchDevice = () => {
     return (
@@ -48,7 +51,7 @@ onMounted(async () => {
 
 <template>
   <CursorEffect />
-  <ScrollHandler v-if="!isTouchDevice"  />
+  <ScrollHandler v-if="!isTouchDevice" />
   <PageIndicator :total-pages=3 />
   <div class="page">
     <RankingHeader :title="rankingTitle + '本日のチャンピオン'" />
