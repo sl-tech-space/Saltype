@@ -33,9 +33,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page {
+  height: 100vh;
   @extend %full-page;
   @include vertical-centered-flex;
-  @include hidden;
 
   .login {
     @include vertical-centered-flex;

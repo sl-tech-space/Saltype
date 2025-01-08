@@ -1,5 +1,3 @@
-import { useUser } from "~/composables/user/useUser";
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const config = useRuntimeConfig();
 
@@ -8,47 +6,50 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (to.path === "/user/admin") {
-    const token = useCookie("auth_token").value;
+    const authToken = useCookie("auth_token").value;
 
-    if (token) {
+    if (authToken) {
       try {
-        const djangoResponse = await fetch(
+        const authValidationResponse = await fetch(
           `${config.public.baseURL}/api/django/authentication/auth-token/`,
           {
             headers: {
-              Authorization: `Token ${token}`,
+              Authorization: `Token ${authToken}`,
             },
           }
         );
 
-        if (!djangoResponse.ok) {
-          throw new Error("Invalid token");
+        if (!authValidationResponse.ok) {
+          throw new Error("Invalid authentication token");
         }
 
-        const user = await djangoResponse.json();
+        const authenticatedUser = await authValidationResponse.json();
 
-        const nuxtResponse = await fetch("/api/nuxt/check-admin-permission/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-          }),
-          signal: AbortSignal.timeout(5000),
-        });
+        const adminCheckResponse = await fetch(
+          "/api/nuxt/check-admin-permission/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: authenticatedUser.user_id,
+            }),
+            signal: AbortSignal.timeout(5000),
+          }
+        );
 
-        if (!nuxtResponse.ok) {
-          throw new Error("Invalid token");
+        if (!adminCheckResponse.ok) {
+          throw new Error("Failed to check admin permissions");
         }
 
-        const data = await nuxtResponse.json();
-        const isAdmin = data.isAdmin;
+        const adminCheckResult = await adminCheckResponse.json();
+        const isAdminUser = adminCheckResult.isAdmin;
 
-        if (!isAdmin) {
+        if (!isAdminUser) {
           return navigateTo({ name: "home" });
         }
-      } catch (e) {
+      } catch (error) {
         useCookie("auth_token").value = null;
         return navigateTo({ name: "login" });
       }

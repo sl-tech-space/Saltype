@@ -84,7 +84,7 @@ onMounted(() => {
 
     <div class="buttons">
       <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
-      <Button type="submit" button-text="ログイン" border="main-color" :is-rounded="true" :disabled="!valid" />
+      <Button type="submit" button-text="ログイン" border="main-color" :is-rounded="true" :disabled="!valid" @dblclick.prevent />
     </div>
   </Form>
   <Loading :is-loading="isLoading" />
