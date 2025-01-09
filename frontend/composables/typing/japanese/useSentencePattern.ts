@@ -30,11 +30,17 @@ export function useSentencePattern() {
         continue;
       }
 
-      // 「っしょ」のチェック
-      if (i + 2 < sentence.length && sentence.slice(i, i + 3) === "っしょ") {
-        patterns.push(["ssyo", "sshyo"]);
-        i += 3;
-        continue;
+      // 「っ + {二文字}」のチェック
+      if (i + 2 < sentence.length && sentence[i] === "っ") {
+        const threeChars = sentence.slice(i, i + 3);
+        const matchedPattern = patternArray.find(
+          ([hiragana]) => hiragana === threeChars
+        );
+        if (matchedPattern) {
+          patterns.push(matchedPattern[1]);
+          i += 3;
+          continue;
+        }
       }
 
       // 拗音のチェック

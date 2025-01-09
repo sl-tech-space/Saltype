@@ -1,6 +1,8 @@
 /**
  * ユーザ管理画面関数
- * @returns 
+ * @returns getAllUserInfo, deleteUserInfo,
+ * userItems, message,
+ * isLoading, error,
  */
 export function useAdmin() {
     const config = useRuntimeConfig();

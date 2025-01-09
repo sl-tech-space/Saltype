@@ -1,6 +1,8 @@
 /**
  * 単一文字入力パターン
- * @returns getPatternArray
+ * @returns getPatternArray - 全ての入力パターンを取得
+ * @returns getVowelPatternArray - 母音の入力パターンを取得
+ * @returns getSymbolsPatternArray - 記号の入力パターンを取得
  */
 export function useInputPattern() {
   const japaneseInputPattern: [string, string[]][] = [
@@ -84,6 +86,15 @@ export function useInputPattern() {
     ["ちゃ", ["cha", "tya"]],
     ["ちゅ", ["chu", "tyu"]],
     ["ちょ", ["cho", "tyo"]],
+    ["っきゃ", ["kkya"]],
+    ["っきゅ", ["kkyu"]],
+    ["っきょ", ["kkyo"]],
+    ["っしゃ", ["ssha", "ssya"]],
+    ["っしゅ", ["sshu", "ssyu"]],
+    ["っしょ", ["ssho", "ssyo"]],
+    ["っちゃ", ["ccha", "ttya"]],
+    ["っちゅ", ["cchu", "ttyu"]],
+    ["っちょ", ["ccho", "ttyo"]],
     ["にゃ", ["nya"]],
     ["にゅ", ["nyu"]],
     ["にょ", ["nyo"]],
@@ -191,14 +202,35 @@ export function useInputPattern() {
     ["っづ", ["ddu"]],
     ["っで", ["dde"]],
     ["っど", ["ddo"]],
-    ["っしょ", ["ssyo", "sshyo"]],
     ["？", ["?"]],
     ["、", [","]],
     ["。", ["."]],
     ["ー", ["-"]],
+    ["！", ["!"]],
+    ["＃", ["#"]],
+    ["％", ["%"]],
   ];
 
   const vowelInputPattern: string[] = ["a", "i", "u", "e", "o"];
+  const symbolsInputPattern: string[] = [
+    "?",
+    ",",
+    ".",
+    "-",
+    "!",
+    "#",
+    "%",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "0",
+  ];
 
   function getPatternArray(): [string, string[]][] {
     return japaneseInputPattern;
@@ -208,8 +240,13 @@ export function useInputPattern() {
     return vowelInputPattern;
   }
 
+  function getSymbolsPatternArray(): string[] {
+    return symbolsInputPattern;
+  }
+
   return {
     getPatternArray,
     getVowelPatternArray,
+    getSymbolsPatternArray,
   };
 }

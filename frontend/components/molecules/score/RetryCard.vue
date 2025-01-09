@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import BaseCard from '../common/BaseCard.vue';
-import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 
@@ -9,13 +8,12 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const router = useRouter();
 const selectedLanguageText = ref("");
 const selectedDifficultyText = ref("");
 const isDisabled = ref(true);
 
-const handleStart = () => {
-    router.push({ name: `typing-id`, params: { id: props.id } });
+const handleStart = async () => {
+    navigateTo({ name: `typing-id`, params: { id: props.id } });
 };
 
 onMounted(() => {

@@ -2,7 +2,8 @@ import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * ユーザ設定、ユーザ管理画面の共通関数
- * @returns
+ * @returns updateUserInfo, checkAdminPermission, 
+ * userInfo, isAdmin, isLoading, error
  */
 export function useUser() {
   const config = useRuntimeConfig();

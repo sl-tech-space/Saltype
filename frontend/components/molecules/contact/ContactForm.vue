@@ -27,7 +27,7 @@ const handleSubmit = async () => {
     // 二重送信防止のためのクールダウン
     setTimeout(() => {
         editCooldown.value = false;
-    }, 1000);
+    }, 10000);
 };
 </script>
 

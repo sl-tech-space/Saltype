@@ -2,9 +2,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const config = useRuntimeConfig();
 
   if (to.path === "/") {
-    return navigateTo({ name: "login" });
+    return await navigateTo({ name: "login" });
   }
 
+  // ユーザ管理画面へのアクセス制限
   if (to.path === "/user/admin") {
     const authToken = useCookie("auth_token").value;
 
@@ -47,11 +48,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
         const isAdminUser = adminCheckResult.isAdmin;
 
         if (!isAdminUser) {
-          return navigateTo({ name: "home" });
+          return await navigateTo({ name: "home" });
         }
       } catch (error) {
         useCookie("auth_token").value = null;
-        return navigateTo({ name: "login" });
+        return await navigateTo({ name: "login" });
       }
     }
   }
