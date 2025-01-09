@@ -43,7 +43,9 @@
     "@vitest/coverage-v8": "^2.1.2",
     "happy-dom": "^15.10.2",
     "sass": "^1.77.8",
-    "vitest": "^2.1.2"
+    "terser": "^5.37.0",
+    "vitest": "^2.1.2",
+    "vue-tsc": "^2.1.10"
   },
   "overrides": {
     "vue": "latest"

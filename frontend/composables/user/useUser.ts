@@ -2,7 +2,8 @@ import { useUserInfo } from "../common/useUserInfo";
 
 /**
  * ユーザ設定、ユーザ管理画面の共通関数
- * @returns
+ * @returns updateUserInfo, checkAdminPermission, 
+ * userInfo, isAdmin, isLoading, error
  */
 export function useUser() {
   const config = useRuntimeConfig();
@@ -70,14 +71,26 @@ export function useUser() {
 
   /**
    * ログイン中ユーザの権限をチェックする
+   * @param force キャッシュを無視して強制的にチェックする
    */
-  const checkAdminPermission = async (): Promise<void> => {
+  const checkAdminPermission = async (
+    force: boolean = false
+  ): Promise<void> => {
     isLoading.value = true;
     try {
       await waitForUser();
 
       if (!user.value) {
         error.value = "ユーザ情報が存在しません";
+        return;
+      }
+
+      const cachedPermission = localStorage.getItem(
+        `admin_permission_${user.value.user_id}`
+      );
+
+      if (cachedPermission && !force) {
+        isAdmin.value = JSON.parse(cachedPermission);
         return;
       }
 
@@ -99,6 +112,11 @@ export function useUser() {
 
       const data = await response.json();
       isAdmin.value = data.isAdmin;
+
+      localStorage.setItem(
+        `admin_permission_${user.value.user_id}`,
+        JSON.stringify(data.isAdmin)
+      );
     } catch (e) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";

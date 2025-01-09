@@ -136,7 +136,7 @@ section {
 
     .card-body {
         flex: 1;
-        overflow-y: hidden;
+        overflow-y: auto;
     }
 }
 

@@ -9,10 +9,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const router = useRouter();
 
 const handleNavigateToRanking = async () => {
-    await router.push({ name: "ranking" });
+    await navigateTo({ name: "ranking" });
 }
 </script>
 

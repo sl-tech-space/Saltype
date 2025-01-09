@@ -16,6 +16,15 @@ const rankingTitle = "ランキング<br>";
 const rankingDataLimit: number = 5;
 const dailyRankingDataLimit: number = 1;
 const isTouchDevice = ref<boolean>(false);
+const isMultiTouch = ref<boolean>(false);
+
+const handleTouchStart = (event: TouchEvent) => {
+  isMultiTouch.value = event.touches.length >= 2;
+};
+
+const handleTouchEnd = () => {
+  isMultiTouch.value = false;
+};
 
 const {
   isLoading, error,
@@ -27,8 +36,14 @@ const {
 const { showErrorNotification } = useErrorNotification(error);
 
 onMounted(async () => {
-  await getDailyRankingByLimitParam(dailyRankingDataLimit);
-  await getRankingByLimitParam(rankingDataLimit);
+  window.addEventListener('touchstart', handleTouchStart);
+  window.addEventListener('touchend', handleTouchEnd);
+
+  await Promise.all([
+    getDailyRankingByLimitParam(dailyRankingDataLimit),
+    getRankingByLimitParam(rankingDataLimit)
+  ]);
+
 
   const checkTouchDevice = () => {
     return (
@@ -44,22 +59,23 @@ onMounted(async () => {
     title: "ランキング | Saltype"
   })
 });
+
+onUnmounted(() => {
+  window.removeEventListener('touchstart', handleTouchStart);
+  window.removeEventListener('touchend', handleTouchEnd);
+});
 </script>
 
 <template>
   <CursorEffect />
-  <ScrollHandler v-if="!isTouchDevice"  />
+  <ScrollHandler v-if="!isTouchDevice && !isMultiTouch" />
   <PageIndicator :total-pages=3 />
   <div class="page">
     <RankingHeader :title="rankingTitle + '本日のチャンピオン'" />
     <DailyRankingCard :daily-japanese-rankings-by-combination="dailyJapaneseRankings"
       :daily-english-rankings-by-combination="dailyEnglishRankings" :daily-ranking-data-limit="dailyRankingDataLimit" />
-  </div>
-  <div class="page">
     <RankingHeader :title="rankingTitle + '日本語'" />
     <JapaneseRankingCard :rankings-by-combination="japaneseRankings" :ranking-data-limit="rankingDataLimit" />
-  </div>
-  <div class="page">
     <RankingHeader :title="rankingTitle + '英語'" />
     <EnglishRankingCard :rankings-by-combination="englishRankings" :ranking-data-limit="rankingDataLimit" />
   </div>

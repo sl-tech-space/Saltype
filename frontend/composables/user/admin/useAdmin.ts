@@ -1,6 +1,8 @@
 /**
  * ユーザ管理画面関数
- * @returns 
+ * @returns getAllUserInfo, deleteUserInfo,
+ * userItems, message,
+ * isLoading, error,
  */
 export function useAdmin() {
     const config = useRuntimeConfig();
@@ -36,6 +38,8 @@ export function useAdmin() {
             userItems.value = responseData.data;
         } catch (e) {
             error.value = "ネットワークエラーが発生しました。接続を確認してください。";
+        } finally {
+            isLoading.value = false;
         }
     }
 

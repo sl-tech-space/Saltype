@@ -7,7 +7,6 @@ import { useUserInfo } from "../common/useUserInfo";
 export function useAuthToken() {
   const { setUser, clearUser } = useUserInfo();
   const config = useRuntimeConfig();
-  const router = useRouter();
 
   const authToken = async (): Promise<void> => {
     if (!useCookie("auth_token").value) {
@@ -33,7 +32,7 @@ export function useAuthToken() {
       const userData = await response.json();
       setUser(userData);
 
-      router.push({ name: "home" });
+      await navigateTo({ name: "home" });
     } catch (e) {
       useCookie("auth_token").value = null;
       clearUser();
