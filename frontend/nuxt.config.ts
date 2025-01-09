@@ -24,6 +24,7 @@ export default defineNuxtConfig({
     "/contact": { ssr: false }, // CSR
     "/user/setting": { ssr: false }, // CSR
     "/user/admin": { ssr: false }, // CSR
+    "/privacypolicy": { ssr: true, prerender: true }, // SSG
   },
   typescript: {
     shim: false,
