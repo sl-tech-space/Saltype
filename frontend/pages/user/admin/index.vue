@@ -7,12 +7,11 @@ import Loading from '~/components/molecules/common/ui/Loading.vue';
 import { useUser } from '~/composables/user/useUser';
 
 const { checkAdminPermission, isAdmin, isLoading } = useUser();
-const router = useRouter();
 const checkCompleted = ref(false);
 
-watchEffect(() => {
+watchEffect(async () => {
     if (checkCompleted.value && !isAdmin.value) {
-        router.push('/home');
+        await navigateTo('/home');
     }
 });
 
