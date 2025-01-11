@@ -1,4 +1,3 @@
-import { useRouter } from "vue-router";
 import { useUserInfo } from "../common/useUserInfo";
 
 /**
@@ -7,7 +6,6 @@ import { useUserInfo } from "../common/useUserInfo";
  * @returns logout
  */
 export async function useLogout() {
-  const router = useRouter();
   const { clearUser } = useUserInfo();
 
   /**
@@ -18,7 +16,7 @@ export async function useLogout() {
       useCookie("auth_token").value = null;
       clearUser();
 
-      await router.push({
+      await navigateTo({
         path: "/login",
         query: { reason: "logout" },
       });

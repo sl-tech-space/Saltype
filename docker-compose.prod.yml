@@ -1,9 +1,9 @@
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:alpine
     container_name: saltype-nginx
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - "80:80"
     depends_on:
@@ -12,13 +12,17 @@ services:
     networks:
       - frontend-net
       - backend-net
+    deploy:
+      resources:
+        limits:
+          memory: 128M
 
   frontend:
     build:
       context: ./frontend
       dockerfile: dockerfile.prod
     volumes:
-      - ./frontend/server/data:/app/dist/data
+      - ./frontend/server/data:/app/dist/data:ro
     container_name: saltype-nuxt
     environment:
       - HOST=0.0.0.0
@@ -26,6 +30,10 @@ services:
       - backend
     networks:
       - frontend-net
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   backend:
     build:
@@ -33,9 +41,9 @@ services:
       dockerfile: dockerfile.prod
     container_name: saltype-django
     volumes:
-      - ./backend:/app
+      - ./backend:/app:ro
     environment:
-      - DEBUG=${DEBUG}
+      - DEBUG=${DEBUG:-false}
       - SECRET_KEY=${SECRET_KEY}
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - SQL_ENGINE=${DB_ENGINE}
@@ -49,9 +57,13 @@ services:
       - db
     networks:
       - backend-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   db:
-    image: postgres:14
+    image: postgres:14-alpine
     container_name: saltype-postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -63,11 +75,14 @@ services:
       - "5432:5432"
     networks:
       - backend-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
 networks:
   frontend-net:
     driver: bridge
-
   backend-net:
     driver: bridge
 

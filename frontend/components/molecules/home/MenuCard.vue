@@ -13,11 +13,10 @@ import { useUser } from '~/composables/user/useUser';
 const { logout } = await useLogout();
 const { colorStore } = useColorStore();
 const { checkAdminPermission, isAdmin } = useUser();
-const router = useRouter();
 const showModal = ref(false);
 
 const navigateToRoute = async (routeName: string) => {
-    await router.push({ name: routeName });
+    await navigateTo({ name: routeName });
 };
 
 const navigateToRanking = () => navigateToRoute("ranking");

@@ -45,7 +45,7 @@ const props = defineProps<{
         @include horizontal-flex;
         
         .typo-list {
-            margin: calc(1vw) 0;
+            margin: calc(0.7vw) 0;
         }
     }
 

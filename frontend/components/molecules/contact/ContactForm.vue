@@ -9,6 +9,7 @@ import { Form } from 'vee-validate';
 import * as yup from "yup";
 
 const contact = ref("");
+const editCooldown = ref(false);
 const { isLoading, sendContentToServer } = useContact();
 const showNotification = ref(false);
 const message = ref("");
@@ -18,9 +19,15 @@ const validationSchema = yup.object().shape({
 });
 
 const handleSubmit = async () => {
+    editCooldown.value = true;
     showNotification.value = false;
     message.value = await sendContentToServer(contact.value);
     showNotification.value = true;
+
+    // 二重送信防止のためのクールダウン
+    setTimeout(() => {
+        editCooldown.value = false;
+    }, 10000);
 };
 </script>
 
@@ -35,7 +42,7 @@ const handleSubmit = async () => {
 
         <div class="buttons">
             <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
-            <Button type="submit" button-text="送信" border="main-color" :is-rounded="true" :disabled="!valid" />
+            <Button type="submit" button-text="送信" border="main-color" :is-rounded="true" :disabled="!valid || editCooldown" @dblclick.prevent />
         </div>
     </Form>
     <Loading :is-loading="isLoading" />

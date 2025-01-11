@@ -110,7 +110,7 @@ const handleSubmit = async () => {
                         <div class="buttons">
                             <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
                             <Button type="submit" button-text="送信" border="main-color" :is-rounded="true"
-                                :disabled="!valid" @click="handleSubmit" />
+                                :disabled="!valid" @click="handleSubmit" @dblclick.prevent />
                         </div>
                     </Form>
                 </div>

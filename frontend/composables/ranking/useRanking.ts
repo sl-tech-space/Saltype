@@ -30,20 +30,28 @@ export function useRanking() {
     const allCombinations = generateAllCombinations();
 
     // すべての組み合わせでランキングデータを取得
-    for (const { languageId, difficultyId } of allCombinations) {
-      const key = `${languageId}-${difficultyId}`;
-      const rankings = await _getRanking(languageId, difficultyId, limit);
-      rankingsByCombination.value[key] = rankings.data;
+    const rankingPromises = allCombinations.map(
+      async ({ languageId, difficultyId }) => {
+        const key = `${languageId}-${difficultyId}`;
+        const rankings = await _getRanking(languageId, difficultyId, limit);
+        return { key, rankings: rankings.data };
+      }
+    );
+
+    const results = await Promise.all(rankingPromises);
+
+    results.forEach(({ key, rankings }) => {
+      rankingsByCombination.value[key] = rankings;
 
       switch (key.charAt(0)) {
         case "1":
-          japaneseRankings.value[key] = rankingsByCombination.value[key];
+          dailyJapaneseRankings.value[key] = rankings;
           break;
         case "2":
-          englishRankings.value[key] = rankingsByCombination.value[key];
+          dailyEnglishRankings.value[key] = rankings;
           break;
       }
-    }
+    });
 
     isLoading.value = false;
   };
@@ -58,30 +66,38 @@ export function useRanking() {
     // 日付取得
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}`;
 
     // すべての組み合わせでランキングデータを取得
-    for (const { languageId, difficultyId } of allCombinations) {
-      const key = `${languageId}-${difficultyId}`;
-      const rankings = await _getRanking(
-        languageId,
-        difficultyId,
-        limit,
-        formattedDate
-      );
-      rankingsByCombination.value[key] = rankings.data;
+    const rankingPromises = allCombinations.map(
+      async ({ languageId, difficultyId }) => {
+        const key = `${languageId}-${difficultyId}`;
+        const rankings = await _getRanking(
+          languageId,
+          difficultyId,
+          limit,
+          formattedDate
+        );
+        return { key, rankings: rankings.data };
+      }
+    );
+
+    const results = await Promise.all(rankingPromises);
+
+    results.forEach(({ key, rankings }) => {
+      rankingsByCombination.value[key] = rankings;
 
       switch (key.charAt(0)) {
         case "1":
-          dailyJapaneseRankings.value[key] = rankingsByCombination.value[key];
+          dailyJapaneseRankings.value[key] = rankings;
           break;
         case "2":
-          dailyEnglishRankings.value[key] = rankingsByCombination.value[key];
+          dailyEnglishRankings.value[key] = rankings;
           break;
       }
-    }
+    });
   };
 
   /**
@@ -95,7 +111,11 @@ export function useRanking() {
   ): Promise<void> => {
     const splittedId = splitId(id);
 
-    const rankings = await _getRanking(splittedId.left, splittedId.right, limit);
+    const rankings = await _getRanking(
+      splittedId.left,
+      splittedId.right,
+      limit
+    );
 
     rankingDetails.value = rankings.data;
 
