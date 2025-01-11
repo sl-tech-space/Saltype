@@ -3,11 +3,15 @@ import UserInfo from '~/components/molecules/user/setting/UserInfo.vue';
 import UpdateUserName from '~/components/molecules/user/setting/UpdateUserName.vue';
 import UpdatePassword from '~/components/molecules/user/setting/UpdatePassword.vue';
 import MenuCard from '~/components/molecules/user/setting/MenuCard.vue';
+import Loading from '~/components/molecules/common/ui/Loading.vue';
+import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useSetting } from '~/composables/user/setting/useSetting';
+import { useErrorNotification } from '~/composables/common/useError';
 
 const currentCard = ref('userInfo');
 const isReverse = ref(false);
 const { getUserInfo, userItem, isLoading, error } = useSetting();
+const { showErrorNotification } = useErrorNotification(error);
 
 const changeCard = (cardName: string) => {
     isReverse.value = ['updateUserName', 'updatePassword'].includes(currentCard.value) && cardName === 'userInfo';
@@ -44,6 +48,8 @@ onMounted(async () => {
             <MenuCard @change-card="changeCard" />
         </div>
     </main>
+    <Loading :isLoading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

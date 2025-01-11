@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from apps.common.models import User
+from apps.common.serializers import BaseSerializer
 
 
-class ContactSerializer(serializers.Serializer):
+class ContactSerializer(BaseSerializer):
     """
     ユーザーからの要望を処理するためのシリアライザクラス。
     ユーザーIDの検証と要望内容のバリデーションを行います。
@@ -21,15 +21,6 @@ class ContactSerializer(serializers.Serializer):
         Returns:
             dict: バリデーションを通過したデータ。
         """
-        # ユーザーIDが提供されているか確認
-        if "user_id" in attrs:
-            try:
-                # ユーザーIDに対応するユーザーが存在するか確認
-                user = User.objects.get(pk=attrs["user_id"])
-                attrs["user"] = user
-            except User.DoesNotExist:
-                # ユーザーが存在しない場合はバリデーションエラーを発生させる
-                raise serializers.ValidationError(
-                    {"user_id": "指定されたユーザーは存在しません。"}
-                )
+        # ユーザーIDの存在を検証
+        attrs = self.check_user_id(attrs)
         return attrs

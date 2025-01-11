@@ -46,3 +46,10 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 """管理者のメールアドレス"""
 ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "").split(",")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    }
+}

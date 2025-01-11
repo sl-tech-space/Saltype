@@ -2,6 +2,8 @@ from apps.common.models import Score, User, Rank
 from django.db import transaction
 from django.db.models import Avg, Max
 from .base_view import BaseScoreView
+from django.core.cache import cache
+from rest_framework.exceptions import ValidationError
 
 
 class InsertScoreView(BaseScoreView):
@@ -9,6 +11,7 @@ class InsertScoreView(BaseScoreView):
     ユーザーのスコアを挿入または更新するためのAPIビュークラス。
     スコアの計算、データベースへの挿入、最高スコアの場合はランクの更新を行います。
     """
+
     RANKS = {
         900: "社長",
         800: "取締役",
@@ -18,10 +21,9 @@ class InsertScoreView(BaseScoreView):
         400: "主任",
         0: "メンバー",
     }
-
     SCORE_MULTIPLIER = 10  # スコア計算時の乗数
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         スコアを挿入または更新するリクエストを処理します。
         引数として提供されたデータに基づいてスコアを計算し、データベースに保存します。
@@ -46,12 +48,16 @@ class InsertScoreView(BaseScoreView):
             user.user_id, lang.lang_id, diff.diff_id, calculated_score
         )
 
+        # 挑戦結果のランクを決定
+        rank_name = self.determine_rank(typing_count)
+
+        # キャッシュにランク名を保存
+        cache_key = f"user_rank_{user.user_id}"
+        cache.set(cache_key, rank_name, timeout=3600)  # 1時間のキャッシュ
+
         # 最高ならランク更新
         if is_highest:
-            rank_name = self.determine_rank(typing_count)
             self.update_user_rank(user.user_id, rank_name)
-        else:
-            rank_name = self.determine_rank(typing_count)
 
         # スコアをインサート
         score_data = self.insert_score(
@@ -63,12 +69,8 @@ class InsertScoreView(BaseScoreView):
 
         return {
             "status": "success",
-            "user_id": score_data.user_id,
-            "lang_id": score_data.lang_id,
-            "diff_id": score_data.diff_id,
             "score": calculated_score,
             "is_highest": is_highest,
-            "rank_name": rank_name,
         }
 
     @transaction.atomic
@@ -138,11 +140,12 @@ class InsertScoreView(BaseScoreView):
         Returns:
             bool: 最高スコアの場合はTrue、それ以外はFalse。
         """
-        highest_score = Score.objects.filter(
-            user_id=user_id,
-            lang_id=lang_id,
-            diff_id=diff_id
-        ).order_by('-score').values_list('score', flat=True).first()
+        highest_score = (
+            Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id)
+            .order_by("-score")
+            .values_list("score", flat=True)
+            .first()
+        )
 
         return highest_score is None or score > highest_score
 
@@ -150,11 +153,6 @@ class InsertScoreView(BaseScoreView):
     def update_user_rank(self, user_id: int, rank_name: str) -> None:
         """
         ユーザーのランクを更新します。
-        新しいランクを決定し、ユーザーのランクIDを更新します。
-
-        Args:
-            score (int): ユーザーのスコア。
-            user_id (int): ユーザーID。
         """
         user = User.objects.select_for_update().get(user_id=user_id)
         rank = Rank.objects.get(rank=rank_name)
@@ -168,7 +166,7 @@ class GetScoreView(BaseScoreView):
     ユーザーの平均スコアや過去のスコアを取得します。
     """
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         ユーザーのスコアに関連するリクエストを処理します。
         `action` によって処理を分け、指定されたアクションに応じた処理を行います。
@@ -239,7 +237,7 @@ class GetUserRankingView(BaseScoreView):
     ユーザーのスコアが全体で何位かを計算します。
     """
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         ユーザーのスコアに基づくランキング位置を取得します。
         引数として提供されたスコアとユーザーIDを基に、ランキング位置を決定します。
@@ -285,21 +283,16 @@ class GetUserRankingView(BaseScoreView):
 
 class GetUserRankView(BaseScoreView):
     """
-    ユーザーIDに基づいてランクの名前を取得するためのAPIビュークラス。
+    ユーザーIDに基づいてキャッシュに登録されたランクの名前を取得するためのAPIビュークラス。
     """
 
-    def handle_request(self, validated_data: dict):
-        """
-        ユーザーIDに基づいてランクの名前を取得します。
-
-        Args:
-            validated_data (dict): バリデーションを通過したリクエストデータ。
-        Returns:
-            dict: ユーザーのランクの名前を含むレスポンスデータ。
-        """
+    def handle_post_request(self, validated_data: dict):
         user_id = validated_data["user_id"]
-        user = User.objects.get(user_id=user_id)
-        rank_name = user.rank.rank
+        cache_key = f"user_rank_{user_id}"
+
+        rank_name = cache.get(cache_key)
+
+        if rank_name is None:
+            raise ValidationError("キャッシュに登録されているランクが見つかりません。")
 
         return {"status": "success", "rank_name": rank_name}
-

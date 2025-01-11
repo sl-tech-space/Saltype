@@ -136,7 +136,7 @@ section {
 
     .card-body {
         flex: 1;
-        overflow-y: hidden;
+        overflow-y: auto;
     }
 }
 
@@ -178,6 +178,21 @@ section {
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
+    .card-width--small {
+        width: calc(50% - 1rem);
+    }
+
+    .card-width--medium {
+        width: calc(66.666% - 1rem);
+    }
+
+    .card-width--large,
+    .card-width--xl {
+        width: calc(100% - 1rem);
+    }
+}
+
+@media (max-width: 767px) {
     .card-width--small {
         width: calc(50% - 1rem);
     }

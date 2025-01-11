@@ -15,6 +15,7 @@ export interface UserList {
   email: string;
   todaysMaxScore: string;
   userRank: string;
+  passwordExists: boolean;
 }
 
 export interface ApiUserList {
@@ -23,4 +24,5 @@ export interface ApiUserList {
   email: string;
   highest_score: number | null;
   rank_name: string | null;
+  password_exists: boolean;
 }

@@ -5,9 +5,7 @@ import DifficultyLevel from '../common/carousels/DifficultyLevel.vue';
 import Language from '../common/carousels/Language.vue';
 import Separator from '~/components/atoms/ui/Separator.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
-import { useRouter } from '#app';
 
-const router = useRouter();
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
@@ -17,7 +15,7 @@ const handleStart = () => {
     const id: string = joinWithHyphen(selectedLanguage.value.toString(), selectedDifficulty.value.toString());
     localStorage.setItem("gameModeId", id);
 
-    router.push({ name: `typing-id`, params: { id: id } });
+    navigateTo({ name: `typing-id`, params: { id: id } });
 };
 </script>
 

@@ -10,7 +10,6 @@ export function useLogin() {
   const { authToken } = useAuthToken();
   const { user } = useUserInfo();
   const config = useRuntimeConfig();
-  const router = useRouter();
   const isLoading = ref(false);
   const isAdmin = ref(false);
   const error = ref<string | null>(null);
@@ -57,7 +56,7 @@ export function useLogin() {
 
       await authToken();
 
-      await router.push({ name: "home" });
+      await navigateTo({ name: "home" });
     } catch (e) {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";

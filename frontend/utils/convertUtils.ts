@@ -101,5 +101,6 @@ export function convertToUserList(apiUser: ApiUserList): UserList {
     email: apiUser.email,
     todaysMaxScore: apiUser.highest_score?.toString() ?? '0',
     userRank: apiUser.rank_name ?? 'N/A',
+    passwordExists: apiUser.password_exists,
   };
 }

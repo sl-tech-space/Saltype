@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
   font-size: 18px;
 }
 
-@media (min-width: 1366px) and (max-width: 1440px) {
+@media (max-width: 992px) {
   .text--small {
     font-size: 13px;
   }
@@ -61,6 +61,34 @@ const props = withDefaults(defineProps<Props>(), {
 
   .text--large {
     font-size: 17px;
+  }
+}
+
+@media (max-width: 768px) {
+  .text--small {
+    font-size: 12px;
+  }
+
+  .text--medium {
+    font-size: 14px;
+  }
+
+  .text--large {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .text--small {
+    font-size: 11px;
+  }
+
+  .text--medium {
+    font-size: 13px;
+  }
+
+  .text--large {
+    font-size: 15px;
   }
 }
 

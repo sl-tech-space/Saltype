@@ -42,58 +42,51 @@ const emit = defineEmits(['click']);
 </template>
 
 <style lang="scss" scoped>
-/* text */
-.button-text--white {
-  color: $white;
+$colors: (
+  white: $white,
+  black: $black,
+  main-color: $main-color,
+  sub-color: $sub-color,
+);
+
+@each $name, $color in $colors {
+  .button-text--#{"#{$name}"} {
+ color: $color;
 }
 
-.button-text--black {
-  color: $black;
+.button-border--#{"#{$name}"} {
+ border-color: $color;
 }
 
-.button-text--main-color {
-  color: $main-color;
+.button-background--#{"#{$name}"} {
+ background-color: $color;
 }
-
-.button-text--sub-color {
-  color: $sub-color;
-}
-
-/* border */
-.button-border--white {
-  border-color: $white;
-}
-
-.button-border--black {
-  border-color: $black;
-}
-
-.button-border--main-color {
-  border-color: $main-color;
-}
-
-.button-border--sub-color {
-  border-color: $sub-color;
 }
 
 .button-border--none {
   border: none;
 }
 
-/* width */
-.button-width--small {
-  max-width: 100%;
-  width: 80px;
+.button-background--none {
+  background-color: transparent;
 }
 
-.button-width--medium {
-  max-width: 100%;
-  width: 120px;
-}
+$sizes: (
+  small: (width: 80px, height: 30px),
+  medium: (width: 120px, height: 40px),
+  large: (width: 160px, height: 50px),
+);
 
-.button-width--large {
-  max-width: 100%;
-  width: 160px;
+@each $size, $values in $sizes {
+  .button-width--#{"#{$size}"} {
+    max-width: 100%;
+    width: if($size ==small, 80px, if($size ==medium, 120px, 160px));
+  }
+
+.button-height--#{"#{$size}"} {
+    max-height: 100%;
+    height: if($size ==small, 30px, if($size ==medium, 40px, 50px));
+  }
 }
 
 .button-width--same-as-input-large {
@@ -101,57 +94,8 @@ const emit = defineEmits(['click']);
   width: 350px;
 }
 
-/* height */
-.button-height--small {
-  max-height: 100%;
-  height: 30px;
-}
-
-.button-height--medium {
-  max-height: 100%;
-  height: 40px;
-}
-
-.button-height--large {
-  max-height: 100%;
-  height: 50px;
-}
-
-/* background */
-.button-background--white {
-  background-color: $white;
-}
-
-.button-background--black {
-  background-color: $black;
-}
-
-.button-background--main-color {
-  background-color: $main-color;
-}
-
-.button-background--sub-color {
-  background-color: $sub-color;
-}
-
-.button-background--none {
-  background-color: transparent;
-}
-
-/* round */
 .button--rounded {
   border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* hover */
-button:hover {
-  border-color: $hover-color;
-  cursor: pointer;
-
-  &:disabled {
-    border-color: $disabled-color;
-  }
 }
 
 button:disabled {
@@ -160,104 +104,10 @@ button:disabled {
   opacity: 0.6;
 }
 
-.active {
-  border-color: $sub-color;
-}
-
-/* responsive */
-@media (max-width: 1200px) {
-  .button-width--large {
-    width: 140px;
-  }
-
-  .button-width--same-as-input-large {
-    width: 300px;
-  }
-}
-
-@media (max-width: 992px) {
-  .button-width--medium {
-    width: 100px;
-  }
-
-  .button-width--large {
-    width: 120px;
-  }
-
-  .button-width--same-as-input-large {
-    width: 250px;
-  }
-
-  .button-height--large {
-    height: 45px;
-  }
-}
-
-@media (max-width: 768px) {
-  .button-width--small {
-    width: 70px;
-  }
-
-  .button-width--medium {
-    width: 90px;
-  }
-
-  .button-width--large {
-    width: 110px;
-  }
-
-  .button-width--same-as-input-large {
-    width: 200px;
-  }
-
-  .button-height--medium {
-    height: 35px;
-  }
-
-  .button-height--large {
-    height: 40px;
-  }
-}
-
-@media (max-width: 576px) {
-  .button-width--small {
-    width: 60px;
-  }
-
-  .button-width--medium {
-    width: 80px;
-  }
-
-  .button-width--large {
-    width: 100px;
-  }
-
-  .button-width--same-as-input-large {
-    width: 100%;
-  }
-
-  .button-height--small {
-    height: 28px;
-  }
-
-  .button-height--medium {
-    height: 32px;
-  }
-
-  .button-height--large {
-    height: 36px;
-  }
-
-  button {
-    font-size: 14px;
-  }
-}
-
 @media (hover: hover) {
   button:hover {
     border-color: $hover-color;
     cursor: pointer;
-
     &:disabled {
       border-color: $disabled-color;
     }

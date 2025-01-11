@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 
 from apps.common.models import User, Rank
-from apps.common.util.exception_handler import HandleExceptions
 from .base_view import BaseUserView
 
 
@@ -11,15 +10,12 @@ class GetUsersView(BaseUserView):
     すべてのユーザー情報を取得し、レスポンスとして返します。
     """
 
-    @HandleExceptions()
-    def get(self, request, *args, **kwargs):
+    def handle_get_request(self, *args, **kwargs):
         """
         ユーザー情報を全て取得するGETリクエストを処理します。
 
-        Args:
-            request: HTTPリクエストオブジェクト。
         Returns:
-            Response: ユーザー情報を含むHTTPレスポンス。
+            dict: ユーザー情報を含むレスポンスデータ。
         """
         users = User.objects.all()
         users_data = []
@@ -27,6 +23,9 @@ class GetUsersView(BaseUserView):
         for user in users:
             # 今日の最高スコアを取得する
             todays_highest_score = self.get_today_highest_score(user)
+
+            # パスワードの存在有無を確認（NULLかどうかをチェック）
+            password_exists = user.password is not None
 
             # ランク情報を個別に取得
             rank_name = None
@@ -41,10 +40,11 @@ class GetUsersView(BaseUserView):
                     "email": user.email,
                     "rank_name": rank_name,
                     "highest_score": todays_highest_score,
+                    "password_exists": password_exists,
                 }
             )
 
-        return Response({"data": users_data}, status=200)
+        return {"data": users_data}
 
 
 class GetUserView(BaseUserView):
@@ -52,14 +52,12 @@ class GetUserView(BaseUserView):
     指定したuser_idに基づくユーザー情報を取得するAPIビュークラス。
     """
 
-    def get(self, request, *args, **kwargs):
+    def handle_get_request(self, *args, **kwargs):
         """
         指定されたuser_idのユーザー情報を取得するGETリクエストを処理します。
 
-        Args:
-            request: HTTPリクエストオブジェクト。
         Returns:
-            Response: 指定されたユーザー情報を含むHTTPレスポンス。
+            dict: 指定されたユーザー情報を含むレスポンスデータ。
         """
         user_id = kwargs.get("user_id")
         user = User.objects.get(user_id=user_id)
@@ -81,7 +79,7 @@ class GetUserView(BaseUserView):
             "password_exists": password_exists,
         }
 
-        return Response({"data": user_data}, status=200)
+        return {"data": user_data}
 
 
 class UpdateUserView(BaseUserView):
@@ -90,7 +88,7 @@ class UpdateUserView(BaseUserView):
     ユーザーの情報を更新します。
     """
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         ユーザーの情報を更新するリクエストを処理します。
 
@@ -107,22 +105,24 @@ class UpdateUserView(BaseUserView):
         # ユーザーIDに基づいてユーザーを取得
         user = User.objects.get(user_id=user_id)
 
-        # ユーザー情報の更新
+        # ユーザー名とメールアドレスの更新
         user.username = validated_data.get("username", user.username)
         user.email = validated_data.get("email", user.email)
 
         password_updated = False
 
-        # google_loginがTrueの場合、パスワードが存在しない場合に新しいパスワードに更新
-        if google_login:
-            if not user.password:
-                user.set_password(new_password)
-                password_updated = True
-        else:
-            # google_loginがFalseの場合、現在のパスワードが一致するか確認し、新しいパスワードに更新
-            if user.check_password(password):
-                user.set_password(new_password)
-                password_updated = True
+        # パスワードの更新処理
+        if new_password:
+            if google_login:
+                # google_loginがTrueの場合、パスワードが存在しない場合に新しいパスワードに更新
+                if not user.password:
+                    user.set_password(new_password)
+                    password_updated = True
+            else:
+                # google_loginがFalseの場合、現在のパスワードが一致するか確認し、新しいパスワードに更新
+                if user.check_password(password):
+                    user.set_password(new_password)
+                    password_updated = True
 
         # 変更を保存
         user.save()
@@ -142,7 +142,7 @@ class DeleteUserView(BaseUserView):
     指定されたユーザーを削除します。
     """
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         ユーザーを削除するリクエストを処理します。
 

@@ -4,18 +4,18 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from .base_view import BaseAuthView
+from .base_view import BaseAuthenticationView
 from django.conf import settings
 
 
-class LoginView(BaseAuthView):
+class LoginView(BaseAuthenticationView):
     """
     ユーザーがオリジナルフォームからログインするためのAPIビュークラス。
     """
 
     permission_classes = [AllowAny]
 
-    def handle_request(self, validated_data):
+    def handle_post_request(self, validated_data):
         """
         ログインリクエストを処理します。
         バリデーションを通過したデータを用いてユーザーのトークンを取得または作成し、認証結果を返します。
@@ -26,7 +26,7 @@ class LoginView(BaseAuthView):
             dict: 認証結果を含むレスポンスデータ。
         """
         user = validated_data["user"]
-        token = self._get_or_create_token(user)
+        token = self.get_or_create_token(user)
 
         return {
             "status": "success",
@@ -36,7 +36,7 @@ class LoginView(BaseAuthView):
             "token": token.key,
         }
 
-    def _get_or_create_token(self, user):
+    def get_or_create_token(self, user):
         """
         ユーザーのトークンを取得または新規作成します。
 
@@ -49,7 +49,7 @@ class LoginView(BaseAuthView):
         return token
 
 
-class CheckTokenView(BaseAuthView):
+class CheckTokenView(BaseAuthenticationView):
     """
     トークンを使用した自動ログインAPIビュークラス。
     """
@@ -57,7 +57,7 @@ class CheckTokenView(BaseAuthView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def handle_get_request(self, request, *args, **kwargs):
         """
         GETメソッドでユーザー情報を返します。
         リクエストされたユーザー情報を取得し、レスポンスとして返します。
@@ -65,7 +65,7 @@ class CheckTokenView(BaseAuthView):
         Args:
             request (Request): クライアントからのリクエストオブジェクト。
         Returns:
-            Response: ユーザー情報を含むHTTPレスポンス。
+            dict: ユーザー情報を含むレスポンスデータ。
         """
         user = request.user
         user_data = {
@@ -73,17 +73,17 @@ class CheckTokenView(BaseAuthView):
             "username": user.username,
             "email": user.email,
         }
-        return Response(user_data)
+        return user_data
 
 
-class GoogleAuthView(BaseAuthView):
+class GoogleAuthView(BaseAuthenticationView):
     """
     Google認証APIビュークラス。
     """
 
     permission_classes = [AllowAny]
 
-    def handle_request(self, validated_data):
+    def handle_post_request(self, validated_data):
         """
         Google認証リクエストを処理します。
         バリデーションを通過したデータを用いてユーザーを作成または更新し、トークンを取得して認証結果を返します。

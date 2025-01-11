@@ -168,6 +168,73 @@ defineEmits(["update:modelValue"]);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* responsive */
+@media (max-width: 992px) {
+  .input-width--medium {
+    width: 200px;
+  }
+
+  .input-width--large {
+    width: 300px;
+  }
+
+  .input-height--large {
+    height: 45px;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-width--small {
+    width: 170px;
+  }
+
+  .input-width--medium {
+    width: 190px;
+  }
+
+  .input-width--large {
+    width: 210px;
+  }
+
+  .input-height--medium {
+    height: 35px;
+  }
+
+  .input-height--large {
+    height: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .input-width--small {
+    width: 160px;
+  }
+
+  .input-width--medium {
+    width: 180px;
+  }
+
+  .input-width--large {
+    width: 200px;
+  }
+
+  .input-height--small {
+    height: 28px;
+  }
+
+  .input-height--medium {
+    height: 32px;
+  }
+
+  .input-height--large {
+    height: 36px;
+  }
+
+  input {
+    font-size: 14px;
+  }
+}
+
 input {
   font-size: 1.2rem;
 

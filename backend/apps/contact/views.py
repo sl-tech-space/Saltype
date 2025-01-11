@@ -1,5 +1,7 @@
-from apps.contact.email import ContactEmail
-from rest_framework.permissions import AllowAny
+from django.conf import settings
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+from rest_framework.exceptions import ValidationError
 from .base_view import BaseContactView
 
 
@@ -9,9 +11,7 @@ class ContactView(BaseContactView):
     ユーザーからの要望をメールで送信するための処理を実装します。
     """
 
-    permission_classes = [AllowAny]
-
-    def handle_request(self, validated_data: dict) -> dict:
+    def handle_post_request(self, validated_data: dict) -> dict:
         """
         要望を送信するリクエストを処理します。
         バリデーションを通過したデータを用いてメールを送信します。
@@ -21,10 +21,23 @@ class ContactView(BaseContactView):
         Returns:
             dict: 要望送信結果を含むレスポンスデータ。
         """
-        # ContactEmailクラスを使用して要望をメールで送信
-        request_email = ContactEmail(
-            validated_data["user_id"], validated_data["request_content"]
+        user_id = validated_data["user_id"]
+        request_content = validated_data["request_content"]
+
+        # ユーザー情報を取得
+        User = get_user_model()
+        user = User.objects.get(pk=user_id)
+
+        # メール送信
+        subject = f"{user.username}から要望が届いています。"
+        message = f"{user.username} から:\n\n{request_content}\n"
+
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[settings.EMAIL_HOST_USER],
+            fail_silently=False,
         )
-        request_email.send_request_email()
 
         return {"message": "要望が正常に送信されました。"}

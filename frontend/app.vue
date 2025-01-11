@@ -3,8 +3,10 @@ import CustomStyles from './components/molecules/common/ui/CustomStyles.vue';
 </script>
 
 <template>
-  <CustomStyles />
-  <NuxtPage />
+  <VitePwaManifest />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <style lang="scss" src="@/assets/styles/global.scss" />

@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from apps.common.serializers import BaseSerializer
+from rest_framework.exceptions import ValidationError
 
 
 class AuthenticationSerializer(BaseSerializer):
@@ -17,52 +17,41 @@ class AuthenticationSerializer(BaseSerializer):
     username = serializers.CharField(max_length=150, required=False)  # ユーザー名
     picture = serializers.URLField(required=False, allow_blank=True)  # 画像URL
 
-    def validate(self, data):
+    def validate(self, attrs):
         """
         入力されたデータを検証し、認証を行います。
-
-        Args:
-            data (dict): バリデーション対象のデータ。
-
-        Returns:
-            dict: 認証されたユーザーを含むデータ。
         """
-        email = data.get("email")
-        if not email:
-            raise ValidationError({"email": "メールアドレスが必要です。"})
+        # メールアドレスの検証を行う
+        attrs = self.check_email(attrs)
+        # パスワードの検証を行う
+        attrs = self.check_password(attrs)
 
-        password = data.get("password")
+        email = attrs.get("email")
+        password = attrs.get("password")
         if password:
-            self._validate_min_length(password)
+            # ユーザーを認証する
             user = authenticate(
                 request=self.context.get("request"), username=email, password=password
             )
             if user is None:
+                # 認証に失敗した場合のエラーメッセージ
                 raise ValidationError(
-                    _("メールアドレスまたはパスワードが正しくありません。"),
+                    {"detail": _("メールアドレスまたはパスワードが正しくありません。")},
                     code="authorization",
                 )
             if not user.is_active:
+                # ユーザーアカウントが無効な場合のエラーメッセージ
                 raise ValidationError(
-                    _("ユーザーアカウントが無効です。"), code="authorization"
+                    {"detail": _("ユーザーアカウントが無効です。")},
+                    code="authorization",
                 )
-            data["user"] = user
+            # 認証に成功したユーザーを属性に追加
+            attrs["user"] = user
         else:
-            username = data.get("username")
+            # パスワードが提供されていない場合、ユーザー名の存在を確認
+            username = attrs.get("username")
             if not username:
+                # ユーザー名が必要な場合のエラーメッセージ
                 raise ValidationError({"username": "ユーザー名が必要です。"})
 
-        return data
-
-    def _validate_min_length(self, value, min_length=8):
-        """
-        パスワードの長さを検証します。
-
-        Args:
-            value (str): 検証対象のパスワード。
-            min_length (int): パスワードの最小長。
-        """
-        if len(value) < min_length:
-            raise ValidationError(
-                f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字"
-            )
+        return attrs

@@ -3,5 +3,9 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "types": ["nuxt-security"]
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+  ]
 }

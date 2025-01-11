@@ -2,7 +2,6 @@
 import Title from "~/components/atoms/texts/Title.vue";
 import Button from "~/components/atoms/buttons/Button.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
-import { useRouter } from "#app";
 
 interface Props {
     title?: string
@@ -13,10 +12,8 @@ const props = withDefaults(defineProps<Props>(), {
     onBackClick: "home"
 });
 
-const router = useRouter();
-
 const onBackClick = () => {
-    router.push({ name: props.onBackClick });
+    navigateTo({ name: props.onBackClick });
 }
 </script>
 

@@ -2,64 +2,63 @@ from rest_framework import serializers
 from apps.common.models import Diff, Lang, User
 from apps.common.serializers import BaseSerializer
 from rest_framework.exceptions import ValidationError
+from django.core.cache import cache
 
 
 class ScoreSerializer(BaseSerializer):
     """
     スコアデータを処理するためのシリアライザクラス。
-    ユーザーID、言語ID、難易度ID、タイピング数、正確度、スコアのバリデーションを行います。
+    ユーザーID、言語ID、難易度ID、アクション、タイピング数、正確度、スコアに関するバリデーションを行います。
     """
 
     ACTION_CHOICES = ["get_average_score", "get_past_scores"]  # アクションの選択肢
     action = serializers.ChoiceField(
         choices=ACTION_CHOICES, required=False
     )  # アクションフィールド
-    user_id = serializers.UUIDField()  # ユーザーID
+    user_id = serializers.UUIDField()  # ユーザーID（必須）
     lang_id = serializers.IntegerField(required=False)  # 言語ID
     diff_id = serializers.IntegerField(required=False)  # 難易度ID
-    typing_count = serializers.IntegerField(required=False, min_value=0)  # タイピング数
+    typing_count = serializers.IntegerField(
+        required=False, min_value=0
+    )  # タイピング数（オプション、0以上）
     accuracy = serializers.FloatField(
         required=False, min_value=0, max_value=1
-    )  # 正確度
-    score = serializers.IntegerField(required=False, min_value=0)  # スコア
+    )  # 正確度（オプション、0〜1の範囲）
+    score = serializers.IntegerField(
+        required=False, min_value=0
+    )  # スコア（オプション、0以上）
 
     def validate(self, attrs):
         """
         入力データに対してバリデーションを実行します。
-        ユーザー、言語、難易度の存在確認、アクションの検証を行います。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-        Returns:
-            dict: バリデーションを通過したデータ。
+        ユーザーID、言語ID、難易度ID、アクションの有効性を確認します。
         """
-        # ユーザーの存在を確認し、オブジェクトを追加
-        user_id = attrs.get("user_id")
-        if user_id:
-            try:
-                attrs["user"] = User.objects.get(pk=user_id)
-            except User.DoesNotExist:
-                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
 
-        # 言語の存在を確認し、オブジェクトを追加
-        lang_id = attrs.get("lang_id")
-        if lang_id:
-            try:
-                attrs["lang"] = Lang.objects.get(pk=lang_id)
-            except Lang.DoesNotExist:
-                raise ValidationError({"lang_id": "指定された言語は存在しません。"})
+        # ユーザーIDの存在確認
+        attrs = self.check_user_id(attrs)
+        # 言語IDの存在確認
+        attrs = self.check_lang_id(attrs)
+        # 難易度IDの存在確認
+        attrs = self.check_diff_id(attrs)
+        # アクションの選択肢が有効であることを確認
+        attrs = self.check_action(attrs, self.ACTION_CHOICES)
 
-        # 難易度の存在を確認し、オブジェクトを追加
-        diff_id = attrs.get("diff_id")
-        if diff_id:
-            try:
-                attrs["diff"] = Diff.objects.get(pk=diff_id)
-            except Diff.DoesNotExist:
-                raise ValidationError({"diff_id": "指定された難易度は存在しません。"})
-
-        # アクションの検証
-        action = attrs.get("action")
-        if action and action not in self.ACTION_CHOICES:
-            raise ValidationError("無効なアクションが指定されました。")
+        # キャッシュキーのバリデーション
+        self.validate_cache_key(attrs)
 
         return attrs
+
+    def validate_cache_key(self, attrs):
+        """
+        キャッシュに登録されているキーとリクエストのキーが一致するか確認します。
+        """
+        user_id = attrs.get("user_id")
+        cache_key = f"user_rank_{user_id}"
+        cached_rank_name = cache.get(cache_key)
+
+        if cached_rank_name is not None:
+            # キャッシュが存在する場合のみバリデーションを実行
+            if cache_key != f"user_rank_{user_id}":
+                raise ValidationError(
+                    "リクエストのユーザーIDとキャッシュのユーザーIDが一致しません。"
+                )

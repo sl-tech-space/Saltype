@@ -45,8 +45,8 @@ onMounted(() => {
     <Separator color="sub-color" width="small" margin="vertical" />
   </div>
   <div class="google-auth">
-    <Button @click="handleLoginWithGoogle()" border="sub-color" width="same-as-input-large" height="large"
-      :is-rounded="true" class="auth-button">
+    <Button border="sub-color" width="same-as-input-large" height="large" :is-rounded="true"
+      @click="handleLoginWithGoogle()" @dblclick.prevent class="auth-button">
       <template #any>
         <Image :image-src="googleIcon" alt="google-icon" width="mini" height="mini" />
         Googleで認証

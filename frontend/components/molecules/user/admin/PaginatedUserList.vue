@@ -10,13 +10,14 @@ import { useAdmin } from '~/composables/user/admin/useAdmin';
 
 const props = defineProps<{
     items: Array<{
-        userId: string;
-        userName: string;
-        email: string;
-        todaysMaxScore: string;
-        userRank: string;
+        userId: string; // ユーザID
+        userName: string; // ユーザ名
+        email: string; // メールアドレス
+        todaysMaxScore: string; // 本日の最高スコア
+        userRank: string; // ユーザランク
+        passwordExists: boolean; // パスワードの有無
     }>;
-    itemsPerPage: number;
+    itemsPerPage: number; // 1ページあたりの表示数
 }>();
 
 const editingItem = ref<string | null>(null);
@@ -29,12 +30,14 @@ const { deleteUserInfo } = useAdmin();
 const emit = defineEmits(['user-updated']);
 
 const showConfirmModal = ref(false);
+const editCooldown = ref(false);
 const deleteItem = ref<string | null>(null);
 const deleteItemName = ref<string | null>(null);
 
 const currentPage = ref(1);
 const totalPages = computed(() => Math.ceil(props.items.length / props.itemsPerPage));
 
+// 現在のページで表示する情報　ページ切り替えごとに計算
 const currentItems = computed(() => {
     const start = (currentPage.value - 1) * props.itemsPerPage;
     const end = start + props.itemsPerPage;
@@ -47,14 +50,20 @@ const changePage = (page: number) => {
 };
 
 const startEditing = (item: { userId: string; userName: string; email: string }) => {
+    editCooldown.value = true;
     editingItem.value = item.userId;
     editedUserName.value = item.userName;
     editedEmail.value = item.email;
+
+    // 編集ボタンの連打で保存ボタンが押下されるため一定時間非活性化
+    setTimeout(() => {
+        editCooldown.value = false;
+    }, 300);
 };
 
-const saveEdits = async (item: { userId: string; userName: string; email: string }) => {
+const saveEdits = async (item: { userId: string; userName: string; email: string, passwordExists: boolean }) => {
     showNotification.value = false;
-    message.value = await updateUserInfo({ userId: item.userId, userName: editedUserName.value, email: editedEmail.value });
+    message.value = await updateUserInfo({ userId: item.userId, userName: editedUserName.value, email: editedEmail.value, googleLoginFlg: item.passwordExists });
     showNotification.value = true;
     editingItem.value = null;
     emit('user-updated');
@@ -88,7 +97,7 @@ const cancelDelete = () => {
     <div class="user-list">
         <ul class="list-container">
             <li class="list-item list-header">
-                <Text size="large" class="item-text username">ユーザー名</Text>
+                <Text size="large" class="item-text username">ユーザ名</Text>
                 <Text size="large" class="item-text email">メールアドレス</Text>
                 <Text size="large" class="item-text score">最高スコア</Text>
                 <Text size="large" class="item-text rank">ランク</Text>
@@ -96,10 +105,10 @@ const cancelDelete = () => {
             </li>
             <li v-for="item in currentItems" :key="item.userId" class="list-item">
                 <template v-if="editingItem === item.userId">
-                    <Input type="text" v-model="editedUserName" border="main-color" :is-rounded="true" width="large"
-                        height="small" class="edit-input username" />
-                    <Input type="email" v-model="editedEmail" border="main-color" :is-rounded="true" width="large"
-                        height="small" class="edit-input email" />
+                    <Input type="text" v-model="editedUserName" placeholder="ユーザ名" border="main-color"
+                        :is-rounded="true" width="large" height="small" class="edit-input username" />
+                    <Input type="email" v-model="editedEmail" placeholder="メールアドレス" border="main-color"
+                        :is-rounded="true" width="large" height="small" class="edit-input email" />
                 </template>
                 <template v-else>
                     <Text size="large" class="item-text username">{{ item.userName }}</Text>
@@ -110,7 +119,7 @@ const cancelDelete = () => {
                 <div class="button-container">
                     <template v-if="editingItem === item.userId">
                         <Button type="button" button-text="保存" border="main-color" :is-rounded="true"
-                            @click="saveEdits(item)" />
+                            @click="saveEdits(item)" @dblclick.prevent :disabled="editCooldown" />
                         <Button type="button" button-text="キャンセル" border="main-color" :is-rounded="true"
                             @click="cancelEditing" />
                     </template>
@@ -136,7 +145,8 @@ const cancelDelete = () => {
 <style lang="scss" scoped>
 .user-list {
     width: 100%;
-    @include horizontal-centered-flex
+    @include horizontal-centered-flex;
+    padding-bottom: 70px;
 }
 
 .list-container {

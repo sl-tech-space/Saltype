@@ -21,7 +21,10 @@ class TestRankingDetailsPage:
 
             ranking_element = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[1]")
+                    (
+                        By.XPATH,
+                        "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[1]",
+                    )
                 )
             )
 
@@ -29,19 +32,26 @@ class TestRankingDetailsPage:
 
             WebDriverWait(driver, 10).until(EC.title_contains("ランキング"))
 
-            SeleniumUtil.take_screenshot(driver, "ranking_details", "項番1", "ランキング画面")
-            
+            SeleniumUtil.take_screenshot(
+                driver, "ranking_details", "項番1", "ランキング画面"
+            )
+
             driver.execute_script("window.scrollBy(0, window.innerHeight);")
-            
+
             more_button = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//*[@id='__nuxt']/div[5]/main/div/section[1]/div[5]/div/button")
+                    (
+                        By.XPATH,
+                        "//*[@id='__nuxt']/div[5]/main/div/section[1]/div[5]/div/button",
+                    )
                 )
             )
-            
+
             more_button.click()
-            
-            SeleniumUtil.take_screenshot(driver, "ranking_details", "項番1", "ランキング詳細画面")
+
+            SeleniumUtil.take_screenshot(
+                driver, "ranking_details", "項番1", "ランキング詳細画面"
+            )
 
         except Exception as e:
             print(f"項番1. ランキング画面が表示されること : {e}")
@@ -61,7 +71,10 @@ class TestRankingDetailsPage:
 
             ranking_element = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[1]")
+                    (
+                        By.XPATH,
+                        "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[1]",
+                    )
                 )
             )
 
@@ -69,19 +82,26 @@ class TestRankingDetailsPage:
 
             WebDriverWait(driver, 10).until(EC.title_contains("ランキング"))
 
-            SeleniumUtil.take_screenshot(driver, "ranking_details", "項番2", "ランキング画面")
-            
+            SeleniumUtil.take_screenshot(
+                driver, "ranking_details", "項番2", "ランキング画面"
+            )
+
             driver.execute_script("window.scrollBy(0, window.innerHeight);")
-            
+
             more_button = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//*[@id='__nuxt']/div[5]/main/div/section[1]/div[5]/div/button")
+                    (
+                        By.XPATH,
+                        "//*[@id='__nuxt']/div[5]/main/div/section[1]/div[5]/div/button",
+                    )
                 )
             )
-            
+
             more_button.click()
-            
-            SeleniumUtil.take_screenshot(driver, "ranking_details", "項番2", "ランキング詳細画面")
+
+            SeleniumUtil.take_screenshot(
+                driver, "ranking_details", "項番2", "ランキング詳細画面"
+            )
 
             back_button = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, ".header-right button"))
@@ -91,7 +111,9 @@ class TestRankingDetailsPage:
 
             WebDriverWait(driver, 10).until(EC.title_contains("ランキング"))
 
-            SeleniumUtil.take_screenshot(driver, "ranking_details", "項番2", "戻るボタン押下後")
+            SeleniumUtil.take_screenshot(
+                driver, "ranking_details", "項番2", "戻るボタン押下後"
+            )
 
         except Exception as e:
             print(f"項番2. 戻るボタンでランキング画面に遷移すること : {e}")

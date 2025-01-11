@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@sidebase/nuxt-session": "^0.2.8",
+    "@vite-pwa/nuxt": "^0.10.6",
     "@types/lodash": "^4.17.7",
     "@vee-validate/i18n": "^4.13.2",
     "@vee-validate/rules": "^4.13.2",
@@ -43,7 +44,9 @@
     "@vitest/coverage-v8": "^2.1.2",
     "happy-dom": "^15.10.2",
     "sass": "^1.77.8",
-    "vitest": "^2.1.2"
+    "terser": "^5.37.0",
+    "vitest": "^2.1.2",
+    "vue-tsc": "^2.1.10"
   },
   "overrides": {
     "vue": "latest"
