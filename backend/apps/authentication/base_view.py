@@ -1,31 +1,38 @@
-from apps.common.util.exception_handler import HandleExceptions
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from apps.common.views import BaseView
 from .serializers import AuthenticationSerializer
 
 
-class BaseAuthView(APIView):
+class BaseAuthView(BaseView):
     """
     認証に関連する操作を行うための基底クラス。
     認証関連のリクエストを処理する共通のロジックを提供します。
     """
 
-    @HandleExceptions()
-    def post(self, request, *args, **kwargs):
+    permission_classes = [AllowAny]
+
+    def handle_post_request(self, validated_data):
         """
-        POSTメソッドでリクエストを処理し、バリデーション後にサブクラスの処理を呼び出します。
+        サブクラスで実装されるべきリクエストデータの処理ロジック。
 
         Args:
-            request: HTTPリクエストオブジェクト。リクエストのデータを含む。
+            validated_data (dict): バリデーションを通過したリクエストデータ。
         Returns:
-            Response: 処理結果やエラーを含むHTTPレスポンス。
+            dict: 処理結果を返す辞書。
         """
-        serializer = AuthenticationSerializer(
-            data=request.data, context={"request": request}
+        raise NotImplementedError(
+            "サブクラスはhandle_post_requestメソッドを実装する必要があります"
         )
-        serializer.is_valid(raise_exception=True)
-        return Response(
-            self.handle_request(serializer.validated_data),
-            status=status.HTTP_200_OK,
+
+    def handle_get_request(self, *args, **kwargs):
+        """
+        サブクラスで実装されるべきGETリクエストデータの処理ロジック。
+
+        Args:
+            *args, **kwargs: 任意の引数。
+        Returns:
+            dict: 処理結果を返す辞書。
+        """
+        raise NotImplementedError(
+            "サブクラスはhandle_get_requestメソッドを実装する必要があります"
         )
