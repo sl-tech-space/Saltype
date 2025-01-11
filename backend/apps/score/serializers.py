@@ -7,7 +7,6 @@ from rest_framework.exceptions import ValidationError
 class ScoreSerializer(BaseSerializer):
     """
     スコアデータを処理するためのシリアライザクラス。
-    ユーザーID、言語ID、難易度ID、タイピング数、正確度、スコアのバリデーションを行います。
     """
 
     ACTION_CHOICES = ["get_average_score", "get_past_scores"]  # アクションの選択肢
@@ -26,21 +25,12 @@ class ScoreSerializer(BaseSerializer):
     def validate(self, attrs):
         """
         入力データに対してバリデーションを実行します。
-        ユーザー、言語、難易度の存在確認、アクションの検証を行います。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-        Returns:
-            dict: バリデーションを通過したデータ。
         """
-        # 共通のバリデーションメソッドを使用
         attrs = self.check_user_id(attrs)
         attrs = self.check_lang_id(attrs)
         attrs = self.check_diff_id(attrs)
-
-        # アクションの検証
-        action = attrs.get("action")
-        if action and action not in self.ACTION_CHOICES:
-            raise ValidationError("無効なアクションが指定されました。")
+        attrs = self.check_action(
+            attrs, self.ACTION_CHOICES
+        )  # アクションのバリデーションを追加
 
         return attrs

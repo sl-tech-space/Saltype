@@ -2,6 +2,7 @@ from rest_framework.permissions import AllowAny
 from apps.common.views import BaseView
 from .serializers import MistypeSerializer
 
+
 class BaseMistypeView(BaseView):
     """
     ミスタイプに関連する操作のための基底クラス。

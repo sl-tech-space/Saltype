@@ -22,5 +22,5 @@ class ContactSerializer(BaseSerializer):
             dict: バリデーションを通過したデータ。
         """
         # ユーザーIDの存在を検証
-        self.check_user_id(attrs)
+        attrs = self.check_user_id(attrs)
         return attrs

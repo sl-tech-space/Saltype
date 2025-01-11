@@ -9,6 +9,7 @@ class InsertScoreView(BaseScoreView):
     ユーザーのスコアを挿入または更新するためのAPIビュークラス。
     スコアの計算、データベースへの挿入、最高スコアの場合はランクの更新を行います。
     """
+
     RANKS = {
         900: "社長",
         800: "取締役",
@@ -20,7 +21,7 @@ class InsertScoreView(BaseScoreView):
     }
 
     SCORE_MULTIPLIER = 10  # スコア計算時の乗数
-    
+
     def handle_post_request(self, validated_data: dict):
         """
         スコアを挿入または更新するリクエストを処理します。

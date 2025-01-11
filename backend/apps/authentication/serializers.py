@@ -17,23 +17,16 @@ class AuthenticationSerializer(BaseSerializer):
     username = serializers.CharField(max_length=150, required=False)  # ユーザー名
     picture = serializers.URLField(required=False, allow_blank=True)  # 画像URL
 
-    def validate(self, data):
+    def validate(self, attrs):
         """
         入力されたデータを検証し、認証を行います。
-
-        Args:
-            data (dict): バリデーション対象のデータ。
-
-        Returns:
-            dict: 認証されたユーザーを含むデータ。
         """
-        email = data.get("email")
-        if not email:
-            raise ValidationError({"email": "メールアドレスが必要です。"})
+        attrs = self.check_email(attrs)
+        attrs = self.check_password(attrs)
 
-        password = data.get("password")
+        email = attrs.get("email")
+        password = attrs.get("password")
         if password:
-            self._validate_min_length(password)
             user = authenticate(
                 request=self.context.get("request"), username=email, password=password
             )
@@ -46,23 +39,10 @@ class AuthenticationSerializer(BaseSerializer):
                 raise ValidationError(
                     {"detail": _("ユーザーアカウントが無効です。")}, code="authorization"
                 )
-            data["user"] = user
+            attrs["user"] = user
         else:
-            username = data.get("username")
+            username = attrs.get("username")
             if not username:
                 raise ValidationError({"username": "ユーザー名が必要です。"})
 
-        return data
-
-    def _validate_min_length(self, value, min_length=8):
-        """
-        パスワードの長さを検証します。
-
-        Args:
-            value (str): 検証対象のパスワード。
-            min_length (int): パスワードの最小長。
-        """
-        if len(value) < min_length:
-            raise ValidationError(
-                {"password": f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字"}
-            )
+        return attrs

@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from apps.common.util.exception_handler import HandleExceptions
 
+
 class BaseView(APIView):
     """
     共通の基底クラス。サブクラスで具体的な処理を実装する必要があります。
@@ -78,4 +79,4 @@ class BaseView(APIView):
         Returns:
             int: HTTPステータスコード。
         """
-        return status.HTTP_200_OK 
+        return status.HTTP_200_OK
