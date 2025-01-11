@@ -86,8 +86,6 @@ export function useRanking() {
 
     const results = await Promise.all(rankingPromises);
 
-    console.log(results);
-
     results.forEach(({ key, rankings }) => {
       rankingsByCombination.value[key] = rankings;
 
