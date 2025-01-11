@@ -45,10 +45,10 @@ export function useRanking() {
 
       switch (key.charAt(0)) {
         case "1":
-          dailyJapaneseRankings.value[key] = rankings;
+          japaneseRankings.value[key] = rankings;
           break;
         case "2":
-          dailyEnglishRankings.value[key] = rankings;
+          englishRankings.value[key] = rankings;
           break;
       }
     });

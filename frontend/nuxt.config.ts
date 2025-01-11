@@ -119,34 +119,36 @@ export default defineNuxtConfig({
       },
     },
   },
+  nitro: {
+    compressPublicAssets: true,
+  },
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: "autoUpdate",
     manifest: {
-      name: 'Saltype',
-      short_name: 'Saltype',
-      theme_color: '#ffffff',
+      name: "Saltype",
+      short_name: "Saltype",
+      theme_color: "#ffffff",
       icons: [
         {
-          src: 'saltype-pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
+          src: "saltype-pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
         },
         {
-          src: 'saltype-pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
+          src: "saltype-pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
         },
         {
-          src: 'saltype-pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'maskable',
+          src: "saltype-pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "maskable",
         },
       ],
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-      navigateFallback: '/',
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
       cleanupOutdatedCaches: true,
     },
     client: {
@@ -154,8 +156,8 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 3600,
     },
     devOptions: {
-      enabled: process.env.NUXT_ENV !== "production",
-      type: 'module',
+      enabled: true,
+      type: "module",
     },
   },
 });
