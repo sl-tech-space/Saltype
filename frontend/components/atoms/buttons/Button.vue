@@ -233,7 +233,7 @@ button:disabled {
   }
 
   .button-width--same-as-input-large {
-    width: 100%;
+    width: 200px;
   }
 
   .button-height--small {
