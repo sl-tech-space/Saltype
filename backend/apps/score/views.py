@@ -47,12 +47,12 @@ class InsertScoreView(BaseScoreView):
             user.user_id, lang.lang_id, diff.diff_id, calculated_score
         )
 
+        # 挑戦結果のランクを決定
+        challenge_rank_name = self.determine_rank(typing_count)
+
         # 最高ならランク更新
         if is_highest:
-            rank_name = self.determine_rank(typing_count)
-            self.update_user_rank(user.user_id, rank_name)
-        else:
-            rank_name = self.determine_rank(typing_count)
+            self.update_user_rank(user.user_id, challenge_rank_name)
 
         # スコアをインサート
         score_data = self.insert_score(
@@ -69,7 +69,7 @@ class InsertScoreView(BaseScoreView):
             "diff_id": score_data.diff_id,
             "score": calculated_score,
             "is_highest": is_highest,
-            "rank_name": rank_name,
+            "rank_name": challenge_rank_name,
         }
 
     @transaction.atomic
