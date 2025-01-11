@@ -73,7 +73,7 @@ class CheckTokenView(BaseAuthenticationView):
             "username": user.username,
             "email": user.email,
         }
-        return {"data": user_data}
+        return user_data
 
 
 class GoogleAuthView(BaseAuthenticationView):
