@@ -7,8 +7,7 @@ from apps.common.serializers import BaseSerializer
 
 class UserSerializer(BaseSerializer):
     """
-    ユーザー関連のデータをシリアライズおよびバリデーションするためのクラス。
-    ユーザーID、ユーザー名、メールアドレス、パスワードなどのデータを検証します。
+    ユーザー関連のリクエストデータを検証するためのシリアライザクラス
     """
 
     user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
@@ -20,29 +19,46 @@ class UserSerializer(BaseSerializer):
     )  # メールアドレス（Email形式）
     google_login = serializers.BooleanField(required=False)  # Googleログインフラグ
     password = serializers.CharField(
-        write_only=True, required=False, max_length=128
+        write_only=True, required=False, min_length=8, max_length=128
     )  # パスワード
     new_password = serializers.CharField(
-        write_only=True, required=False, max_length=128
+        write_only=True, required=False, min_length=8 ,max_length=128
     )  # 新しいパスワード
 
     def validate(self, attrs):
         """
         入力データに対してバリデーションを実行します。
-        ユーザーIDの存在確認、ユーザー名とメールアドレスの重複検証、パスワードの検証を行います。
 
         Args:
             attrs (dict): バリデーション対象のデータ。
         Returns:
             dict: バリデーションを通過したデータ。
         """
-        # ユーザーIDの存在を検証
         attrs = self.check_user_id(attrs)
 
-        # ユーザー名とメールアドレスの重複を一度のクエリで検証
-        username = attrs.get("username")
-        email = attrs.get("email")
-        user_id = attrs.get("user_id")
+        self.validate_unique_username_and_email(
+            attrs.get("username"), attrs.get("email"), attrs.get("user_id")
+        )
+
+        if not attrs.get("google_login"):
+            self.validate_passwords(
+                attrs.get("password"), attrs.get("new_password"), attrs.get("user")
+            )
+
+        return attrs
+
+    def validate_unique_username_and_email(self, username, email, user_id):
+        """
+        ユーザー名とメールアドレスの重複を検証します。
+
+        Args:
+            username (str): ユーザー名。
+            email (str): メールアドレス。
+            user_id (UUID): ユーザーID。
+
+        Raises:
+            ValidationError: ユーザー名またはメールアドレスが既に使用されている場合。
+        """
         existing_users = User.objects.filter(
             Q(username=username) | Q(email=email)
         ).exclude(pk=user_id)
@@ -56,14 +72,19 @@ class UserSerializer(BaseSerializer):
                     {"email": "このメールアドレスは既に使用されています。"}
                 )
 
-        # パスワードの検証
-        password = attrs.get("password")
-        new_password = attrs.get("new_password")
-        google_login = attrs.get("google_login")
+    def validate_passwords(self, password, new_password, user):
+        """
+        パスワードの検証を行います。
 
-        # google_loginがFalseの場合にのみパスワードの確認を行う
-        if not google_login and password and new_password:
-            user = attrs.get("user")
+        Args:
+            password (str): 現在のパスワード。
+            new_password (str): 新しいパスワード。
+            user (User): ユーザーオブジェクト。
+
+        Raises:
+            ValidationError: パスワードが正しくない場合や新しいパスワードが現在のパスワードと同じ場合。
+        """
+        if password and new_password:
             if user and not user.check_password(password):
                 raise ValidationError(
                     {"password": "現在のパスワードが正しくありません。"}
@@ -74,5 +95,3 @@ class UserSerializer(BaseSerializer):
                         "new_password": "新しいパスワードは現在のパスワードと異なる必要があります。"
                     }
                 )
-
-        return attrs

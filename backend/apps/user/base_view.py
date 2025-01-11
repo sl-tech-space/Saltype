@@ -7,11 +7,11 @@ from apps.common.views import BaseView
 
 class BaseUserView(BaseView):
     """
-    ユーザー関連の操作を共通化するための基底クラス。
+    ユーザー関連の操作をするための基底クラス。
     """
 
     def post(self, request, *args, **kwargs):
-        # UserSerializerを使用するように修正
+        # UserSerializerを使用
         return super().post(request, UserSerializer, *args, **kwargs)
 
     def get_today_highest_score(self, user):

@@ -5,11 +5,14 @@ from .serializers import ContactSerializer
 
 class BaseContactView(BaseView):
     """
-    ユーザーからの要望に関連する操作を共通化するための基底クラス。
-    サブクラスで具体的な処理を実装する必要があります。
+    要望に関連する操作をするための基底クラス。
     """
 
     def post(self, request, *args, **kwargs):
+        """
+        POSTリクエストを処理します。
+        """
+        # ContactSerializerを使用
         return super().post(
             request, serializer_class=ContactSerializer, *args, **kwargs
         )
