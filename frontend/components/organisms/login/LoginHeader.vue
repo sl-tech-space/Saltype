@@ -23,7 +23,7 @@ import SaltypeIcon from '~/assets/images/common/saltype-icon.png'
     &-content {
         display: flex;
         align-items: center;
-        gap: 20px; // アイコンとタイトルの間隔を調整
+        gap: 20px;
     }
 }
 </style>

@@ -1,5 +1,8 @@
 import type { LegalItem } from "~/types/legal";
 
+/**
+ * 法律文書の文章を取り扱う
+ */
 export function useLegal() {
   const termsOfServiceSentence = ref<LegalItem[]>([
     {
@@ -104,7 +107,7 @@ export function useLegal() {
     },
   ]);
 
-  const privacypolicy = ref<LegalItem[]>([
+  const privacyPolicySentence = ref<LegalItem[]>([
     {
       title: `プライバシーポリシー`,
       size: `large`,
@@ -182,18 +185,48 @@ export function useLegal() {
     },
   ]);
 
+  const cookiePolicySentence = ref<LegalItem[]>([
+    {
+      title: `Cookieポリシー`,
+      size: `large`,
+      content: `Saltype（以下、「当運営」といいます。）は、お客様のウェブサイト利用状況を分析し、または個々のお客様に対してカスタマイズされたサービス・広告を提供する等の目的のため、クッキーを使用して一定の情報を収集します。`,
+    },
+    {
+      title: `１．クッキーについて`,
+      content: `クッキーとはお客様のウェブサイト閲覧情報を、そのお客様のコンピューター（PCやスマートフォン、タブレットなどインターネット接続可能な機器）に記憶させる機能のことです。<br><br>
+                クッキーには、当運営によって設定されるもの（ファーストパーティークッキー）と、当社と提携する第三者によって設定されるもの（サードパーティークッキー）があります。`,
+    },
+    {
+      title: `２．クッキーの利用目的`,
+      content: `当サイトでは、クッキーを、お客様がウェブサイトを閲覧する際に同じ情報を繰り返し入力することがなくなるなど、お客様の利便性向上のために使用しています`,
+    },
+    {
+      title: `３．クッキーの拒否方法`,
+      content: `全てのクッキーを拒否する方法
+                お客様がブラウザの設定を変更することによりクッキーを無効にすることが可能です。ただし、クッキーを無効にした場合は、一部のサービス(認証機能、各メニュー機能)を提供することができません。ご注意ください。<br>
+                クッキーの設定の変更方法については、各ブラウザの製造元へご確認ください。`,
+    },
+    {
+      title: `４．サードパーティクッキーによる送信情報`,
+      content: `本サービスでは、認証情報の取り扱いのためサードパーティクッキーを使用しています。ただし、当サイトでは他のサイトにクッキーを送信することはありません。`,
+    },
+  ]);
+
   function getTermsOfServiceSentence(): LegalItem[] {
     return termsOfServiceSentence.value;
   }
 
   const getPrivacyPolicySentence = (): LegalItem[] => {
-    return privacypolicy.value;
+    return privacyPolicySentence.value;
   };
 
-  const getCookiePolicySentence = () => {};
+  const getCookiePolicySentence = (): LegalItem[] => {
+    return cookiePolicySentence.value;
+  };
 
   return {
     getTermsOfServiceSentence,
     getPrivacyPolicySentence,
+    getCookiePolicySentence,
   };
 }
