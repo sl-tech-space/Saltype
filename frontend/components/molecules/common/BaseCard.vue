@@ -192,6 +192,21 @@ section {
     }
 }
 
+@media (max-width: 767px) {
+    .card-width--small {
+        width: calc(50% - 1rem);
+    }
+
+    .card-width--medium {
+        width: calc(66.666% - 1rem);
+    }
+
+    .card-width--large,
+    .card-width--xl {
+        width: calc(100% - 1rem);
+    }
+}
+
 @media (max-height: 900px) {
     .card-height--medium {
         height: 50%;

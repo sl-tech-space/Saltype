@@ -144,7 +144,8 @@ const cancelDelete = () => {
 <style lang="scss" scoped>
 .user-list {
     width: 100%;
-    @include horizontal-centered-flex
+    @include horizontal-centered-flex;
+    padding-bottom: 70px;
 }
 
 .list-container {

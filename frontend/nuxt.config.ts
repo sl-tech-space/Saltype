@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   components: true,
   compatibilityDate: "2024-09-20",
   devtools: { enabled: false },
-  modules: ["@sidebase/nuxt-session"],
+  modules: ["@sidebase/nuxt-session", "@vite-pwa/nuxt"],
   routeRules: {
     "/": { ssr: true }, // SSR
     "/login": { ssr: false }, // CSR
@@ -24,6 +24,9 @@ export default defineNuxtConfig({
     "/contact": { ssr: false }, // CSR
     "/user/setting": { ssr: false }, // CSR
     "/user/admin": { ssr: false }, // CSR
+    "/privacypolicy": { ssr: true, prerender: true }, // SSG
+    "/cookiepolicy": { ssr: true, prerender: true }, // SSG
+    "/terms": { ssr: true, prerender: true }, // SSG
   },
   typescript: {
     shim: false,
@@ -42,7 +45,7 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       htmlAttrs: {
-        lang: 'ja'
+        lang: "ja",
       },
       meta: [
         {
@@ -114,6 +117,45 @@ export default defineNuxtConfig({
       watch: {
         usePolling: process.env.NUXT_ENV !== "production",
       },
+    },
+  },
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Saltype',
+      short_name: 'Saltype',
+      theme_color: '#ffffff',
+      icons: [
+        {
+          src: 'saltype-pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'saltype-pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'saltype-pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      navigateFallback: '/',
+      cleanupOutdatedCaches: true,
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600,
+    },
+    devOptions: {
+      enabled: process.env.NUXT_ENV !== "production",
+      type: 'module',
     },
   },
 });

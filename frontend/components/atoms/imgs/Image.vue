@@ -18,36 +18,133 @@ const props = withDefaults(defineProps<Props>(), {
 </template>
 
 <style lang="scss" scoped>
-.img-width--mini {
-  width: 30px;
-  margin-right: 20px;
+.img {
+  max-width: 100%;
+  height: auto;
 }
 
-.img-width--small {
-  width: 120px;
+.img-width {
+  &--mini {
+    width: 30px;
+    margin-right: 10px;
+  }
+
+  &--small {
+    width: 120px;
+  }
+
+  &--medium {
+    width: 193px;
+  }
+
+  &--large {
+    width: 278px;
+  }
 }
 
-.img-width--medium {
-  width: 193px;
+.img-height {
+  &--mini {
+    height: 30px;
+  }
+
+  &--small {
+    height: 120px;
+  }
+
+  &--medium {
+    height: 193px;
+  }
+
+  &--large {
+    height: 278px;
+  }
 }
 
-.img-width--large {
-  width: 278px;
+@media (max-width: 992px) {
+  .img-width {
+    &--medium {
+      width: 150px;
+    }
+
+    &--large {
+      width: 200px;
+    }
+
+    &--same-as-input-large {
+      width: 100%;
+      max-width: 250px;
+    }
+  }
+
+  .img-height--large {
+    height: auto;
+    max-height: 200px;
+  }
 }
 
-.img-height--mini {
-  height: 30px;
+@media (max-width: 768px) {
+  .img-width {
+    &--small {
+      width: 90px;
+    }
+
+    &--medium {
+      width: 120px;
+    }
+
+    &--large {
+      width: 150px;
+    }
+
+    &--same-as-input-large {
+      max-width: 200px;
+    }
+  }
+
+  .img-height {
+    &--medium {
+      height: auto;
+      max-height: 150px;
+    }
+
+    &--large {
+      max-height: 180px;
+    }
+  }
 }
 
-.img-height--small {
-  height: 120px;
-}
+@media (max-width: 576px) {
+  .img-width {
+    &--small {
+      width: 80px;
+    }
 
-.img-height--medium {
-  height: 193px;
-}
+    &--medium {
+      width: 100px;
+    }
 
-.img-height--large {
-  height: 278px;
+    &--large {
+      width: 120px;
+    }
+
+    &--same-as-input-large {
+      max-width: 100%;
+    }
+  }
+
+  .img-height {
+    &--small {
+      height: auto;
+      max-height: 80px;
+    }
+
+    &--medium {
+      max-height: 100px;
+    }
+
+    &--large {
+      max-height: 120px;
+    }
+  }
 }
 </style>

@@ -67,7 +67,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <CursorEffect />
   <ScrollHandler v-if="!isTouchDevice && !isMultiTouch" />
   <PageIndicator :total-pages=3 />
   <div class="page">
@@ -81,7 +80,6 @@ onUnmounted(() => {
   </div>
   <Loading :is-loading="isLoading" />
   <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
-  <CopyRight />
 </template>
 
 <style lang="scss" scoped>
