@@ -22,7 +22,7 @@ class UserSerializer(BaseSerializer):
         write_only=True, required=False, min_length=8, max_length=128
     )  # パスワード
     new_password = serializers.CharField(
-        write_only=True, required=False, min_length=8 ,max_length=128
+        write_only=True, required=False, min_length=8, max_length=128
     )  # 新しいパスワード
 
     def validate(self, attrs):

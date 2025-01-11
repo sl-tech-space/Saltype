@@ -12,7 +12,11 @@ class AuthenticationSerializer(BaseSerializer):
 
     email = serializers.EmailField(required=True)  # メールアドレス
     password = serializers.CharField(
-        write_only=True, required=False, style={"input_type": "password"}, min_length=8, max_length=128
+        write_only=True,
+        required=False,
+        style={"input_type": "password"},
+        min_length=8,
+        max_length=128,
     )  # パスワード
     username = serializers.CharField(max_length=150, required=False)  # ユーザー名
     picture = serializers.URLField(required=False, allow_blank=True)  # 画像URL

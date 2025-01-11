@@ -182,4 +182,3 @@ class BaseSerializer(serializers.Serializer):
                     {"mistypes": "各ミスタイプには正の整数のmiss_countが必要です。"}
                 )
         return attrs
-
