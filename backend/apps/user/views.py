@@ -20,7 +20,6 @@ class GetUsersView(BaseUserView):
         users = User.objects.all()
         users_data = []
 
-
         for user in users:
             # 今日の最高スコアを取得する
             todays_highest_score = self.get_today_highest_score(user)

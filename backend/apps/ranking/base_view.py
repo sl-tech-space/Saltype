@@ -9,13 +9,5 @@ class BaseRankingView(BaseView):
     サブクラスで具体的な処理を実装する必要があります。
     """
 
-    permission_classes = [AllowAny]
-
     def post(self, request, *args, **kwargs):
         return super().post(request, RankingSerializer, *args, **kwargs)
-
-    def handle_post_request(self, validated_data):
-        # サブクラスで具体的な処理を実装
-        raise NotImplementedError(
-            "サブクラスは`handle_post_request`メソッドを実装する必要があります"
-        )

@@ -10,4 +10,16 @@ class BaseAuthenticationView(BaseView):
     """
 
     def post(self, request, *args, **kwargs):
+        """
+        POSTリクエストを処理します。
+        認証シリアライザを使用してリクエストデータをバリデートし、共通のロジックを実行します。
+
+        Args:
+            request (Request): クライアントからのリクエストオブジェクト。
+            *args: 可変長引数。
+            **kwargs: キーワード引数。
+
+        Returns:
+            Response: 処理結果のレスポンスオブジェクト。
+        """
         return super().post(request, AuthenticationSerializer, *args, **kwargs)

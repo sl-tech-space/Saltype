@@ -9,8 +9,7 @@ class BaseContactView(BaseView):
     サブクラスで具体的な処理を実装する必要があります。
     """
 
-    permission_classes = [AllowAny]
-
     def post(self, request, *args, **kwargs):
-        return super().post(request, serializer_class=ContactSerializer, *args, **kwargs)
-
+        return super().post(
+            request, serializer_class=ContactSerializer, *args, **kwargs
+        )
