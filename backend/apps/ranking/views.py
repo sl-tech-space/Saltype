@@ -33,7 +33,7 @@ class GetRankingView(BaseRankingView):
         diff_id = validated_data["diff_id"]
         limit = validated_data["limit"]
 
-        ranking_data = self._get_ranking_data(lang_id, diff_id, limit, target_date)
+        ranking_data = self.get_ranking_data(lang_id, diff_id, limit, target_date)
 
         return {
             "status": "success",
@@ -48,7 +48,7 @@ class GetRankingView(BaseRankingView):
             ],
         }
 
-    def _get_ranking_data(
+    def get_ranking_data(
         self, lang_id: int, diff_id: int, limit: int, target_date: date = None
     ) -> list[Score]:
         """

@@ -60,7 +60,7 @@ class UserSerializer(BaseSerializer):
         password = attrs.get("password")
         new_password = attrs.get("new_password")
         google_login = attrs.get("google_login")
-        
+
         # google_loginがFalseの場合にのみパスワードの確認を行う
         if not google_login and password and new_password:
             user = attrs.get("user")

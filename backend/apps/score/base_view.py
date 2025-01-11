@@ -11,4 +11,3 @@ class BaseScoreView(BaseView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, ScoreSerializer, *args, **kwargs)
-

@@ -71,4 +71,3 @@ class BaseView(APIView):
         raise NotImplementedError(
             "サブクラスは`handle_get_request`メソッドを実装する必要があります"
         )
-

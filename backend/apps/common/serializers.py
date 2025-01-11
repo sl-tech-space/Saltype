@@ -3,9 +3,12 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from apps.common.models import User, Lang, Diff
 
+
 class BaseSerializer(serializers.Serializer):
     # モデルの存在を確認する汎用メソッド
-    def check_existence(self, attrs, field_name, model, error_message, object_name=None):
+    def check_existence(
+        self, attrs, field_name, model, error_message, object_name=None
+    ):
         field_value = attrs.get(field_name)
         if field_value is None:
             return attrs
@@ -21,15 +24,21 @@ class BaseSerializer(serializers.Serializer):
 
     # ユーザーIDの存在を確認
     def check_user_id(self, attrs):
-        return self.check_existence(attrs, "user_id", User, "指定されたユーザーは存在しません。", "user")
+        return self.check_existence(
+            attrs, "user_id", User, "指定されたユーザーは存在しません。", "user"
+        )
 
     # 言語IDの存在を確認
     def check_lang_id(self, attrs):
-        return self.check_existence(attrs, "lang_id", Lang, "指定された言語は存在しません。", "lang")
+        return self.check_existence(
+            attrs, "lang_id", Lang, "指定された言語は存在しません。", "lang"
+        )
 
     # 難易度IDの存在を確認
     def check_diff_id(self, attrs):
-        return self.check_existence(attrs, "diff_id", Diff, "指定された難易度は存在しません。", "diff")
+        return self.check_existence(
+            attrs, "diff_id", Diff, "指定された難易度は存在しません。", "diff"
+        )
 
     # limitの値を確認
     def check_limit(self, attrs):
@@ -44,7 +53,9 @@ class BaseSerializer(serializers.Serializer):
         date_value = attrs.get("date")
         if date_value and date_value > date.today():
             # 日付が今日以前でない場合はエラーを発生
-            raise ValidationError({"date": "dateは今日以前の日付でなければなりません。"})
+            raise ValidationError(
+                {"date": "dateは今日以前の日付でなければなりません。"}
+            )
         return attrs
 
     # アクションの値を確認
@@ -60,11 +71,19 @@ class BaseSerializer(serializers.Serializer):
         mistypes = attrs.get("mistypes", [])
         if not isinstance(mistypes, list):
             # mistypesがリストでない場合はエラーを発生
-            raise ValidationError({"mistypes": "mistypesはリスト形式である必要があります。"})
+            raise ValidationError(
+                {"mistypes": "mistypesはリスト形式である必要があります。"}
+            )
         for item in mistypes:
-            if not isinstance(item, dict) or not isinstance(item.get("miss_count"), int) or item.get("miss_count") < 0:
+            if (
+                not isinstance(item, dict)
+                or not isinstance(item.get("miss_count"), int)
+                or item.get("miss_count") < 0
+            ):
                 # 各ミスタイプに正の整数のmiss_countがない場合はエラーを発生
-                raise ValidationError({"mistypes": "各ミスタイプには正の整数のmiss_countが必要です。"})
+                raise ValidationError(
+                    {"mistypes": "各ミスタイプには正の整数のmiss_countが必要です。"}
+                )
         return attrs
 
     # メールアドレスの存在を確認
@@ -80,5 +99,9 @@ class BaseSerializer(serializers.Serializer):
         password = attrs.get("password")
         if password and len(password) < min_length:
             # パスワードが指定された長さ未満の場合はエラーを発生
-            raise ValidationError({"password": f"パスワードは{min_length}文字以上で入力してください。入力値：{len(password)}文字"})
+            raise ValidationError(
+                {
+                    "password": f"パスワードは{min_length}文字以上で入力してください。入力値：{len(password)}文字"
+                }
+            )
         return attrs
