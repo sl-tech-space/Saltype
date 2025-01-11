@@ -15,7 +15,7 @@ class LoginView(BaseAuthView):
 
     permission_classes = [AllowAny]
 
-    def handle_request(self, validated_data):
+    def handle_post_request(self, validated_data):
         """
         ログインリクエストを処理します。
         バリデーションを通過したデータを用いてユーザーのトークンを取得または作成し、認証結果を返します。
@@ -83,7 +83,7 @@ class GoogleAuthView(BaseAuthView):
 
     permission_classes = [AllowAny]
 
-    def handle_request(self, validated_data):
+    def handle_post_request(self, validated_data):
         """
         Google認証リクエストを処理します。
         バリデーションを通過したデータを用いてユーザーを作成または更新し、トークンを取得して認証結果を返します。

@@ -10,7 +10,7 @@ class InsertMistypesView(BaseMistypeView):
     ミスタイプの挿入、更新を行います。
     """
 
-    def handle_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
+    def handle_post_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
         """
         ミスタイプを挿入するリクエストを処理します。
         引数として提供されたデータに基づいてミスタイプを挿入または更新します。
@@ -78,7 +78,7 @@ class GetTopMistypesView(BaseMistypeView):
     ユーザーが発生させたミスタイプの中で最も発生回数が多いものを取得。
     """
 
-    def handle_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
+    def handle_post_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
         """
         検証済みのデータを使用してトップミスタイプを取得。
 

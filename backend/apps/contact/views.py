@@ -1,5 +1,4 @@
 from apps.contact.email import ContactEmail
-from rest_framework.permissions import AllowAny
 from .base_view import BaseContactView
 
 
@@ -9,9 +8,7 @@ class ContactView(BaseContactView):
     ユーザーからの要望をメールで送信するための処理を実装します。
     """
 
-    permission_classes = [AllowAny]
-
-    def handle_request(self, validated_data: dict) -> dict:
+    def handle_post_request(self, validated_data: dict) -> dict:
         """
         要望を送信するリクエストを処理します。
         バリデーションを通過したデータを用いてメールを送信します。
