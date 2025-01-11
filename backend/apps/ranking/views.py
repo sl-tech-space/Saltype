@@ -1,5 +1,4 @@
 from apps.common.models import Score
-from rest_framework.permissions import AllowAny
 from .base_view import BaseRankingView
 from datetime import date
 
@@ -10,9 +9,7 @@ class GetRankingView(BaseRankingView):
     通常のランキングと日別ランキングを取得する機能を提供します。
     """
 
-    permission_classes = [AllowAny]
-
-    def handle_request(self, validated_data: dict) -> dict:
+    def handle_post_request(self, validated_data: dict) -> dict:
         """
         リクエストデータに基づいてランキングデータを取得します。
 
@@ -46,7 +43,8 @@ class GetRankingView(BaseRankingView):
                     "username": data.user.username,
                     "score": data.score,
                 }
-                for data in ranking_data if data.user is not None
+                for data in ranking_data
+                if data.user is not None
             ],
         }
 

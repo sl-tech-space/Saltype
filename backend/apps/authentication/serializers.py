@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from apps.common.serializers import BaseSerializer
+from rest_framework.exceptions import ValidationError
 
 
 class AuthenticationSerializer(BaseSerializer):
@@ -39,12 +39,12 @@ class AuthenticationSerializer(BaseSerializer):
             )
             if user is None:
                 raise ValidationError(
-                    _("メールアドレスまたはパスワードが正しくありません。"),
+                    {"detail": _("メールアドレスまたはパスワードが正しくありません。")},
                     code="authorization",
                 )
             if not user.is_active:
                 raise ValidationError(
-                    _("ユーザーアカウントが無効です。"), code="authorization"
+                    {"detail": _("ユーザーアカウントが無効です。")}, code="authorization"
                 )
             data["user"] = user
         else:
@@ -64,5 +64,5 @@ class AuthenticationSerializer(BaseSerializer):
         """
         if len(value) < min_length:
             raise ValidationError(
-                f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字"
+                {"password": f"パスワードは{min_length}文字以上で入力してください。入力値：{len(value)}文字"}
             )

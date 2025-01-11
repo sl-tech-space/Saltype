@@ -20,8 +20,8 @@ class InsertScoreView(BaseScoreView):
     }
 
     SCORE_MULTIPLIER = 10  # スコア計算時の乗数
-
-    def handle_request(self, validated_data: dict):
+    
+    def handle_post_request(self, validated_data: dict):
         """
         スコアを挿入または更新するリクエストを処理します。
         引数として提供されたデータに基づいてスコアを計算し、データベースに保存します。
@@ -138,11 +138,12 @@ class InsertScoreView(BaseScoreView):
         Returns:
             bool: 最高スコアの場合はTrue、それ以外はFalse。
         """
-        highest_score = Score.objects.filter(
-            user_id=user_id,
-            lang_id=lang_id,
-            diff_id=diff_id
-        ).order_by('-score').values_list('score', flat=True).first()
+        highest_score = (
+            Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id)
+            .order_by("-score")
+            .values_list("score", flat=True)
+            .first()
+        )
 
         return highest_score is None or score > highest_score
 
@@ -168,7 +169,7 @@ class GetScoreView(BaseScoreView):
     ユーザーの平均スコアや過去のスコアを取得します。
     """
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         ユーザーのスコアに関連するリクエストを処理します。
         `action` によって処理を分け、指定されたアクションに応じた処理を行います。
@@ -239,7 +240,7 @@ class GetUserRankingView(BaseScoreView):
     ユーザーのスコアが全体で何位かを計算します。
     """
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         ユーザーのスコアに基づくランキング位置を取得します。
         引数として提供されたスコアとユーザーIDを基に、ランキング位置を決定します。
@@ -288,7 +289,7 @@ class GetUserRankView(BaseScoreView):
     ユーザーIDに基づいてランクの名前を取得するためのAPIビュークラス。
     """
 
-    def handle_request(self, validated_data: dict):
+    def handle_post_request(self, validated_data: dict):
         """
         ユーザーIDに基づいてランクの名前を取得します。
 
@@ -302,4 +303,3 @@ class GetUserRankView(BaseScoreView):
         rank_name = user.rank.rank
 
         return {"status": "success", "rank_name": rank_name}
-

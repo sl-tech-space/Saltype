@@ -33,29 +33,10 @@ class ScoreSerializer(BaseSerializer):
         Returns:
             dict: バリデーションを通過したデータ。
         """
-        # ユーザーの存在を確認し、オブジェクトを追加
-        user_id = attrs.get("user_id")
-        if user_id:
-            try:
-                attrs["user"] = User.objects.get(pk=user_id)
-            except User.DoesNotExist:
-                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
-
-        # 言語の存在を確認し、オブジェクトを追加
-        lang_id = attrs.get("lang_id")
-        if lang_id:
-            try:
-                attrs["lang"] = Lang.objects.get(pk=lang_id)
-            except Lang.DoesNotExist:
-                raise ValidationError({"lang_id": "指定された言語は存在しません。"})
-
-        # 難易度の存在を確認し、オブジェクトを追加
-        diff_id = attrs.get("diff_id")
-        if diff_id:
-            try:
-                attrs["diff"] = Diff.objects.get(pk=diff_id)
-            except Diff.DoesNotExist:
-                raise ValidationError({"diff_id": "指定された難易度は存在しません。"})
+        # 共通のバリデーションメソッドを使用
+        attrs = self.check_user_id(attrs)
+        attrs = self.check_lang_id(attrs)
+        attrs = self.check_diff_id(attrs)
 
         # アクションの検証
         action = attrs.get("action")

@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from apps.common.models import User
 from apps.common.serializers import BaseSerializer
 from rest_framework.exceptions import ValidationError
 
@@ -26,12 +25,8 @@ class MistypeSerializer(BaseSerializer):
         Returns:
             dict: バリデーションを通過したデータ。
         """
-        user_id = attrs.get("user_id")
-        if user_id:
-            try:
-                attrs["user"] = User.objects.get(pk=user_id)
-            except User.DoesNotExist:
-                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
+        # ユーザーIDの存在を検証
+        self.check_user_id(attrs)
 
         mistypes = attrs.get("mistypes", [])
         for item in mistypes:

@@ -123,7 +123,7 @@ class UpdateUserView(BaseUserView):
             if user.check_password(password):
                 user.set_password(new_password)
                 password_updated = True
-
+            
         # 変更を保存
         user.save()
 
