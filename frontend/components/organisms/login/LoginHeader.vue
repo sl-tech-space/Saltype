@@ -6,8 +6,10 @@ import SaltypeIcon from '~/assets/images/common/saltype-icon.png'
 
 <template>
     <header class="brand">
-        <Icon :src="SaltypeIcon" alt="Saltypeアイコン" width="large" height="large" />
-        <Title text="Saltype" size="large" />
+        <div class="brand-content">
+            <Icon :src="SaltypeIcon" alt="Saltypeアイコン" width="large" height="large" />
+            <Title text="Saltype" size="large" />
+        </div>
     </header>
 </template>
 
@@ -15,9 +17,13 @@ import SaltypeIcon from '~/assets/images/common/saltype-icon.png'
 .brand {
     @include horizontal-centered-flex;
     align-items: center;
-    gap: 10px;
     padding-bottom: 20px;
-    position: relative;
-    left: -64px;
+    width: 100%;
+
+    &-content {
+        display: flex;
+        align-items: center;
+        gap: 20px; // アイコンとタイトルの間隔を調整
+    }
 }
 </style>

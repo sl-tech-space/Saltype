@@ -4,8 +4,9 @@ import CustomStyles from './components/molecules/common/ui/CustomStyles.vue';
 
 <template>
   <VitePwaManifest />
-  <CustomStyles />
-  <NuxtPage />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <style lang="scss" src="@/assets/styles/global.scss" />
