@@ -15,6 +15,7 @@ const props = defineProps<{
         email: string; // メールアドレス
         todaysMaxScore: string; // 本日の最高スコア
         userRank: string; // ユーザランク
+        passwordExists: boolean; // パスワードの有無
     }>;
     itemsPerPage: number; // 1ページあたりの表示数
 }>();
@@ -60,9 +61,9 @@ const startEditing = (item: { userId: string; userName: string; email: string })
     }, 300);
 };
 
-const saveEdits = async (item: { userId: string; userName: string; email: string }) => {
+const saveEdits = async (item: { userId: string; userName: string; email: string, passwordExists: boolean }) => {
     showNotification.value = false;
-    message.value = await updateUserInfo({ userId: item.userId, userName: editedUserName.value, email: editedEmail.value });
+    message.value = await updateUserInfo({ userId: item.userId, userName: editedUserName.value, email: editedEmail.value, googleLoginFlg: item.passwordExists });
     showNotification.value = true;
     editingItem.value = null;
     emit('user-updated');
@@ -104,10 +105,10 @@ const cancelDelete = () => {
             </li>
             <li v-for="item in currentItems" :key="item.userId" class="list-item">
                 <template v-if="editingItem === item.userId">
-                    <Input type="text" v-model="editedUserName" placeholder="ユーザ名" border="main-color" :is-rounded="true" width="large"
-                        height="small" class="edit-input username" />
-                    <Input type="email" v-model="editedEmail" placeholder="メールアドレス" border="main-color" :is-rounded="true" width="large"
-                        height="small" class="edit-input email" />
+                    <Input type="text" v-model="editedUserName" placeholder="ユーザ名" border="main-color"
+                        :is-rounded="true" width="large" height="small" class="edit-input username" />
+                    <Input type="email" v-model="editedEmail" placeholder="メールアドレス" border="main-color"
+                        :is-rounded="true" width="large" height="small" class="edit-input email" />
                 </template>
                 <template v-else>
                     <Text size="large" class="item-text username">{{ item.userName }}</Text>

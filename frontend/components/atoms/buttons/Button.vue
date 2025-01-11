@@ -50,17 +50,17 @@ $colors: (
 );
 
 @each $name, $color in $colors {
-  .button-text--#{$name} {
-    color: $color;
-  }
+  .button-text--#{"#{$name}"} {
+ color: $color;
+}
 
-  .button-border--#{$name} {
-    border-color: $color;
-  }
+.button-border--#{"#{$name}"} {
+ border-color: $color;
+}
 
-  .button-background--#{$name} {
-    background-color: $color;
-  }
+.button-background--#{"#{$name}"} {
+ background-color: $color;
+}
 }
 
 .button-border--none {
@@ -78,14 +78,14 @@ $sizes: (
 );
 
 @each $size, $values in $sizes {
-  .button-width--#{$size} {
+  .button-width--#{"#{$size}"} {
     max-width: 100%;
-    width: map-get($values, width);
+    width: if($size ==small, 80px, if($size ==medium, 120px, 160px));
   }
 
-  .button-height--#{$size} {
+.button-height--#{"#{$size}"} {
     max-height: 100%;
-    height: map-get($values, height);
+    height: if($size ==small, 30px, if($size ==medium, 40px, 50px));
   }
 }
 
@@ -96,104 +96,21 @@ $sizes: (
 
 .button--rounded {
   border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-button {
-  &:hover:not(:disabled) {
-    border-color: $hover-color;
-    cursor: pointer;
-  }
-
-  &:disabled {
-    border-color: $disabled-color;
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-}
-
-.active {
-  border-color: $sub-color;
-}
-
-@media (max-width: 992px) {
-  .button-width--medium {
-    width: 100px;
-  }
-
-  .button-width--large {
-    width: 120px;
-  }
-
-  .button-width--same-as-input-large {
-    width: 250px;
-  }
-
-  .button-height--large {
-    height: 45px;
-  }
-}
-
-@media (max-width: 768px) {
-  .button-width--small {
-    width: 70px;
-  }
-
-  .button-width--medium {
-    width: 90px;
-  }
-
-  .button-width--large {
-    width: 110px;
-  }
-
-  .button-width--same-as-input-large {
-    width: 200px;
-  }
-
-  .button-height--medium {
-    height: 35px;
-  }
-
-  .button-height--large {
-    height: 40px;
-  }
-}
-
-@media (max-width: 576px) {
-  .button-width--small {
-    width: 60px;
-  }
-
-  .button-width--medium {
-    width: 80px;
-  }
-
-  .button-width--large {
-    width: 100px;
-  }
-
-  .button-height--small {
-    height: 28px;
-  }
-
-  .button-height--medium {
-    height: 32px;
-  }
-
-  .button-height--large {
-    height: 36px;
-  }
-
-  button {
-    font-size: 12px;
-  }
+button:disabled {
+  border-color: $disabled-color;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 @media (hover: hover) {
-  button:hover:not(:disabled) {
+  button:hover {
     border-color: $hover-color;
     cursor: pointer;
+    &:disabled {
+      border-color: $disabled-color;
+    }
   }
 }
 </style>
