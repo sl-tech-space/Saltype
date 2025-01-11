@@ -1,10 +1,11 @@
+from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.db.models import Q
 from apps.common.models import User
+from apps.common.serializers import BaseSerializer
 
 
-class UserSerializer(serializers.Serializer):
+class UserSerializer(BaseSerializer):
     """
     ユーザー関連のデータをシリアライズおよびバリデーションするためのクラス。
     ユーザーID、ユーザー名、メールアドレス、パスワードなどのデータを検証します。
@@ -36,19 +37,15 @@ class UserSerializer(serializers.Serializer):
             dict: バリデーションを通過したデータ。
         """
         # ユーザーIDの存在を検証
-        user_id = attrs.get("user_id")
-        if user_id:
-            try:
-                attrs["user"] = User.objects.get(pk=user_id)
-            except User.DoesNotExist:
-                raise ValidationError({"user_id": "指定されたユーザーは存在しません。"})
+        attrs = self.check_user_id(attrs)
 
         # ユーザー名とメールアドレスの重複を一度のクエリで検証
         username = attrs.get("username")
         email = attrs.get("email")
+        user_id = attrs.get("user_id")
         existing_users = User.objects.filter(
             Q(username=username) | Q(email=email)
-        ).exclude(user_id=user_id)
+        ).exclude(pk=user_id)
         if existing_users.exists():
             if username and existing_users.filter(username=username).exists():
                 raise ValidationError(

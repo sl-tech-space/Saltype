@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC  # type: ignore
 
 """ python -m pytest src/user_setting/test.py """
 
+
 class TestUserSettingPage:
     """項番1. ユーザ設定画面が表示されること"""
 
@@ -19,7 +20,10 @@ class TestUserSettingPage:
 
             user_setting_element = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[5]")
+                    (
+                        By.XPATH,
+                        "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[5]",
+                    )
                 )
             )
 
@@ -27,8 +31,10 @@ class TestUserSettingPage:
 
             WebDriverWait(driver, 10).until(EC.title_contains("ユーザ設定"))
 
-            SeleniumUtil.take_screenshot(driver, "user_setting", "項番1", "ユーザ設定画面")
-            
+            SeleniumUtil.take_screenshot(
+                driver, "user_setting", "項番1", "ユーザ設定画面"
+            )
+
         except Exception as e:
             print(f"項番1. ユーザ設定画面が表示されること : {e}")
 
@@ -47,7 +53,10 @@ class TestUserSettingPage:
 
             user_setting_element = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[5]")
+                    (
+                        By.XPATH,
+                        "//*[@id='__nuxt']/div[2]/main/div[2]/section/div[3]/div/div/p[5]",
+                    )
                 )
             )
 
@@ -55,7 +64,9 @@ class TestUserSettingPage:
 
             WebDriverWait(driver, 10).until(EC.title_contains("ユーザ設定"))
 
-            SeleniumUtil.take_screenshot(driver, "user_setting", "項番2", "ユーザ設定画面")
+            SeleniumUtil.take_screenshot(
+                driver, "user_setting", "項番2", "ユーザ設定画面"
+            )
 
             back_button = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, ".header-right button"))
@@ -65,7 +76,9 @@ class TestUserSettingPage:
 
             WebDriverWait(driver, 10).until(EC.title_contains("ホーム"))
 
-            SeleniumUtil.take_screenshot(driver, "user_setting", "項番2", "戻るボタン押下後")
+            SeleniumUtil.take_screenshot(
+                driver, "user_setting", "項番2", "戻るボタン押下後"
+            )
 
         except Exception as e:
             print(f"項番2. 戻るボタンでホーム画面に遷移すること : {e}")
