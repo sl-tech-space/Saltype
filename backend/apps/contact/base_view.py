@@ -14,15 +14,3 @@ class BaseContactView(BaseView):
     def post(self, request, *args, **kwargs):
         return super().post(request, serializer_class=ContactSerializer, *args, **kwargs)
 
-    def handle_post_request(self, validated_data):
-        """
-        サブクラスで実装されるべきリクエストデータの処理ロジック。
-
-        Args:
-            validated_data (dict): バリデーションを通過したリクエストデータ。
-        Returns:
-            dict: 処理結果を返す辞書。
-        """
-        raise NotImplementedError(
-            "サブクラスはhandle_post_requestメソッドを実装する必要があります"
-        )
