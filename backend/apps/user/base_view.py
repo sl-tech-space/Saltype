@@ -10,6 +10,10 @@ class BaseUserView(BaseView):
     ユーザー関連の操作を共通化するための基底クラス。
     """
 
+    def post(self, request, *args, **kwargs):
+        # UserSerializerを使用するように修正
+        return super().post(request, UserSerializer, *args, **kwargs)
+
     def get_today_highest_score(self, user):
         """
         ユーザーの今日の最高スコアを取得する共通メソッド。
@@ -33,4 +37,3 @@ class BaseUserView(BaseView):
         )
 
         return todays_score.score if todays_score else None
-
