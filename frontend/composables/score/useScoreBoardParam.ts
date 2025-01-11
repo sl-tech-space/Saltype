@@ -34,7 +34,7 @@ export function useScoreBoardParam() {
       const [rankingData, averageData, userRankData] = await Promise.all([
         _getRanking(selectedLanguage, selectedDifficulty),
         _getAverageScore(selectedLanguage, selectedDifficulty),
-        _getUserRank(),
+        _getUserRank(selectedLanguage, selectedDifficulty),
       ]);
 
       scoreBoardData.value = {
@@ -142,7 +142,10 @@ export function useScoreBoardParam() {
    * @param selectedDifficulty
    * @returns Promise
    */
-  const _getUserRank = async () => {
+  const _getUserRank = async (
+    selectedLanguage: number,
+    selectedDifficulty: number
+  ) => {
     try {
       const response = await fetch(
         `${config.public.baseURL}/api/django/score/userrank/`,

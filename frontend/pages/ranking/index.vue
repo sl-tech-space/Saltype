@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
 import ScrollHandler from "~/components/molecules/common/ui/ScrollHandler.vue";
 import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
 import JapaneseRankingCard from "~/components/organisms/ranking/JapaneseRankingCard.vue";
@@ -8,7 +7,6 @@ import DailyRankingCard from "~/components/organisms/ranking/DailyRankingCard.vu
 import Loading from "~/components/molecules/common/ui/Loading.vue";
 import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
 import PageIndicator from "~/components/molecules/common/ui/PageIndicator.vue";
-import CopyRight from '~/components/atoms/ui/CopyRight.vue';
 import { useRanking } from '~/composables/ranking/useRanking';
 import { useErrorNotification } from "~/composables/common/useError";
 
@@ -43,7 +41,6 @@ onMounted(async () => {
     getDailyRankingByLimitParam(dailyRankingDataLimit),
     getRankingByLimitParam(rankingDataLimit)
   ]);
-
 
   const checkTouchDevice = () => {
     return (
