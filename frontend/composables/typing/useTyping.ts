@@ -3,18 +3,29 @@ import { useSentencePattern } from "~/composables/typing/japanese/useSentencePat
 import { useInputPattern } from "./japanese/useInputPattern";
 import { useMistype } from "./useMistype";
 import { useUserInfo } from "../common/useUserInfo";
+import { Language } from "./useLanguageAndDifficulty";
 
 /**
  * タイピング画面処理
- * @param language
- * @param difficultyLevel
- * @returns currentSentence, coloredText, isTypingStarted,
- * countdown, isCountdownActive, handleKeyPress,
- * isLoading, error,
- * finishTyping, initialize,
+ *
+ * @param language - 使用する言語
+ * @param difficultyLevel - 難易度レベル
+ * @returns タイピング関連の状態と関数
+ *
+ * @remarks
+ * 返り値のオブジェクトには以下のプロパティが含まれます：
+ * - currentSentence: 現在の文章とそのパターン
+ * - coloredText: 色を付けた文章
+ * - isTypingStarted: タイピング開始フラグ（true の場合は開始済み）
+ * - countdown: カウントダウンの残り時間（秒）
+ * - isCountdownActive: カウントダウン中フラグ（true の場合はカウントダウン中）
+ * - isLoading: ローディング中フラグ（true の場合はローディング中）
+ * - error: エラーメッセージ（エラーがない場合は null）
+ * - handleKeyPress: キー入力処理を行う関数
+ * - finishTyping: タイピング終了処理を行う関数
+ * - initialize: 初期化処理を行う関数
  */
 export function useTyping(language: string, difficultyLevel: string) {
-  const router = useRouter();
   const config = useRuntimeConfig();
   const sentencesData = ref<Array<[string, string]>>([]);
   const currentIndex = ref(0);
@@ -31,9 +42,11 @@ export function useTyping(language: string, difficultyLevel: string) {
   const { resetMistypeStats, countMistype, sendMistypeDataToServer } =
     useMistype();
   const { user } = useUserInfo();
-  const { getPatternArray, getVowelPatternArray } = useInputPattern();
+  const { getPatternArray, getVowelPatternArray, getSymbolsPatternArray } =
+    useInputPattern();
   const permitActionLetters = getPatternArray();
   const vowelPattern = getVowelPatternArray();
+  const symbolPattern = getSymbolsPatternArray();
 
   /**
    * タイピング結果取得変数
@@ -67,6 +80,7 @@ export function useTyping(language: string, difficultyLevel: string) {
 
   /**
    * 現在の文章を出力
+   * @returns 現在の文章とそのパターン、または null
    */
   const currentSentence = computed(
     (): { sentence: [string, string]; patterns: string[] } | null => {
@@ -79,6 +93,19 @@ export function useTyping(language: string, difficultyLevel: string) {
         : null;
     }
   );
+
+  /**
+   * 分割された言語：難易度IDを取得
+   * @returns 分割された言語：難易度ID、または null
+   */
+  const _splittedId = computed(() => {
+    const id = localStorage.getItem("gameModeId");
+    if (!id) {
+      error.value = "選択した難易度は存在しません";
+      return null;
+    }
+    return splitId(id);
+  });
 
   /**
    * 初期化処理
@@ -112,12 +139,9 @@ export function useTyping(language: string, difficultyLevel: string) {
         return;
       }
 
-      const id = localStorage.getItem("gameModeId");
-      if (!id) {
-        error.value = "選択した難易度は存在しません";
+      if (!_splittedId.value) {
         return;
       }
-      const splittedId = splitId(id);
 
       const response = await fetch(
         `${config.public.baseURL}/api/django/score/insert/`,
@@ -128,8 +152,8 @@ export function useTyping(language: string, difficultyLevel: string) {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            lang_id: splittedId.left,
-            diff_id: splittedId.right,
+            lang_id: _splittedId.value.left,
+            diff_id: _splittedId.value.right,
             typing_count: typingResults.totalCorrectTypedCount,
             accuracy: typingResults.typingAccuracy,
           }),
@@ -173,7 +197,8 @@ export function useTyping(language: string, difficultyLevel: string) {
   /**
    * タイピング終了処理
    */
-  const finishTyping = (): void => {
+  const finishTyping = async (): Promise<void> => {
+    isLoading.value = true;
     isTypingStarted.value = false;
     sendMistypeDataToServer();
     _sendTypingDataToServer();
@@ -187,12 +212,14 @@ export function useTyping(language: string, difficultyLevel: string) {
       typingResults.typingAccuracy.toString()
     );
 
-    router.push({ name: "score" });
+    await navigateTo({ name: "score" });
+    isLoading.value = false;
   };
 
   /**
    * キー入力処理
-   * @param event
+   * @param event - キーボードイベント
+   * @returns 正しいキー入力は"correct" 不正なキー入力は"incorrect"を返す。
    */
   const handleKeyPress = (event: KeyboardEvent): "correct" | "incorrect" => {
     if (event.key === "Shift" || event.key === "ShiftRight") {
@@ -218,8 +245,95 @@ export function useTyping(language: string, difficultyLevel: string) {
       return "correct";
     }
 
-    if (!currentSentence.value) {
-      return "correct";
+    if (_handleKeyPressOnJapaneseMode(event)) return "correct";
+    if (_handleKeyPressOnEnglishMode(event)) return "correct";
+
+    countMistype(event.key);
+    typingResults.totalMistypedCount++;
+    return "incorrect";
+  };
+
+  /**
+   * 日本語モードのキー入力処理
+   * @param event - キーボードイベント
+   * @returns 正しいキー入力はtrue 不正なキー入力はfalseを返す。
+   */
+  const _handleKeyPressOnJapaneseMode = (event: KeyboardEvent): boolean => {
+    if (!_splittedId.value) {
+      return false;
+    }
+
+    if (
+      _splittedId.value.left !== Language.Japanese ||
+      !currentSentence.value
+    ) {
+      return false;
+    }
+
+    const currentPatterns = currentSentence.value.patterns;
+
+    // キー入力のたびにフィルタリングを行う
+    const filteredPatterns = currentPatterns.filter((pattern) =>
+      pattern
+        .toLowerCase()
+        .startsWith(currentInput.value.toLowerCase() + event.key.toLowerCase())
+    );
+
+    if (filteredPatterns.length > 0) {
+      currentInput.value += event.key;
+      currentInputIndex.value++;
+      currentPatternIndex.value = currentPatterns.indexOf(filteredPatterns[0]);
+      _updateColoredText();
+
+      if (vowelPattern.includes(event.key)) {
+        patterns.value = filteredPatterns.filter((p) => {
+          const remainingPattern = p.slice(currentInputIndex.value);
+
+          // 2文字、3文字、4文字の部分文字列を生成
+          const basePermitActions = [
+            remainingPattern.slice(0, 2),
+            remainingPattern.slice(0, 3),
+            remainingPattern.slice(0, 4),
+          ];
+
+          return permitActionLetters.some(([, romajiArray]) =>
+            basePermitActions.some((baseAction) =>
+              romajiArray.some((romaji) => baseAction.startsWith(romaji))
+            )
+          );
+        });
+        typingResults.totalCorrectTypedCount++;
+      } else if (symbolPattern.includes(event.key)) {
+        patterns.value = filteredPatterns.filter((p) => {
+          const remainingPattern = p.slice(currentInputIndex.value);
+
+          return permitActionLetters.some(([, symbolArray]) =>
+            symbolArray.some((symbol) => remainingPattern.startsWith(symbol))
+          );
+        });
+        typingResults.totalCorrectTypedCount++;
+      }
+
+      if (currentInputIndex.value === filteredPatterns[0].length) {
+        _nextSentence();
+      }
+
+      return true;
+    }
+    return false;
+  };
+
+  /**
+   * 英語モードのキー入力処理
+   * @param event - キーボードイベント
+   * @returns 正しいキー入力はtrue 不正なキー入力はfalseを返す。
+   */
+  const _handleKeyPressOnEnglishMode = (event: KeyboardEvent): boolean => {
+    if (
+      _splittedId.value?.left !== Language.English ||
+      !currentSentence.value
+    ) {
+      return false;
     }
 
     const currentPatterns = currentSentence.value.patterns;
@@ -234,42 +348,13 @@ export function useTyping(language: string, difficultyLevel: string) {
       typingResults.totalCorrectTypedCount++;
       _updateColoredText();
 
-      const nextExpectedChar = pattern[currentInputIndex.value];
-
-      if (vowelPattern.includes(event.key)) {
-        patterns.value = currentPatterns.filter((p) => {
-          const lastChar = p[currentInputIndex.value];
-          const basePermitActionTwoLetter = p.slice(
-            currentInputIndex.value,
-            currentInputIndex.value + 2
-          );
-          const basePermitActionThreeLetter = p.slice(
-            currentInputIndex.value,
-            currentInputIndex.value + 3
-          );
-
-          return (
-            lastChar === expectedChar ||
-            lastChar === nextExpectedChar ||
-            permitActionLetters.some(
-              ([_, romajiArray]) =>
-                romajiArray.includes(basePermitActionTwoLetter) ||
-                romajiArray.includes(basePermitActionThreeLetter)
-            )
-          );
-        });
-      }
-
       if (currentInputIndex.value === pattern.length) {
         _nextSentence();
       }
 
-      return "correct";
+      return true;
     }
-
-    countMistype(event.key);
-    typingResults.totalMistypedCount++;
-    return "incorrect";
+    return false;
   };
 
   /**

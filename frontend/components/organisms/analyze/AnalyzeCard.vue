@@ -18,14 +18,20 @@ const { showErrorNotification } = useErrorNotification(error);
 onMounted(async () => {
     const allCombinations = generateAllCombinations();
 
-    // すべての組み合わせで過去３０回のスコアを取得
-    for (const { languageId, difficultyId } of allCombinations) {
+    const promises = allCombinations.map(async ({ languageId, difficultyId }) => {
         const key = `${languageId}-${difficultyId}`;
         const result: number[] | undefined = await getPastScores(languageId, difficultyId);
-        scoresByCombination.value[key] = { scores: result || [] };
-    }
+        return { key, scores: result || [] };
+    });
 
-    await getTypoFrequencyByLimit(limit);
+    const [scoresResults] = await Promise.all([
+        Promise.all(promises),
+        getTypoFrequencyByLimit(limit)
+    ]);
+
+    scoresResults.forEach(({ key, scores }) => {
+        scoresByCombination.value[key] = { scores };
+    });
 
     isLoading.value = false;
 });

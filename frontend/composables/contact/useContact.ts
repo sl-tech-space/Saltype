@@ -33,7 +33,7 @@ export function useContact() {
           },
           body: JSON.stringify({
             user_id: user.value.user_id,
-            request_content: content.trim,
+            request_content: content.trim(),
           }),
           signal: AbortSignal.timeout(10000),
         }

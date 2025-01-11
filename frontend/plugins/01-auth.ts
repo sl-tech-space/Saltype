@@ -6,15 +6,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   const { setUser, clearUser } = useUserInfo();
 
   const initAuth = async () => {
-    const token = useCookie("auth_token").value;
+    const authToken = useCookie("auth_token").value;
 
-    if (token) {
+    if (authToken) {
       try {
         const response = await fetch(
           `${config.public.baseURL}/api/django/authentication/auth-token/`,
           {
             headers: {
-              Authorization: `Token ${token}`,
+              Authorization: `Token ${authToken}`,
             },
           }
         );

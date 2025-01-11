@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import crypto from "crypto";
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NUXT_ENV === "production") {
   console.log = () => {};
   console.error = () => {};
   console.warn = () => {};
@@ -11,9 +11,7 @@ export default defineNuxtConfig({
   components: true,
   compatibilityDate: "2024-09-20",
   devtools: { enabled: false },
-  modules: [
-    "@sidebase/nuxt-session",
-  ],
+  modules: ["@sidebase/nuxt-session", "@vite-pwa/nuxt"],
   routeRules: {
     "/": { ssr: true }, // SSR
     "/login": { ssr: false }, // CSR
@@ -26,6 +24,14 @@ export default defineNuxtConfig({
     "/contact": { ssr: false }, // CSR
     "/user/setting": { ssr: false }, // CSR
     "/user/admin": { ssr: false }, // CSR
+    "/privacypolicy": { ssr: true, prerender: true }, // SSG
+    "/cookiepolicy": { ssr: true, prerender: true }, // SSG
+    "/terms": { ssr: true, prerender: true }, // SSG
+  },
+  typescript: {
+    shim: false,
+    strict: true,
+    typeCheck: false, // npx nuxi typecheckから型チェックを実行
   },
   app: {
     head: {
@@ -38,6 +44,9 @@ export default defineNuxtConfig({
       ],
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
+      htmlAttrs: {
+        lang: "ja",
+      },
       meta: [
         {
           name: "description",
@@ -63,7 +72,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     cookies: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NUXT_ENV === "production",
       sameSite: "strict",
       httpOnly: true,
     },
@@ -74,11 +83,19 @@ export default defineNuxtConfig({
       serverSideBaseURL:
         process.env.NUXT_SERVER_SIDE_URL || "http://django:8000",
       sentencesPath:
-        process.env.NODE_ENV === "production" ? "dist/data" : "server/data",
+        process.env.NUXT_ENV === "production" ? "dist/data" : "server/data",
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
   vite: {
+    build: {
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -94,21 +111,51 @@ export default defineNuxtConfig({
         "@vueuse/core",
         "vue-chartjs",
         "chart.js",
-        "defu",
       ],
-    },
-    test: {
-      environment: "nuxt",
-      coverage: {
-        provider: "v8",
-        reporter: ["text", "json", "html"],
-        exclude: ["node_modules", ".nuxt", "coverage"],
-      },
     },
     server: {
       watch: {
-        usePolling: process.env.NODE_ENV !== "production",
+        usePolling: process.env.NUXT_ENV !== "production",
       },
+    },
+  },
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Saltype',
+      short_name: 'Saltype',
+      theme_color: '#ffffff',
+      icons: [
+        {
+          src: 'saltype-pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'saltype-pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'saltype-pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      navigateFallback: '/',
+      cleanupOutdatedCaches: true,
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600,
+    },
+    devOptions: {
+      enabled: process.env.NUXT_ENV !== "production",
+      type: 'module',
     },
   },
 });

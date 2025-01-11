@@ -29,10 +29,8 @@ const topRankings = computed(() => {
     return rankingsArray as RankingItem[];
 });
 
-const router = useRouter();
-
-const navigateToDetails = () => {
-    router.push({ name: `ranking-id`, params: { id: props.id } });
+const navigateToDetails = async () => {
+    await navigateTo({ name: `ranking-id`, params: { id: props.id } });
 }
 
 onMounted(() => {
