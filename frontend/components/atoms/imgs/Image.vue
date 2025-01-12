@@ -2,18 +2,23 @@
 interface Props {
   imageSrc: string;
   alt?: string;
+  title?: string;
+  loading?: "lazy" | "eager" | "auto";
   width?: "mini" | "small" | "medium" | "large";
   height?: "mini" | "small" | "medium" | "large";
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  alt: "",
+  title: "",
+  loading: "auto",
   width: "medium",
   height: "medium",
 });
 </script>
 
 <template>
-  <img :src="`${props.imageSrc}`" :alt="`${props.alt}`"
+  <img :src="`${props.imageSrc}`" :alt="`${props.alt}`" :title="`${props.title}`" :loading="props.loading"
     :class="[`img-width--${props.width}`, `img-height--${props.height}`]" />
 </template>
 
