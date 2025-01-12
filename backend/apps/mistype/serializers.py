@@ -23,8 +23,8 @@ class MistypeSerializer(BaseSerializer):
             attrs: バリデーションを通過したデータ。
         """
         # ユーザIDのバリデーション
-        attrs = self.validate_user_id(attrs)
+        attrs = self.check_user_id(attrs)
         # ミスタイプのバリデーション
-        attrs = self.validate_mistypes(attrs)
+        attrs = self.check_mistypes(attrs)
 
         return attrs

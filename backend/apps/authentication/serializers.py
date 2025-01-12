@@ -33,13 +33,14 @@ class AuthenticationSerializer(BaseSerializer):
         # メールアドレスのバリデーション
         attrs = self.check_email(attrs)
 
+        # パスワードのバリデーション
         password = attrs.get("password")
         if password:
             attrs["user"] = self.validate_user(
                 attrs.get("email"), attrs.get("password")
             )
         else:
-            attrs = self.validate_username(attrs)
+            attrs = self.check_username(attrs)
 
         return attrs
 
