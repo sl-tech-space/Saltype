@@ -31,9 +31,7 @@ class AuthenticationSerializer(BaseSerializer):
             attrs: バリデーションを通過したデータ。
         """
         # メールアドレスのバリデーション
-        attrs = self.validate_email(attrs)
-        # パスワードのバリデーション
-        attrs = self.validate_password(attrs)
+        attrs = self.check_email(attrs)
 
         password = attrs.get("password")
         if password:
