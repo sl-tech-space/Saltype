@@ -7,7 +7,8 @@ import SaltypeIcon from '~/assets/images/common/saltype-icon.png'
 <template>
     <header class="brand">
         <div class="brand-content">
-            <Icon :src="SaltypeIcon" alt="Saltypeアイコン" width="large" height="large" />
+            <Icon :src="SaltypeIcon" alt="Saltypeアイコン" title="Saltypeアイコン" loading="eager" width="large"
+                height="large" />
             <Title text="Saltype" size="large" />
         </div>
     </header>

@@ -74,9 +74,9 @@ onMounted(() => {
         <span>
           <Input :type="showPassword ? 'text' : 'password'" id="password" v-bind="field" placeholder="&nbsp;パスワード"
             border="main-color" width="large" :is-rounded="true" />
-          <Image v-if="showPassword" :image-src="eyeSlashRegular" alt="パスワード表示" width="mini" height="mini" class="eye"
+          <Image v-if="showPassword" :image-src="eyeSlashRegular" alt="パスワード表示用アイコン" title="パスワード表示" width="mini" height="mini" class="eye"
             @click="passVisibility" />
-          <Image v-else :image-src="eyeRegular" alt="パスワード非表示" width="mini" height="mini" class="eye"
+          <Image v-else :image-src="eyeRegular" alt="パスワード非表示用アイコン" title="パスワード非表示" width="mini" height="mini" class="eye"
             @click="passVisibility" />
         </span>
       </template>
