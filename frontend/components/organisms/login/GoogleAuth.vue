@@ -48,7 +48,7 @@ onMounted(() => {
     <Button border="sub-color" width="same-as-input-large" height="large" :is-rounded="true"
       @click="handleLoginWithGoogle()" @dblclick.prevent class="auth-button">
       <template #any>
-        <Image :image-src="googleIcon" alt="google-icon" width="mini" height="mini" />
+        <Image :image-src="googleIcon" alt="Google認証アイコン" title="Googleロゴ" width="mini" height="mini" />
         Googleで認証
       </template>
     </Button>

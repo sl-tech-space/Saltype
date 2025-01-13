@@ -61,8 +61,9 @@ export default defineNuxtConfig({
         { property: "og:title", content: "Saltype" },
         {
           property: "og:description",
-          content: "日本語と英語でタイピングスキルを向上させよう!!",
+          content: "タイピングスキルを向上させよう！",
         },
+        // { property: "og:image", content: "https://ドメイン/assets/images/common/saltype-icon.png" },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
         // { name: "twitter:image", content: "https://ドメイン/assets/images/common/saltype-icon.png" },

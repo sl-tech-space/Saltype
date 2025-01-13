@@ -84,11 +84,12 @@ const handleSubmit = async () => {
                                     <Input :type="showOldPassword ? 'text' : 'password'" id="oldPassword" v-bind="field"
                                         placeholder="&nbsp;現在のパスワード" border="main-color" width="large"
                                         :is-rounded="true" />
-                                    <Image v-if="showOldPassword" :image-src="eyeSlashRegular" alt="パスワード表示"
+                                    <Image v-if="showOldPassword" :image-src="eyeSlashRegular" alt="パスワード表示用アイコン"
+                                        title="パスワード表示" width="mini" height="mini" class="eye"
+                                        @click="togglePasswordVisibility('old')" />
+                                    <Image v-else :image-src="eyeRegular" alt="パスワード非表示用アイコン" title="パスワード非表示"
                                         width="mini" height="mini" class="eye"
                                         @click="togglePasswordVisibility('old')" />
-                                    <Image v-else :image-src="eyeRegular" alt="パスワード非表示" width="mini" height="mini"
-                                        class="eye" @click="togglePasswordVisibility('old')" />
                                 </span>
                             </template>
                         </Field>
@@ -99,11 +100,12 @@ const handleSubmit = async () => {
                                     <Input :type="showNewPassword ? 'text' : 'password'" id="newPassword" v-bind="field"
                                         placeholder="&nbsp;新しいパスワード" border="main-color" width="large"
                                         :is-rounded="true" />
-                                    <Image v-if="showNewPassword" :image-src="eyeSlashRegular" alt="パスワード表示"
+                                    <Image v-if="showNewPassword" :image-src="eyeSlashRegular" alt="パスワード表示用アイコン"
+                                        title="パスワード表示" width="mini" height="mini" class="eye"
+                                        @click="togglePasswordVisibility('new')" />
+                                    <Image v-else :image-src="eyeRegular" alt="パスワード非表示用アイコン" title="パスワード非表示"
                                         width="mini" height="mini" class="eye"
                                         @click="togglePasswordVisibility('new')" />
-                                    <Image v-else :image-src="eyeRegular" alt="パスワード非表示" width="mini" height="mini"
-                                        class="eye" @click="togglePasswordVisibility('new')" />
                                 </span>
                             </template>
                         </Field>
