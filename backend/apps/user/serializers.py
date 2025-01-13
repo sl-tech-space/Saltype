@@ -36,18 +36,18 @@ class UserSerializer(BaseSerializer):
         """
         attrs = self.check_user_id(attrs)
 
-        self.validate_unique_username_and_email(
+        self.check_unique_username_and_email(
             attrs.get("username"), attrs.get("email"), attrs.get("user_id")
         )
 
         if not attrs.get("google_login"):
-            self.validate_passwords(
+            self.check_passwords(
                 attrs.get("password"), attrs.get("new_password"), attrs.get("user")
             )
 
         return attrs
 
-    def validate_unique_username_and_email(self, username, email, user_id):
+    def check_unique_username_and_email(self, username, email, user_id):
         """
         ユーザー名とメールアドレスの重複を検証します。
 
@@ -72,7 +72,7 @@ class UserSerializer(BaseSerializer):
                     {"email": "このメールアドレスは既に使用されています。"}
                 )
 
-    def validate_passwords(self, password, new_password, user):
+    def check_passwords(self, password, new_password, user):
         """
         パスワードの検証を行います。
 

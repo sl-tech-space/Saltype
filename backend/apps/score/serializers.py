@@ -41,11 +41,11 @@ class ScoreSerializer(BaseSerializer):
         # アクションのバリデーション
         attrs = self.check_action(attrs, self.ACTION_CHOICES)
         # キャッシュキーのバリデーション
-        self.validate_cache_key(attrs)
+        self.check_cache_key(attrs)
 
         return attrs
 
-    def validate_cache_key(self, attrs):
+    def check_cache_key(self, attrs):
         """
         キャッシュに登録されているキーとリクエストのキーが一致するか確認します。
         """

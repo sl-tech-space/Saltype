@@ -20,6 +20,6 @@ class ContactSerializer(BaseSerializer):
             attrs: バリデーションを通過したデータ。
         """
         # ユーザーIDのバリデーション
-        attrs = self.validate_user_id(attrs)
+        attrs = self.check_user_id(attrs)
 
         return attrs

@@ -36,7 +36,7 @@ class AuthenticationSerializer(BaseSerializer):
         # パスワードのバリデーション
         password = attrs.get("password")
         if password:
-            attrs["user"] = self.validate_user(
+            attrs["user"] = self.check_user(
                 attrs.get("email"), attrs.get("password")
             )
         else:
@@ -44,7 +44,7 @@ class AuthenticationSerializer(BaseSerializer):
 
         return attrs
 
-    def validate_user(self, email, password):
+    def check_user(self, email, password):
         """
         ユーザーのバリデーションを行います。
 

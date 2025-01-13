@@ -13,6 +13,4 @@ class BaseContactView(BaseView):
         POSTリクエストを処理します。
         """
         # ContactSerializerを使用
-        return super().post(
-            request, serializer_class=ContactSerializer, *args, **kwargs
-        )
+        return super().post(request, ContactSerializer, *args, **kwargs)
