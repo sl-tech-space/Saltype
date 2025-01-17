@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ["@sidebase/nuxt-session", "@vite-pwa/nuxt"],
   routeRules: {
-    "/": { ssr: true }, // SSR
+    "/": { ssr: true, prerender: true }, // SSR
     "/login": { ssr: false }, // CSR
     "/home": { ssr: true }, // SSR
     "/typing/:id": { ssr: true }, // SSR
@@ -149,8 +149,19 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}", "**/offline.html"],
       cleanupOutdatedCaches: true,
+      navigateFallback: "/offline.html",
+      navigateFallbackDenylist: [/^\/api\//],
+      runtimeCaching: [
+        {
+          urlPattern: "/",
+          handler: "NetworkFirst",
+          options: {
+            cacheName: "first-page-cache",
+          },
+        },
+      ],
     },
     client: {
       installPrompt: true,
