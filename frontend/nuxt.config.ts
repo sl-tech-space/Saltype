@@ -149,23 +149,12 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}", "**/offline.html"],
-      cleanupOutdatedCaches: true,
-      navigateFallback: "/offline.html",
-      navigateFallbackDenylist: [/^\/api\//],
-      runtimeCaching: [
-        {
-          urlPattern: "/",
-          handler: "NetworkFirst",
-          options: {
-            cacheName: "first-page-cache",
-          },
-        },
-      ],
+      globPatterns: ["**/*.{js,css,png,svg,ico}"],
+      navigateFallback: null,
     },
+    strategies: "generateSW",
     client: {
       installPrompt: true,
-      periodicSyncForUpdates: 3600,
     },
     devOptions: {
       enabled: true,
