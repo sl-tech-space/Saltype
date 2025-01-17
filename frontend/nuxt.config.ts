@@ -129,6 +129,7 @@ export default defineNuxtConfig({
       name: "Saltype",
       short_name: "Saltype",
       theme_color: "#ffffff",
+      display: "fullscreen",
       icons: [
         {
           src: "saltype-pwa-192x192.png",
