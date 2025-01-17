@@ -74,7 +74,13 @@ useHead({
       border-radius: 50%;
       border-color: white;
       color: white;
-      background-color: rgb(32, 32, 32);
+      background-color: #202020;
+    }
+
+    button:hover {
+      cursor: pointer;
+      border-color: #cffdfd;
+      background-color: #353535;
     }
   }
 }
