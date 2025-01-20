@@ -3,9 +3,18 @@ services:
     image: nginx:alpine
     container_name: saltype-nginx
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # - ${SSL_VOLUME}
+      - ./templates:/etc/nginx/templates
     ports:
-      - "80:80"
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    environment:
+      - BACKEND=${BACKEND_PROXY}
+      - FRONTEND=${FRONTEND_PROXY}
+      - SERVER_NAME=${SERVER_NAME}
+      - HTTP_PORT=${HTTP_PORT}
+      # - HTTPS_PORT=${HTTPS_PORT}
+      # - SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH}
+      # - SSL_CERTIFICATE_KEY_PATH=${SSL_CERTIFICATE_KEY_PATH}
     depends_on:
       - frontend
       - backend
@@ -21,9 +30,13 @@ services:
     build:
       context: ./frontend
       dockerfile: dockerfile.prod
+    read_only: true
+    container_name: saltype-nuxt
     volumes:
       - ./frontend/server/data:/app/dist/data:ro
-    container_name: saltype-nuxt
+      - /tmp
+    tmpfs:
+      - /tmp
     environment:
       - HOST=0.0.0.0
     depends_on:
@@ -39,9 +52,13 @@ services:
     build:
       context: ./backend
       dockerfile: dockerfile.prod
+    read_only: true
     container_name: saltype-django
     volumes:
       - ./backend:/app:ro
+      - /tmp
+    tmpfs:
+      - /tmp
     environment:
       - DEBUG=${DEBUG:-false}
       - SECRET_KEY=${SECRET_KEY}
@@ -64,9 +81,15 @@ services:
 
   db:
     image: postgres:14-alpine
+    read_only: true
     container_name: saltype-postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - /tmp
+      - /var/run/postgresql
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
