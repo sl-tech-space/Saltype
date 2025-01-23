@@ -3,7 +3,7 @@ interface Props {
   imageSrc: string;
   alt?: string;
   title?: string;
-  loading?: "lazy" | "eager" | "auto";
+  loading?: "lazy" | "eager";
   width?: "mini" | "small" | "medium" | "large";
   height?: "mini" | "small" | "medium" | "large";
 }
@@ -11,7 +11,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   alt: "",
   title: "",
-  loading: "auto",
+  loading: "lazy",
   width: "medium",
   height: "medium",
 });

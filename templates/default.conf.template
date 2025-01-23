@@ -36,13 +36,13 @@ gzip_types
 
 # httpリクエスト
 server {
-    listen 80;
-    server_name http://13.55.129.14;
+    listen $HTTP_PORT;
+    server_name $SERVER_NAME;
 
     # return 301 https://$host$request_uri;
 
     location /api/nuxt/ {
-        proxy_pass http://frontend:3000;
+        proxy_pass $FRONTEND;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
@@ -54,7 +54,7 @@ server {
     }
 
     location /api/django/ {
-        proxy_pass http://backend:8000;
+        proxy_pass $BACKEND;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
@@ -83,7 +83,7 @@ server {
     }
 
     location / {
-        proxy_pass http://frontend:3000;
+        proxy_pass $FRONTEND;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
@@ -95,16 +95,15 @@ server {
     }
 }
 
-# httpsリクエスト
 # server {
-#     listen 443 ssl;
-#     server_name https://13.55.129.14;
+#     listen $HTTPS_PORT ssl;
+#     server_name $SERVER_NAME;
 
-#     # ssl_certificate /path/to/cert.pem;  # SSL証明書のパス
-#     # ssl_certificate_key /path/to/key.pem; # SSL証明書の秘密鍵のパス
+#     # ssl_certificate $SSL_CERTIFICATE_PATH;  # SSL証明書のパス
+#     # ssl_certificate_key $SSL_CERTIFICATE_KEY_PATH; # SSL証明書の秘密鍵のパス
 
 #     location /api/nuxt/ {
-#         proxy_pass https://frontend:3000; 
+#         proxy_pass $FRONTEND; 
 #         proxy_http_version 1.1; 
 #         proxy_set_header Upgrade $http_upgrade; 
 #         proxy_set_header Connection $connection_upgrade; 
@@ -116,7 +115,7 @@ server {
 #     }
 
 #     location /api/django/ {
-#         proxy_pass https://backend:8000; 
+#         proxy_pass $BACKEND; 
 #         proxy_http_version 1.1; 
 #         proxy_set_header Upgrade $http_upgrade; 
 #         proxy_set_header Connection $connection_upgrade; 
@@ -145,7 +144,7 @@ server {
 #     }
 
 #     location / {
-#         proxy_pass https://frontend:3000; 
+#         proxy_pass $FRONTEND; 
 #         proxy_http_version 1.1; 
 #         proxy_set_header Upgrade $http_upgrade; 
 #         proxy_set_header Connection $connection_upgrade; 

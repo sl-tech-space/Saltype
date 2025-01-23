@@ -7,48 +7,45 @@ from django.core.cache import cache
 
 class ScoreSerializer(BaseSerializer):
     """
-    スコアデータを処理するためのシリアライザクラス。
-    ユーザーID、言語ID、難易度ID、アクション、タイピング数、正確度、スコアに関するバリデーションを行います。
+    スコアデータに関連するリクエストデータを検証するシリアライザクラス。
     """
 
     ACTION_CHOICES = ["get_average_score", "get_past_scores"]  # アクションの選択肢
     action = serializers.ChoiceField(
         choices=ACTION_CHOICES, required=False
     )  # アクションフィールド
-    user_id = serializers.UUIDField()  # ユーザーID（必須）
+    user_id = serializers.UUIDField()  # ユーザーID
     lang_id = serializers.IntegerField(required=False)  # 言語ID
     diff_id = serializers.IntegerField(required=False)  # 難易度ID
-    typing_count = serializers.IntegerField(
-        required=False, min_value=0
-    )  # タイピング数（オプション、0以上）
+    typing_count = serializers.IntegerField(required=False, min_value=0)  # タイピング数
     accuracy = serializers.FloatField(
         required=False, min_value=0, max_value=1
-    )  # 正確度（オプション、0〜1の範囲）
-    score = serializers.IntegerField(
-        required=False, min_value=0
-    )  # スコア（オプション、0以上）
+    )  # 正確度
+    score = serializers.IntegerField(required=False, min_value=0)  # スコア
 
     def validate(self, attrs):
         """
-        入力データに対してバリデーションを実行します。
-        ユーザーID、言語ID、難易度ID、アクションの有効性を確認します。
+        リクエストデータに対してバリデーションを実行します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+        Returns:
+            attrs: バリデーションを通過したデータ。
         """
-
-        # ユーザーIDの存在確認
+        # ユーザーIDのバリデーション
         attrs = self.check_user_id(attrs)
-        # 言語IDの存在確認
+        # 言語IDのバリデーション
         attrs = self.check_lang_id(attrs)
-        # 難易度IDの存在確認
+        # 難易度IDのバリデーション
         attrs = self.check_diff_id(attrs)
-        # アクションの選択肢が有効であることを確認
+        # アクションのバリデーション
         attrs = self.check_action(attrs, self.ACTION_CHOICES)
-
         # キャッシュキーのバリデーション
-        self.validate_cache_key(attrs)
+        self.check_cache_key(attrs)
 
         return attrs
 
-    def validate_cache_key(self, attrs):
+    def check_cache_key(self, attrs):
         """
         キャッシュに登録されているキーとリクエストのキーが一致するか確認します。
         """

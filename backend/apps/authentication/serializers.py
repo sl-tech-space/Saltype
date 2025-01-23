@@ -7,51 +7,68 @@ from rest_framework.exceptions import ValidationError
 
 class AuthenticationSerializer(BaseSerializer):
     """
-    認証情報をバリデーションし、ユーザーを認証するためのシリアライザクラス。
+    ユーザー認証に関連するリクエストデータを検証するシリアライザクラス
     """
 
     email = serializers.EmailField(required=True)  # メールアドレス
     password = serializers.CharField(
-        write_only=True, required=False, style={"input_type": "password"}
+        write_only=True,
+        required=False,
+        style={"input_type": "password"},
+        min_length=8,
+        max_length=128,
     )  # パスワード
     username = serializers.CharField(max_length=150, required=False)  # ユーザー名
     picture = serializers.URLField(required=False, allow_blank=True)  # 画像URL
 
     def validate(self, attrs):
         """
-        入力されたデータを検証し、認証を行います。
-        """
-        # メールアドレスの検証を行う
-        attrs = self.check_email(attrs)
-        # パスワードの検証を行う
-        attrs = self.check_password(attrs)
+        リクエストデータに対してバリデーションを実行します。
 
-        email = attrs.get("email")
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+        Returns:
+            attrs: バリデーションを通過したデータ。
+        """
+        # メールアドレスのバリデーション
+        attrs = self.check_email(attrs)
+
+        # パスワードのバリデーション
         password = attrs.get("password")
         if password:
-            # ユーザーを認証する
-            user = authenticate(
-                request=self.context.get("request"), username=email, password=password
+            attrs["user"] = self.check_user(
+                attrs.get("email"), attrs.get("password")
             )
-            if user is None:
-                # 認証に失敗した場合のエラーメッセージ
-                raise ValidationError(
-                    {"detail": _("メールアドレスまたはパスワードが正しくありません。")},
-                    code="authorization",
-                )
-            if not user.is_active:
-                # ユーザーアカウントが無効な場合のエラーメッセージ
-                raise ValidationError(
-                    {"detail": _("ユーザーアカウントが無効です。")},
-                    code="authorization",
-                )
-            # 認証に成功したユーザーを属性に追加
-            attrs["user"] = user
         else:
-            # パスワードが提供されていない場合、ユーザー名の存在を確認
-            username = attrs.get("username")
-            if not username:
-                # ユーザー名が必要な場合のエラーメッセージ
-                raise ValidationError({"username": "ユーザー名が必要です。"})
+            attrs = self.check_username(attrs)
 
         return attrs
+
+    def check_user(self, email, password):
+        """
+        ユーザーのバリデーションを行います。
+
+        Args:
+            email (str): メールアドレス。
+            password (str): パスワード。
+
+        Returns:
+            user: 認証されたユーザー。
+
+        Raises:
+            ValidationError: 認証に失敗した場合。
+        """
+        user = authenticate(
+            request=self.context.get("request"), username=email, password=password
+        )
+        if user is None:
+            raise ValidationError(
+                {"detail": _("メールアドレスまたはパスワードが正しくありません。")},
+                code="authorization",
+            )
+        if not user.is_active:
+            raise ValidationError(
+                {"detail": _("ユーザーアカウントが無効です。")},
+                code="authorization",
+            )
+        return user

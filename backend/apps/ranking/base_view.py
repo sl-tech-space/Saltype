@@ -5,9 +5,12 @@ from .serializers import RankingSerializer
 
 class BaseRankingView(BaseView):
     """
-    ランキングに関連する操作を共通化するための基底クラス。
-    サブクラスで具体的な処理を実装する必要があります。
+    ランキングに関連する操作をするための基底クラス。
     """
 
     def post(self, request, *args, **kwargs):
+        """
+        POSTリクエストを処理します。
+        """
+        # RankingSerializerを使用
         return super().post(request, RankingSerializer, *args, **kwargs)

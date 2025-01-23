@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ["@sidebase/nuxt-session", "@vite-pwa/nuxt"],
   routeRules: {
-    "/": { ssr: true }, // SSR
+    "/": { ssr: true, prerender: true }, // SSR
     "/login": { ssr: false }, // CSR
     "/home": { ssr: true }, // SSR
     "/typing/:id": { ssr: true }, // SSR
@@ -129,6 +129,7 @@ export default defineNuxtConfig({
       name: "Saltype",
       short_name: "Saltype",
       theme_color: "#ffffff",
+      display: "fullscreen",
       icons: [
         {
           src: "saltype-pwa-192x192.png",
@@ -149,12 +150,12 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-      cleanupOutdatedCaches: true,
+      globPatterns: ["**/*.{js,css,png,svg,ico}"],
+      navigateFallback: null,
     },
+    strategies: "generateSW",
     client: {
       installPrompt: true,
-      periodicSyncForUpdates: 3600,
     },
     devOptions: {
       enabled: true,

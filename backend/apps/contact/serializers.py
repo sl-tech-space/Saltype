@@ -4,8 +4,7 @@ from apps.common.serializers import BaseSerializer
 
 class ContactSerializer(BaseSerializer):
     """
-    ユーザーからの要望を処理するためのシリアライザクラス。
-    ユーザーIDの検証と要望内容のバリデーションを行います。
+    要望送信に関連するリクエストデータを検証するシリアライザクラス
     """
 
     user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
@@ -13,14 +12,14 @@ class ContactSerializer(BaseSerializer):
 
     def validate(self, attrs):
         """
-        入力データに対してバリデーションを実行します。
-        ユーザーIDの存在を確認し、存在しない場合はエラーを返します。
+        リクエストデータに対してバリデーションを実行します。
 
         Args:
             attrs (dict): バリデーション対象のデータ。
         Returns:
-            dict: バリデーションを通過したデータ。
+            attrs: バリデーションを通過したデータ。
         """
-        # ユーザーIDの存在を検証
+        # ユーザーIDのバリデーション
         attrs = self.check_user_id(attrs)
+
         return attrs

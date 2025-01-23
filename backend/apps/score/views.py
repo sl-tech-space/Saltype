@@ -284,15 +284,35 @@ class GetUserRankingView(BaseScoreView):
 class GetUserRankView(BaseScoreView):
     """
     ユーザーIDに基づいてキャッシュに登録されたランクの名前を取得するためのAPIビュークラス。
+    このクラスは、キャッシュからユーザーのランクを取得し、レスポンスとして返します。
     """
 
     def handle_post_request(self, validated_data: dict):
-        user_id = validated_data["user_id"]
-        cache_key = f"user_rank_{user_id}"
+        """
+        ユーザーIDに基づきキャッシュからランク名を取得するリクエストを処理します。
+        キャッシュにランク名が存在しない場合はエラーを返します。
 
+        Args:
+            validated_data (dict): バリデーションを通過したリクエストデータ。
+                - user_id: ユーザーID（`int`）。キャッシュに格納されているランクを特定するために使用します。
+
+        Returns:
+            dict: ユーザーのランク名を含むレスポンスデータ。
+                - status: 成功を示す文字列（`"success"`）。
+                - rank_name: ユーザーのランク名（`str`）。
+
+        Raises:
+            ValidationError: キャッシュにランク名が見つからなかった場合に発生。
+        """
+        user_id = validated_data["user_id"]  # リクエストデータからユーザーIDを取得
+        cache_key = f"user_rank_{user_id}"  # ユーザーIDを元にキャッシュのキーを作成
+
+        # キャッシュからランク名を取得
         rank_name = cache.get(cache_key)
 
         if rank_name is None:
+            # キャッシュにランク名が存在しない場合、エラーメッセージを返す
             raise ValidationError("キャッシュに登録されているランクが見つかりません。")
 
+        # ランク名が取得できた場合、成功レスポンスを返す
         return {"status": "success", "rank_name": rank_name}
