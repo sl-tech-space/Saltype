@@ -5,72 +5,170 @@ from apps.common.models import User, Lang, Diff
 
 
 class BaseSerializer(serializers.Serializer):
-    # モデルの存在を確認する汎用メソッド
+    """
+    基本的なバリデーションロジックを提供するシリアライザークラス。
+    各種フィールド（ユーザーID、言語ID、難易度IDなど）の検証を行い、適切なエラーメッセージを返します。
+    """
+
     def check_existence(
         self, attrs, field_name, model, error_message, object_name=None
     ):
+        """
+        指定されたフィールドの値がデータベースに存在するかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+            field_name (str): チェックするフィールド名。
+            model (Model): チェック対象のモデル。
+            error_message (str): 存在しない場合のエラーメッセージ。
+            object_name (str, optional): attrsに格納するオブジェクト名。デフォルトはfield_name。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         field_value = attrs.get(field_name)
-        if field_value is None:
-            return attrs
-        try:
-            # 指定されたフィールドの値でオブジェクトを取得
-            obj = model.objects.get(pk=field_value)
-            # オブジェクトを属性に追加
-            attrs[object_name or field_name] = obj
-        except model.DoesNotExist:
-            # オブジェクトが存在しない場合はエラーを発生
-            raise ValidationError({field_name: error_message})
+        if field_value is not None:
+            try:
+                if not model.objects.filter(pk=field_value).exists():
+                    raise ValidationError({field_name: error_message})
+                attrs[object_name or field_name] = model.objects.get(pk=field_value)
+            except model.DoesNotExist:
+                raise ValidationError({field_name: error_message})
+
         return attrs
 
-    # ユーザーIDの存在を確認
     def check_user_id(self, attrs):
+        """
+        ユーザーIDの存在を確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         return self.check_existence(
             attrs, "user_id", User, "指定されたユーザーは存在しません。", "user"
         )
 
-    # 言語IDの存在を確認
     def check_lang_id(self, attrs):
+        """
+        言語IDの存在を確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         return self.check_existence(
             attrs, "lang_id", Lang, "指定された言語は存在しません。", "lang"
         )
 
-    # 難易度IDの存在を確認
     def check_diff_id(self, attrs):
+        """
+        難易度IDの存在を確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         return self.check_existence(
             attrs, "diff_id", Diff, "指定された難易度は存在しません。", "diff"
         )
 
-    # limitの値を確認
     def check_limit(self, attrs):
+        """
+        リミットが正の整数であるかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         limit = attrs.get("limit")
         if limit is not None and limit <= 0:
-            # limitが正の整数でない場合はエラーを発生
             raise ValidationError({"limit": "limitは正の整数である必要があります。"})
         return attrs
 
-    # 日付の値を確認
     def check_date(self, attrs):
+        """
+        日付が今日以前であるかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         date_value = attrs.get("date")
         if date_value and date_value > date.today():
-            # 日付が今日以前でない場合はエラーを発生
             raise ValidationError(
                 {"date": "dateは今日以前の日付でなければなりません。"}
             )
         return attrs
 
-    # アクションの値を確認
     def check_action(self, attrs, valid_actions):
+        """
+        アクションが有効なものであるかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+            valid_actions (list): 有効なアクションのリスト。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         action = attrs.get("action")
         if action and action not in valid_actions:
-            # 無効なアクションが指定された場合はエラーを発生
             raise ValidationError({"action": "無効なアクションが指定されました。"})
         return attrs
 
-    # ミスタイプの形式を確認
+    def check_email(self, attrs):
+        """
+        メールアドレスが存在するかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
+        email = attrs.get("email")
+        if not email:
+            raise ValidationError({"email": "メールアドレスが必要です。"})
+        return attrs
+
+    def check_username(self, attrs):
+        """
+        ユーザー名が存在するかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
+        username = attrs.get("username")
+        if not username:
+            raise ValidationError({"username": "ユーザー名が必要です。"})
+        return attrs
+
     def check_mistypes(self, attrs):
+        """
+        ミスタイプがリスト形式であり、各要素に正の整数のmiss_countが含まれているかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:
+            dict: 更新されたattrs。
+        """
         mistypes = attrs.get("mistypes", [])
         if not isinstance(mistypes, list):
-            # mistypesがリストでない場合はエラーを発生
             raise ValidationError(
                 {"mistypes": "mistypesはリスト形式である必要があります。"}
             )
@@ -80,28 +178,7 @@ class BaseSerializer(serializers.Serializer):
                 or not isinstance(item.get("miss_count"), int)
                 or item.get("miss_count") < 0
             ):
-                # 各ミスタイプに正の整数のmiss_countがない場合はエラーを発生
                 raise ValidationError(
                     {"mistypes": "各ミスタイプには正の整数のmiss_countが必要です。"}
                 )
-        return attrs
-
-    # メールアドレスの存在を確認
-    def check_email(self, attrs):
-        email = attrs.get("email")
-        if not email:
-            # メールアドレスがない場合はエラーを発生
-            raise ValidationError({"email": "メールアドレスが必要です。"})
-        return attrs
-
-    # パスワードの長さを確認
-    def check_password(self, attrs, min_length=8):
-        password = attrs.get("password")
-        if password and len(password) < min_length:
-            # パスワードが指定された長さ未満の場合はエラーを発生
-            raise ValidationError(
-                {
-                    "password": f"パスワードは{min_length}文字以上で入力してください。入力値：{len(password)}文字"
-                }
-            )
         return attrs
