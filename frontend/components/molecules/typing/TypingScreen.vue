@@ -16,6 +16,7 @@ const difficultyLevel = ref(splittedId.right.toString());
 type KeyPressEvent = KeyboardEvent & { result: "correct" | "incorrect" };
 
 const {
+    typingResults,
     currentSentence,
     coloredText,
     countdown,
@@ -37,6 +38,11 @@ const { $bus } = useNuxtApp();
 const emitKeyPress = (event: KeyPressEvent) => {
     const result = handleKeyPress(event);
     $bus.$emit('key-press', { code: event.code, result: result } as KeyPressEvent);
+    $bus.$emit('typing-stats', {
+        totalCorrectTypedCount: typingResults.totalCorrectTypedCount,
+        totalMistypedCount: typingResults.totalMistypedCount,
+        typingAccuracy: typingResults.typingAccuracy
+    });
 };
 
 useEventListener(window, 'keydown', emitKeyPress);
@@ -52,6 +58,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     $bus.$off('timer-ended');
+    $bus.$off('typing-stats');
 });
 </script>
 
