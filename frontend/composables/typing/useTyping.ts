@@ -420,6 +420,7 @@ export function useTyping(language: string, difficultyLevel: string) {
   };
 
   return {
+    typingResults,
     currentSentence,
     coloredText,
     countdown,
