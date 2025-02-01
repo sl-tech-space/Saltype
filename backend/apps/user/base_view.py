@@ -14,6 +14,10 @@ class BaseUserView(BaseView):
         # UserSerializerを使用
         return super().post(request, UserSerializer, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        # UserSerializerを使用
+        return super().delete(request, UserSerializer, *args, **kwargs)
+
     def get_today_highest_score(self, user):
         """
         ユーザーの今日の最高スコアを取得する共通メソッド。
