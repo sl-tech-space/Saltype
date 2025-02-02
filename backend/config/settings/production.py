@@ -2,6 +2,6 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["13.55.129.14", "nginx"]
+ALLOWED_HOSTS = ["saltype.japaneast.cloudapp.azure.com", "nginx"]
 
-CORS_ALLOWED_ORIGINS = ["http://nginx", "http://13.55.129.14", "https://13.55.129.14"]
+CORS_ALLOWED_ORIGINS = ["http://nginx", "http://saltype.japaneast.cloudapp.azure.com", "https://saltype.japaneast.cloudapp.azure.com"]
