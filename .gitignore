@@ -8,4 +8,5 @@ __pycache__/
 *.py[cod]
 *.pyc
 venv
-.pytest_cache
+.
+scripts/
