@@ -51,16 +51,16 @@ $colors: (
 
 @each $name, $color in $colors {
   .button-text--#{"#{$name}"} {
- color: $color;
-}
+    color: $color;
+  }
 
-.button-border--#{"#{$name}"} {
- border-color: $color;
-}
+  .button-border--#{"#{$name}"} {
+    border-color: $color;
+  }
 
-.button-background--#{"#{$name}"} {
- background-color: $color;
-}
+  .button-background--#{"#{$name}"} {
+    background-color: $color;
+  }
 }
 
 .button-border--none {
@@ -83,7 +83,7 @@ $sizes: (
     width: if($size ==small, 80px, if($size ==medium, 120px, 160px));
   }
 
-.button-height--#{"#{$size}"} {
+  .button-height--#{"#{$size}"} {
     max-height: 100%;
     height: if($size ==small, 30px, if($size ==medium, 40px, 50px));
   }

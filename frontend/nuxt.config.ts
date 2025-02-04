@@ -88,6 +88,9 @@ export default defineNuxtConfig({
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },
+  experimental: {
+    buildCache: true
+  },
   vite: {
     build: {
       minify: "terser",
@@ -112,6 +115,7 @@ export default defineNuxtConfig({
         "@vueuse/core",
         "vue-chartjs",
         "chart.js",
+        "jp-transliterator",
       ],
     },
     server: {
@@ -122,6 +126,12 @@ export default defineNuxtConfig({
   },
   nitro: {
     compressPublicAssets: true,
+    storage: {
+      cache: {
+        driver: "lruCache",
+        max: 1000,
+      },
+    },
   },
   pwa: {
     registerType: "autoUpdate",
