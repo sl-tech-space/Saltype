@@ -5,11 +5,13 @@ interface Props {
     duration: number
     backColor?: "white" | "black" | "main-color" | "sub-color";
     barColor?: "white" | "black" | "main-color" | "sub-color";
+    barWidth?: "small" | "medium" | "large" | "full";
 }
 
 const props = withDefaults(defineProps<Props>(), {
     backColor: "main-color",
-    barColor: "black"
+    barColor: "black",
+    barWidth: "full"
 });
 
 const emit = defineEmits(['timerEnd']);
@@ -76,7 +78,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="timer">
+    <div :class="['timer', `timer-width--${props.barWidth}`]">
         <Text color="white" size="large" :text="remainingTimeText" />
         <div :class="[`timer-bar-container`, `timer-bar-container--${props.backColor}`]">
             <div :class="[`timer-bar`, `timer-bar--${props.barColor}`]" :style="timerBarStyle"></div>
@@ -86,7 +88,6 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .timer {
-    width: 100%;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -142,5 +143,21 @@ onUnmounted(() => {
             background-color: $sub-color;
         }
     }
+}
+
+.timer-width--small {
+    width: 25%;
+}
+
+.timer-width--medium {
+    width: 50%;
+}
+
+.timer-width--large {
+    width: 75%;
+}
+
+.timer-width--full {
+    width: 100%;
 }
 </style>

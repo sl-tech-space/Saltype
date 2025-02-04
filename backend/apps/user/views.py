@@ -17,7 +17,7 @@ class GetUsersView(BaseUserView):
         Returns:
             dict: ユーザー情報を含むレスポンスデータ。
         """
-        users = User.objects.all()
+        users = User.objects.filter(del_flg=False)
         users_data = []
 
         for user in users:
@@ -60,8 +60,8 @@ class GetUserView(BaseUserView):
             dict: 指定されたユーザー情報を含むレスポンスデータ。
         """
         user_id = kwargs.get("user_id")
-        user = User.objects.get(user_id=user_id)
-
+        # del_flgがFalseのユーザーのみを取得
+        user = User.objects.get(user_id=user_id, del_flg=False)
         # パスワードの存在有無を確認（NULLかどうかをチェック）
         password_exists = user.password is not None
 
@@ -135,23 +135,18 @@ class UpdateUserView(BaseUserView):
             "password_updated": password_updated,
         }
 
-
 class DeleteUserView(BaseUserView):
     """
-    ユーザー削除APIビュークラス。
-    指定されたユーザーを削除します。
+    ユーザー論理削除APIビュークラス。
+    指定されたユーザーを論理削除します。
     """
 
-    def handle_post_request(self, validated_data: dict):
-        """
-        ユーザーを削除するリクエストを処理します。
+    def handle_delete_request(self, validated_data: dict):
 
-        Args:
-            validated_data (dict): バリデーションを通過したリクエストデータ。
-        Returns:
-            dict: 削除結果を含むレスポンスデータ。
-        """
-        user = User.objects.get(user_id=validated_data["user_id"])
-        user.delete()
+        user_id = validated_data["user_id"]
+        # ユーザーを論理削除
+        user = User.objects.get(user_id=user_id)
+        user.del_flg = True
+        user.save()
 
         return {"status": "success"}

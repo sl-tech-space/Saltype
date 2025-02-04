@@ -108,6 +108,7 @@ button:disabled {
   button:hover {
     border-color: $hover-color;
     cursor: pointer;
+
     &:disabled {
       border-color: $disabled-color;
     }
