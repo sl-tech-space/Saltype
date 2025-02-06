@@ -5,7 +5,7 @@ import Title from '~/components/atoms/texts/Title.vue';
 import Loading from '../../common/ui/Loading.vue';
 import BaseNotification from '../../common/BaseNotification.vue';
 import { useMenuItems } from '~/composables/common/useMenuItems';
-import { useUser } from '~/composables/user/useUser';
+import { useUser } from '~/composables/common/useUser';
 import { useErrorNotification } from '~/composables/common/useError';
 
 const { isAdmin, isLoading, error } = useUser();

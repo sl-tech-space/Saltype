@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import UserAdminHeader from '~/components/organisms/user/admin/UserAdminHeader.vue';
-import UserAdminCard from '~/components/organisms/user/admin/UserAdminCard.vue';
+import UserAdminHeader from '~/components/organisms/admin/UserAdminHeader.vue';
+import UserAdminCard from '~/components/organisms/admin/UserAdminCard.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
-import { useUser } from '~/composables/user/useUser';
+import { useUser } from '~/composables/common/useUser';
 
 const { checkAdminPermission, isAdmin, isLoading } = useUser();
 const checkCompleted = ref(false);

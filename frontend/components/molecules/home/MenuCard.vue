@@ -8,7 +8,7 @@ import { useLogout } from '~/composables/auth/useLogout';
 import ColorCustomizer from './ColorCustomizer.vue';
 import { useColorStore } from '~/store/colorStore';
 import { useMenuItems } from '~/composables/common/useMenuItems';
-import { useUser } from '~/composables/user/useUser';
+import { useUser } from '~/composables/common/useUser';
 
 const { logout } = await useLogout();
 const { colorStore } = useColorStore();
@@ -22,8 +22,8 @@ const navigateToRoute = async (routeName: string) => {
 const navigateToRanking = () => navigateToRoute("ranking");
 const navigateToAnalyze = () => navigateToRoute("analyze");
 const navigateToContact = () => navigateToRoute("contact");
-const navigateToUserSetting = () => navigateToRoute("user-setting");
-const navigateToUserAdmin = () => navigateToRoute("user-admin");
+const navigateToUserSetting = () => navigateToRoute("settings-user");
+const navigateToUserAdmin = () => navigateToRoute("admin");
 
 const showColorCustomizer = () => {
     showModal.value = !showModal.value;

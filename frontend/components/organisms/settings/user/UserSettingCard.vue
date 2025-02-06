@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import UserInfo from '~/components/molecules/user/setting/UserInfo.vue';
-import UpdateUserName from '~/components/molecules/user/setting/UpdateUserName.vue';
-import UpdatePassword from '~/components/molecules/user/setting/UpdatePassword.vue';
-import MenuCard from '~/components/molecules/user/setting/MenuCard.vue';
+import UserInfo from '~/components/molecules/settings/user/UserInfo.vue';
+import UpdateUserName from '~/components/molecules/settings/user/UpdateUserName.vue';
+import UpdatePassword from '~/components/molecules/settings/user/UpdatePassword.vue';
+import MenuCard from '~/components/molecules/settings/user/MenuCard.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
-import { useSetting } from '~/composables/user/setting/useSetting';
+import { useSetting } from '~/composables/settings/user/useSetting';
 import { useErrorNotification } from '~/composables/common/useError';
 
 const currentCard = ref('userInfo');
