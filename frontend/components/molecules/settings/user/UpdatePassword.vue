@@ -11,7 +11,7 @@ import EyeSlashRegular from "~/assets/images/login/eye-slash-regular.svg";
 import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Image from '~/components/atoms/imgs/Image.vue';
-import { useUser } from '~/composables/user/useUser';
+import { useUser } from '~/composables/common/useUser';
 
 const props = defineProps({
     userId: String,

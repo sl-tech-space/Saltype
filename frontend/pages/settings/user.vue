@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import UserSettingHeader from '~/components/organisms/user/setting/UserSettingHeader.vue';
-import UserSettingCard from '~/components/organisms/user/setting/UserSettingCard.vue';
+import UserSettingHeader from '~/components/organisms/settings/user/UserSettingHeader.vue';
+import UserSettingCard from '~/components/organisms/settings/user/UserSettingCard.vue';
 
 onMounted(() => {
     useHead({

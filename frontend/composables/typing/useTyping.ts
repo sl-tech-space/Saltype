@@ -39,12 +39,12 @@ export function useTyping(language: string, difficultyLevel: string) {
   const isCountdownActive = ref(false);
   const error = ref<string | null>(null);
   const isLoading = ref(false);
-  const { resetMistypeStats, countMistype, sendMistypeDataToServer } = useMistype();
+  const { resetMistypeStats, countMistype, sendMistypeDataToServer } =
+    useMistype();
   const { user } = useUserInfo();
-  const { getPatternArray, getVowelPatternArray, getSymbolsPatternArray } = useInputPattern();
+  const { getVowelPatternArray, getSymbolsPatternArray } = useInputPattern();
 
   // メモ化して再利用
-  const permitActionLetters = computed(() => getPatternArray());
   const vowelPattern = computed(() => getVowelPatternArray());
   const symbolPattern = computed(() => getSymbolsPatternArray());
 
@@ -58,8 +58,11 @@ export function useTyping(language: string, difficultyLevel: string) {
   });
 
   const typingAccuracy = computed(() => {
-    const total = typingResults.totalCorrectTypedCount + typingResults.totalMistypedCount;
-    return total > 0 ? Math.round((typingResults.totalCorrectTypedCount / total) * 100) / 100 : 0;
+    const total =
+      typingResults.totalCorrectTypedCount + typingResults.totalMistypedCount;
+    return total > 0
+      ? Math.round((typingResults.totalCorrectTypedCount / total) * 100) / 100
+      : 0;
   });
 
   // 計算結果を反映
@@ -121,18 +124,21 @@ export function useTyping(language: string, difficultyLevel: string) {
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     try {
-      const response = await fetch(`${config.public.baseURL}/api/django/score/insert/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: user.value.user_id,
-          lang_id: _splittedId.value.left,
-          diff_id: _splittedId.value.right,
-          typing_count: typingResults.totalCorrectTypedCount,
-          accuracy: typingResults.typingAccuracy,
-        }),
-        signal: controller.signal,
-      });
+      const response = await fetch(
+        `${config.public.baseURL}/api/django/score/insert/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: user.value.user_id,
+            lang_id: _splittedId.value.left,
+            diff_id: _splittedId.value.right,
+            typing_count: typingResults.totalCorrectTypedCount,
+            accuracy: typingResults.typingAccuracy,
+          }),
+          signal: controller.signal,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("スコアの送信に失敗");
@@ -141,7 +147,10 @@ export function useTyping(language: string, difficultyLevel: string) {
       const data = await response.json();
       localStorage.setItem("score", data.score);
     } catch (e) {
-      error.value = e instanceof Error ? e.message : "ネットワークエラーが発生しました。接続を確認してください。";
+      error.value =
+        e instanceof Error
+          ? e.message
+          : "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {
       clearTimeout(timeoutId);
       isLoading.value = false;
@@ -172,13 +181,16 @@ export function useTyping(language: string, difficultyLevel: string) {
     isLoading.value = true;
     isTypingStarted.value = false;
 
-    await Promise.all([
-      sendMistypeDataToServer(),
-      _sendTypingDataToServer()
-    ]);
+    await Promise.all([sendMistypeDataToServer(), _sendTypingDataToServer()]);
 
-    localStorage.setItem("totalCorrectTypedCount", typingResults.totalCorrectTypedCount.toString());
-    localStorage.setItem("typingAccuracy", typingResults.typingAccuracy.toString());
+    localStorage.setItem(
+      "totalCorrectTypedCount",
+      typingResults.totalCorrectTypedCount.toString()
+    );
+    localStorage.setItem(
+      "typingAccuracy",
+      typingResults.typingAccuracy.toString()
+    );
 
     await navigateTo({ name: "score" });
     isLoading.value = false;
@@ -205,7 +217,10 @@ export function useTyping(language: string, difficultyLevel: string) {
       return "correct";
     }
 
-    if (_handleKeyPressOnJapaneseMode(event) || _handleKeyPressOnEnglishMode(event)) {
+    if (
+      _handleKeyPressOnJapaneseMode(event) ||
+      _handleKeyPressOnEnglishMode(event)
+    ) {
       return "correct";
     }
 
@@ -218,17 +233,22 @@ export function useTyping(language: string, difficultyLevel: string) {
    * 日本語モードのキー入力処理
    */
   const _handleKeyPressOnJapaneseMode = (event: KeyboardEvent): boolean => {
-    if (!_splittedId.value || _splittedId.value.left !== Language.Japanese || !currentSentence.value) {
+    if (
+      !_splittedId.value ||
+      _splittedId.value.left !== Language.Japanese ||
+      !currentSentence.value
+    ) {
       return false;
     }
 
     const currentPatterns = currentSentence.value.patterns;
     const inputKey = event.key.toLowerCase();
-    const currentInputLower = currentInput.value.toLowerCase();
+    const nextInput = (currentInput.value + inputKey).toLowerCase();
 
-    const filteredPatterns = currentPatterns.filter(pattern => 
-      pattern.toLowerCase().startsWith(currentInputLower + inputKey)
-    );
+    const filteredPatterns = currentPatterns.filter((pattern) => {
+      const lowerPattern = pattern.toLowerCase();
+      return lowerPattern.startsWith(nextInput);
+    });
 
     if (!filteredPatterns.length) return false;
 
@@ -237,11 +257,11 @@ export function useTyping(language: string, difficultyLevel: string) {
     currentPatternIndex.value = currentPatterns.indexOf(filteredPatterns[0]);
     _updateColoredText();
 
-    if (vowelPattern.value.includes(event.key)) {
-      patterns.value = _filterVowelPatterns(filteredPatterns);
-      typingResults.totalCorrectTypedCount++;
-    } else if (symbolPattern.value.includes(event.key)) {
-      patterns.value = _filterSymbolPatterns(filteredPatterns);
+    if (
+      vowelPattern.value.includes(inputKey) ||
+      symbolPattern.value.includes(inputKey)
+    ) {
+      patterns.value = filteredPatterns;
       typingResults.totalCorrectTypedCount++;
     }
 
@@ -253,45 +273,20 @@ export function useTyping(language: string, difficultyLevel: string) {
   };
 
   /**
-   * 母音パターンのフィルタリング
-   */
-  const _filterVowelPatterns = (filteredPatterns: string[]): string[] => {
-    return filteredPatterns.filter(p => {
-      const remainingPattern = p.slice(currentInputIndex.value);
-
-      const basePermitActions = [
-        remainingPattern.slice(0, 2),
-        remainingPattern.slice(0, 3),
-        remainingPattern.slice(0, 4)
-      ];
-      return permitActionLetters.value.some(([, romajiArray]) =>
-        basePermitActions.some(baseAction =>
-          romajiArray.some(romaji => baseAction.startsWith(romaji))
-        )
-      );
-    });
-  };
-
-  const _filterSymbolPatterns = (filteredPatterns: string[]): string[] => {
-    return filteredPatterns.filter(p => {
-      const remainingPattern = p.slice(currentInputIndex.value);
-      return permitActionLetters.value.some(([, symbolArray]) =>
-        symbolArray.some(symbol => remainingPattern.startsWith(symbol))
-      );
-    });
-  };
-
-  /**
    * 英語モードのキー入力処理
    */
   const _handleKeyPressOnEnglishMode = (event: KeyboardEvent): boolean => {
-    if (!_splittedId.value || _splittedId.value.left !== Language.English || !currentSentence.value) {
+    if (
+      !_splittedId.value ||
+      _splittedId.value.left !== Language.English ||
+      !currentSentence.value
+    ) {
       return false;
     }
 
     const currentPatterns = currentSentence.value.patterns;
-    const expectedChar = currentPatterns.find(pattern => 
-      pattern[currentInputIndex.value] === event.key
+    const expectedChar = currentPatterns.find(
+      (pattern) => pattern[currentInputIndex.value] === event.key
     );
 
     if (!expectedChar) return false;
@@ -329,9 +324,16 @@ export function useTyping(language: string, difficultyLevel: string) {
    */
   const _updatePatterns = async (): Promise<void> => {
     const { getAllCombinations } = useSentencePattern();
-    patterns.value = await getAllCombinations(
-      sentencesData.value[currentIndex.value][1]
-    );
+    if (!_splittedId.value) {
+      return;
+    }
+    if (_splittedId.value.left === Language.Japanese) {
+      patterns.value = await getAllCombinations(
+        sentencesData.value[currentIndex.value][1]
+      );
+    } else {
+      patterns.value = [sentencesData.value[currentIndex.value][0]];
+    }
     _updateColoredText();
   };
 
@@ -347,7 +349,10 @@ export function useTyping(language: string, difficultyLevel: string) {
       return;
     }
 
-    coloredText.value = `<span style="opacity: 0.5">${fullText.slice(0, currentInputIndex.value)}</span>${fullText.slice(currentInputIndex.value)}`;
+    coloredText.value = `<span style="opacity: 0.5">${fullText.slice(
+      0,
+      currentInputIndex.value
+    )}</span>${fullText.slice(currentInputIndex.value)}`;
   };
 
   /**
