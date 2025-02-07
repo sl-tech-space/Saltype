@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import crypto from "crypto";
 
 if (process.env.NUXT_ENV === "production") {
   console.log = () => {};
@@ -78,7 +77,7 @@ export default defineNuxtConfig({
       httpOnly: true,
     },
     cryptoKey:
-      process.env.NUXT_CRYPTO_KEY || crypto.randomBytes(32).toString("hex"),
+      process.env.NUXT_CRYPTO_KEY,
     public: {
       baseURL: process.env.NUXT_CLIENT_SIDE_URL || "http://localhost:8000",
       serverSideBaseURL:
