@@ -5,7 +5,7 @@ import UpdatePassword from '~/components/molecules/settings/user/UpdatePassword.
 import MenuCard from '~/components/molecules/settings/user/MenuCard.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
-import { useSetting } from '~/composables/settings/user/useSetting';
+import { useSetting } from '~/composables/settings/useSetting';
 import { useErrorNotification } from '~/composables/common/useError';
 
 const currentCard = ref('userInfo');

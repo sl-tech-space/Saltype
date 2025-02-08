@@ -94,7 +94,7 @@ export function useMistype() {
       }
 
       resetMistypeStats();
-    } catch (e) {
+    } catch {
       throw new Error("ミスタイプデータの送信に失敗");
     }
   };

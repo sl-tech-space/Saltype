@@ -33,7 +33,7 @@ export function useAuthToken() {
       setUser(userData);
 
       await navigateTo({ name: "home" });
-    } catch (e) {
+    } catch {
       useCookie("auth_token").value = null;
       clearUser();
     }

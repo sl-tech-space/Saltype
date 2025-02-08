@@ -36,7 +36,7 @@ export function useSentence(
       const data = await response.json();
 
       return data;
-    } catch (e) {
+    } catch {
       throw new Error("ネットワークエラーまたはその他例外が発生しました");
     }
   };

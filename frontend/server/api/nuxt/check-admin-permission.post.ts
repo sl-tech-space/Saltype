@@ -34,7 +34,7 @@ export default defineEventHandler(async (event: H3Event) => {
     const isAdmin = response.data.permission === 0;
 
     return { isAdmin };
-  } catch (e) {
+  } catch {
     throw createError({
       statusCode: 500,
       message: "管理者権限チェック中にエラーが発生しました。",

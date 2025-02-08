@@ -46,7 +46,7 @@ export function useScoreBoardParam() {
       };
 
       return scoreBoardData.value;
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {
@@ -90,7 +90,7 @@ export function useScoreBoardParam() {
       const data = await response.json();
 
       return data;
-    } catch (e) {
+    } catch {
       error.value = "ランキングの取得に失敗しました";
     }
   };
@@ -131,7 +131,7 @@ export function useScoreBoardParam() {
       const data = await response.json();
 
       return data;
-    } catch (e) {
+    } catch {
       error.value = "平均スコアの取得に失敗しました";
     }
   };
@@ -169,7 +169,7 @@ export function useScoreBoardParam() {
       const data = await response.json();
 
       return data;
-    } catch (e) {
+    } catch {
       error.value = "ランクの取得に失敗しました";
     }
   };

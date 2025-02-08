@@ -57,7 +57,7 @@ export function useLogin() {
       await authToken();
 
       await navigateTo({ name: "home" });
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {
@@ -92,7 +92,7 @@ export function useLogin() {
       }
 
       isAdmin.value = true;
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     }

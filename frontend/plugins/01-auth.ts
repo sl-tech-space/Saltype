@@ -29,12 +29,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (router.currentRoute.value.path === "/login") {
           await router.push({ name: "home" });
         }
-      } catch (e) {
+      } catch {
         useCookie("auth_token").value = null;
         clearUser();
         try {
           await router.push({ name: "login" });
-        } catch (e) {
+        } catch {
           throw new Error("ルーティングエラー");
         }
       }

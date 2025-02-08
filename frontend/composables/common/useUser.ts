@@ -62,7 +62,7 @@ export function useUser() {
       } else {
         message.value = "保存に成功しました。";
       }
-    } catch (e) {
+    } catch {
       message.value = "保存に失敗しました。";
     } finally {
       return message.value;
@@ -117,7 +117,7 @@ export function useUser() {
         `admin_permission_${user.value.user_id}`,
         JSON.stringify(data.isAdmin)
       );
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {
