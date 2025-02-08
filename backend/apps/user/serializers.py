@@ -34,7 +34,7 @@ class UserSerializer(BaseSerializer):
         Returns:
             dict: バリデーションを通過したデータ。
         """
-        attrs = self.check_user_id(attrs,del_flg=False)
+        attrs = self.check_user_id(attrs)
 
         self.check_unique_username_and_email(
             attrs.get("username"), attrs.get("email"), attrs.get("user_id")
