@@ -10,9 +10,10 @@ const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
 const handleStart = () => {
-    selectedLanguage.value += 1;
-    selectedDifficulty.value += 1;
-    const id: string = joinWithHyphen(selectedLanguage.value.toString(), selectedDifficulty.value.toString());
+    const id: string = joinWithHyphen(
+        (selectedLanguage.value + 1).toString(), 
+        (selectedDifficulty.value + 1).toString()
+    );
     localStorage.setItem("gameModeId", id);
 
     navigateTo({ name: `typing-id`, params: { id: id } });
