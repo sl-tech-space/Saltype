@@ -135,6 +135,7 @@ class UpdateUserView(BaseUserView):
             "password_updated": password_updated,
         }
 
+
 class DeleteUserView(BaseUserView):
     """
     ユーザー論理削除APIビュークラス。
