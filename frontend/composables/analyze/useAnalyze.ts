@@ -52,7 +52,7 @@ export function useAnalyze() {
       const data = await response.json();
 
       typoFrequency.value = data.top_mistypes;
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     }
@@ -102,7 +102,7 @@ export function useAnalyze() {
       const data = await response.json();
 
       return data.scores;
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     }

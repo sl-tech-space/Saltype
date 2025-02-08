@@ -44,7 +44,7 @@ export function useContact() {
       }
 
       message.value = "送信成功";
-    } catch (e) {
+    } catch {
       message.value = "送信失敗";
     } finally {
       isLoading.value = false;

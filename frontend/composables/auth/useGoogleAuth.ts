@@ -71,7 +71,7 @@ export const useGoogleAuth = () => {
         },
       });
       client.requestAccessToken();
-    } catch (e) {
+    } catch {
       error.value = "ログインに失敗しました。";
     } finally {
       isLoading.value = false;

@@ -146,11 +146,9 @@ export function useTyping(language: string, difficultyLevel: string) {
 
       const data = await response.json();
       localStorage.setItem("score", data.score);
-    } catch (e) {
+    } catch {
       error.value =
-        e instanceof Error
-          ? e.message
-          : "ネットワークエラーが発生しました。接続を確認してください。";
+        "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {
       clearTimeout(timeoutId);
       isLoading.value = false;
