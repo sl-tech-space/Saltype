@@ -43,14 +43,13 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
+"""スコアを取得するユーザーのメールアドレス"""
+GET_SCORES_EMAILS = os.getenv("GET_SCORES_EMAILS", "").split(",")
+"""実際にスコアを送信する相手のメールアドレス"""
+TO_SEND_EMAILS = os.getenv("TO_SEND_EMAILS", "").split(",")
+
 """管理者のメールアドレス"""
 ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "").split(",")
-
-"""受信者のメールアドレス"""
-RECIPIENT_EMAILS = os.getenv("RECIPIENT_EMAILS", "").split(",")
-
-"""送信者のメールアドレス"""
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 
 CACHES = {
     "default": {
