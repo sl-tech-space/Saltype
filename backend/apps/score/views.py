@@ -4,9 +4,6 @@ from django.db.models import Avg, Max
 from .base_view import BaseScoreView
 from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
-import os
-from django.core.mail import send_mail
-from django.conf import settings
 
 
 class InsertScoreView(BaseScoreView):
@@ -319,70 +316,3 @@ class GetUserRankView(BaseScoreView):
 
         # ランク名が取得できた場合、成功レスポンスを返す
         return {"status": "success", "rank_name": rank_name}
-
-
-class ScoreDailyBroadcastAPIView(BaseScoreView):
-    """
-    ユーザーのスコアに関連するリクエストを処理するAPIビュークラス。
-    全ユーザーの本日のベストスコアを取得し、メールで送信します。
-    """
-
-    def handle_post_request(self, validated_data: dict):
-        """
-        全ユーザーの本日のベストスコアを取得し、メールで送信するリクエストを処理します。
-
-        Args:
-            validated_data (dict): バリデーションを通過したリクエストデータ。
-
-        Returns:
-            dict: メール送信結果を含むレスポンスデータ。
-                - status: 成功を示す文字列（`"success"`）。
-                - message: メール送信結果のメッセージ（`str`）。
-        """
-        # 全ユーザーを取得
-        users = User.objects.all()
-
-        # 各ユーザーの本日のベストスコアを取得
-        scores_list = []
-        for user in users:
-            today_best_score = self.get_today_highest_score(user)
-            score_display = today_best_score if today_best_score is not None else "null"
-            scores_list.append(f"{user.username}：{score_display}")
-
-        # メールアドレスを.envから取得
-        recipient_email = os.getenv("RECIPIENT_EMAIL")
-
-        # メールの内容を作成
-        subject = "全ユーザーの本日のベストスコア"
-        message = "\n".join(scores_list)
-        from_email = settings.DEFAULT_FROM_EMAIL
-
-        # メールを送信
-        send_mail(subject, message, from_email, [recipient_email])
-
-        # メール送信結果を返す
-        return {"status": "success", "message": "全ユーザーの本日のベストスコアをメールで送信しました。"}
-    
-    def get_today_highest_score(self, user):
-        """
-        ユーザーの今日の最高スコアを取得する共通メソッド。
-        指定されたユーザーの今日の最高スコアをデータベースから取得します。
-
-        Args:
-            user: ユーザーオブジェクト。
-        Returns:
-            int or None: 今日の最高スコア（スコアが存在しない場合はNone）。
-        """
-        today = date.today()
-
-        # ユーザーの今日の最高スコアを取得
-        todays_score = (
-            Score.objects.filter(
-                user_id=user.user_id,
-                created_at__date=today,
-            )
-            .order_by("-score")
-            .first()
-        )
-
-        return todays_score.score if todays_score else None

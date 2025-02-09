@@ -4,7 +4,6 @@ from pathlib import Path
 
 import certifi
 from dotenv import load_dotenv
-
 from .base import *
 
 """.envを読み込む"""
@@ -46,6 +45,12 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 """管理者のメールアドレス"""
 ADMIN_EMAILS = os.getenv("ADMIN_EMAILS", "").split(",")
+
+"""受信者のメールアドレス"""
+RECIPIENT_EMAILS = os.getenv("RECIPIENT_EMAILS", "").split(",")
+
+"""送信者のメールアドレス"""
+SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 
 CACHES = {
     "default": {
