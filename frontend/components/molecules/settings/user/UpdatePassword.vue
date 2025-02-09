@@ -43,12 +43,27 @@ const togglePasswordVisibility = (field: 'old' | 'new') => {
 const validationSchema = computed(() => {
     if (props.passwordExists) {
         return yup.object().shape({
-            oldPassword: yup.string().required().min(8).max(100).label("現在のパスワード"),
-            newPassword: yup.string().required().min(8).max(100).label("新しいパスワード"),
+            oldPassword: yup.string().required()
+                .min(8)
+                .max(100)
+                .matches(/[A-Z]/, "大文字を1文字以上含める必要があります")
+                .matches(/[0-9]/, "数字を1文字以上含める必要があります")
+                .matches(/[!@#$%^&*(),.?":{}|<>]/, "記号を1文字以上含める必要があります").label("現在のパスワード"),
+            newPassword: yup.string().required()
+                .min(8)
+                .max(100)
+                .matches(/[A-Z]/, "大文字を1文字以上含める必要があります")
+                .matches(/[0-9]/, "数字を1文字以上含める必要があります")
+                .matches(/[!@#$%^&*(),.?":{}|<>]/, "記号を1文字以上含める必要があります").label("新しいパスワード"),
         });
     } else {
         return yup.object().shape({
-            newPassword: yup.string().required().min(8).max(100).label("新しいパスワード"),
+            newPassword: yup.string().required()
+                .min(8)
+                .max(100)
+                .matches(/[A-Z]/, "大文字を1文字以上含める必要があります")
+                .matches(/[0-9]/, "数字を1文字以上含める必要があります")
+                .matches(/[!@#$%^&*(),.?":{}|<>]/, "記号を1文字以上含める必要があります").label("新しいパスワード"),
         });
     }
 });
