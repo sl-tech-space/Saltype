@@ -21,8 +21,10 @@ onMounted(async () => {
 <template>
     <div class="page">
         <RankingHeader title="ランキング詳細" backName="ranking" />
-        <BaseRankingCard :difficultyName="detailsTitle" :rankings="rankingDetails" width="full" height="large"
-            :limit=limit :isFooter="false" :isGrid="true" />
+        <div class="ranking-card">
+            <BaseRankingCard :difficultyName="detailsTitle" :rankings="rankingDetails" width="full" height="large"
+                :limit=limit :isFooter="false" :isGrid="true" />
+        </div>
     </div>
 </template>
 
@@ -30,5 +32,10 @@ onMounted(async () => {
 .page {
     @extend %full-page;
     @include hidden;
+
+    .ranking-card {
+        width: 80%;
+        margin: 0 auto;
+    }
 }
 </style>
