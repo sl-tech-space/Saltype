@@ -4,21 +4,27 @@ from rest_framework import serializers
 from apps.common.serializers import BaseSerializer
 from rest_framework.exceptions import ValidationError
 
+# 大文字、数字、記号を含む正規表現
+password_validator = RegexValidator(
+    regex=r'^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,100}$',
+    message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
+)
 
 class AuthenticationSerializer(BaseSerializer):
     """
     ユーザー認証に関連するリクエストデータを検証するシリアライザクラス
     """
 
-    email = serializers.EmailField(required=True)  # メールアドレス
+    email = serializers.EmailField(max_length=256,required=True)  # メールアドレス
     password = serializers.CharField(
         write_only=True,
         required=False,
         style={"input_type": "password"},
         min_length=8,
-        max_length=128,
+        max_length=100,
+        validators=[password_validator]
     )  # パスワード
-    username = serializers.CharField(max_length=150, required=False)  # ユーザー名
+    username = serializers.CharField(max_length=15, required=False)  # ユーザー名
     picture = serializers.URLField(required=False, allow_blank=True)  # 画像URL
 
     def validate(self, attrs):
