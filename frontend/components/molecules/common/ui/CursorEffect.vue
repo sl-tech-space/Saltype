@@ -33,7 +33,6 @@ const updateCursorEffect = (value: boolean) => {
 
 // 値の変更を監視
 watch(cursorEffectValue, (newValue) => {
-  console.log('CursorEffect value changed:', newValue);
   updateCursorEffect(newValue !== 'false');
 });
 
