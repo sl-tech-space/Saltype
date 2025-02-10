@@ -1,4 +1,3 @@
-import { useInputPattern } from "./useInputPattern";
 import { Romanizer } from "jp-transliterator";
 
 /**

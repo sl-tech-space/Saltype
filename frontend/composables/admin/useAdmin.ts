@@ -36,7 +36,7 @@ export function useAdmin() {
             const responseData = await response.json();
 
             userItems.value = responseData.data;
-        } catch (e) {
+        } catch {
             error.value = "ネットワークエラーが発生しました。接続を確認してください。";
         } finally {
             isLoading.value = false;
@@ -69,7 +69,7 @@ export function useAdmin() {
             }
 
             message.value = "ユーザの削除に成功しました。"
-        } catch (e) {
+        } catch {
             error.value = "ネットワークエラーが発生しました。接続を確認してください。";
         }
     }

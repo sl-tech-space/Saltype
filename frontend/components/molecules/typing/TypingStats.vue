@@ -14,6 +14,7 @@ const { $bus } = useNuxtApp()
 const totalCorrectTypedCount = ref(0)
 const totalMistypedCount = ref(0)
 const typingAccuracy = ref(0)
+const showTypingDetails = ref(false)
 
 const updateTypingStats = (stats: TypingStats) => {
     totalCorrectTypedCount.value = stats.totalCorrectTypedCount
@@ -23,6 +24,7 @@ const updateTypingStats = (stats: TypingStats) => {
 
 onMounted(() => {
     $bus.$on('typing-stats', updateTypingStats)
+    showTypingDetails.value = localStorage.getItem('showTypingDetails') === 'true'
 })
 
 onUnmounted(() => {
@@ -31,7 +33,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="typing-stats">
+    <div v-if="showTypingDetails" class="typing-stats">
         <Text color="white" size="medium" :text="`正タイプ数: ${totalCorrectTypedCount}`" />
         <Text color="white" size="medium" :text="`ミスタイプ数: ${totalMistypedCount}`" />
         <Text color="white" size="medium" :text="`タイピング精度: ${typingAccuracy.toFixed(1)}%`" />

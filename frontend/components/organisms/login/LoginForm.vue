@@ -35,7 +35,14 @@ const passVisibility = () => {
  */
 const validationSchema = yup.object().shape({
   email: yup.string().required().email().max(256).label("メールアドレス"),
-  password: yup.string().required().min(8).max(100).label("パスワード"),
+  password: yup.string()
+    .required()
+    .min(8)
+    .max(100)
+    .matches(/[A-Z]/, "大文字を1文字以上含める必要があります")
+    .matches(/[0-9]/, "数字を1文字以上含める必要があります") 
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, "記号を1文字以上含める必要があります")
+    .label("パスワード"),
 });
 
 /**

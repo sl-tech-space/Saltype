@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // ユーザ管理画面へのアクセス制限
-  if (to.path === "/user/admin") {
+  if (to.path === "/admin") {
     const authToken = useCookie("auth_token").value;
 
     if (authToken) {

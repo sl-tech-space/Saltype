@@ -6,7 +6,7 @@ import Button from '~/components/atoms/buttons/Button.vue';
 import Input from '~/components/atoms/inputs/Input.vue';
 import Field from '../../common/ValidateField.vue';
 import Title from '~/components/atoms/texts/Title.vue';
-import { useUser } from '~/composables/user/useUser';
+import { useUser } from '~/composables/common/useUser';
 import { Form } from 'vee-validate';
 import * as yup from "yup";
 
@@ -24,7 +24,7 @@ const { updateUserInfo } = useUser();
 const emit = defineEmits(['user-updated']);
 
 const validationSchema = yup.object().shape({
-    name: yup.string().required().max(100).label("ユーザ名"),
+    name: yup.string().required().max(15).label("ユーザ名"),
 });
 
 const handleSubmit = async () => {

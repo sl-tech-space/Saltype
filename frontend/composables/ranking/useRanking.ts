@@ -166,7 +166,7 @@ export function useRanking() {
       const data = await response.json();
 
       return data;
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     }

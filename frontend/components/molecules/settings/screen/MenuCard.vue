@@ -4,35 +4,34 @@ import Text from '~/components/atoms/texts/Text.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Loading from '../../common/ui/Loading.vue';
 import BaseNotification from '../../common/BaseNotification.vue';
+import { useColorStore } from '~/store/colorStore';
 import { useMenuItems } from '~/composables/common/useMenuItems';
-import { useUser } from '~/composables/user/useUser';
+import { useUser } from '~/composables/common/useUser';
 import { useErrorNotification } from '~/composables/common/useError';
 
 const { isAdmin, isLoading, error } = useUser();
 const { showErrorNotification } = useErrorNotification(error);
+const { colorStore } = useColorStore();
 
 const emit = defineEmits(['changeCard']);
 
-const slideToUserInfo = () => {
-    emit('changeCard', 'userInfo');
+const slideToColorCustomizer = () => {
+    emit('changeCard', 'colorCustomizer');
 }
 
-const slideToUpdateUserName = () => {
-    emit('changeCard', 'updateUserName');
+const slideToTypingScreenSetting = () => {
+    emit('changeCard', 'typingScreenSetting');
 }
 
-const slideToUpdatePassword = () => {
-    emit('changeCard', 'updatePassword');
+const slideToScreenCommonSetting = () => {
+    emit('changeCard', 'screenCommonSetting');
 }
 
-const { userSettingMenuItems, getAction } = useMenuItems({
-    slideToUserInfo,
-    slideToUpdateUserName,
-    slideToUpdatePassword,
+const { screenSettingMenuItems, getAction } = useMenuItems({
+    slideToColorCustomizer,
+    slideToTypingScreenSetting,
+    slideToScreenCommonSetting,
 }, isAdmin.value)
-
-onMounted(async () => {
-});
 </script>
 
 <template>
@@ -45,8 +44,14 @@ onMounted(async () => {
         <template #card-body>
             <div class="body-content">
                 <div class="menu-list">
-                    <Text v-for="item in userSettingMenuItems" :key="item.text" size="large"
+                    <Text v-for="item in screenSettingMenuItems" :key="item.text" size="large"
                         @click="() => getAction(item.actionKey)?.()">
+                        <ClientOnly>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                :fill="colorStore.mainColor">
+                                <path :d="item.path" />
+                            </svg>
+                        </ClientOnly>
                         {{ item.text }}
                     </Text>
                 </div>
@@ -74,6 +79,15 @@ onMounted(async () => {
             list-style-type: none;
 
             p {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+
+                svg {
+                    display: flex;
+                    align-items: center;
+                }
+
                 &:hover {
                     color: $hover-color;
                     cursor: pointer;

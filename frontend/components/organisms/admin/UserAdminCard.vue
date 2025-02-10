@@ -2,10 +2,10 @@
 import Input from '~/components/atoms/inputs/Input.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Select from '~/components/atoms/selects/Select.vue';
-import PaginatedUserList from '~/components/molecules/user/admin/PaginatedUserList.vue';
+import PaginatedUserList from '~/components/molecules/admin/PaginatedUserList.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
-import { useAdmin } from '~/composables/user/admin/useAdmin';
+import { useAdmin } from '~/composables/admin/useAdmin';
 import type { UserList } from '~/types/user';
 import type { ApiUserList } from '~/types/user';
 import { useColorStore } from '~/store/colorStore';

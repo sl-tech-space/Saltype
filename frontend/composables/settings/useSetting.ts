@@ -1,7 +1,7 @@
 import { useUserInfo } from "~/composables/common/useUserInfo";
 
 /**
- * ユーザ設定画面処理
+ * 設定画面処理
  * @returns getUserInfo, userItem, isLoading, error
  */
 export function useSetting() {
@@ -42,7 +42,7 @@ export function useSetting() {
             const responseData = await response.json();
 
             userItem.value = responseData.data;
-        } catch (e) {
+        } catch {
             error.value =
                 "ネットワークエラーが発生しました。接続を確認してください。";
         } finally {

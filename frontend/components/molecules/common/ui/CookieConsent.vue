@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 

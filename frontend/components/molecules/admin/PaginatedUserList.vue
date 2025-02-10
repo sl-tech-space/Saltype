@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import BasePagination from '~/components/molecules/common/BasePagination.vue';
-import BaseNotification from '../../common/BaseNotification.vue';
+import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import ConfirmModal from './ConfirmModal.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Input from '~/components/atoms/inputs/Input.vue';
-import { useUser } from '~/composables/user/useUser';
-import { useAdmin } from '~/composables/user/admin/useAdmin';
+import { useUser } from '~/composables/common/useUser';
+import { useAdmin } from '~/composables/admin/useAdmin';
 
 const props = defineProps<{
     items: Array<{

@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import crypto from "crypto";
 
 if (process.env.NUXT_ENV === "production") {
   console.log = () => {};
@@ -22,11 +21,15 @@ export default defineNuxtConfig({
     "/ranking": { isr: 300 }, // ISR 5minutes
     "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
-    "/user/setting": { ssr: false }, // CSR
-    "/user/admin": { ssr: false }, // CSR
+    "/settings/screen": { ssr: false }, // CSR
+    "/settings/user": { ssr: false }, // CSR
+    "/admin": { ssr: false }, // CSR
     "/privacypolicy": { ssr: true, prerender: true }, // SSG
     "/cookiepolicy": { ssr: true, prerender: true }, // SSG
     "/terms": { ssr: true, prerender: true }, // SSG
+    "/dev-sw.js": { ssr: false },
+    "/sw.js": { ssr: false },
+    "/workbox-*.js": { ssr: false },
   },
   typescript: {
     shim: false,
@@ -78,7 +81,7 @@ export default defineNuxtConfig({
       httpOnly: true,
     },
     cryptoKey:
-      process.env.NUXT_CRYPTO_KEY || crypto.randomBytes(32).toString("hex"),
+      process.env.NUXT_CRYPTO_KEY,
     public: {
       baseURL: process.env.NUXT_CLIENT_SIDE_URL || "http://localhost:8000",
       serverSideBaseURL:
@@ -134,7 +137,7 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    registerType: "autoUpdate",
+    registerType: 'autoUpdate',
     manifest: {
       name: "Saltype",
       short_name: "Saltype",
@@ -161,15 +164,36 @@ export default defineNuxtConfig({
     },
     workbox: {
       globPatterns: ["**/*.{js,css,png,svg,ico}"],
-      navigateFallback: null,
+      navigateFallback: '/',
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/api\./,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24, // 24時間
+            },
+          },
+        },
+      ],
     },
-    strategies: "generateSW",
+    strategies: "injectManifest",
     client: {
       installPrompt: true,
+      periodicSyncForUpdates: 3600,
     },
     devOptions: {
-      enabled: true,
+      enabled: process.env.NUXT_ENV === "production",
       type: "module",
+      navigateFallback: '/',
     },
+    injectRegister: 'script',
+    includeAssets: ['favicon.ico'],
+    registerWebManifestInRouteRules: true,
   },
 });
