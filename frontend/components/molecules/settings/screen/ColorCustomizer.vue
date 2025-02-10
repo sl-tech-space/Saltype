@@ -9,8 +9,8 @@ import { useColorStore } from '~/store/colorStore'
 const { colorStore, setColor, resetColors } = useColorStore()
 
 // 現在のモードを判定
-const isDarkMode = computed(() => 
-  colorStore.value.backgroundColor === '#141414'
+const isDarkMode = computed(() =>
+    colorStore.value.backgroundColor === '#141414'
 );
 
 const customLabels = {
@@ -48,15 +48,9 @@ const updateColor = (name: string, event: Event) => {
             <template #card-body>
                 <div class="body-content">
                     <div class="mode-toggle">
-                        <Button 
-                            border="sub-color" 
-                            type="button" 
-                            width="same-as-input-large" 
-                            background="none"
-                            :is-rounded="true" 
-                            :button-text="isDarkMode ? 'ライトモードに切替' : 'ダークモードに切替'" 
-                            @click="toggleColorMode" 
-                        />
+                        <Button border="sub-color" type="button" width="same-as-input-large" background="none"
+                            :is-rounded="true" :button-text="isDarkMode ? 'ライトモードに切替' : 'ダークモードに切替'"
+                            @click="toggleColorMode" />
                     </div>
                     <div class="grid-container">
                         <div v-for="(color, name) in colorStore" :key="name" class="palette">
