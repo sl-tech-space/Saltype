@@ -23,9 +23,14 @@ const slideToTypingScreenSetting = () => {
     emit('changeCard', 'typingScreenSetting');
 }
 
+const slideToScreenCommonSetting = () => {
+    emit('changeCard', 'screenCommonSetting');
+}
+
 const { screenSettingMenuItems, getAction } = useMenuItems({
     slideToColorCustomizer,
     slideToTypingScreenSetting,
+    slideToScreenCommonSetting,
 }, isAdmin.value)
 </script>
 

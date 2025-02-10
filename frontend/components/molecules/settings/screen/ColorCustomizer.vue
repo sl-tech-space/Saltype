@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Label from '~/components/atoms/labels/Label.vue';
 import Input from '~/components/atoms/inputs/Input.vue';
+import Text from '~/components/atoms/texts/Text.vue';
+import ToggleSwitch from '~/components/atoms/inputs/ToggleSwitch.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import BaseCard from '../../common/BaseCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
@@ -19,8 +21,8 @@ const customLabels = {
     hoverColor: "ホバー時の色設定"
 };
 
-const toggleColorMode = () => {
-    if (!isDarkMode.value) {
+const updateColorMode = (value: boolean) => {
+    if (value) {
         // ダークモードに切り替え
         setColor('backgroundColor', '#141414');
         setColor('textColor', '#ffffff');
@@ -48,9 +50,13 @@ const updateColor = (name: string, event: Event) => {
             <template #card-body>
                 <div class="body-content">
                     <div class="mode-toggle">
-                        <Button border="sub-color" type="button" width="same-as-input-large" background="none"
-                            :is-rounded="true" :button-text="isDarkMode ? 'ライトモードに切替' : 'ダークモードに切替'"
-                            @click="toggleColorMode" />
+                        <div class="setting-item">
+                            <Text size="medium">ダークモード</Text>
+                            <ToggleSwitch
+                                v-model="isDarkMode"
+                                @update:model-value="updateColorMode"
+                            />
+                        </div>
                     </div>
                     <div class="grid-container">
                         <div v-for="(color, name) in colorStore" :key="name" class="palette">
@@ -125,5 +131,15 @@ const updateColor = (name: string, event: Event) => {
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.setting-item {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    border-bottom: 1px solid var(--sub-color);
 }
 </style>

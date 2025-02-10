@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import ColorCustomizer from '~/components/molecules/settings/screen/ColorCustomizer.vue';
+import TypingScreenSetting from '~/components/molecules/settings/screen/TypingScreenSetting.vue';
+import ScreenCommonSetting from '~/components/molecules/settings/screen/ScreenCommonSetting.vue';
 import MenuCard from '~/components/molecules/settings/screen/MenuCard.vue';
 
-const currentCard = ref('colorCustomizer');
+const currentCard = ref('screenCommonSetting');
 const isReverse = ref(false);
 
 const changeCard = (cardName: string) => {
-    isReverse.value = [''].includes(currentCard.value) && cardName === 'colorCustomizer';
+    isReverse.value = ['typingScreenSetting', 'colorCustomizer'].includes(currentCard.value) && cardName === 'screenCommonSetting';
     currentCard.value = cardName;
 };
 </script>
@@ -15,7 +17,9 @@ const changeCard = (cardName: string) => {
     <main class="settings-card">
         <div class="left-card">
             <transition :name="isReverse ? 'slide-reverse' : 'slide'" mode="out-in">
-                <component :is="currentCard === 'colorCustomizer' ? ColorCustomizer : null" :key="currentCard" />
+                <component
+                    :is="currentCard === 'screenCommonSetting' ? ScreenCommonSetting : currentCard === 'typingScreenSetting' ? TypingScreenSetting : currentCard === 'colorCustomizer' ? ColorCustomizer : null"
+                    :key="currentCard" />
             </transition>
         </div>
         <div class="right-card">

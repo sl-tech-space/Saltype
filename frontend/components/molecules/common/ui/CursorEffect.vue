@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { useColorStore } from '~/store/colorStore';
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
 const { colorStore } = useColorStore();
+const { value: cursorEffectValue } = useLocalStorage('isFollowCursorEffect', 'true');
 
+const isFollowCursorEffect = ref(false);
 const cursor = ref(null);
+const effectKey = ref(0); // 再マウント用のkey
 
 // ライトモードかどうかを判定
 const isLightMode = computed(() =>
@@ -17,8 +21,28 @@ const updateCursor = (event: any) => {
   }
 }
 
+const updateCursorEffect = (value: boolean) => {
+  isFollowCursorEffect.value = value;
+  effectKey.value++; // keyを更新して再マウント
+  if (value) {
+    window.addEventListener("mousemove", updateCursor);
+  } else {
+    window.removeEventListener("mousemove", updateCursor);
+  }
+}
+
+// 値の変更を監視
+watch(cursorEffectValue, (newValue) => {
+  console.log('CursorEffect value changed:', newValue);
+  updateCursorEffect(newValue !== 'false');
+});
+
 onMounted(() => {
-  window.addEventListener("mousemove", updateCursor);
+  // 初期値の設定
+  if (localStorage.getItem('isFollowCursorEffect') === null) {
+    localStorage.setItem('isFollowCursorEffect', 'true');
+  }
+  updateCursorEffect(localStorage.getItem('isFollowCursorEffect') !== 'false');
 });
 
 onUnmounted(() => {
@@ -27,7 +51,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="cursor" class="cursor" :class="{ 'light-mode': isLightMode }">
+  <div 
+    v-if="isFollowCursorEffect" 
+    ref="cursor" 
+    :key="effectKey"
+    class="cursor" 
+    :class="{ 'light-mode': isLightMode }"
+  >
     <slot />
   </div>
 </template>
@@ -51,10 +81,10 @@ onUnmounted(() => {
   &.light-mode {
     mix-blend-mode: normal;
     opacity: 0.8;
-    box-shadow: 0 0 30px var(--main-color), 
-               0 0 45px var(--main-color), 
-               0 0 80px var(--main-color), 
-               0 0 100px var(--main-color);
+    box-shadow: 0 0 30px var(--main-color),
+      0 0 45px var(--main-color),
+      0 0 80px var(--main-color),
+      0 0 100px var(--main-color);
   }
 }
 </style>

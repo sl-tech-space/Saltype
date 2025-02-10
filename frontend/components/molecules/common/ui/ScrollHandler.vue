@@ -4,8 +4,22 @@
  */
 const isScrolling = ref(false);
 const lastScrollTime = ref(0);
-const scrollThreshold = 50; // スクロール開始のしきい値
+const scrollThreshold = 1; // スクロール開始のしきい値
 const scrollCooldown = 800; // スクロールのクールダウン時間(ms)
+
+const initScrollHandler = () => {
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.scrollBehavior = "smooth";
+  document.documentElement.style.scrollSnapType = "y mandatory";
+  addScrollListener();
+};
+
+const cleanupScrollHandler = () => {
+  document.body.style.overflow = "";
+  document.documentElement.style.scrollBehavior = "";
+  document.documentElement.style.scrollSnapType = "";
+  removeScrollListener();
+};
 
 const handleScroll = (event: WheelEvent) => {
   const currentTime = Date.now();
@@ -51,15 +65,24 @@ const removeScrollListener = () => {
 };
 
 onMounted(() => {
-  document.body.style.overflow = "hidden";
-  document.documentElement.style.scrollBehavior = "smooth";
-  addScrollListener();
+  if (localStorage.getItem('isScrollAssist') === 'true') {
+    initScrollHandler();
+  } else {
+    cleanupScrollHandler();
+  }
 });
 
 onUnmounted(() => {
-  document.body.style.overflow = "";
-  document.documentElement.style.scrollBehavior = "";
-  removeScrollListener();
+  cleanupScrollHandler();
+});
+
+// LocalStorageの変更を監視
+watch(() => localStorage.getItem('isScrollAssist'), (newValue) => {
+  if (newValue === 'true') {
+    initScrollHandler();
+  } else {
+    cleanupScrollHandler();
+  }
 });
 </script>
 
@@ -71,7 +94,6 @@ onUnmounted(() => {
 
 <style scoped>
 .content {
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
