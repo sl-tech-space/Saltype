@@ -3,7 +3,13 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from apps.common.models import User
 from apps.common.serializers import BaseSerializer
+from django.core.validators import RegexValidator
 
+# 大文字、数字、記号を含む正規表現
+password_validator = RegexValidator(
+    regex=r'^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,100}$',
+    message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
+)
 
 class UserSerializer(BaseSerializer):
     """
@@ -12,17 +18,21 @@ class UserSerializer(BaseSerializer):
 
     user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
     username = serializers.CharField(
-        max_length=150, required=False
+        max_length=15, required=False
     )  # ユーザー名（最大150文字）
     email = serializers.EmailField(
-        max_length=254, required=False
+        max_length=256, required=False
     )  # メールアドレス（Email形式）
     google_login = serializers.BooleanField(required=False)  # Googleログインフラグ
     password = serializers.CharField(
-        write_only=True, required=False, min_length=8, max_length=128
+        write_only=True,
+        required=False,
+        min_length=8,
+        max_length=100,
+        validators=[password_validator]
     )  # パスワード
     new_password = serializers.CharField(
-        write_only=True, required=False, min_length=8, max_length=128
+        write_only=True, required=False, min_length=8, max_length=100
     )  # 新しいパスワード
 
     def validate(self, attrs):
