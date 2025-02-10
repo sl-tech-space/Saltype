@@ -21,7 +21,10 @@ export default defineNuxtConfig({
     "/ranking": { isr: 300 }, // ISR 5minutes
     "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
-    "/settings/screen": { ssr: false }, // CSR
+    "/settings/screen": { 
+      ssr: false,
+      prerender: false
+    },
     "/settings/user": { ssr: false }, // CSR
     "/admin": { ssr: false }, // CSR
     "/privacypolicy": { ssr: true, prerender: true }, // SSG
