@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import BaseCard from '../common/BaseCard.vue';
-import BaseModal from '../common/BaseModal.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import { useLogout } from '~/composables/auth/useLogout';
-import ColorCustomizer from './ColorCustomizer.vue';
 import { useColorStore } from '~/store/colorStore';
 import { useMenuItems } from '~/composables/common/useMenuItems';
 import { useUser } from '~/composables/common/useUser';
@@ -13,7 +11,6 @@ import { useUser } from '~/composables/common/useUser';
 const { logout } = await useLogout();
 const { colorStore } = useColorStore();
 const { checkAdminPermission, isAdmin } = useUser();
-const showModal = ref(false);
 
 const navigateToRoute = async (routeName: string) => {
     await navigateTo({ name: routeName });
@@ -22,12 +19,9 @@ const navigateToRoute = async (routeName: string) => {
 const navigateToRanking = () => navigateToRoute("ranking");
 const navigateToAnalyze = () => navigateToRoute("analyze");
 const navigateToContact = () => navigateToRoute("contact");
+const navigateToScreenSetting = () => navigateToRoute("settings-screen");
 const navigateToUserSetting = () => navigateToRoute("settings-user");
 const navigateToUserAdmin = () => navigateToRoute("admin");
-
-const showColorCustomizer = () => {
-    showModal.value = !showModal.value;
-};
 
 const handleLogout = async () => {
     await logout();
@@ -37,7 +31,7 @@ const menuItems = ref(useMenuItems({
     navigateToRanking,
     navigateToAnalyze,
     navigateToContact,
-    showColorCustomizer,
+    navigateToScreenSetting,
     navigateToUserSetting,
     navigateToUserAdmin
 }, isAdmin.value));
@@ -47,7 +41,7 @@ watchEffect(() => {
         navigateToRanking,
         navigateToAnalyze,
         navigateToContact,
-        showColorCustomizer,
+        navigateToScreenSetting,
         navigateToUserSetting,
         navigateToUserAdmin
     }, isAdmin.value);
@@ -91,14 +85,6 @@ onMounted(async () => {
             </div>
         </template>
     </BaseCard>
-    <BaseModal v-model="showModal">
-        <template #modal-header>
-            <Title size="small" color="main-color" text="カスタマイズパレット" />
-        </template>
-        <template #modal-body>
-            <ColorCustomizer />
-        </template>
-    </BaseModal>
 </template>
 
 <style lang="scss" scoped>
@@ -118,6 +104,15 @@ onMounted(async () => {
             list-style-type: none;
 
             p {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+
+                svg {
+                    display: flex;
+                    align-items: center;
+                }
+
                 &:hover {
                     color: $hover-color;
                     cursor: pointer;
@@ -129,17 +124,6 @@ onMounted(async () => {
     .footer-content {
         @include horizontal-centered-flex;
     }
-}
-
-.color-customizer {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    background-color: white;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
 }
 
 .slide-enter-active,

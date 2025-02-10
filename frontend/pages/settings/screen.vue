@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ScreenSettingCard from '~/components/organisms/settings/screen/ScreenSettingCard.vue';
+import ScreenSettingHeader from '~/components/organisms/settings/screen/ScreenSettingHeader.vue';
 
 onMounted(() => {
     useHead({
@@ -9,7 +11,8 @@ onMounted(() => {
 
 <template>
     <div class="page">
-
+        <ScreenSettingHeader />
+        <ScreenSettingCard />
     </div>
 </template>
 
