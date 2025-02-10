@@ -140,6 +140,30 @@ section {
     }
 }
 
+.light-mode-card {
+    :deep(.card) {
+        box-shadow: 0 4px 6px var(--main-color), 0 1px 3px var(--main-color);
+        border: 300px solid var(--main-color);
+    }
+
+    :deep(.card:hover) {
+        box-shadow: 0 6px 8px var(--sub-color), 0 2px 4px var(--sub-color);
+        border: 300px solid var(--sub-color);
+    }
+}
+
+.dark-mode-card {
+    :deep(.card) {
+        box-shadow: 0 4px 6px var(--main-color), 0 1px 3px var(--main-color);
+        border: 1px solid var(--main-color);
+    }
+
+    :deep(.card:hover) {
+        box-shadow: 0 4px 6px var(--sub-color), 0 1px 3px var(--sub-color);
+        border: 1px solid var(--sub-color);
+    }
+}
+
 /* responsive */
 @media (min-width: 1200px) and (max-width: 1600px) {
     .card-width--small {

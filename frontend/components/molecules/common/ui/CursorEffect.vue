@@ -1,8 +1,15 @@
 <script setup lang="ts">
-/**
- * 追従型カーソルエフェクト
- */
+import { useColorStore } from '~/store/colorStore';
+
+const { colorStore } = useColorStore();
+
 const cursor = ref(null);
+
+// ライトモードかどうかを判定
+const isLightMode = computed(() =>
+  colorStore.value.backgroundColor === '#dcdcdc' &&
+  colorStore.value.textColor === '#000000'
+);
 
 const updateCursor = (event: any) => {
   if (cursor.value) {
@@ -20,7 +27,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="cursor" class="cursor">
+  <div ref="cursor" class="cursor" :class="{ 'light-mode': isLightMode }">
     <slot />
   </div>
 </template>
@@ -40,5 +47,14 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   mix-blend-mode: exclusion;
   z-index: 2000;
+
+  &.light-mode {
+    mix-blend-mode: normal;
+    opacity: 0.8;
+    box-shadow: 0 0 30px var(--main-color), 
+               0 0 45px var(--main-color), 
+               0 0 80px var(--main-color), 
+               0 0 100px var(--main-color);
+  }
 }
 </style>

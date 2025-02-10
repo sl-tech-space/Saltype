@@ -103,7 +103,6 @@ export function useTyping(language: string, difficultyLevel: string) {
         _resetTypingStats();
         await _updatePatterns();
         _updateColoredText();
-        console.log(localStorage.getItem('difficultyLevelOnCarousel'))
       }
     } catch {
       error.value = "文章の取得に失敗しました";
