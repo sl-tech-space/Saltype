@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const language: string = body.language;
   const difficultyLevel: string = body.difficultyLevel;
-  const count = body.count || 100; // デフォルトで100文取得
+  const count = body.count || 100;
 
   const filePath = path.join(
     process.cwd(),
@@ -20,16 +20,16 @@ export default defineEventHandler(async (event) => {
   try {
     const fileContent = await fs.readFile(filePath, "utf-8");
     const data = JSON.parse(fileContent);
-
     const allSentences = data.sentences;
-    const selectedSentences = [];
 
-    for (let i = 0; i < count && i < allSentences.length; i++) {
-      const randomIndex = Math.floor(Math.random() * allSentences.length);
-      selectedSentences.push(allSentences[randomIndex]);
+    let result: [string, string][] = [];
+    while (result.length < count) {
+      const remaining = count - result.length;
+      const shuffled = [...allSentences].sort(() => Math.random() - 0.5);
+      result = result.concat(shuffled.slice(0, remaining));
     }
 
-    return selectedSentences;
+    return result;
   } catch (e) {
     console.log("文章取得失敗", e);
   }
