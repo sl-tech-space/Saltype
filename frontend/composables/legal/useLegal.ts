@@ -1,4 +1,4 @@
-import type { LegalItem } from "~/types/legal";
+import type { LegalItem } from "~/types/legal.d";
 
 /**
  * 法律文書の文章を取り扱う

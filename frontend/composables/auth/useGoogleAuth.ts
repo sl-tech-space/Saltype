@@ -1,6 +1,6 @@
 import { useRuntimeConfig } from "nuxt/app";
 import { useAuthToken } from "./useAuthToken";
-import type { GoogleUserInfo } from "~/types/user";
+import type { GoogleUserInfo } from "~/types/user.d";
 
 /**
  * Google認証処理

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Text from "~/components/atoms/texts/Text.vue";
-import type { TypingStatsEventBus } from "~/types/typing";
-import type { TypingStats } from "~/types/typing";
+import type { TypingStatsEventBus } from "~/types/typing.d";
+import type { TypingStats } from "~/types/typing.d";
 
 declare module '#app' {
   interface NuxtApp {

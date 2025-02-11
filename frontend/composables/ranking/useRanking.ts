@@ -1,4 +1,4 @@
-import type { RankingItem } from "../../types/ranking";
+import type { RankingItem } from "../../types/ranking.d";
 import { useLanguageAndDifficulty } from "~/composables/typing/useLanguageAndDifficulty";
 
 /**

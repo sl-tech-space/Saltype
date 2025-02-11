@@ -3,7 +3,3 @@ export interface RankingItem {
   username: string;
   score: number;
 }
-
-export interface RankingProps {
-  rankingData: RankingItem[];
-}

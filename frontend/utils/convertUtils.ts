@@ -1,6 +1,6 @@
-import type { RankingItem } from "~/types/ranking";
-import type { ApiUserList } from "~/types/user";
-import type { UserList } from "~/types/user";
+import type { RankingItem } from "~/types/ranking.d";
+import type { ApiUserList } from "~/types/user.d";
+import type { UserList } from "~/types/user.d";
 
 /**
  * 受け渡した文字の変換(英語)

@@ -2,7 +2,7 @@
 import BaseRankingCard from '~/components/molecules/ranking/BaseRankingCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
-import type { RankingItem } from '~/types/ranking';
+import type { RankingItem } from '~/types/ranking.d';
 
 interface Props {
     dailyJapaneseRankingsByCombination: Record<string, RankingItem[]>;

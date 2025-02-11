@@ -1,5 +1,5 @@
 import { useUserInfo } from "../common/useUserInfo";
-import type { ScoreBoardData } from "~/types/score";
+import type { ScoreBoardData } from "~/types/score.d";
 
 /**
  * タイピング結果画面処理
