@@ -13,24 +13,13 @@ const { colorStore } = useColorStore();
 const { checkAdminPermission, isAdmin } = useUser();
 
 const navigateToRoute = async (routeName: string) => {
-    try {
-        await navigateTo({ name: routeName });
-    } catch (error) {
-        console.error('Navigation error:', error);
-        // オプション: エラー通知コンポーネントを表示するなど
-    }
+    await navigateTo({ name: routeName });
 };
 
 const navigateToRanking = () => navigateToRoute("ranking");
 const navigateToAnalyze = () => navigateToRoute("analyze");
 const navigateToContact = () => navigateToRoute("contact");
-const navigateToScreenSetting = async () => {
-    try {
-        await navigateToRoute("settings-screen");
-    } catch (error) {
-        console.error('Screen settings navigation error:', error);
-    }
-};
+const navigateToScreenSetting = () => navigateToRoute("settings-screen");
 const navigateToUserSetting = () => navigateToRoute("settings-user");
 const navigateToUserAdmin = () => navigateToRoute("admin");
 
