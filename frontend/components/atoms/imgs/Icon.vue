@@ -5,7 +5,7 @@ interface Props {
   src?: string | Ref<string>;
   alt?: string;
   title?: string;
-  loading?: "lazy" | "eager" | "auto";
+  loading?: "lazy" | "eager";
   width?: "small" | "medium" | "large";
   height?: "small" | "medium" | "large";
 }
@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
   src: DefaultUserIcon,
   alt: "アイコン",
   title: "アイコン",
-  loading: "auto",
+  loading: "lazy",
   width: "medium",
   height: "medium"
 });

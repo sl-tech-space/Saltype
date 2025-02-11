@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import Icon from "~/components/atoms/imgs/Icon.vue";

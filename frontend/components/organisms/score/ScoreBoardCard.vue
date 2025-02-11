@@ -7,7 +7,7 @@ import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useErrorNotification } from '~/composables/common/useError';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
-import type { ScoreBoardData } from '~/types/score';
+import type { ScoreBoardData } from '~/types/score.d';
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);

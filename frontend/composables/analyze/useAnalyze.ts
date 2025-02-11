@@ -1,5 +1,5 @@
 import { useUserInfo } from "../common/useUserInfo";
-import type { TypoFrequency } from "~/types/analyze";
+import type { TypoFrequency } from "~/types/analyze.d";
 
 /**
  * 分析情報画面処理

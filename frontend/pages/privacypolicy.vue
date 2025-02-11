@@ -3,7 +3,7 @@ import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Separator from '~/components/atoms/ui/Separator.vue';
 import { useLegal } from '~/composables/legal/useLegal';
-import type { LegalItem } from '~/types/legal';
+import type { LegalItem } from '~/types/legal.d';
 
 const { getPrivacyPolicySentence } = useLegal();
 const privacypolicy: LegalItem[] = getPrivacyPolicySentence();
