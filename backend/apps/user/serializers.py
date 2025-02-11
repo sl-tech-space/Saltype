@@ -7,9 +7,10 @@ from django.core.validators import RegexValidator
 
 # 大文字、数字、記号を含む正規表現
 password_validator = RegexValidator(
-    regex=r'^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,100}$',
+    regex=r"^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,100}$",
     message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
 )
+
 
 class UserSerializer(BaseSerializer):
     """
@@ -29,7 +30,7 @@ class UserSerializer(BaseSerializer):
         required=False,
         min_length=8,
         max_length=100,
-        validators=[password_validator]
+        validators=[password_validator],
     )  # パスワード
     new_password = serializers.CharField(
         write_only=True, required=False, min_length=8, max_length=100

@@ -30,7 +30,7 @@ class Command(BaseCommand):
 
         # 日付を取得してフォーマット
         today = date.today()
-        today_str = today.strftime('%m/%d')
+        today_str = today.strftime("%m/%d")
 
         # メールの件名に日付を追加
         subject = f"{today_str} - 新卒タイピングスコアランキング"
