@@ -3,8 +3,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from apps.common.serializers import BaseSerializer
 from rest_framework.exceptions import ValidationError
-from django.core.validators import RegexValidator
-
 
 # 大文字、数字、記号を含む正規表現
 password_validator = RegexValidator(
