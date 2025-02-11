@@ -6,6 +6,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  for: "",
   color: "white",
   label: "ラベル",
 });
