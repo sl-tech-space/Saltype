@@ -340,16 +340,18 @@ export function useTyping(language: string, difficultyLevel: string) {
   const _updateColoredText = (): void => {
     if (!currentSentence.value) return;
 
-    const fullText = currentSentence.value.patterns[currentPatternIndex.value];
+    const pattern = currentSentence.value.patterns[currentPatternIndex.value];
+    if (!pattern) return;
+
     if (!isTypingStarted.value) {
-      coloredText.value = fullText;
+      coloredText.value = pattern;
       return;
     }
 
-    coloredText.value = `<span style="opacity: 0.5">${fullText.slice(
+    coloredText.value = `<span style="opacity: 0.5">${pattern.slice(
       0,
       currentInputIndex.value
-    )}</span>${fullText.slice(currentInputIndex.value)}`;
+    )}</span>${pattern.slice(currentInputIndex.value)}`;
   };
 
   /**
