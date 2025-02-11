@@ -59,9 +59,7 @@ class User(AbstractUser):
 
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     rank = models.ForeignKey("Rank", on_delete=models.SET_NULL, null=True, blank=True)
-    username = models.CharField(
-        max_length=15, validators=[username_validator]
-    )
+    username = models.CharField(max_length=15, validators=[username_validator])
     email = models.EmailField(max_length=256, unique=True)
     password = models.CharField(max_length=100, null=True, blank=True)
     permission = models.PositiveIntegerField(
@@ -231,6 +229,7 @@ class Miss(models.Model):
     class Meta:
         db_table = "t_miss"
 
+
 class Request(models.Model):
     """
     リクエストテーブル定義
@@ -250,4 +249,4 @@ class Request(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = "s_request"
+        db_table = "t_request"
