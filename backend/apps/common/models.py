@@ -230,3 +230,24 @@ class Miss(models.Model):
 
     class Meta:
         db_table = "t_miss"
+
+class Request(models.Model):
+    """
+    リクエストテーブル定義
+
+    Attributes:
+        request_id (AutoField): リクエストID
+        email (EmailField): リクエストを送信したユーザーのメールアドレス
+        request_content (CharField): リクエスト内容（最大256文字）
+        created_at (DateTimeField): 作成日時
+        updated_at (DateTimeField): 更新日時
+    """
+
+    request_id = models.AutoField(primary_key=True)
+    email = models.EmailField(max_length=256)
+    request_content = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "s_request"
