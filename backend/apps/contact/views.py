@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
 from .base_view import BaseContactView
+from apps.common.models import Request  
 
 
 class ContactView(BaseContactView):
@@ -14,10 +15,11 @@ class ContactView(BaseContactView):
     def handle_post_request(self, validated_data: dict) -> dict:
         """
         要望を送信するリクエストを処理します。
-        バリデーションを通過したデータを用いてメールを送信します。
+        バリデーションを通過したデータを用いて、データベースに保存し、メールを送信します。
 
         Args:
             validated_data (dict): ContactSerializer で検証されたリクエストデータ。
+
         Returns:
             dict: 要望送信結果を含むレスポンスデータ。
         """
@@ -28,9 +30,17 @@ class ContactView(BaseContactView):
         User = get_user_model()
         user = User.objects.get(pk=user_id)
 
+        # 要望データをDBに保存
+        request_entry = Request.objects.create(
+            email=user.email, request_content=request_content
+        )
+
         # メール送信
-        subject = f"{user.username}から要望が届いています。"
-        message = f"{user.username} から:\n\n{request_content}\n"
+        subject = f"{user.username} からの要望が届いています。"
+        message = (
+            f"ユーザー: {user.username} ({user.email})\n\n"
+            f"要望内容:\n{request_entry.request_content}\n"
+        )
 
         send_mail(
             subject=subject,
