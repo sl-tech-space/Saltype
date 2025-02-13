@@ -1,8 +1,12 @@
-from rest_framework.response import Response
-
+from django.core.cache import cache
+from django.utils import timezone
+from datetime import timedelta
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.conf import settings
 from apps.common.models import User, Rank
+import uuid
 from .base_view import BaseUserView
-
 
 class GetUsersView(BaseUserView):
     """
@@ -151,3 +155,375 @@ class DeleteUserView(BaseUserView):
         user.save()
 
         return {"status": "success"}
+
+
+# class PasswordResetView(BaseUserView):
+#     """
+#     パスワードリセットを処理するビュークラス。
+#     1つのビューでリセットリクエストとリセット確認フォームを管理。
+#     """
+
+#     def handle_post_request(self, validated_data):
+#         """
+#         POSTリクエストを処理します。
+#         トークンがある場合はパスワードリセットを実行し、トークンがない場合はリセットメールを送信します。
+#         """
+#         token = validated_data.get("token")  # トークンを取得
+#         if token:
+#             return self.handle_reset_password(token, validated_data)
+#         else:
+#             return self.handle_password_reset_request(validated_data)
+
+#     def handle_get_request(self, *args, **kwargs):
+#         """
+#         GETリクエストでフォームを表示します。
+#         トークンがある場合はリセットフォームを表示、なければリセットリクエストフォームを表示します。
+#         """
+#         token = kwargs.get("token")
+#         if token:
+#             if self.is_token_valid(token):
+#                 # トークンが有効なら、画面遷移なしで処理
+#                 return {
+#                     "message": "トークンが有効です。パスワードリセットフォームを表示します。"
+#                 }
+#             else:
+#                 return {"message": "無効なトークンです", "status": 400}
+
+#         # トークンがない場合
+#         return {
+#             "message": "パスワードリセットリクエストフォームを表示します。"
+#         }
+
+#     def handle_password_reset_request(self, validated_data):
+#         """
+#         パスワードリセットリクエストを処理します。
+#         メールアドレスにパスワードリセット用のトークン付きURLを送信します。
+#         """
+#         email = validated_data["email"]
+#         try:
+#             user = User.objects.get(email=email)
+#             token = self.create_password_reset_token(user)  # トークンを生成
+#             self.send_password_reset_email(user, token)  # メールを送信
+#         except User.DoesNotExist:
+#             pass  # ユーザーが見つからなくてもエラーを出さず進める
+
+#         return {"message": "パスワードリセット用のリンクが送信されました。"}
+
+#     def handle_reset_password(self, token, validated_data):
+#         """
+#         パスワードリセットを処理します。
+#         トークンが有効であれば新しいパスワードを設定します。
+#         """
+#         if not self.is_token_valid(token):
+#             return {"message": "トークンの有効期限が切れています", "status": 400}
+
+#         new_password = validated_data.get("new_password")
+#         confirm_password = validated_data.get("confirm_password")
+
+#         # 新しいパスワードの確認
+#         if confirm_password != new_password:
+#             return {"message": "パスワードが一致しません", "status": 400}
+
+#         user = self.get_user_from_token(token)
+#         user.set_password(new_password)
+#         user.save()
+
+#         # トークンを無効化
+#         self.invalidate_token(token)
+
+#         return {"message": "パスワードがリセットされました。"}
+
+#     def create_password_reset_token(self, user):
+#         """
+#         パスワードリセット用のランダムなトークンを生成し、キャッシュに保存します。
+#         """
+#         token = uuid.uuid4().hex
+#         expiration_time = timezone.now() + timedelta(minutes=10)  # トークンの有効期限は10分
+#         cache.set(
+#             token, {"user_id": user.id, "expires_at": expiration_time}, timeout=600
+#         )  # キャッシュに保持
+#         return token
+
+#     def send_password_reset_email(self, user, token):
+#         """
+#         パスワードリセット用のURLをメールで送信します。
+#         """
+#         # フロントエンドでパスワードリセットを処理するためのURLを生成
+#         token_url = reverse("password_reset", args=[token])  # トークン付きURLを生成
+#         full_url = f"{settings.SITE_URL}{token_url}"  # サイトのURLと組み合わせて完全なURLを作成
+
+#         subject = "パスワードリセットのリクエスト"
+        
+#         # メールの本文にHTMLとしてURLを埋め込む
+#         message = f"""
+#         <html>
+#             <body>
+#                 <p>こんにちは {user.username}さん、</p>
+#                 <p>パスワードリセットのリクエストがありました。</p>
+#                 <p>以下のリンクをクリックして、新しいパスワードを設定してください：</p>
+#                 <p><a href="{full_url}">パスワードリセットリンク</a></p>
+#             </body>
+#         </html>
+#         """
+
+#         send_mail(
+#             subject,
+#             message,
+#             settings.EMAIL_HOST_USER,
+#             [user.email],
+#             html_message=message  # HTMLメールとして送信
+#         )
+
+#     def is_token_valid(self, token):
+#         """
+#         トークンが有効かどうかを確認します。
+#         有効な場合はTrue、無効な場合はFalseを返します。
+#         """
+#         token_data = cache.get(token)
+#         if not token_data:
+#             return False
+
+#         if timezone.now() > token_data["expires_at"]:
+#             self.invalidate_token(token)
+#             return False
+
+#         return True
+
+#     def get_user_from_token(self, token):
+#         """
+#         トークンからユーザーを取得します。
+#         """
+#         token_data = cache.get(token)
+#         if not token_data:
+#             return None
+
+#         return User.objects.get(id=token_data["user_id"])
+
+#     def invalidate_token(self, token):
+#         """
+#         トークンを無効化します（キャッシュから削除）。
+#         """
+#         cache.delete(token)
+
+class PasswordResetView(BaseUserView):
+    """
+    パスワードリセットを処理するビュークラス。
+    1つのビューでリセットリクエストとリセット確認フォームを管理。
+    """
+
+    def handle_post_request(self, validated_data):
+        """
+        POSTリクエストを処理します。
+        トークンがある場合はパスワードリセットを実行し、トークンがない場合はリセットメールを送信します。
+        """
+        token = validated_data.get("token")  # トークンを取得
+        if token:
+            return self.handle_reset_password(token, validated_data)
+        else:
+            return self.handle_password_reset_request(validated_data)
+
+    def handle_get_request(self, *args, **kwargs):
+        """
+        GETリクエストでフォームを表示します。
+        トークンがある場合はリセットフォームを表示、なければリセットリクエストフォームを表示します。
+        """
+        token = kwargs.get("token")
+        if token:
+            # トークン検証リクエストを明示的に呼び出す
+            return self.handle_token_validation_request(token)
+
+        # トークンがない場合
+        return {
+            "message": "パスワードリセットリクエストフォームを表示します。"
+        }
+
+    def handle_token_validation_request(self, token):
+        """
+        トークンの有効性を検証するリクエスト。
+        ここでトークンが有効か無効かを返す。
+        """
+        if self.is_token_valid(token):
+            return {
+                "message": "トークンが有効です。パスワードリセットフォームを表示します。"
+            }
+        else:
+            return {"message": "無効なトークンです", "status": 400}
+
+    def handle_password_reset_request(self, validated_data):
+        """
+        パスワードリセットリクエストを処理します。
+        メールアドレスにパスワードリセット用のトークン付きURLを送信します。
+        """
+        email = validated_data["email"]
+        try:
+            user = User.objects.get(email=email)
+            token = self.create_password_reset_token(user)  # トークンを生成
+            self.send_password_reset_email(user, token)  # メールを送信
+        except User.DoesNotExist:
+            pass  # ユーザーが見つからなくてもエラーを出さず進める
+
+        return {"message": "パスワードリセット用のリンクが送信されました。"}
+
+    def handle_reset_password(self, token, validated_data):
+        """
+        パスワードリセットを処理します。
+        トークンが有効であれば新しいパスワードを設定します。
+        """
+        if not self.is_token_valid(token):
+            return {"message": "トークンの有効期限が切れています", "status": 400}
+
+        new_password = validated_data.get("new_password")
+        confirm_password = validated_data.get("confirm_password")
+
+        # 新しいパスワードの確認
+        if confirm_password != new_password:
+            return {"message": "パスワードが一致しません", "status": 400}
+
+        user = self.get_user_from_token(token)
+        user.set_password(new_password)
+        user.save()
+
+        # トークンを無効化
+        self.invalidate_token(token)
+
+        return {"message": "パスワードがリセットされました。"}
+
+    def create_password_reset_token(self, user):
+        """
+        パスワードリセット用のランダムなトークンを生成し、キャッシュに保存します。
+        """
+        token = uuid.uuid4().hex
+        expiration_time = timezone.now() + timedelta(minutes=10)  # トークンの有効期限は10分
+        cache.set(
+            token, {"user_id": user.id, "expires_at": expiration_time}, timeout=600
+        )  # キャッシュに保持
+        return token
+
+    def send_password_reset_email(self, user, token):
+        """
+        パスワードリセット用のURLをメールで送信します。
+        """
+        # フロントエンドでパスワードリセットを処理するためのURLを生成
+        token_url = reverse("password_reset", args=[token])  # トークン付きURLを生成
+        full_url = f"{settings.SITE_URL}{token_url}"  # サイトのURLと組み合わせて完全なURLを作成
+
+        subject = "パスワードリセットのリクエスト"
+        
+        # メールの本文にHTMLとしてURLを埋め込む
+        message = f"""
+        <html>
+            <body>
+                <p>こんにちは {user.username}さん、</p>
+                <p>パスワードリセットのリクエストがありました。</p>
+                <p>以下のリンクをクリックして、新しいパスワードを設定してください：</p>
+                <p><a href="{full_url}">パスワードリセットリンク</a></p>
+            </body>
+        </html>
+        """
+
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            html_message=message  # HTMLメールとして送信
+        )
+
+    def is_token_valid(self, token):
+        """
+        トークンが有効かどうかを確認します。
+        有効な場合はTrue、無効な場合はFalseを返します。
+        """
+        token_data = cache.get(token)
+        if not token_data:
+            return False
+
+        if timezone.now() > token_data["expires_at"]:
+            self.invalidate_token(token)
+            return False
+
+        return True
+
+    def get_user_from_token(self, token):
+        """
+        トークンからユーザーを取得します。
+        """
+        token_data = cache.get(token)
+        if not token_data:
+            return None
+
+        return User.objects.get(id=token_data["user_id"])
+
+    def invalidate_token(self, token):
+        """
+        トークンを無効化します（キャッシュから削除）。
+        """
+        cache.delete(token)
+
+#TODO実装
+
+# class PasswordResetConfirmView(BaseUserView):
+#     """
+#     パスワードリセット確認を処理するビュークラス。
+#     トークンと新しいパスワードを受け取り、パスワードリセットを実行します。
+#     """
+
+#     def handle_post_request(self, validated_data):
+#         """
+#         POSTリクエストで新しいパスワードを設定します。
+#         トークンを検証し、パスワードの一致を確認してリセットします。
+#         """
+#         token = validated_data.get("token")  # トークンを取得
+#         new_password = validated_data.get("new_password")
+#         confirm_password = validated_data.get("confirm_password")
+
+#         # パスワードの一致確認
+#         if new_password != confirm_password:
+#             return {"message": "パスワードが一致しません", "status": 400}
+
+#         if not self.is_token_valid(token):
+#             return {"message": "トークンの有効期限が切れています", "status": 400}
+
+#         # トークンからユーザーを取得
+#         user = self.get_user_from_token(token)
+#         if not user:
+#             return {"message": "無効なトークンです", "status": 400}
+
+#         # 新しいパスワードを設定
+#         user.set_password(new_password)
+#         user.save()
+
+#         # トークン無効化
+#         self.invalidate_token(token)
+
+#         # パスワードリセット成功の通知メールを送信
+#         self.send_password_reset_success_email(user)
+
+#         return {"message": "パスワードがリセットされました。"}
+
+
+#     def send_password_reset_success_email(self, user):
+#         """
+#         パスワードリセット成功の通知メールを送信します。
+#         """
+#         subject = "パスワードリセット完了"
+
+#         message = f"""
+#         <html>
+#             <body>
+#                 <p>こんにちは {user.username}さん、</p>
+#                 <p>パスワードが正常にリセットされました。</p>
+#                 <p>以下のリンクからログインできます：</p>
+#                 <p><a href="{settings.LOGIN_URL}">ログイン画面</a></p>
+#             </body>
+#         </html>
+#         """
+
+#         send_mail(
+#             subject,
+#             message,
+#             settings.EMAIL_HOST_USER,
+#             [user.email],
+#             html_message=message  # HTMLメールとして送信
+#         )
+

@@ -17,7 +17,7 @@ class UserSerializer(BaseSerializer):
     ユーザー関連のリクエストデータを検証するためのシリアライザクラス
     """
 
-    user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
+    user_id = serializers.UUIDField(required=False)  # ユーザーID（UUID形式）
     username = serializers.CharField(
         max_length=15, required=False
     )  # ユーザー名（最大150文字）
@@ -45,6 +45,16 @@ class UserSerializer(BaseSerializer):
         Returns:
             dict: バリデーションを通過したデータ。
         """
+        # emailのみに関する処理
+        if (
+            attrs.get("email")
+            and not attrs.get("username")
+            and not attrs.get("password")
+            and not attrs.get("new_password")
+        ):
+            self.check_email(attrs)
+            return attrs
+
         attrs = self.check_user_id(attrs)
 
         self.check_unique_username_and_email(

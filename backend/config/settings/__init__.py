@@ -57,3 +57,5 @@ CACHES = {
         "LOCATION": "unique-snowflake",
     }
 }
+
+SITE_URL = "http://localhost:3000"
