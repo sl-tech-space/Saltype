@@ -1,9 +1,10 @@
+import threading
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
 from .base_view import BaseContactView
-from apps.common.models import Request  
+from apps.common.models import Request
 
 
 class ContactView(BaseContactView):
@@ -15,7 +16,7 @@ class ContactView(BaseContactView):
     def handle_post_request(self, validated_data: dict) -> dict:
         """
         要望を送信するリクエストを処理します。
-        バリデーションを通過したデータを用いて、データベースに保存し、メールを送信します。
+        バリデーションを通過したデータを用いて、データベースに保存し、メールを非同期で送信します。
 
         Args:
             validated_data (dict): ContactSerializer で検証されたリクエストデータ。
@@ -35,7 +36,20 @@ class ContactView(BaseContactView):
             email=user.email, request_content=request_content
         )
 
-        # メール送信
+        # 非同期でメール送信
+        thread = threading.Thread(target=self.send_request_email, args=(user, request_entry))
+        thread.start()
+
+        return {"message": "要望が正常に送信されました。"}
+
+    def send_request_email(self, user, request_entry):
+        """
+        メールを非同期で送信する処理。
+
+        Args:
+            user (User): ユーザーモデルのインスタンス。
+            request_entry (Request): 保存したリクエストデータ。
+        """
         subject = f"{user.username} からの要望が届いています。"
         message = (
             f"ユーザー: {user.username} ({user.email})\n\n"
@@ -49,5 +63,3 @@ class ContactView(BaseContactView):
             recipient_list=[settings.EMAIL_HOST_USER],
             fail_silently=False,
         )
-
-        return {"message": "要望が正常に送信されました。"}
