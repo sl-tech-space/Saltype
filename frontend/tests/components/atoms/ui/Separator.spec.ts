@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import Separator from "~/components/atoms/ui/Separator.vue";
+import Separator from "../../../../components/atoms/ui/Separator.vue";
 
 describe("Separator", () => {
   // 基本的なレンダリングテスト
@@ -61,11 +61,6 @@ describe("Separator", () => {
         props: { width },
       });
       expect(wrapper.find(".separator").classes()).toContain(`separator--${width}`);
-    });
-
-    it("widthが指定されていない場合、デフォルトのmediumが適用される", () => {
-      const wrapper = mount(Separator);
-      expect(wrapper.find(".separator").classes()).toContain("separator--medium");
     });
   });
 

@@ -1,7 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, it, expect, vi } from "vitest";
-import ContactForm from "~/components/molecules/contact/ContactForm.vue";
-import { useContact } from "~/composables/contact/useContact";
+import ContactForm from "../../../../components/molecules/contact/ContactForm.vue"
 
 // useContact モックを作成
 vi.mock("~/composables/contact/useContact", () => ({

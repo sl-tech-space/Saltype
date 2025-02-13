@@ -36,14 +36,14 @@ useHead({
 <template>
   <div class="page">
     <div class="container">
-      <Image image-src="/error.png" />
+      <Image image-src="/error.png" class="error-image" />
       <Text size="large">{{ error?.message }}</Text>
       <button @click="navigateToTop()">トップに戻る</button>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .page {
   width: 100%;
   height: 100vh;
@@ -61,7 +61,7 @@ useHead({
     align-items: center;
     gap: 10px;
 
-    img {
+    .error-image {
       width: 50%;
       max-width: 50%;
       height: auto;
@@ -75,12 +75,12 @@ useHead({
       border-color: white;
       color: white;
       background-color: #202020;
-    }
 
-    button:hover {
-      cursor: pointer;
-      border-color: #cffdfd;
-      background-color: #353535;
+      &:hover {
+        cursor: pointer;
+        border-color: #cffdfd;
+        background-color: #353535;
+      }
     }
   }
 }

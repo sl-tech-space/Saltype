@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import ToggleSwitch from "~/components/atoms/inputs/ToggleSwitch.vue";
+import ToggleSwitch from "../../../../components/atoms/inputs/ToggleSwitch.vue";
 
 describe("ToggleSwitch", () => {
   // 基本的なレンダリングテスト

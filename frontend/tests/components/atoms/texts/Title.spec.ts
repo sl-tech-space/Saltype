@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import Title from "~/components/atoms/texts/Title.vue";
+import Title from "../../../../components/atoms/texts/Title.vue";
 
 describe("Title", () => {
   // 基本的なレンダリングテスト

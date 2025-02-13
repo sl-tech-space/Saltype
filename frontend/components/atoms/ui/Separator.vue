@@ -8,7 +8,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   color: "white",
-  width: "medium",
   margin: "none",
   visible: true
 });

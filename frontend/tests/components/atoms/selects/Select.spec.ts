@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, it, expect, beforeEach } from "vitest";
-import Select from "~/components/atoms/selects/Select.vue";
+import Select from "../../../../components/atoms/selects/Select.vue";
 
 describe("Select", () => {
   const mockOptions = [

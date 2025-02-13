@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import CopyRight from "~/components/atoms/ui/CopyRight.vue";
+import CopyRight from "../../../../components/atoms/ui/CopyRight.vue";
 
 describe("CopyRight", () => {
   // 基本的なレンダリングテスト

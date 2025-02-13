@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import Textarea from "~/components/atoms/inputs/Textarea.vue";
+import Textarea from "../../../../components/atoms/inputs/Textarea.vue";
 
 describe("Textarea", () => {
   // 基本的なレンダリングテスト

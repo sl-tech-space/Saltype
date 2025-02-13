@@ -1,9 +1,18 @@
 import { ref } from 'vue';
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import Icon from "~/components/atoms/imgs/Icon.vue";
-import DefaultUserIcon from "~/assets/images/home/default-user-icon.png";
-import DummyImage from "~/assets/images/test/dummy-image.png";
+import Icon from "../../../../components/atoms/imgs/Icon.vue";
+
+// 画像のモック
+vi.mock("../../../../assets/images/home/default-user-icon.png", () => ({
+  default: "default-user-icon.png"
+}));
+vi.mock("../../../../assets/images/test/dummy-image.png", () => ({
+  default: "dummy-image.png"
+}));
+
+const DefaultUserIcon = "default-user-icon.png";
+const DummyImage = "dummy-image.png";
 
 describe("Icon", () => {
   it("デフォルトpropsで正しくレンダリングされる", () => {

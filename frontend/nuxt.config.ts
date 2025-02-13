@@ -1,11 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-if (process.env.NUXT_ENV === "production") {
-  console.log = () => {};
-  console.error = () => {};
-  console.warn = () => {};
-}
-
 export default defineNuxtConfig({
   components: true,
   compatibilityDate: "2024-09-20",
@@ -21,15 +15,28 @@ export default defineNuxtConfig({
     "/ranking": { isr: 300 }, // ISR 5minutes
     "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
-    "/settings/screen": { 
+    "/settings/screen": {
       ssr: false,
-      prerender: false
+      prerender: false,
     },
     "/settings/user": { ssr: false }, // CSR
     "/admin": { ssr: false }, // CSR
-    "/privacypolicy": { ssr: true, prerender: true }, // SSG
-    "/cookiepolicy": { ssr: true, prerender: true }, // SSG
-    "/terms": { ssr: true, prerender: true }, // SSG
+    "/privacypolicy": {
+      ssr: false,
+      static: true,
+    },
+    "/cookiepolicy": {
+      ssr: false,
+      static: true,
+    },
+    "/terms": {
+      ssr: false,
+      static: true,
+    },
+    "/error": {
+      ssr: true,
+      static: true,
+    },
     "/dev-sw.js": { ssr: false },
     "/sw.js": { ssr: false },
     "/workbox-*.js": { ssr: false },
@@ -76,6 +83,9 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
+    pageTransition: { name: "page", mode: "out-in" },
+    rootId: "__nuxt",
+    buildAssetsDir: "/_nuxt/",
   },
   runtimeConfig: {
     cookies: {
@@ -83,8 +93,7 @@ export default defineNuxtConfig({
       sameSite: "strict",
       httpOnly: true,
     },
-    cryptoKey:
-      process.env.NUXT_CRYPTO_KEY,
+    cryptoKey: process.env.NUXT_CRYPTO_KEY,
     public: {
       baseURL: process.env.NUXT_CLIENT_SIDE_URL || "http://localhost:8000",
       serverSideBaseURL:
@@ -95,7 +104,7 @@ export default defineNuxtConfig({
     },
   },
   experimental: {
-    buildCache: true
+    buildCache: true,
   },
   vite: {
     build: {
@@ -140,7 +149,7 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: "autoUpdate",
     manifest: {
       name: "Saltype",
       short_name: "Saltype",
@@ -166,37 +175,37 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,png,svg,ico}"],
-      navigateFallback: '/',
+      globPatterns: ["**/*.{js,css,png,svg,ico,map}"],
+      navigateFallback: "/",
       cleanupOutdatedCaches: true,
       skipWaiting: true,
       clientsClaim: true,
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/api\./,
-          handler: 'NetworkFirst',
+          handler: "NetworkFirst",
           options: {
-            cacheName: 'api-cache',
+            cacheName: "api-cache",
             expiration: {
               maxEntries: 100,
-              maxAgeSeconds: 60 * 60 * 24, // 24時間
+              maxAgeSeconds: 60 * 60 * 24
             },
           },
         },
       ],
     },
-    strategies: "injectManifest",
+    strategies: "generateSW",
     client: {
       installPrompt: true,
       periodicSyncForUpdates: 3600,
     },
     devOptions: {
-      enabled: process.env.NUXT_ENV === "production",
+      enabled: true,
       type: "module",
-      navigateFallback: '/',
+      navigateFallback: "/",
     },
-    injectRegister: 'script',
-    includeAssets: ['favicon.ico'],
+    injectRegister: "auto",
+    includeAssets: ["favicon.ico"],
     registerWebManifestInRouteRules: true,
   },
 });

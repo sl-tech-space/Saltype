@@ -24,11 +24,13 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="page">
-        <UserAdminHeader />
-        <UserAdminCard />
+    <div>
+        <div class="page">
+            <UserAdminHeader />
+            <UserAdminCard />
+        </div>
+        <Loading :is-loading="isLoading" />
     </div>
-    <Loading :is-loading="isLoading" />
 </template>
 
 <style lang="scss" scoped>
