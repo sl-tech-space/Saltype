@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import Image from "~/components/atoms/imgs/Image.vue";
+import Image from "../../../../components/atoms/imgs/Image.vue";
 
 describe("Image", () => {
   const dummyImageSrc = "/path/to/dummy/image.jpg";

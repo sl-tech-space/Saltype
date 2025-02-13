@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import Label from "~/components/atoms/labels/Label.vue";
+import Label from "../../../../components/atoms/labels/Label.vue";
 
 describe("Label", () => {
   // 基本的なレンダリングテスト

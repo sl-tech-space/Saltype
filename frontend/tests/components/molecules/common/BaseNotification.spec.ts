@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount, VueWrapper } from "@vue/test-utils";
 import { nextTick } from "vue";
-import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
-import Text from "~/components/atoms/texts/Text.vue";
+import BaseNotification from "../../../../components/molecules/common/BaseNotification.vue";
 
 describe("BaseNotification", () => {
   let wrapper: VueWrapper<any>;
