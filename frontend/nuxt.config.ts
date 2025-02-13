@@ -175,7 +175,11 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,png,svg,ico,map}"],
+      globPatterns: [
+        "**/_nuxt/**/*.{js,css}",
+        "**/*.{png,jpg,jpeg,svg,ico}",
+        "manifest.webmanifest"
+      ],
       navigateFallback: "/",
       cleanupOutdatedCaches: true,
       skipWaiting: true,
@@ -197,12 +201,10 @@ export default defineNuxtConfig({
     strategies: "generateSW",
     client: {
       installPrompt: true,
-      periodicSyncForUpdates: 3600,
     },
     devOptions: {
       enabled: true,
       type: "module",
-      navigateFallback: "/",
     },
     injectRegister: "auto",
     includeAssets: ["favicon.ico"],
