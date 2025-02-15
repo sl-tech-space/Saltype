@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .base_view import BaseAuthenticationView
 from django.conf import settings
 
+
 class LoginView(BaseAuthenticationView):
     """
     ユーザーがオリジナルフォームからログインするためのAPIビュークラス。
@@ -46,6 +47,7 @@ class LoginView(BaseAuthenticationView):
         token, _ = Token.objects.get_or_create(user=user)
         return token
 
+
 class CheckTokenView(BaseAuthenticationView):
     """
     トークンを使用した自動ログインAPIビュークラス。
@@ -71,6 +73,7 @@ class CheckTokenView(BaseAuthenticationView):
             "email": user.email,
         }
         return user_data
+
 
 class GoogleAuthView(BaseAuthenticationView):
     """
