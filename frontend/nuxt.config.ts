@@ -86,6 +86,7 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
     rootId: "__nuxt",
     buildAssetsDir: "/_nuxt/",
+    baseURL: '/',
   },
   runtimeConfig: {
     cookies: {
