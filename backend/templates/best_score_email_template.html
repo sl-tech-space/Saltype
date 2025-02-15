@@ -1,0 +1,12 @@
+<html>
+
+<body>
+    <h1>{{ today_str }} のスコアランキングを送信します。</h1>
+    <ul>
+        {% for rank, score in scores %}
+        <li>{{ rank }}位 : {{ score.user__username }} - スコア : {{ score.max_score }}</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
