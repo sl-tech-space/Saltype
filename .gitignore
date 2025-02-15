@@ -13,3 +13,4 @@ venv
 /scripts/
 logs/cron.log
 logs/exim4/mainlog
+backend/apps/common/migrations/

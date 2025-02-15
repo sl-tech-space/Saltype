@@ -2,6 +2,7 @@ import threading
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
 from rest_framework.exceptions import ValidationError
 from .base_view import BaseContactView
 from apps.common.models import Request
@@ -20,7 +21,6 @@ class ContactView(BaseContactView):
 
         Args:
             validated_data (dict): ContactSerializer で検証されたリクエストデータ。
-
         Returns:
             dict: 要望送信結果を含むレスポンスデータ。
         """
@@ -37,7 +37,9 @@ class ContactView(BaseContactView):
         )
 
         # 非同期でメール送信
-        thread = threading.Thread(target=self.send_request_email, args=(user, request_entry))
+        thread = threading.Thread(
+            target=self.send_request_email, args=(user, request_entry)
+        )
         thread.start()
 
         return {"message": "要望が正常に送信されました。"}
@@ -51,15 +53,18 @@ class ContactView(BaseContactView):
             request_entry (Request): 保存したリクエストデータ。
         """
         subject = f"{user.username} からの要望が届いています。"
-        message = (
-            f"ユーザー: {user.username} ({user.email})\n\n"
-            f"要望内容:\n{request_entry.request_content}\n"
+
+        # HTMLテンプレートをレンダリング
+        html_message = render_to_string(
+            "contact_email_template.html",
+            {"user": user, "request_content": request_entry.request_content},
         )
 
         send_mail(
             subject=subject,
-            message=message,
+            message="",  # テキストメッセージは空にする
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[settings.EMAIL_HOST_USER],
             fail_silently=False,
+            html_message=html_message,  # HTMLメッセージを指定
         )

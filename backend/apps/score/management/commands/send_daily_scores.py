@@ -3,55 +3,35 @@ from django.core.mail import send_mail
 from django.conf import settings
 from apps.common.models import User, Score
 from datetime import date
+from django.db.models import Max
+from django.template.loader import render_to_string
 
 
 class Command(BaseCommand):
     help = "本日のベストスコアをメールで送信する"
 
     def handle(self, *args, **options):
-        # スコアを取得するユーザーのメールアドレス
         get_score_user_emails = settings.GET_SCORES_EMAILS
-        # 実際にスコアを送信する相手のメールアドレス
         to_sending_emails = settings.TO_SEND_EMAILS
-        # メール送信元のメールアドレス
         host_email = settings.EMAIL_HOST_USER
-        # スコアを取得するユーザーのメールアドレスリストから、ユーザーを取得
-        users = User.objects.filter(email__in=get_score_user_emails)
 
-        # 各ユーザーの本日のベストスコアを取得
-        scores_list = []
-        for user in users:
-            today_best_score = self.get_today_highest_score(user)
-            score_display = today_best_score if today_best_score is not None else "null"
-            scores_list.append((user.username, score_display))
-
-        # スコアを高い順にソート
-        scores_list.sort(key=lambda x: x[1], reverse=True)
-
-        # 日付を取得してフォーマット
         today = date.today()
-        today_str = today.strftime("%m/%d")
+        scores = (
+            Score.objects.filter(
+                user__email__in=get_score_user_emails, created_at__date=today
+            )
+            .values("user__username")
+            .annotate(max_score=Max("score"))
+            .order_by("-max_score")
+        )
 
-        # メールの件名に日付を追加
+        today_str = today.strftime("%m/%d")
         subject = f"{today_str} - 新卒タイピングスコアランキング"
 
-        # メールの内容を作成
-        message_lines = [f"{today_str} のスコアランキングを送信します。\n"]
-        for rank, (username, score) in enumerate(scores_list, start=1):
-            message_lines.append(f"{rank}位 : {username} - スコア : {score}")
-        message = "\n".join(message_lines)
+        # テンプレートをレンダリング
+        html_message = render_to_string(
+            "best_score_email_template.html", {"today_str": today_str, "scores": scores}
+        )
 
         # メールを送信
-        send_mail(subject, message, host_email, to_sending_emails)
-
-    def get_today_highest_score(self, user):
-        today = date.today()
-        todays_score = (
-            Score.objects.filter(
-                user_id=user.user_id,
-                created_at__date=today,
-            )
-            .order_by("-score")
-            .first()
-        )
-        return todays_score.score if todays_score else None
+        send_mail(subject, "", host_email, to_sending_emails, html_message=html_message)

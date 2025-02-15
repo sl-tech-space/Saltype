@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.common.models import Diff, Lang, User
+from apps.common.models import User
 from apps.common.serializers import BaseSerializer
 from rest_framework.exceptions import ValidationError
 from django.core.cache import cache
@@ -21,7 +21,7 @@ class ScoreSerializer(BaseSerializer):
     accuracy = serializers.FloatField(
         required=False, min_value=0, max_value=1
     )  # 正確度
-    score = serializers.IntegerField(required=False, min_value=0)  # スコア
+    score = serializers.IntegerField(required=False)  # スコア
 
     def validate(self, attrs):
         """

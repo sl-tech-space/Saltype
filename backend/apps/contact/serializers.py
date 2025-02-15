@@ -8,7 +8,7 @@ class ContactSerializer(BaseSerializer):
     """
 
     user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
-    request_content = serializers.CharField(min_length=1, max_length=1000)  # 要望内容
+    request_content = serializers.CharField(min_length=1, max_length=300)  # 要望内容
 
     def validate(self, attrs):
         """

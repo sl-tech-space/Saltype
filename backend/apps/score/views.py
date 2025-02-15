@@ -34,9 +34,9 @@ class InsertScoreView(BaseScoreView):
         Returns:
             dict: スコア挿入または更新結果を含むレスポンスデータ。
         """
-        user = validated_data["user"]
-        lang = validated_data["lang"]
-        diff = validated_data["diff"]
+        user_id = validated_data["user_id"]
+        lang_id = validated_data["lang_id"]
+        diff_id = validated_data["diff_id"]
         typing_count = validated_data["typing_count"]
         accuracy = validated_data["accuracy"]
 
@@ -44,27 +44,27 @@ class InsertScoreView(BaseScoreView):
         calculated_score = self.calculate_score(typing_count, accuracy)
 
         # 最高スコア判定
-        is_highest = self.is_highest_score(
-            user.user_id, lang.lang_id, diff.diff_id, calculated_score
-        )
+        is_highest = self.is_highest_score(user_id, lang_id, diff_id, calculated_score)
 
         # 挑戦結果のランクを決定
         rank_name = self.determine_rank(typing_count)
 
         # キャッシュにランク名を保存
-        cache_key = f"user_rank_{user.user_id}"
-        cache.set(cache_key, rank_name, timeout=3600)  # 1時間のキャッシュ
+        cache_key = f"user_rank_{user_id}"
+        cache.set(cache_key, rank_name, timeout=600)  # 10分のキャッシュ
 
         # 最高ならランク更新
         if is_highest:
-            self.update_user_rank(user.user_id, rank_name)
+            self.update_user_rank(user_id, rank_name)
 
         # スコアをインサート
         score_data = self.insert_score(
-            user.user_id,
-            lang.lang_id,
-            diff.diff_id,
+            user_id,
+            lang_id,
+            diff_id,
             calculated_score,
+            typing_count,
+            accuracy,
         )
 
         return {
@@ -75,7 +75,13 @@ class InsertScoreView(BaseScoreView):
 
     @transaction.atomic
     def insert_score(
-        self, user_id: int, lang_id: int, diff_id: int, calculated_score: float
+        self,
+        user_id: int,
+        lang_id: int,
+        diff_id: int,
+        calculated_score: float,
+        typing_count: int,
+        accuracy: float,
     ) -> Score:
         """
         スコアをデータベースに挿入します。
@@ -87,6 +93,8 @@ class InsertScoreView(BaseScoreView):
             lang_id (int): 言語ID。
             diff_id (int): 難易度ID。
             calculated_score (float): 計算されたスコア。
+            typing_count (int): タイピング数。
+            accuracy (float): 正確度。
         Returns:
             Score: 保存されたスコアインスタンス。
         """
@@ -95,6 +103,8 @@ class InsertScoreView(BaseScoreView):
             lang_id=lang_id,
             diff_id=diff_id,
             score=calculated_score,
+            typing_count=typing_count,
+            accuracy=accuracy,
         )
 
     def calculate_score(self, typing_count: int, accuracy: float) -> int:
@@ -140,12 +150,9 @@ class InsertScoreView(BaseScoreView):
         Returns:
             bool: 最高スコアの場合はTrue、それ以外はFalse。
         """
-        highest_score = (
-            Score.objects.filter(user_id=user_id, lang_id=lang_id, diff_id=diff_id)
-            .order_by("-score")
-            .values_list("score", flat=True)
-            .first()
-        )
+        highest_score = Score.objects.filter(
+            user_id=user_id, lang_id=lang_id, diff_id=diff_id
+        ).aggregate(Max("score"))["score__max"]
 
         return highest_score is None or score > highest_score
 
@@ -295,24 +302,17 @@ class GetUserRankView(BaseScoreView):
         Args:
             validated_data (dict): バリデーションを通過したリクエストデータ。
                 - user_id: ユーザーID（`int`）。キャッシュに格納されているランクを特定するために使用します。
-
         Returns:
             dict: ユーザーのランク名を含むレスポンスデータ。
                 - status: 成功を示す文字列（`"success"`）。
                 - rank_name: ユーザーのランク名（`str`）。
-
-        Raises:
-            ValidationError: キャッシュにランク名が見つからなかった場合に発生。
         """
-        user_id = validated_data["user_id"]  # リクエストデータからユーザーIDを取得
-        cache_key = f"user_rank_{user_id}"  # ユーザーIDを元にキャッシュのキーを作成
+        user_id = validated_data["user_id"]
+        cache_key = f"user_rank_{user_id}"
 
-        # キャッシュからランク名を取得
         rank_name = cache.get(cache_key)
 
         if rank_name is None:
-            # キャッシュにランク名が存在しない場合、エラーメッセージを返す
             raise ValidationError("キャッシュに登録されているランクが見つかりません。")
 
-        # ランク名が取得できた場合、成功レスポンスを返す
         return {"status": "success", "rank_name": rank_name}

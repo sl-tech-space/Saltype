@@ -11,7 +11,6 @@ password_validator = RegexValidator(
     message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
 )
 
-
 class UserSerializer(BaseSerializer):
     """
     ユーザー関連のリクエストデータを検証するためのシリアライザクラス
@@ -81,8 +80,8 @@ class UserSerializer(BaseSerializer):
             ValidationError: ユーザー名またはメールアドレスが既に使用されている場合。
         """
         existing_users = User.objects.filter(
-            Q(username=username) | Q(email=email)
-        ).exclude(pk=user_id)
+            (Q(username=username) | Q(email=email)) & ~Q(pk=user_id)
+        )
         if existing_users.exists():
             if username and existing_users.filter(username=username).exists():
                 raise ValidationError(
