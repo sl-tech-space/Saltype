@@ -6,6 +6,7 @@ from .views import (
     UpdateUserView,
     DeleteUserView,
     PasswordResetView,
+    PasswordResetConfirmView,
 )
 
 urlpatterns = [
@@ -17,6 +18,11 @@ urlpatterns = [
     path(
         "password_reset/<str:token>/",
         PasswordResetView.as_view(),
-        name="password_reset",
-    ),  # トークン付きURL
+        name="password_reset_with_token",
+    ),
+    path(
+        "password_reset_confirm/",
+        PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm",
+    ),
 ]

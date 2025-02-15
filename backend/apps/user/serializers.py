@@ -4,12 +4,15 @@ from rest_framework.exceptions import ValidationError
 from apps.common.models import User
 from apps.common.serializers import BaseSerializer
 from django.core.validators import RegexValidator
+from django.core.cache import cache
+from django.utils import timezone
 
 # 大文字、数字、記号を含む正規表現
 password_validator = RegexValidator(
     regex=r"^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,100}$",
     message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
 )
+
 
 class UserSerializer(BaseSerializer):
     """
@@ -34,6 +37,10 @@ class UserSerializer(BaseSerializer):
     new_password = serializers.CharField(
         write_only=True, required=False, min_length=8, max_length=100
     )  # 新しいパスワード
+    confirm_password = serializers.CharField(
+        write_only=True, required=False, min_length=8, max_length=100
+    )  # 確認用パスワード
+    token = serializers.CharField(required=False)  # パスワードリセット用トークン
 
     def validate(self, attrs):
         """
@@ -64,6 +71,10 @@ class UserSerializer(BaseSerializer):
             self.check_passwords(
                 attrs.get("password"), attrs.get("new_password"), attrs.get("user")
             )
+
+        # PasswordResetConfirmViewのバリデーション
+        if attrs.get("token"):
+            self.validate_password_reset(attrs)
 
         return attrs
 
@@ -115,3 +126,36 @@ class UserSerializer(BaseSerializer):
                         "new_password": "新しいパスワードは現在のパスワードと異なる必要があります。"
                     }
                 )
+
+    def validate_password_reset(self, attrs):
+        """
+        パスワードリセットのバリデーションを行います。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Raises:
+            ValidationError: トークンが無効な場合やパスワードが一致しない場合。
+        """
+        token = attrs.get("token")
+        new_password = attrs.get("new_password")
+        confirm_password = attrs.get("confirm_password")
+
+        if new_password != confirm_password:
+            raise ValidationError({"confirm_password": "パスワードが一致しません。"})
+
+        if not self.is_token_valid(token):
+            raise ValidationError({"token": "トークンの有効期限が切れています。"})
+
+    def is_token_valid(self, token):
+        """
+        トークンが有効かどうかを確認します。
+        """
+        token_data = cache.get(token)
+        if not token_data:
+            return False
+
+        if timezone.now() > token_data["expires_at"]:
+            return False
+
+        return True

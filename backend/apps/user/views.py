@@ -9,6 +9,7 @@ from .base_view import BaseUserView
 from django.template.loader import render_to_string
 import uuid
 
+
 class GetUsersView(BaseUserView):
     """
     ユーザー情報全取得APIビュークラス。
@@ -22,7 +23,7 @@ class GetUsersView(BaseUserView):
         Returns:
             dict: ユーザー情報を含むレスポンスデータ。
         """
-        users = User.objects.filter(del_flg=False).select_related('rank')
+        users = User.objects.filter(del_flg=False).select_related("rank")
         users_data = []
 
         for user in users:
@@ -48,6 +49,7 @@ class GetUsersView(BaseUserView):
 
         return {"data": users_data}
 
+
 class GetUserView(BaseUserView):
     """
     指定したuser_idに基づくユーザー情報を取得するAPIビュークラス。
@@ -62,7 +64,7 @@ class GetUserView(BaseUserView):
         """
         user_id = kwargs.get("user_id")
         # del_flgがFalseのユーザーのみを取得
-        user = User.objects.select_related('rank').get(user_id=user_id, del_flg=False)
+        user = User.objects.select_related("rank").get(user_id=user_id, del_flg=False)
         # パスワードの存在有無を確認（NULLかどうかをチェック）
         password_exists = user.password is not None
 
@@ -81,6 +83,7 @@ class GetUserView(BaseUserView):
         }
 
         return {"data": user_data}
+
 
 class UpdateUserView(BaseUserView):
     """
@@ -135,6 +138,7 @@ class UpdateUserView(BaseUserView):
             "password_updated": password_updated,
         }
 
+
 class DeleteUserView(BaseUserView):
     """
     ユーザー論理削除APIビュークラス。
@@ -153,49 +157,12 @@ class DeleteUserView(BaseUserView):
 
 class PasswordResetView(BaseUserView):
     """
-    パスワードリセットを処理するビュークラス。
-    1つのビューでリセットリクエストとリセット確認フォームを管理。
+    パスワードリセットリクエストを処理するビュークラス。
     """
 
     def handle_post_request(self, validated_data):
         """
         POSTリクエストを処理します。
-        トークンがある場合はパスワードリセットを実行し、トークンがない場合はリセットメールを送信します。
-        """
-        token = validated_data.get("token")  # トークンを取得
-        if token:
-            return self.handle_reset_password(token, validated_data)
-        else:
-            return self.handle_password_reset_request(validated_data)
-
-    def handle_get_request(self, *args, **kwargs):
-        """
-        GETリクエストでフォームを表示します。
-        トークンがある場合はリセットフォームを表示、なければリセットリクエストフォームを表示します。
-        """
-        token = kwargs.get("token")
-        if token:
-            # トークン検証リクエストを明示的に呼び出す
-            return self.handle_token_validation_request(token)
-
-        # トークンがない場合
-        return {"message": "パスワードリセットリクエストフォームを表示します。"}
-
-    def handle_token_validation_request(self, token):
-        """
-        トークンの有効性を検証するリクエスト。
-        ここでトークンが有効か無効かを返す。
-        """
-        if self.is_token_valid(token):
-            return {
-                "message": "トークンが有効です。パスワードリセットフォームを表示します。"
-            }
-        else:
-            return {"message": "無効なトークンです", "status": 400}
-
-    def handle_password_reset_request(self, validated_data):
-        """
-        パスワードリセットリクエストを処理します。
         メールアドレスにパスワードリセット用のトークン付きURLを送信します。
         """
         email = validated_data["email"]
@@ -206,44 +173,20 @@ class PasswordResetView(BaseUserView):
         except User.DoesNotExist:
             pass  # ユーザーが見つからなくてもエラーを出さず進める
 
-        return {"message": "パスワードリセット用のリンクが送信されました。"}
-
-    def handle_reset_password(self, token, validated_data):
-        """
-        パスワードリセットを処理します。
-        トークンが有効であれば新しいパスワードを設定します。
-        """
-        if not self.is_token_valid(token):
-            return {"message": "トークンの有効期限が切れています", "status": 400}
-
-        new_password = validated_data.get("new_password")
-        confirm_password = validated_data.get("confirm_password")
-
-        # 新しいパスワードの確認
-        if confirm_password != new_password:
-            return {"message": "パスワードが一致しません", "status": 400}
-
-        user = self.get_user_from_token(token)
-        if user:
-            user.set_password(new_password)
-            user.save()
-
-            # トークンを無効化
-            self.invalidate_token(token)
-
-            return {"message": "パスワードがリセットされました。"}
-        else:
-            return {"message": "無効なトークンです", "status": 400}
+        return {
+            "message": "パスワードリセット用のリンクが送信されました。",
+            "token": token,
+        }
 
     def create_password_reset_token(self, user):
         """
         パスワードリセット用のランダムなトークンを生成し、キャッシュに保存します。
         """
         token = uuid.uuid4().hex
-        expiration_time = timezone.now() + timedelta(minutes=10)  # トークンの有効期限は10分
+        expiration_time = timezone.now() + timedelta(minutes=10)
         cache.set(
             token, {"user_id": user.id, "expires_at": expiration_time}, timeout=600
-        )  # キャッシュに保持
+        )
         return token
 
     def send_password_reset_email(self, user, token):
@@ -251,24 +194,67 @@ class PasswordResetView(BaseUserView):
         パスワードリセット用のURLをメールで送信します。
         """
         # フロントエンドでパスワードリセットを処理するためのURLを生成
-        token_url = reverse("password_reset", args=[token])  # トークン付きURLを生成
-        full_url = f"{settings.SITE_URL}{token_url}"  # サイトのURLと組み合わせて完全なURLを作成
+        token_url = reverse("password_reset_with_token", args=[token])
+        full_url = f"{settings.SITE_URL}{token_url}"
 
         subject = "パスワードリセットのリクエスト"
 
         # HTMLテンプレートをレンダリング
-        html_message = render_to_string('password_reset_email.html', {
-            'user': user,
-            'full_url': full_url
-        })
+        html_message = render_to_string(
+            "password_reset_email.html", {"user": user, "full_url": full_url}
+        )
 
         send_mail(
             subject,
-            '',  # テキストメッセージは空にする
+            "",  # テキストメッセージは空にする
             settings.EMAIL_HOST_USER,
             [user.email],
-            html_message=html_message  # HTMLメッセージを指定
+            html_message=html_message,  # HTMLメッセージを指定
         )
+
+class PasswordResetConfirmView(BaseUserView):
+    """
+    パスワードリセット確認を処理するビュークラス。
+    トークンと新しいパスワードを受け取り、パスワードリセットを実行します。
+    """
+
+    def handle_post_request(self, validated_data):
+        """
+        POSTリクエストで新しいパスワードを設定します。
+        """
+        token = validated_data.get("token")  # トークンを取得
+        new_password = validated_data.get("new_password")
+
+        # トークンの有効性を確認
+        if not self.is_token_valid(token):
+            return {"message": "無効なトークンです", "status": 400}
+
+        # トークンからユーザーを取得
+        user = self.get_user_from_token(token)
+        if not user:
+            return {"message": "ユーザーが見つかりません", "status": 400}
+
+        # 新しいパスワードを設定
+        if user.check_password(new_password):
+            return {
+                "message": "過去に使用したパスワードと同じです。別のパスワードを使用してください。",
+                "status": 400,
+            }
+
+        user.set_password(new_password)
+        user.save()
+
+        # トークン無効化
+        self.invalidate_token(token)
+
+        # 試行回数をリセット
+        attempt_key = f"password_reset_attempts_{token}"
+        cache.delete(attempt_key)
+
+        # パスワードリセット成功の通知メールを送信
+        self.send_password_reset_success_email(user)
+
+        return {"message": "パスワードがリセットされました。"}
 
     def is_token_valid(self, token):
         """
@@ -280,7 +266,6 @@ class PasswordResetView(BaseUserView):
             return False
 
         if timezone.now() > token_data["expires_at"]:
-            self.invalidate_token(token)
             return False
 
         return True
@@ -291,9 +276,16 @@ class PasswordResetView(BaseUserView):
         """
         token_data = cache.get(token)
         if not token_data:
+            print("Token data not found in cache.")
             return None
 
-        return User.objects.get(id=token_data["user_id"])
+        print(f"Token data retrieved: {token_data}")
+
+        try:
+            return User.objects.get(user_id=token_data["user_id"])
+        except User.DoesNotExist:
+            print("User not found in database.")
+            return None
 
     def invalidate_token(self, token):
         """
@@ -301,70 +293,22 @@ class PasswordResetView(BaseUserView):
         """
         cache.delete(token)
 
+    def send_password_reset_success_email(self, user):
+        """
+        パスワードリセット成功の通知メールを送信します。
+        """
+        subject = "パスワードリセット完了"
 
-# TODO実装
+        # HTMLテンプレートをレンダリング
+        html_message = render_to_string(
+            "password_reset_success_email.html",
+            {"user": user, "login_url": settings.LOGIN_URL},
+        )
 
-# class PasswordResetConfirmView(BaseUserView):
-#     """
-#     パスワードリセット確認を処理するビュークラス。
-#     トークンと新しいパスワードを受け取り、パスワードリセットを実行します。
-#     """
-
-#     def handle_post_request(self, validated_data):
-#         """
-#         POSTリクエストで新しいパスワードを設定します。
-#         トークンを検証し、パスワードの一致を確認してリセットします。
-#         """
-#         token = validated_data.get("token")  # トークンを取得
-#         new_password = validated_data.get("new_password")
-#         confirm_password = validated_data.get("confirm_password")
-
-#         # パスワードの一致確認
-#         if new_password != confirm_password:
-#             return {"message": "パスワードが一致しません", "status": 400}
-
-#         if not self.is_token_valid(token):
-#             return {"message": "トークンの有効期限が切れています", "status": 400}
-
-#         # トークンからユーザーを取得
-#         user = self.get_user_from_token(token)
-#         if not user:
-#             return {"message": "無効なトークンです", "status": 400}
-
-#         # 新しいパスワードを設定
-#         user.set_password(new_password)
-#         user.save()
-
-#         # トークン無効化
-#         self.invalidate_token(token)
-
-#         # パスワードリセット成功の通知メールを送信
-#         self.send_password_reset_success_email(user)
-
-#         return {"message": "パスワードがリセットされました。"}
-
-
-#     def send_password_reset_success_email(self, user):
-#         """
-#         パスワードリセット成功の通知メールを送信します。
-#         """
-#         subject = "パスワードリセット完了"
-
-#         message = f"""
-#         <html>
-#             <body>
-#                 <p>こんにちは {user.username}さん、</p>
-#                 <p>パスワードが正常にリセットされました。</p>
-#                 <p>以下のリンクからログインできます：</p>
-#                 <p><a href="{settings.LOGIN_URL}">ログイン画面</a></p>
-#             </body>
-#         </html>
-#         """
-
-#         send_mail(
-#             subject,
-#             message,
-#             settings.EMAIL_HOST_USER,
-#             [user.email],
-#             html_message=message  # HTMLメールとして送信
-#         )
+        send_mail(
+            subject,
+            "",  # テキストメッセージは空にする
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            html_message=html_message,  # HTMLメッセージを指定
+        )
