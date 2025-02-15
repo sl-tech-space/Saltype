@@ -42,34 +42,30 @@ class InsertMistypesView(BaseMistypeView):
         Returns:
             List[Dict[str, any]]: 挿入または更新されたミスタイプデータのリスト。
         """
-        return [self.upsert_mistype(user_id, data) for data in mistypes_data]
+        inserted_data = []
+        for data in mistypes_data:
+            miss_char = data.get("miss_char")
+            miss_count = data.get("miss_count")
 
-    def upsert_mistype(self, user_id: int, data: Dict[str, any]) -> Dict[str, any]:
-        """
-        個々のミスタイプデータを挿入または更新します。
+            # miss_charに一致するMissオブジェクトを取得
+            miss_instance, created = Miss.objects.get_or_create(
+                miss_char=miss_char,
+                user_id=user_id,
+                defaults={"miss_count": miss_count},
+            )
 
-        Args:
-            user_id (int): ユーザーID。
-            data (Dict[str, any]): ミスタイプデータ。
-        Returns:
-            Dict[str, any]: 挿入または更新されたミスタイプデータ。
-        """
-        miss_char = data.get("miss_char")
-        miss_count = data.get("miss_count")
+            if not created:
+                miss_instance.miss_count += miss_count
+                miss_instance.save()
 
-        # miss_charに一致するMissオブジェクトを取得
-        miss_instance, created = Miss.objects.get_or_create(
-            miss_char=miss_char, user_id=user_id, defaults={"miss_count": miss_count}
-        )
+            inserted_data.append(
+                {
+                    "miss_char": miss_instance.miss_char,
+                    "miss_count": miss_instance.miss_count,
+                }
+            )
 
-        if not created:
-            miss_instance.miss_count += miss_count
-            miss_instance.save()
-
-        return {
-            "miss_char": miss_instance.miss_char,
-            "miss_count": miss_instance.miss_count,
-        }
+        return inserted_data
 
 
 class GetTopMistypesView(BaseMistypeView):

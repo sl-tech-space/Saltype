@@ -4,6 +4,8 @@ from rest_framework.exceptions import ValidationError
 from apps.common.models import User
 from apps.common.serializers import BaseSerializer
 from django.core.validators import RegexValidator
+from django.core.cache import cache
+from django.utils import timezone
 
 # 大文字、数字、記号を含む正規表現
 password_validator = RegexValidator(
@@ -17,7 +19,7 @@ class UserSerializer(BaseSerializer):
     ユーザー関連のリクエストデータを検証するためのシリアライザクラス
     """
 
-    user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
+    user_id = serializers.UUIDField(required=False)  # ユーザーID（UUID形式）
     username = serializers.CharField(
         max_length=15, required=False
     )  # ユーザー名（最大150文字）
@@ -35,6 +37,10 @@ class UserSerializer(BaseSerializer):
     new_password = serializers.CharField(
         write_only=True, required=False, min_length=8, max_length=100
     )  # 新しいパスワード
+    confirm_password = serializers.CharField(
+        write_only=True, required=False, min_length=8, max_length=100
+    )  # 確認用パスワード
+    token = serializers.CharField(required=False)  # パスワードリセット用トークン
 
     def validate(self, attrs):
         """
@@ -45,6 +51,16 @@ class UserSerializer(BaseSerializer):
         Returns:
             dict: バリデーションを通過したデータ。
         """
+        # emailのみに関する処理
+        if (
+            attrs.get("email")
+            and not attrs.get("username")
+            and not attrs.get("password")
+            and not attrs.get("new_password")
+        ):
+            self.check_email(attrs)
+            return attrs
+
         attrs = self.check_user_id(attrs)
 
         self.check_unique_username_and_email(
@@ -55,6 +71,10 @@ class UserSerializer(BaseSerializer):
             self.check_passwords(
                 attrs.get("password"), attrs.get("new_password"), attrs.get("user")
             )
+
+        # PasswordResetConfirmViewのバリデーション
+        if attrs.get("token"):
+            self.validate_password_reset(attrs)
 
         return attrs
 
@@ -71,8 +91,8 @@ class UserSerializer(BaseSerializer):
             ValidationError: ユーザー名またはメールアドレスが既に使用されている場合。
         """
         existing_users = User.objects.filter(
-            Q(username=username) | Q(email=email)
-        ).exclude(pk=user_id)
+            (Q(username=username) | Q(email=email)) & ~Q(pk=user_id)
+        )
         if existing_users.exists():
             if username and existing_users.filter(username=username).exists():
                 raise ValidationError(
@@ -106,3 +126,36 @@ class UserSerializer(BaseSerializer):
                         "new_password": "新しいパスワードは現在のパスワードと異なる必要があります。"
                     }
                 )
+
+    def validate_password_reset(self, attrs):
+        """
+        パスワードリセットのバリデーションを行います。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Raises:
+            ValidationError: トークンが無効な場合やパスワードが一致しない場合。
+        """
+        token = attrs.get("token")
+        new_password = attrs.get("new_password")
+        confirm_password = attrs.get("confirm_password")
+
+        if new_password != confirm_password:
+            raise ValidationError({"confirm_password": "パスワードが一致しません。"})
+
+        if not self.is_token_valid(token):
+            raise ValidationError({"token": "トークンの有効期限が切れています。"})
+
+    def is_token_valid(self, token):
+        """
+        トークンが有効かどうかを確認します。
+        """
+        token_data = cache.get(token)
+        if not token_data:
+            return False
+
+        if timezone.now() > token_data["expires_at"]:
+            return False
+
+        return True

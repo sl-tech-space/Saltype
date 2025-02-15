@@ -10,6 +10,9 @@ class BaseUserView(BaseView):
     ユーザー関連の操作をするための基底クラス。
     """
 
+    def get(self, request, *args, **kwargs):
+        return super().get(request, UserSerializer, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         # UserSerializerを使用
         return super().post(request, UserSerializer, *args, **kwargs)

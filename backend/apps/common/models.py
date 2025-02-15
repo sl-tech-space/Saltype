@@ -183,6 +183,7 @@ class Score(models.Model):
         score (IntegerField): ゲームのスコア（デフォルトで0）
         lang (ForeignKey): 言語設定（Langモデルへの外部キー）
         diff (ForeignKey): 難易度設定（Diffモデルへの外部キー）
+        accuracy (FloatField): 正確度（0から1の範囲）
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
 
@@ -197,6 +198,8 @@ class Score(models.Model):
     score = models.IntegerField(default=0)
     lang = models.ForeignKey("Lang", on_delete=models.SET_NULL, null=True, blank=True)
     diff = models.ForeignKey("Diff", on_delete=models.SET_NULL, null=True, blank=True)
+    typing_count = models.IntegerField(default=0)
+    accuracy = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

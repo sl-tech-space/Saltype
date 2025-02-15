@@ -19,7 +19,6 @@ class GetRankingView(BaseRankingView):
                 - lang_id (int): 言語ID
                 - diff_id (int): 難易度ID
                 - limit (int): 取得件数
-
         Returns:
             dict: ランキングデータを含むレスポンス
                 - status (str): 処理結果のステータス
@@ -59,7 +58,6 @@ class GetRankingView(BaseRankingView):
             diff_id (int): 難易度ID
             limit (int): 取得件数
             target_date (date, optional): 日別ランキング取得時の日付
-
         Returns:
             list[Score]: スコアオブジェクトのリスト
         """

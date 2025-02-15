@@ -1,7 +1,13 @@
-from rest_framework.response import Response
-
+from django.core.cache import cache
+from django.utils import timezone
+from datetime import timedelta
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.conf import settings
 from apps.common.models import User, Rank
 from .base_view import BaseUserView
+from django.template.loader import render_to_string
+import uuid
 
 
 class GetUsersView(BaseUserView):
@@ -17,7 +23,7 @@ class GetUsersView(BaseUserView):
         Returns:
             dict: ユーザー情報を含むレスポンスデータ。
         """
-        users = User.objects.filter(del_flg=False)
+        users = User.objects.filter(del_flg=False).select_related("rank")
         users_data = []
 
         for user in users:
@@ -28,10 +34,7 @@ class GetUsersView(BaseUserView):
             password_exists = user.password is not None
 
             # ランク情報を個別に取得
-            rank_name = None
-            if user.rank_id:
-                rank = Rank.objects.get(rank_id=user.rank_id)
-                rank_name = rank.rank
+            rank_name = user.rank.rank if user.rank else None
 
             users_data.append(
                 {
@@ -61,7 +64,7 @@ class GetUserView(BaseUserView):
         """
         user_id = kwargs.get("user_id")
         # del_flgがFalseのユーザーのみを取得
-        user = User.objects.get(user_id=user_id, del_flg=False)
+        user = User.objects.select_related("rank").get(user_id=user_id, del_flg=False)
         # パスワードの存在有無を確認（NULLかどうかをチェック）
         password_exists = user.password is not None
 
@@ -143,7 +146,6 @@ class DeleteUserView(BaseUserView):
     """
 
     def handle_delete_request(self, validated_data: dict):
-
         user_id = validated_data["user_id"]
         # ユーザーを論理削除
         user = User.objects.get(user_id=user_id)
@@ -151,3 +153,162 @@ class DeleteUserView(BaseUserView):
         user.save()
 
         return {"status": "success"}
+
+
+class PasswordResetView(BaseUserView):
+    """
+    パスワードリセットリクエストを処理するビュークラス。
+    """
+
+    def handle_post_request(self, validated_data):
+        """
+        POSTリクエストを処理します。
+        メールアドレスにパスワードリセット用のトークン付きURLを送信します。
+        """
+        email = validated_data["email"]
+        try:
+            user = User.objects.get(email=email)
+            token = self.create_password_reset_token(user)  # トークンを生成
+            self.send_password_reset_email(user, token)  # メールを送信
+        except User.DoesNotExist:
+            pass  # ユーザーが見つからなくてもエラーを出さず進める
+
+        return {
+            "message": "パスワードリセット用のリンクが送信されました。",
+            "token": token,
+        }
+
+    def create_password_reset_token(self, user):
+        """
+        パスワードリセット用のランダムなトークンを生成し、キャッシュに保存します。
+        """
+        token = uuid.uuid4().hex
+        expiration_time = timezone.now() + timedelta(minutes=10)
+        cache.set(
+            token, {"user_id": user.id, "expires_at": expiration_time}, timeout=600
+        )
+        return token
+
+    def send_password_reset_email(self, user, token):
+        """
+        パスワードリセット用のURLをメールで送信します。
+        """
+        # フロントエンドでパスワードリセットを処理するためのURLを生成
+        token_url = reverse("password_reset_with_token", args=[token])
+        full_url = f"{settings.SITE_URL}{token_url}"
+
+        subject = "パスワードリセットのリクエスト"
+
+        # HTMLテンプレートをレンダリング
+        html_message = render_to_string(
+            "password_reset_email.html", {"user": user, "full_url": full_url}
+        )
+
+        send_mail(
+            subject,
+            "",  # テキストメッセージは空にする
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            html_message=html_message,  # HTMLメッセージを指定
+        )
+
+class PasswordResetConfirmView(BaseUserView):
+    """
+    パスワードリセット確認を処理するビュークラス。
+    トークンと新しいパスワードを受け取り、パスワードリセットを実行します。
+    """
+
+    def handle_post_request(self, validated_data):
+        """
+        POSTリクエストで新しいパスワードを設定します。
+        """
+        token = validated_data.get("token")  # トークンを取得
+        new_password = validated_data.get("new_password")
+
+        # トークンの有効性を確認
+        if not self.is_token_valid(token):
+            return {"message": "無効なトークンです", "status": 400}
+
+        # トークンからユーザーを取得
+        user = self.get_user_from_token(token)
+        if not user:
+            return {"message": "ユーザーが見つかりません", "status": 400}
+
+        # 新しいパスワードを設定
+        if user.check_password(new_password):
+            return {
+                "message": "過去に使用したパスワードと同じです。別のパスワードを使用してください。",
+                "status": 400,
+            }
+
+        user.set_password(new_password)
+        user.save()
+
+        # トークン無効化
+        self.invalidate_token(token)
+
+        # 試行回数をリセット
+        attempt_key = f"password_reset_attempts_{token}"
+        cache.delete(attempt_key)
+
+        # パスワードリセット成功の通知メールを送信
+        self.send_password_reset_success_email(user)
+
+        return {"message": "パスワードがリセットされました。"}
+
+    def is_token_valid(self, token):
+        """
+        トークンが有効かどうかを確認します。
+        有効な場合はTrue、無効な場合はFalseを返します。
+        """
+        token_data = cache.get(token)
+        if not token_data:
+            return False
+
+        if timezone.now() > token_data["expires_at"]:
+            return False
+
+        return True
+
+    def get_user_from_token(self, token):
+        """
+        トークンからユーザーを取得します。
+        """
+        token_data = cache.get(token)
+        if not token_data:
+            print("Token data not found in cache.")
+            return None
+
+        print(f"Token data retrieved: {token_data}")
+
+        try:
+            return User.objects.get(user_id=token_data["user_id"])
+        except User.DoesNotExist:
+            print("User not found in database.")
+            return None
+
+    def invalidate_token(self, token):
+        """
+        トークンを無効化します（キャッシュから削除）。
+        """
+        cache.delete(token)
+
+    def send_password_reset_success_email(self, user):
+        """
+        パスワードリセット成功の通知メールを送信します。
+        """
+        subject = "パスワードリセット完了"
+
+        # HTMLテンプレートをレンダリング
+        html_message = render_to_string(
+            "password_reset_success_email.html",
+            {"user": user, "login_url": settings.LOGIN_URL},
+        )
+
+        send_mail(
+            subject,
+            "",  # テキストメッセージは空にする
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            html_message=html_message,  # HTMLメッセージを指定
+        )
