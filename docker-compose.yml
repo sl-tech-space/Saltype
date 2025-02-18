@@ -45,7 +45,7 @@ services:
     command: cron -f
     volumes:
       - ./backend:/app
-      - ./logs:/var/log
+      - ./backend/logs:/var/log
     environment:
       - DEBUG=${DEBUG}
       - SECRET_KEY=${SECRET_KEY}
