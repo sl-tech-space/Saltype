@@ -89,6 +89,11 @@ onMounted(() => {
       </template>
     </Field>
 
+    <!-- パスワード忘れた場合のリンク -->
+    <div class="forgot-password">
+      <NuxtLink to="/settings/user/password/forgot">パスワードをお忘れですか？</NuxtLink>
+    </div>
+
     <div class="buttons">
       <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
       <Button type="submit" button-text="ログイン" border="main-color" :is-rounded="true" :disabled="!valid" @dblclick.prevent />
@@ -114,8 +119,23 @@ Form {
 
     .eye {
       position: absolute;
-
       transform: translate(-130%, 20%);
+    }
+  }
+
+  .forgot-password {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1%;
+
+    a {
+      font-size: 1em;
+      color: $main-color;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 

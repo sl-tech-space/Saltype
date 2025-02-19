@@ -4,7 +4,7 @@ import { useUserInfo } from "~/composables/common/useUserInfo";
  * 設定画面処理
  * @returns getUserInfo, userItem, isLoading, error
  */
-export function useSetting() {
+export function useUserSetting() {
     const config = useRuntimeConfig();
     const userItem = ref();
     const { user, waitForUser } = useUserInfo();

@@ -5,12 +5,12 @@ import UpdatePassword from '~/components/molecules/settings/user/UpdatePassword.
 import MenuCard from '~/components/molecules/settings/user/MenuCard.vue';
 import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
-import { useSetting } from '~/composables/settings/useSetting';
+import { useUserSetting } from '~/composables/settings/useUserSetting';
 import { useErrorNotification } from '~/composables/common/useError';
 
 const currentCard = ref('userInfo');
 const isReverse = ref(false);
-const { getUserInfo, userItem, isLoading, error } = useSetting();
+const { getUserInfo, userItem, isLoading, error } = useUserSetting();
 const { showErrorNotification } = useErrorNotification(error);
 
 const changeCard = (cardName: string) => {

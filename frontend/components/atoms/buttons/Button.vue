@@ -94,6 +94,24 @@ $sizes: (
   width: 350px;
 }
 
+@media (max-width: 992px) {
+  .button-width--same-as-input-large {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .button-width--same-as-input-large {
+    width: 210px;
+  }
+}
+
+@media (max-width: 576px) {
+  .button-width--same-as-input-large {
+    width: 200px;
+  }
+}
+
 .button--rounded {
   border-radius: 4px;
 }

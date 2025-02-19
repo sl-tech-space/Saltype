@@ -58,7 +58,7 @@ CACHES = {
     }
 }
 
-SITE_URL = "http://localhost:3000"
+SITE_URL = os.getenv("SITE_URL")
 
 TEMPLATES = [
     {
