@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoginHeader from "~/components/organisms/login/LoginHeader.vue";
+import AuthHeader from "~/components/organisms/auth/AuthHeader.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
 import { useAuthToken } from "~/composables/auth/useAuthToken";
@@ -20,7 +20,7 @@ onMounted(() => {
 <template>
   <div class="page">
     <div class="login">
-      <LoginHeader />
+      <AuthHeader />
       <LoginForm />
       <GoogleAuth />
     </div>

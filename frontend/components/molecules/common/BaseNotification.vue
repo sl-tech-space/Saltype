@@ -55,9 +55,7 @@ onBeforeUnmount(() => {
             <Text size="large" color="white">
                 {{ message }}
             </Text>
-            <Text color="white">
-                {{ content }}
-            </Text>
+            <Text color="white" v-html="content"></Text>
         </div>
     </Transition>
 </template>
