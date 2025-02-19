@@ -212,6 +212,7 @@ class PasswordResetView(BaseUserView):
             html_message=html_message,  # HTMLメッセージを指定
         )
 
+
 class PasswordResetConfirmView(BaseUserView):
     """
     パスワードリセット確認を処理するビュークラス。

@@ -11,6 +11,7 @@ INSTALLED_APPS = [
     "apps.ranking",
     "apps.contact",
     "apps.user",
+    "apps.textgenerate",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
