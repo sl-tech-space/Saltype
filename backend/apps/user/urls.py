@@ -7,6 +7,7 @@ from .views import (
     DeleteUserView,
     PasswordResetView,
     PasswordResetConfirmView,
+    PasswordResetSuccessNotificationView,
 )
 
 urlpatterns = [
@@ -24,5 +25,10 @@ urlpatterns = [
         "password_reset_confirm/",
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
+    ),
+    path(
+        "password_reset_success_notification/",
+        PasswordResetSuccessNotificationView.as_view(),
+        name="password_reset_success_notification",
     ),
 ]

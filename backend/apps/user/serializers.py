@@ -6,6 +6,8 @@ from apps.common.serializers import BaseSerializer
 from django.core.validators import RegexValidator
 from django.core.cache import cache
 from django.utils import timezone
+from datetime import timedelta
+import uuid
 
 # 大文字、数字、記号を含む正規表現
 password_validator = RegexValidator(
@@ -159,3 +161,46 @@ class UserSerializer(BaseSerializer):
             return False
 
         return True
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("このメールアドレスは登録されていません。")
+        return value
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    new_password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        token = attrs.get('token')
+        token_data = cache.get(token)
+        if not token_data or timezone.now() > token_data['expires_at']:
+            raise serializers.ValidationError("トークンが無効または期限切れです。")
+
+        user_id = token_data['user_id']
+        try:
+            user = User.objects.get(user_id=user_id)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("ユーザーが見つかりません。")
+
+        if user.check_password(attrs.get('new_password')):
+            raise serializers.ValidationError("過去に使用したパスワードと同じです。別のパスワードを使用してください。")
+
+        return attrs
+
+class PasswordResetSuccessNotificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("ユーザーが見つかりません。")
+        return value
