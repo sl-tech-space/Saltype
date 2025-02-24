@@ -2,33 +2,37 @@ from django.core.cache import cache
 from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
-from django.urls import reverse
 from django.conf import settings
 from apps.common.models import User, Rank
-from .base_view import BaseUserView
 from django.template.loader import render_to_string
-import uuid
+from .serializers import (
+    PasswordResetSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetSuccessNotificationSerializer,
+    DeleteUserSerializer,
+    UpdateUserSerializer,
+    GetUserSerializer,
+)
+from apps.common.views import BaseView
+from apps.common.util.score_util import ScoreUtil
 
 
-class GetUsersView(BaseUserView):
+class GetUsersView(BaseView):
     """
     ユーザー情報全取得APIビュークラス。
     すべてのユーザー情報を取得し、レスポンスとして返します。
     """
 
-    def handle_get_request(self, *args, **kwargs):
-        """
-        ユーザー情報を全て取得するGETリクエストを処理します。
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
-        Returns:
-            dict: ユーザー情報を含むレスポンスデータ。
-        """
+    def handle_get_request(self, *args, **kwargs):
         users = User.objects.filter(del_flg=False).select_related("rank")
         users_data = []
 
         for user in users:
             # 今日の最高スコアを取得する
-            todays_highest_score = self.get_today_highest_score(user)
+            todays_highest_score = ScoreUtil.get_today_highest_score(user)
 
             # パスワードの存在有無を確認（NULLかどうかをチェック）
             password_exists = user.password is not None
@@ -50,10 +54,15 @@ class GetUsersView(BaseUserView):
         return {"data": users_data}
 
 
-class GetUserView(BaseUserView):
+class GetUserView(BaseView):
     """
     指定したuser_idに基づくユーザー情報を取得するAPIビュークラス。
     """
+
+    def get(self, request, *args, **kwargs):
+        serializer = GetUserSerializer(data=kwargs)
+        serializer.is_valid(raise_exception=True)
+        return super().get(request, *args, **kwargs)
 
     def handle_get_request(self, *args, **kwargs):
         """
@@ -69,7 +78,7 @@ class GetUserView(BaseUserView):
         password_exists = user.password is not None
 
         # 今日の最高スコアを取得
-        todays_highest_score = self.get_today_highest_score(user)
+        todays_highest_score = ScoreUtil.get_today_highest_score(user)
         rank_name = user.rank.rank if user.rank else None
 
         user_data = {
@@ -85,11 +94,14 @@ class GetUserView(BaseUserView):
         return {"data": user_data}
 
 
-class UpdateUserView(BaseUserView):
+class UpdateUserView(BaseView):
     """
     ユーザー情報更新APIビュークラス。
     ユーザーの情報を更新します。
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, UpdateUserSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: dict):
         """
@@ -139,11 +151,14 @@ class UpdateUserView(BaseUserView):
         }
 
 
-class DeleteUserView(BaseUserView):
+class DeleteUserView(BaseView):
     """
     ユーザー論理削除APIビュークラス。
     指定されたユーザーを論理削除します。
     """
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, DeleteUserSerializer, *args, **kwargs)
 
     def handle_delete_request(self, validated_data: dict):
         user_id = validated_data["user_id"]
@@ -152,26 +167,29 @@ class DeleteUserView(BaseUserView):
         user.del_flg = True
         user.save()
 
-        return {"status": "success"}
+        return {
+            "status": "success",
+            "message": "ユーザーが削除されました。",
+            "user_id": user_id,
+        }
 
 
-class PasswordResetView(BaseUserView):
+class PasswordResetView(BaseView):
     """
     パスワードリセットリクエストを処理するビュークラス。
     """
 
+    def post(self, request, *args, **kwargs):
+        return super().post(request, PasswordResetSerializer, *args, **kwargs)
+
     def handle_post_request(self, validated_data):
         """
-        POSTリクエストを処理します。
-        メールアドレスにパスワードリセット用のトークン付きURLを送信します。
+        POSTリクエストを処理し、パスワードリセット用のリンクをメールで送信します。
         """
-        email = validated_data["email"]
-        try:
-            user = User.objects.get(email=email)
-            token = self.create_password_reset_token(user)  # トークンを生成
-            self.send_password_reset_email(user, token)  # メールを送信
-        except User.DoesNotExist:
-            pass  # ユーザーが見つからなくてもエラーを出さず進める
+        email = validated_data.get("email")
+        user = User.objects.get(email=email)
+        token = self.create_password_reset_token(user)
+        self.send_password_reset_email(user, token)
 
         return {
             "message": "パスワードリセット用のリンクが送信されました。",
@@ -180,12 +198,12 @@ class PasswordResetView(BaseUserView):
 
     def create_password_reset_token(self, user):
         """
-        パスワードリセット用のランダムなトークンを生成し、キャッシュに保存します。
+        パスワードリセット用のトークンを生成し、キャッシュに保存します。
         """
         token = uuid.uuid4().hex
         expiration_time = timezone.now() + timedelta(minutes=10)
         cache.set(
-            token, {"user_id": user.id, "expires_at": expiration_time}, timeout=600
+            token, {"user_id": user.user_id, "expires_at": expiration_time}, timeout=600
         )
         return token
 
@@ -193,13 +211,10 @@ class PasswordResetView(BaseUserView):
         """
         パスワードリセット用のURLをメールで送信します。
         """
-        # フロントエンドでパスワードリセットを処理するためのURLを生成
         token_url = reverse("password_reset_with_token", args=[token])
         full_url = f"{settings.SITE_URL}{token_url}"
 
         subject = "パスワードリセットのリクエスト"
-
-        # HTMLテンプレートをレンダリング
         html_message = render_to_string(
             "password_reset_email.html", {"user": user, "full_url": full_url}
         )
@@ -209,39 +224,30 @@ class PasswordResetView(BaseUserView):
             "",  # テキストメッセージは空にする
             settings.EMAIL_HOST_USER,
             [user.email],
-            html_message=html_message,  # HTMLメッセージを指定
+            html_message=html_message,
         )
 
 
-class PasswordResetConfirmView(BaseUserView):
+class PasswordResetConfirmView(BaseView):
     """
     パスワードリセット確認を処理するビュークラス。
     トークンと新しいパスワードを受け取り、パスワードリセットを実行します。
     """
 
+    def post(self, request, *args, **kwargs):
+        return super().post(request, PasswordResetConfirmSerializer, *args, **kwargs)
+
     def handle_post_request(self, validated_data):
         """
         POSTリクエストで新しいパスワードを設定します。
         """
-        token = validated_data.get("token")  # トークンを取得
+        token = validated_data.get("token")
         new_password = validated_data.get("new_password")
-
-        # トークンの有効性を確認
-        if not self.is_token_valid(token):
-            return {"message": "無効なトークンです", "status": 400}
 
         # トークンからユーザーを取得
         user = self.get_user_from_token(token)
-        if not user:
-            return {"message": "ユーザーが見つかりません", "status": 400}
 
         # 新しいパスワードを設定
-        if user.check_password(new_password):
-            return {
-                "message": "過去に使用したパスワードと同じです。別のパスワードを使用してください。",
-                "status": 400,
-            }
-
         user.set_password(new_password)
         user.save()
 
@@ -252,24 +258,7 @@ class PasswordResetConfirmView(BaseUserView):
         attempt_key = f"password_reset_attempts_{token}"
         cache.delete(attempt_key)
 
-        # パスワードリセット成功の通知メールを送信
-        self.send_password_reset_success_email(user)
-
         return {"message": "パスワードがリセットされました。"}
-
-    def is_token_valid(self, token):
-        """
-        トークンが有効かどうかを確認します。
-        有効な場合はTrue、無効な場合はFalseを返します。
-        """
-        token_data = cache.get(token)
-        if not token_data:
-            return False
-
-        if timezone.now() > token_data["expires_at"]:
-            return False
-
-        return True
 
     def get_user_from_token(self, token):
         """
@@ -277,16 +266,9 @@ class PasswordResetConfirmView(BaseUserView):
         """
         token_data = cache.get(token)
         if not token_data:
-            print("Token data not found in cache.")
             return None
 
-        print(f"Token data retrieved: {token_data}")
-
-        try:
-            return User.objects.get(user_id=token_data["user_id"])
-        except User.DoesNotExist:
-            print("User not found in database.")
-            return None
+        return User.objects.get(user_id=token_data["user_id"])
 
     def invalidate_token(self, token):
         """
@@ -294,18 +276,35 @@ class PasswordResetConfirmView(BaseUserView):
         """
         cache.delete(token)
 
+
+class PasswordResetSuccessNotificationView(BaseView):
+    """
+    パスワードリセット成功の通知メールを送信するビュークラス。
+    """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(
+            request, PasswordResetSuccessNotificationSerializer, *args, **kwargs
+        )
+
+    def handle_post_request(self, validated_data):
+        """
+        パスワードリセット成功時に通知メールを送信します。
+        """
+        email = validated_data.get("email")
+        user = User.objects.get(email=email)
+        self.send_password_reset_success_email(user)
+        return {"message": "通知メールが送信されました。"}
+
     def send_password_reset_success_email(self, user):
         """
         パスワードリセット成功の通知メールを送信します。
         """
         subject = "パスワードリセット完了"
-
-        # HTMLテンプレートをレンダリング
         html_message = render_to_string(
             "password_reset_success_email.html",
             {"user": user, "login_url": settings.LOGIN_URL},
         )
-
         send_mail(
             subject,
             "",  # テキストメッセージは空にする

@@ -1,14 +1,18 @@
 from typing import List, Dict
 from apps.common.models import Miss
 from django.db import transaction
-from .base_view import BaseMistypeView
+from apps.common.views import BaseView
+from .serializers import InsertMistypesSerializer, GetTopMistypesSerializer
 
 
-class InsertMistypesView(BaseMistypeView):
+class InsertMistypesView(BaseView):
     """
     ユーザーのミスタイプを挿入するためのAPIビュークラス。
     ミスタイプの挿入、更新を行います。
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, InsertMistypesSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
         """
@@ -68,11 +72,14 @@ class InsertMistypesView(BaseMistypeView):
         return inserted_data
 
 
-class GetTopMistypesView(BaseMistypeView):
+class GetTopMistypesView(BaseView):
     """
     ユーザーのトップミスタイプを取得するクラス。
     ユーザーが発生させたミスタイプの中で最も発生回数が多いものを取得。
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, GetTopMistypesSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: Dict[str, any]) -> Dict[str, any]:
         """

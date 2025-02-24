@@ -79,20 +79,20 @@ class BaseSerializer(serializers.Serializer):
             attrs, "diff_id", Diff, "指定された難易度は存在しません。", "diff"
         )
 
-    def check_limit(self, attrs):
-        """
-        リミットが正の整数であるかを確認します。
+    # def check_limit(self, attrs):
+    #     """
+    #     リミットが正の整数であるかを確認します。
 
-        Args:
-            attrs (dict): バリデーション対象のデータ。
+    #     Args:
+    #         attrs (dict): バリデーション対象のデータ。
 
-        Returns:
-            dict: 更新されたattrs。
-        """
-        limit = attrs.get("limit")
-        if limit is not None and limit <= 0:
-            raise ValidationError({"limit": "limitは正の整数である必要があります。"})
-        return attrs
+    #     Returns:
+    #         dict: 更新されたattrs。
+    #     """
+    #     limit = attrs.get("limit")
+    #     if limit is not None and limit <= 0:
+    #         raise ValidationError({"limit": "limitは正の整数である必要があります。"})
+    #     return attrs
 
     def check_date(self, attrs):
         """
@@ -155,30 +155,4 @@ class BaseSerializer(serializers.Serializer):
         username = attrs.get("username")
         if not username:
             raise ValidationError({"username": "ユーザー名が必要です。"})
-        return attrs
-
-    def check_mistypes(self, attrs):
-        """
-        ミスタイプがリスト形式であり、各要素に正の整数のmiss_countが含まれているかを確認します。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-
-        Returns:
-            dict: 更新されたattrs。
-        """
-        mistypes = attrs.get("mistypes", [])
-        if not isinstance(mistypes, list):
-            raise ValidationError(
-                {"mistypes": "mistypesはリスト形式である必要があります。"}
-            )
-        for item in mistypes:
-            if (
-                not isinstance(item, dict)
-                or not isinstance(item.get("miss_count"), int)
-                or item.get("miss_count") < 0
-            ):
-                raise ValidationError(
-                    {"mistypes": "各ミスタイプには正の整数のmiss_countが必要です。"}
-                )
         return attrs

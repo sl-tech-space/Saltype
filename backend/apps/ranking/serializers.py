@@ -2,7 +2,7 @@ from rest_framework import serializers
 from apps.common.serializers import BaseSerializer
 
 
-class RankingSerializer(BaseSerializer):
+class GetRankingSerializer(BaseSerializer):
     """
     ランキングに関連するリクエストデータを検証するシリアライザクラス
     """
@@ -15,17 +15,9 @@ class RankingSerializer(BaseSerializer):
     def validate(self, attrs):
         """
         リクエストデータに対してバリデーションを実行します。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-        Returns:
-            attrs: バリデーションを通過したデータ。
         """
-        # 言語IDのバリデーション
         attrs = self.check_lang_id(attrs)
-        # 難易度IDのバリデーション
         attrs = self.check_diff_id(attrs)
-        # 日付のバリデーション
         attrs = self.check_date(attrs)
 
         return attrs

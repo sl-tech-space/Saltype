@@ -39,8 +39,6 @@ class GenerateTextView(BaseGenerateTextView):
                 hiragana_text = parts[i + 1].strip()
                 kanji_hiragana_pairs.append([kanji_text, hiragana_text])
 
-            return {
-                "generatedPairs": kanji_hiragana_pairs
-            }
+            return {"generatedPairs": kanji_hiragana_pairs}
         except Exception as e:
             return {"error": f"リクエストエラー: {str(e)}"}

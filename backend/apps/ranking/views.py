@@ -1,13 +1,17 @@
 from apps.common.models import Score
-from .base_view import BaseRankingView
+from apps.common.views import BaseView
 from datetime import date
+from .serializers import GetRankingSerializer
 
 
-class GetRankingView(BaseRankingView):
+class GetRankingView(BaseView):
     """
     ランキング情報を取得するためのAPIビュークラス。
     通常のランキングと日別ランキングを取得する機能を提供します。
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, GetRankingSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: dict) -> dict:
         """
@@ -28,9 +32,9 @@ class GetRankingView(BaseRankingView):
                     - score (int): スコア
         """
         target_date = validated_data.get("date")
-        lang_id = validated_data["lang_id"]
-        diff_id = validated_data["diff_id"]
-        limit = validated_data["limit"]
+        lang_id = validated_data.get("lang_id")
+        diff_id = validated_data.get("diff_id")
+        limit = validated_data.get("limit")
 
         ranking_data = self.get_ranking_data(lang_id, diff_id, limit, target_date)
 

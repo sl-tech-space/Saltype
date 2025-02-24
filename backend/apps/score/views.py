@@ -1,12 +1,18 @@
 from apps.common.models import Score, User, Rank
 from django.db import transaction
 from django.db.models import Avg, Max
-from .base_view import BaseScoreView
 from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
+from .serializers import (
+    UserRankSerializer,
+    GetUserRankingSerializer,
+    GetScoreSerializer,
+    InsertScoreSerializer,
+)
+from apps.common.views import BaseView
 
 
-class InsertScoreView(BaseScoreView):
+class InsertScoreView(BaseView):
     """
     ユーザーのスコアを挿入または更新するためのAPIビュークラス。
     スコアの計算、データベースへの挿入、最高スコアの場合はランクの更新を行います。
@@ -23,6 +29,9 @@ class InsertScoreView(BaseScoreView):
     }
     SCORE_MULTIPLIER = 10  # スコア計算時の乗数
 
+    def post(self, request, *args, **kwargs):
+        return super().post(request, InsertScoreSerializer, *args, **kwargs)
+
     def handle_post_request(self, validated_data: dict):
         """
         スコアを挿入または更新するリクエストを処理します。
@@ -34,11 +43,11 @@ class InsertScoreView(BaseScoreView):
         Returns:
             dict: スコア挿入または更新結果を含むレスポンスデータ。
         """
-        user_id = validated_data["user_id"]
-        lang_id = validated_data["lang_id"]
-        diff_id = validated_data["diff_id"]
-        typing_count = validated_data["typing_count"]
-        accuracy = validated_data["accuracy"]
+        user_id = validated_data.get("user_id")
+        lang_id = validated_data.get("lang_id")
+        diff_id = validated_data.get("diff_id")
+        typing_count = validated_data.get("typing_count")
+        accuracy = validated_data.get("accuracy")
 
         # スコアを計算
         calculated_score = self.calculate_score(typing_count, accuracy)
@@ -167,11 +176,14 @@ class InsertScoreView(BaseScoreView):
         user.save()
 
 
-class GetScoreView(BaseScoreView):
+class GetScoreView(BaseView):
     """
     ユーザーのスコアに関連するリクエストを処理するAPIビュークラス。
     ユーザーの平均スコアや過去のスコアを取得します。
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, GetScoreSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: dict):
         """
@@ -184,21 +196,19 @@ class GetScoreView(BaseScoreView):
             dict: 処理結果を含むレスポンスデータ。
         """
         action = validated_data.get("action")
-        user = validated_data["user"]
-        lang = validated_data["lang"]
-        diff = validated_data["diff"]
+        user_id = validated_data.get("user_id")
+        lang_id = validated_data.get("lang_id")
+        diff_id = validated_data.get("diff_id")
 
         if action == "get_average_score":
-            average_score = self.get_average_score(
-                user.user_id, lang.lang_id, diff.diff_id
-            )
+            average_score = self.get_average_score(user_id, lang_id, diff_id)
             return {
                 "status": "success",
                 "average_score": round(average_score) if average_score else 0,
             }
 
         elif action == "get_past_scores":
-            past_scores = self.get_past_scores(user.user_id, lang.lang_id, diff.diff_id)
+            past_scores = self.get_past_scores(user_id, lang_id, diff_id)
             return {"status": "success", "scores": past_scores}
 
     def get_average_score(self, user_id: int, lang_id: int, diff_id: int) -> float:
@@ -238,11 +248,14 @@ class GetScoreView(BaseScoreView):
         return [score.score for score in scores]
 
 
-class GetUserRankingView(BaseScoreView):
+class GetUserRankingView(BaseView):
     """
     ユーザーのスコアに基づくランキング位置を取得するためのAPIビュークラス。
     ユーザーのスコアが全体で何位かを計算します。
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, GetUserRankingSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: dict):
         """
@@ -254,14 +267,12 @@ class GetUserRankingView(BaseScoreView):
         Returns:
             dict: ユーザーのランキング位置を含むレスポンスデータ。
         """
-        user = validated_data["user"]
-        lang = validated_data["lang"]
-        diff = validated_data["diff"]
-        score = validated_data["score"]
+        user_id = validated_data.get("user_id")
+        lang_id = validated_data.get("lang_id")
+        diff_id = validated_data.get("diff_id")
+        score = validated_data.get("score")
 
-        ranking_position = self.get_ranking_position(
-            score, user.user_id, lang.lang_id, diff.diff_id
-        )
+        ranking_position = self.get_ranking_position(score, user_id, lang_id, diff_id)
         return {"status": "success", "ranking_position": ranking_position}
 
     def get_ranking_position(
@@ -288,11 +299,14 @@ class GetUserRankingView(BaseScoreView):
         return higher_score_count + 1
 
 
-class GetUserRankView(BaseScoreView):
+class GetUserRankView(BaseView):
     """
     ユーザーIDに基づいてキャッシュに登録されたランクの名前を取得するためのAPIビュークラス。
     このクラスは、キャッシュからユーザーのランクを取得し、レスポンスとして返します。
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, UserRankSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: dict):
         """
@@ -310,9 +324,7 @@ class GetUserRankView(BaseScoreView):
         user_id = validated_data["user_id"]
         cache_key = f"user_rank_{user_id}"
 
+        # キャッシュのバリデーションはシリアライザーで行うため削除
         rank_name = cache.get(cache_key)
-
-        if rank_name is None:
-            raise ValidationError("キャッシュに登録されているランクが見つかりません。")
 
         return {"status": "success", "rank_name": rank_name}
