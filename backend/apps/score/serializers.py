@@ -18,17 +18,13 @@ class InsertScoreSerializer(BaseSerializer):
     def validate(self, attrs):
         """
         リクエストデータに対してバリデーションを実行します。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-        Returns:
-            attrs: バリデーションを通過したデータ。
         """
         attrs = self.check_user_id(attrs)
         attrs = self.check_lang_id(attrs)
         attrs = self.check_diff_id(attrs)
 
         return attrs
+
 
 class GetScoreSerializer(BaseSerializer):
     """
@@ -51,6 +47,7 @@ class GetScoreSerializer(BaseSerializer):
         attrs = self.check_action(attrs, self.ACTION_CHOICES)
 
         return attrs
+
 
 class GetUserRankingSerializer(BaseSerializer):
     """

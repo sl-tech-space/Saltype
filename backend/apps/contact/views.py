@@ -13,6 +13,7 @@ class ContactView(BaseView):
     要望送信APIビュークラス。
     ユーザーからの要望をメールで送信するための処理を実装します。
     """
+
     def post(self, request, *args, **kwargs):
         return super().post(request, ContactSerializer, *args, **kwargs)
 

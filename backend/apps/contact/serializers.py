@@ -13,11 +13,6 @@ class ContactSerializer(BaseSerializer):
     def validate(self, attrs):
         """
         リクエストデータに対してバリデーションを実行します。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-        Returns:
-            attrs: バリデーションを通過したデータ。
         """
         attrs = self.check_user_id(attrs)
 
