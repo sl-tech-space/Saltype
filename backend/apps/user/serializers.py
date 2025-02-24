@@ -15,12 +15,7 @@ password_validator = RegexValidator(
     message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
 )
 
-
-class UserSerializer(BaseSerializer):
-    """
-    ユーザー関連のリクエストデータを検証するためのシリアライザクラス
-    """
-
+class UpdateUserSerializer(serializers.Serializer):
     user_id = serializers.UUIDField(required=False)  # ユーザーID（UUID形式）
     username = serializers.CharField(
         max_length=15, required=False
@@ -42,7 +37,6 @@ class UserSerializer(BaseSerializer):
     confirm_password = serializers.CharField(
         write_only=True, required=False, min_length=8, max_length=100
     )  # 確認用パスワード
-    token = serializers.CharField(required=False)  # パスワードリセット用トークン
 
     def validate(self, attrs):
         """
@@ -53,16 +47,6 @@ class UserSerializer(BaseSerializer):
         Returns:
             dict: バリデーションを通過したデータ。
         """
-        # emailのみに関する処理
-        if (
-            attrs.get("email")
-            and not attrs.get("username")
-            and not attrs.get("password")
-            and not attrs.get("new_password")
-        ):
-            self.check_email(attrs)
-            return attrs
-
         attrs = self.check_user_id(attrs)
 
         self.check_unique_username_and_email(
@@ -73,10 +57,6 @@ class UserSerializer(BaseSerializer):
             self.check_passwords(
                 attrs.get("password"), attrs.get("new_password"), attrs.get("user")
             )
-
-        # PasswordResetConfirmViewのバリデーション
-        if attrs.get("token"):
-            self.validate_password_reset(attrs)
 
         return attrs
 
@@ -129,73 +109,69 @@ class UserSerializer(BaseSerializer):
                     }
                 )
 
-    def validate_password_reset(self, attrs):
+
+class DeleteUserSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField()
+
+    def validate(self, attrs):
         """
-        パスワードリセットのバリデーションを行います。
+        入力データに対してバリデーションを実行します。
 
         Args:
             attrs (dict): バリデーション対象のデータ。
-
-        Raises:
-            ValidationError: トークンが無効な場合やパスワードが一致しない場合。
+        Returns:
+            dict: バリデーションを通過したデータ。
         """
-        token = attrs.get("token")
-        new_password = attrs.get("new_password")
-        confirm_password = attrs.get("confirm_password")
-
-        if new_password != confirm_password:
-            raise ValidationError({"confirm_password": "パスワードが一致しません。"})
-
-        if not self.is_token_valid(token):
-            raise ValidationError({"token": "トークンの有効期限が切れています。"})
-
-    def is_token_valid(self, token):
-        """
-        トークンが有効かどうかを確認します。
-        """
-        token_data = cache.get(token)
-        if not token_data:
-            return False
-
-        if timezone.now() > token_data["expires_at"]:
-            return False
-
-        return True
+        attrs = self.check_user_id(attrs)
 
 
 class PasswordResetSerializer(serializers.Serializer):
+    """
+    パスワードリセットシリアライザー。
+    """
     email = serializers.EmailField()
 
     def validate_email(self, value):
         try:
             user = User.objects.get(email=value)
         except User.DoesNotExist:
-            raise serializers.ValidationError("このメールアドレスは登録されていません。")
+            raise serializers.ValidationError(
+                "このメールアドレスは登録されていません。"
+            )
         return value
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
+    """
+    パスワードリセット確認シリアライザー。
+    """
     token = serializers.CharField()
     new_password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        token = attrs.get('token')
+        token = attrs.get("token")
         token_data = cache.get(token)
-        if not token_data or timezone.now() > token_data['expires_at']:
+        if not token_data or timezone.now() > token_data["expires_at"]:
             raise serializers.ValidationError("トークンが無効または期限切れです。")
 
-        user_id = token_data['user_id']
+        user_id = token_data["user_id"]
         try:
             user = User.objects.get(user_id=user_id)
         except User.DoesNotExist:
             raise serializers.ValidationError("ユーザーが見つかりません。")
 
-        if user.check_password(attrs.get('new_password')):
-            raise serializers.ValidationError("過去に使用したパスワードと同じです。別のパスワードを使用してください。")
+        if user.check_password(attrs.get("new_password")):
+            raise serializers.ValidationError(
+                "過去に使用したパスワードと同じです。別のパスワードを使用してください。"
+            )
 
         return attrs
 
+
 class PasswordResetSuccessNotificationSerializer(serializers.Serializer):
+    """
+    パスワードリセット成功の通知メールを送信するシリアライザー。
+    """
     email = serializers.EmailField()
 
     def validate_email(self, value):
