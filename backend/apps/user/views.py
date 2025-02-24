@@ -15,6 +15,8 @@ from .serializers import (
 )
 from apps.common.views import BaseView
 from apps.common.util.score_util import ScoreUtil
+import uuid
+from django.urls import reverse
 
 
 class GetUsersView(BaseView):
