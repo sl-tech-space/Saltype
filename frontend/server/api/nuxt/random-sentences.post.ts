@@ -1,8 +1,8 @@
-import { defineEventHandler, readBody } from "h3";
+import { defineEventHandler, readBody, H3Event } from "h3";
 import fs from "fs/promises";
 import path from "path";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event: H3Event) => {
   const config = useRuntimeConfig();
   const sentencesPath = config.public.sentencesPath;
   const body = await readBody(event);
