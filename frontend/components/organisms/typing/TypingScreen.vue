@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import TypingScreen from '~/components/molecules/typing/TypingScreen.vue';
+import AITypingScreen from '~/components/molecules/typing/ai/AITypingScreen.vue';
 import Keyboard from '~/components/molecules/typing/layout/Keyboard.vue';
 
 const route = useRoute();
-const language = ref("")
-
-onMounted(() => {
-    language.value = route.query.language as string
-});
+const isAIMode = computed(() => route.params.id as string === "ai");
 </script>
 
 <template>
     <main class="typing-screen">
-        <TypingScreen />
+        <TypingScreen v-if="!isAIMode" />
+        <AITypingScreen v-else />
         <Keyboard />
     </main>
 </template>

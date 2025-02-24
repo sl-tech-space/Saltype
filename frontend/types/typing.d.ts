@@ -9,3 +9,14 @@ export interface TypingStats {
   totalMistypedCount: number;
   typingAccuracy: number;
 }
+
+export interface TextGenerateResponse {
+  generatedPairs: [string, string][];
+}
+
+export type SentencePair = [string, string];
+export type SentenceArray = SentencePair[];
+
+export interface SentenceData {
+  sentences: SentenceArray;
+}

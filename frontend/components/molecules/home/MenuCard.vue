@@ -16,12 +16,17 @@ const navigateToRoute = async (routeName: string) => {
     await navigateTo({ name: routeName });
 };
 
+const navigateToRouteByParams = async (routeName: string, params: string) => {
+    await navigateTo({ name: routeName, params: { id: params } });
+};
+
 const navigateToRanking = () => navigateToRoute("ranking");
 const navigateToAnalyze = () => navigateToRoute("analyze");
 const navigateToContact = () => navigateToRoute("contact");
 const navigateToScreenSetting = () => navigateToRoute("settings-screen");
 const navigateToUserSetting = () => navigateToRoute("settings-user");
 const navigateToUserAdmin = () => navigateToRoute("admin");
+const navigateToAiTyping = () => navigateToRouteByParams("typing-id", "ai");
 
 const handleLogout = async () => {
     await logout();
@@ -33,7 +38,8 @@ const menuItems = ref(useMenuItems({
     navigateToContact,
     navigateToScreenSetting,
     navigateToUserSetting,
-    navigateToUserAdmin
+    navigateToUserAdmin,
+    navigateToAiTyping
 }, isAdmin.value));
 
 watchEffect(() => {
@@ -43,7 +49,8 @@ watchEffect(() => {
         navigateToContact,
         navigateToScreenSetting,
         navigateToUserSetting,
-        navigateToUserAdmin
+        navigateToUserAdmin,
+        navigateToAiTyping
     }, isAdmin.value);
 });
 
