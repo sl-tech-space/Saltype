@@ -79,20 +79,6 @@ class BaseSerializer(serializers.Serializer):
             attrs, "diff_id", Diff, "指定された難易度は存在しません。", "diff"
         )
 
-    # def check_limit(self, attrs):
-    #     """
-    #     リミットが正の整数であるかを確認します。
-
-    #     Args:
-    #         attrs (dict): バリデーション対象のデータ。
-
-    #     Returns:
-    #         dict: 更新されたattrs。
-    #     """
-    #     limit = attrs.get("limit")
-    #     if limit is not None and limit <= 0:
-    #         raise ValidationError({"limit": "limitは正の整数である必要があります。"})
-    #     return attrs
 
     def check_date(self, attrs):
         """
