@@ -19,7 +19,6 @@ class ContactSerializer(BaseSerializer):
         Returns:
             attrs: バリデーションを通過したデータ。
         """
-        # ユーザーIDのバリデーション
         attrs = self.check_user_id(attrs)
 
         return attrs

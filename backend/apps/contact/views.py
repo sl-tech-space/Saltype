@@ -3,16 +3,18 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
-from rest_framework.exceptions import ValidationError
-from .base_view import BaseContactView
 from apps.common.models import Request
+from apps.common.views import BaseView
+from apps.contact.serializers import ContactSerializer
 
 
-class ContactView(BaseContactView):
+class ContactView(BaseView):
     """
     要望送信APIビュークラス。
     ユーザーからの要望をメールで送信するための処理を実装します。
     """
+    def post(self, request, *args, **kwargs):
+        return super().post(request, ContactSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data: dict) -> dict:
         """
@@ -24,8 +26,8 @@ class ContactView(BaseContactView):
         Returns:
             dict: 要望送信結果を含むレスポンスデータ。
         """
-        user_id = validated_data["user_id"]
-        request_content = validated_data["request_content"]
+        user_id = validated_data.get("user_id")
+        request_content = validated_data.get("request_content")
 
         # ユーザー情報を取得
         User = get_user_model()
