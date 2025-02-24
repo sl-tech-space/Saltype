@@ -15,27 +15,33 @@ password_validator = RegexValidator(
     message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
 )
 
+
 class UpdateUserSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField(required=False)  # ユーザーID（UUID形式）
-    username = serializers.CharField(
-        max_length=15, required=False
-    )  # ユーザー名（最大150文字）
-    email = serializers.EmailField(
-        max_length=256, required=False
-    )  # メールアドレス（Email形式）
-    google_login = serializers.BooleanField(required=False)  # Googleログインフラグ
+    """
+    ユーザー情報を更新するシリアライザー。
+    """
+
+    user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
+    username = serializers.CharField(max_length=15)  # ユーザー名（最大150文字）
+    email = serializers.EmailField(max_length=256)  # メールアドレス（Email形式）
+    google_login = serializers.BooleanField()  # Googleログインフラグ
     password = serializers.CharField(
         write_only=True,
-        required=False,
         min_length=8,
         max_length=100,
         validators=[password_validator],
     )  # パスワード
     new_password = serializers.CharField(
-        write_only=True, required=False, min_length=8, max_length=100
+        write_only=True,
+        min_length=8,
+        max_length=100,
+        validators=[password_validator],
     )  # 新しいパスワード
     confirm_password = serializers.CharField(
-        write_only=True, required=False, min_length=8, max_length=100
+        write_only=True,
+        min_length=8,
+        max_length=100,
+        validators=[password_validator],
     )  # 確認用パスワード
 
     def validate(self, attrs):
@@ -111,16 +117,15 @@ class UpdateUserSerializer(serializers.Serializer):
 
 
 class DeleteUserSerializer(serializers.Serializer):
+    """
+    ユーザーを削除するシリアライザー。
+    """
+
     user_id = serializers.UUIDField()
 
     def validate(self, attrs):
         """
         入力データに対してバリデーションを実行します。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-        Returns:
-            dict: バリデーションを通過したデータ。
         """
         attrs = self.check_user_id(attrs)
 
@@ -129,22 +134,21 @@ class PasswordResetSerializer(serializers.Serializer):
     """
     パスワードリセットシリアライザー。
     """
+
     email = serializers.EmailField()
 
-    def validate_email(self, value):
-        try:
-            user = User.objects.get(email=value)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                "このメールアドレスは登録されていません。"
-            )
-        return value
+    def validate(self, attrs):
+        """
+        入力データに対してバリデーションを実行します。
+        """
+        attrs = self.check_email(attrs)
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
     """
     パスワードリセット確認シリアライザー。
     """
+
     token = serializers.CharField()
     new_password = serializers.CharField(write_only=True)
 
@@ -172,11 +176,25 @@ class PasswordResetSuccessNotificationSerializer(serializers.Serializer):
     """
     パスワードリセット成功の通知メールを送信するシリアライザー。
     """
+
     email = serializers.EmailField()
 
-    def validate_email(self, value):
-        try:
-            User.objects.get(email=value)
-        except User.DoesNotExist:
-            raise serializers.ValidationError("ユーザーが見つかりません。")
-        return value
+    def validate(self, attrs):
+        """
+        入力データに対してバリデーションを実行します。
+        """
+        attrs = self.check_email(attrs)
+
+
+class GetUserSerializer(serializers.Serializer):
+    """
+    ユーザー情報を取得するシリアライザー。
+    """
+
+    user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
+
+    def validate(self, attrs):
+        """
+        入力データに対してバリデーションを実行します。
+        """
+        attrs = self.check_user_id(attrs)

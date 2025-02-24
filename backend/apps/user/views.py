@@ -11,15 +11,18 @@ from .serializers import (
     PasswordResetSuccessNotificationSerializer,
     DeleteUserSerializer,
     UpdateUserSerializer,
+    GetUserSerializer,
 )
 from apps.common.views import BaseView
 from apps.common.util.score_util import ScoreUtil
+
 
 class GetUsersView(BaseView):
     """
     ユーザー情報全取得APIビュークラス。
     すべてのユーザー情報を取得し、レスポンスとして返します。
     """
+
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -57,6 +60,8 @@ class GetUserView(BaseView):
     """
 
     def get(self, request, *args, **kwargs):
+        serializer = GetUserSerializer(data=kwargs)
+        serializer.is_valid(raise_exception=True)
         return super().get(request, *args, **kwargs)
 
     def handle_get_request(self, *args, **kwargs):

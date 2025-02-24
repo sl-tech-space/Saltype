@@ -3,6 +3,7 @@ from apps.common.views import BaseView
 from datetime import date
 from .serializers import GetRankingSerializer
 
+
 class GetRankingView(BaseView):
     """
     ランキング情報を取得するためのAPIビュークラス。
