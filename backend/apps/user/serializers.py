@@ -16,7 +16,7 @@ password_validator = RegexValidator(
 )
 
 
-class UpdateUserSerializer(serializers.Serializer):
+class UpdateUserSerializer(BaseSerializer):
     """
     ユーザー情報を更新するシリアライザー。
     """
@@ -116,7 +116,7 @@ class UpdateUserSerializer(serializers.Serializer):
                 )
 
 
-class DeleteUserSerializer(serializers.Serializer):
+class DeleteUserSerializer(BaseSerializer):
     """
     ユーザーを削除するシリアライザー。
     """
@@ -130,7 +130,7 @@ class DeleteUserSerializer(serializers.Serializer):
         attrs = self.check_user_id(attrs)
 
 
-class PasswordResetSerializer(serializers.Serializer):
+class PasswordResetSerializer(BaseSerializer):
     """
     パスワードリセットシリアライザー。
     """
@@ -143,8 +143,10 @@ class PasswordResetSerializer(serializers.Serializer):
         """
         attrs = self.check_email(attrs)
 
+        return attrs
 
-class PasswordResetConfirmSerializer(serializers.Serializer):
+
+class PasswordResetConfirmSerializer(BaseSerializer):
     """
     パスワードリセット確認シリアライザー。
     """
@@ -172,7 +174,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         return attrs
 
 
-class PasswordResetSuccessNotificationSerializer(serializers.Serializer):
+class PasswordResetSuccessNotificationSerializer(BaseSerializer):
     """
     パスワードリセット成功の通知メールを送信するシリアライザー。
     """
@@ -185,8 +187,9 @@ class PasswordResetSuccessNotificationSerializer(serializers.Serializer):
         """
         attrs = self.check_email(attrs)
 
+        return attrs
 
-class GetUserSerializer(serializers.Serializer):
+class GetUserSerializer(BaseSerializer):
     """
     ユーザー情報を取得するシリアライザー。
     """
@@ -198,3 +201,5 @@ class GetUserSerializer(serializers.Serializer):
         入力データに対してバリデーションを実行します。
         """
         attrs = self.check_user_id(attrs)
+
+        return attrs
