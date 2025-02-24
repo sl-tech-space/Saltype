@@ -15,6 +15,20 @@ class InsertScoreSerializer(BaseSerializer):
     typing_count = serializers.IntegerField(min_value=0)  # タイピング数
     accuracy = serializers.FloatField(min_value=0, max_value=1)  # 正確度
 
+    def validate(self, attrs):
+        """
+        リクエストデータに対してバリデーションを実行します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+        Returns:
+            attrs: バリデーションを通過したデータ。
+        """
+        attrs = self.check_user_id(attrs)
+        attrs = self.check_lang_id(attrs)
+        attrs = self.check_diff_id(attrs)
+
+        return attrs
 
 class GetScoreSerializer(BaseSerializer):
     """
@@ -27,6 +41,16 @@ class GetScoreSerializer(BaseSerializer):
     lang_id = serializers.IntegerField()  # 言語ID
     diff_id = serializers.IntegerField()  # 難易度ID
 
+    def validate(self, attrs):
+        """
+        リクエストデータに対してバリデーションを実行します。
+        """
+        attrs = self.check_user_id(attrs)
+        attrs = self.check_lang_id(attrs)
+        attrs = self.check_diff_id(attrs)
+        attrs = self.check_action(attrs, self.ACTION_CHOICES)
+
+        return attrs
 
 class GetUserRankingSerializer(BaseSerializer):
     """
@@ -38,6 +62,16 @@ class GetUserRankingSerializer(BaseSerializer):
     diff_id = serializers.IntegerField()  # 難易度ID
     score = serializers.IntegerField()  # スコア
 
+    def validate(self, attrs):
+        """
+        リクエストデータに対してバリデーションを実行します。
+        """
+        attrs = self.check_user_id(attrs)
+        attrs = self.check_lang_id(attrs)
+        attrs = self.check_diff_id(attrs)
+
+        return attrs
+
 
 class UserRankSerializer(BaseSerializer):
     """
@@ -47,7 +81,7 @@ class UserRankSerializer(BaseSerializer):
     user_id = serializers.UUIDField()
 
     def validate(self, attrs):
-        # キャッシュキーのバリデーション
+        attrs = self.check_user_id(attrs)
         self.check_cache_key(attrs)
         return attrs
 
@@ -62,7 +96,6 @@ class UserRankSerializer(BaseSerializer):
         if cached_rank_name is None:
             raise ValidationError("キャッシュに登録されているランクが見つかりません。")
 
-        # キャッシュが存在する場合のみバリデーションを実行
         if cache_key != f"user_rank_{user_id}":
             raise ValidationError(
                 "リクエストのユーザーIDとキャッシュのユーザーIDが一致しません。"

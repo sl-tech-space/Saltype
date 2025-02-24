@@ -2,6 +2,7 @@ from datetime import date
 from rest_framework.exceptions import ValidationError
 from apps.common.models import User, Lang, Diff, Score
 
+
 class ScoreUtil:
     """
     共通のバリデーションロジックやユーティリティメソッドを提供するクラス。
