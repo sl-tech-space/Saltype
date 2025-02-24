@@ -5,6 +5,7 @@ from apps.common.models import User, Score
 from datetime import date
 from django.db.models import Max
 from django.template.loader import render_to_string
+from apps.common.util.score_util import ScoreUtil
 
 
 class Command(BaseCommand):
@@ -16,14 +17,17 @@ class Command(BaseCommand):
         host_email = settings.EMAIL_HOST_USER
 
         today = date.today()
-        scores = (
-            Score.objects.filter(
-                user__email__in=get_score_user_emails, created_at__date=today
-            )
-            .values("user__username")
-            .annotate(max_score=Max("score"))
-            .order_by("-max_score")
-        )
+        scores = []
+
+        for email in get_score_user_emails:
+            user = User.objects.get(email=email)
+            highest_score = ScoreUtil.get_today_highest_score(user)
+            if highest_score is not None:
+                scores.append(
+                    {"user__username": user.username, "max_score": highest_score}
+                )
+
+        scores.sort(key=lambda x: x["max_score"], reverse=True)
 
         today_str = today.strftime("%m/%d")
         subject = f"{today_str} - 新卒タイピングスコアランキング"
