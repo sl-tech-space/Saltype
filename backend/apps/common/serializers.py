@@ -156,3 +156,18 @@ class BaseSerializer(serializers.Serializer):
         if not username:
             raise ValidationError({"username": "ユーザー名が必要です。"})
         return attrs
+
+    def check_password(self, attrs):
+        """
+        パスワードが正しい形式であるかを確認します。
+
+        Args:
+            attrs (dict): バリデーション対象のデータ。
+
+        Returns:    
+            dict: 更新されたattrs。
+        """
+        password = attrs.get("password")
+        if not password:
+            raise ValidationError({"password": "パスワードが必要です。"})
+        return attrs
