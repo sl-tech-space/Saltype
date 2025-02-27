@@ -15,7 +15,6 @@ class LoginView(BaseView):
     def post(self, request, *args, **kwargs):
         return super().post(request, LoginSerializer, *args, **kwargs)
 
-
     def handle_post_request(self, validated_data):
         """
         ログインリクエストを処理します。

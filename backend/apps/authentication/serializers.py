@@ -11,10 +11,12 @@ password_validator = RegexValidator(
     message="パスワードは大文字英字、数字、記号をそれぞれ1文字以上含む必要があります。",
 )
 
+
 class LoginSerializer(BaseSerializer):
     """
     ユーザーがオリジナルフォームからログインするためのシリアライザー。
     """
+
     email = serializers.EmailField(max_length=256, required=True)  # メールアドレス
     password = serializers.CharField(
         write_only=True,
@@ -56,6 +58,7 @@ class GoogleAuthSerializer(BaseSerializer):
     """
     ユーザーがGoogle認証を行うためのシリアライザー。
     """
+
     email = serializers.EmailField(max_length=256, required=True)  # メールアドレス
     username = serializers.CharField(max_length=15, required=False)  # ユーザー名
 

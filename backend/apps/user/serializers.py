@@ -157,8 +157,6 @@ class PasswordResetConfirmSerializer(BaseSerializer):
     def validate(self, attrs):
         token = attrs.get("token")
         token_data = cache.get(token)
-        if not token_data or timezone.now() > token_data["expires_at"]:
-            raise serializers.ValidationError("トークンが無効または期限切れです。")
 
         user_id = token_data["user_id"]
         try:
@@ -189,17 +187,34 @@ class PasswordResetSuccessNotificationSerializer(BaseSerializer):
 
         return attrs
 
-class GetUserSerializer(BaseSerializer):
+
+class ValidateTokenSerializer(BaseSerializer):
     """
-    ユーザー情報を取得するシリアライザー。
+    トークンの検証を行うシリアライザー。
     """
 
-    user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
+    token = serializers.CharField()  # トークン
 
     def validate(self, attrs):
         """
         入力データに対してバリデーションを実行します。
         """
-        attrs = self.check_user_id(attrs)
+        token = attrs.get('token')
+        if not token:
+            raise serializers.ValidationError("トークンが提供されていません。")
 
+        token_data = cache.get(token)
+        if not token_data:
+            raise serializers.ValidationError("無効なトークンです。")
+
+        if timezone.now() > token_data.get("expires_at"):
+            raise serializers.ValidationError("トークンの有効期限が切れています。")
+
+        try:
+            user = User.objects.get(user_id=token_data["user_id"])
+        except User.DoesNotExist:
+            raise serializers.ValidationError("ユーザーが見つかりません。")
+
+        attrs['user'] = user
         return attrs
+    
