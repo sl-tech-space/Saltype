@@ -79,7 +79,6 @@ class BaseSerializer(serializers.Serializer):
             attrs, "diff_id", Diff, "指定された難易度は存在しません。", "diff"
         )
 
-
     def check_date(self, attrs):
         """
         日付が今日以前であるかを確認します。
@@ -150,7 +149,7 @@ class BaseSerializer(serializers.Serializer):
         Args:
             attrs (dict): バリデーション対象のデータ。
 
-        Returns:    
+        Returns:
             dict: 更新されたattrs。
         """
         password = attrs.get("password")

@@ -11,12 +11,10 @@ from .serializers import (
     PasswordResetSuccessNotificationSerializer,
     DeleteUserSerializer,
     UpdateUserSerializer,
-    GetUserSerializer,
+    ValidateTokenSerializer,
 )
 from apps.common.views import BaseView
 from apps.common.util.score_util import ScoreUtil
-import uuid
-from django.urls import reverse
 
 
 class GetUsersView(BaseView):
@@ -314,3 +312,19 @@ class PasswordResetSuccessNotificationView(BaseView):
             [user.email],
             html_message=html_message,  # HTMLメッセージを指定
         )
+
+
+class ValidateTokenView(BaseView):
+    """
+    トークンの有効性を検証するビュークラス。
+    """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(
+            request, ValidateTokenSerializer, *args, **kwargs
+        )
+
+    def handle_post_request(self, validated_data):
+        # シリアライザーでバリデーション済みのデータを使用
+        user = validated_data.get("user")
+        return {"message": "トークンは有効です。"}
