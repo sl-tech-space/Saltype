@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mount, VueWrapper } from "@vue/test-utils";
-import { nextTick } from "vue";
-import KeyboardLayout from "~/components/molecules/typing/layout/Keyboard.vue";
+import KeyboardLayout from "../../../../components/molecules/typing/layout/Keyboard.vue";
 
 describe("KeyboardLayout", () => {
   let wrapper: VueWrapper<any>;
