@@ -55,7 +55,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 512M
           cpus: '1.0'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
