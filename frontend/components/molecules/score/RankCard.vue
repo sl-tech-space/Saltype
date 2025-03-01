@@ -26,8 +26,6 @@ const ranks = [
     { scoreRange: "400 ~ 499", title: "主任" },
     { scoreRange: "0 ~ 399", title: "メンバー" },
 ];
-
-const ranksWithText = ranks.map(rank => `${rank.scoreRange} : ${rank.title}`);
 </script>
 
 <template>

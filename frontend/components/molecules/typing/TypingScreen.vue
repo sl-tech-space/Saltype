@@ -35,8 +35,8 @@ const { $bus } = useNuxtApp();
  * キー入力時の動作
  * @param event 
  */
-const emitKeyPress = (event: KeyPressEvent) => {
-    const result = handleKeyPress(event);
+const emitKeyPress = async (event: KeyboardEvent) => {
+    const result = await handleKeyPress(event);
     $bus.$emit('key-press', { code: event.code, result: result } as KeyPressEvent);
     $bus.$emit('typing-stats', {
         totalCorrectTypedCount: typingResults.totalCorrectTypedCount,
@@ -76,8 +76,7 @@ onUnmounted(() => {
                 </div>
                 <div v-if="splittedId.left === 2">
                     <div v-if="!isTypingStarted">
-                        <Title color="main-color" size="medium"
-                            :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />
+                        <Title color="main-color" :text="isCountdownActive ? countdown.toString() : 'Enterキーで開始します'" />
                     </div>
                     <div v-else>
                         <Title color="main-color" v-html="coloredText" class="english-text" />

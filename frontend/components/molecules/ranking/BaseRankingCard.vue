@@ -3,7 +3,7 @@ import BaseCard from '../common/BaseCard.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
-import type { RankingItem } from '~/types/ranking';
+import type { RankingItem } from '~/types/ranking.d';
 
 interface Props {
     id?: string;

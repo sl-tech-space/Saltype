@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount, VueWrapper } from "@vue/test-utils";
-import BaseModal from "~/components/molecules/common/BaseModal.vue";
-import Button from "~/components/atoms/buttons/Button.vue";
+import BaseModal from "../../../../components/molecules/common/BaseModal.vue";
+import Button from "../../../../components/atoms/buttons/Button.vue";
 
 // Teleportのモック
 const TeleportMock = {

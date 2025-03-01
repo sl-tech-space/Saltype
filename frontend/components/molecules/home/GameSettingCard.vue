@@ -9,14 +9,14 @@ import Button from '~/components/atoms/buttons/Button.vue';
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
 
-const handleStart = () => {
+const handleStart = async () => {
     const id: string = joinWithHyphen(
         (selectedLanguage.value + 1).toString(), 
         (selectedDifficulty.value + 1).toString()
     );
     localStorage.setItem("gameModeId", id);
 
-    navigateTo({ name: `typing-id`, params: { id: id } });
+    await navigateTo({ name: `typing-id`, params: { id: id } });
 };
 </script>
 

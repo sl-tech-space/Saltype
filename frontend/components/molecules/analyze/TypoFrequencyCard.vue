@@ -12,19 +12,21 @@ const props = defineProps<{
     typoFrequency: MistypeProps[];
     limit: number
 }>();
+
+const displayLimit = computed(() => Math.max(0, props.limit));
 </script>
 
 <template>
     <BaseCard width="xl" height="xl" :footer-sep="false" class="typo-card">
         <template #card-header>
             <div class="header-content">
-                <Title size="small" :text="`ミス頻度TOP${props.limit}`" />
+                <Title size="small" :text="`ミス頻度TOP${displayLimit}`" />
             </div>
         </template>
         <template #card-body>
             <div class="body-content">
                 <ul>
-                    <li v-for="(item, index) in props.typoFrequency" :key="index" class="typo-list">
+                    <li v-for="(item, index) in props.typoFrequency.slice(0, displayLimit)" :key="index" class="typo-list">
                         <Text size="large" color="main-color">
                             {{ index + 1 }}. キー: {{ item.miss_char }}&ensp;回数: {{ item.miss_count }}
                         </Text>

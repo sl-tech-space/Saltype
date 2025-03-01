@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, VueWrapper, config } from '@vue/test-utils'
-import BaseCarousel from '~/components/molecules/common/BaseCarousel.vue'
-import Button from '~/components/atoms/buttons/Button.vue'
+import BaseCarousel from '../../../../components/molecules/common/BaseCarousel.vue'
+import Button from '../../../../components/atoms/buttons/Button.vue'
 
 // Embla Carouselのモック
 const emblaApiMock = {

@@ -213,8 +213,7 @@ class PasswordResetView(BaseView):
         """
         パスワードリセット用のURLをメールで送信します。
         """
-        token_url = reverse("password_reset_with_token", args=[token])
-        full_url = f"{settings.SITE_URL}{token_url}"
+        full_url = f"{settings.SITE_URL}{token}"
 
         subject = "パスワードリセットのリクエスト"
         html_message = render_to_string(

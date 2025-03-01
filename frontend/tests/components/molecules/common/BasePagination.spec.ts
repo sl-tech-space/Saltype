@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, it, expect } from "vitest";
-import BasePagination from "~/components/molecules/common/BasePagination.vue";
-import Button from "~/components/atoms/buttons/Button.vue";
+import BasePagination from "../../../../components/molecules/common/BasePagination.vue";
+import Button from "../../../../components/atoms/buttons/Button.vue";
 
 describe("BasePagination", () => {
   const mountComponent = (props = {}) => {

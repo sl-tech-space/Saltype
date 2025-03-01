@@ -6,8 +6,8 @@ import PaginatedUserList from '~/components/molecules/admin/PaginatedUserList.vu
 import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useAdmin } from '~/composables/admin/useAdmin';
-import type { UserList } from '~/types/user';
-import type { ApiUserList } from '~/types/user';
+import type { UserList } from '~/types/user.d';
+import type { ApiUserList } from '~/types/user.d';
 import { useColorStore } from '~/store/colorStore';
 import { useErrorNotification } from '~/composables/common/useError';
 

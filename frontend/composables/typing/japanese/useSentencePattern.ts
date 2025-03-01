@@ -5,13 +5,15 @@ import { Romanizer } from "jp-transliterator";
  * @returns getPatternList, getAllCombinations
  */
 export function useSentencePattern() {
+  const romanizer = new Romanizer();
+
   /**
    * 全ての入力パターンを返す
-   * @param patterns
+   * @param sentence
    * @returns combinations
    */
   async function getAllCombinations(sentence: string): Promise<string[]> {
-    const combinations = new Romanizer().transliterate(sentence);
+    const combinations = romanizer.transliterate(sentence);
 
     if (Array.isArray(combinations)) {
       return combinations.map(([romaji]) => romaji.join(""));
@@ -22,7 +24,5 @@ export function useSentencePattern() {
     }
   }
 
-  return {
-    getAllCombinations,
-  };
+  return { getAllCombinations };
 }
