@@ -8,6 +8,9 @@ export function usePasswordReset() {
   const successNotification = ref<{ message: string; content: string } | null>(
     null
   );
+  const errorNotification = ref<{ message: string; content: string } | null>(
+    null
+  );
 
   /**
    * パスワード再設定のリクエストを送信する
@@ -20,22 +23,11 @@ export function usePasswordReset() {
     error.value = null;
 
     try {
-      const { error: fetchError } = await useFetch(
-        `${config.public.baseURL}/api/django/user/password_reset/`,
-        {
-          method: "POST",
-          body: JSON.stringify({ email }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await $fetch(`${config.public.baseURL}/api/django/user/password_reset/`, {
+        method: "POST",
+        body: { email },
+      });
 
-      if (fetchError.value) {
-        throw new Error(fetchError.value.message || "リクエストエラー");
-      }
-
-      // 成功時の通知用オブジェクトをセット
       successNotification.value = {
         message: "成功",
         content: `パスワード再設定のリンクをお送りしました。<br>メールを確認してください。<br>${email}`,
@@ -44,6 +36,42 @@ export function usePasswordReset() {
       successNotification.value = {
         message: "成功",
         content: `パスワード再設定のリンクをお送りしました。<br>メールを確認してください。<br>${email}`,
+      };
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  /**
+   * パスワード再設定を実行する
+   * @param token パスワード再設定のトークン
+   * @param newPassword 新しいパスワード
+   * @returns パスワード再設定の通知
+   */
+  const resetPassword = async (
+    token: string,
+    newPassword: string
+  ): Promise<void> => {
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      await $fetch(
+        `${config.public.baseURL}/api/django/user/password_reset_confirm/`,
+        {
+          method: "POST",
+          body: { token, new_password: newPassword },
+        }
+      );
+
+      successNotification.value = {
+        message: "成功",
+        content: `パスワードを再設定しました。<br>新しいパスワード：${newPassword.length}桁`,
+      };
+    } catch {
+      errorNotification.value = {
+        message: "失敗",
+        content: "パスワード再設定に失敗しました。",
       };
     } finally {
       isLoading.value = false;
@@ -64,19 +92,10 @@ export function usePasswordReset() {
     }
 
     try {
-      const { error: fetchError } = await useFetch(
-        `${config.public.baseURL}/api/django/authentication/auth-token/`,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-
-      if (fetchError.value) {
-        throw new Error(fetchError.value.message || "リクエストエラー");
-      }
-
+      await $fetch(`${config.public.baseURL}/api/django/user/validate_token/`, {
+        method: "POST",
+        body: { token },
+      });
       return true;
     } catch {
       return false;
@@ -87,9 +106,11 @@ export function usePasswordReset() {
 
   return {
     requestResetPassword,
+    resetPassword,
     tokenIsValid,
     isLoading,
     error,
     successNotification,
+    errorNotification,
   };
 }

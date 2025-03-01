@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "/login": { ssr: false }, // CSR
     "/home": { ssr: true }, // SSR
     "/typing/:id": { ssr: true }, // SSR
+    "/typing/ai": { ssr: true }, // SSR
     "/score": { ssr: true }, // SSR
     "/analyze": { ssr: true }, // SSR
     "/ranking": { isr: 300 }, // ISR 5minutes
@@ -20,6 +21,8 @@ export default defineNuxtConfig({
       prerender: false,
     },
     "/settings/user": { ssr: false }, // CSR
+    "/settings/password/forgot": { ssr: false }, // CSR
+    "/settings/password/reset": { ssr: false }, // CSR
     "/admin": { ssr: false }, // CSR
     "/privacypolicy": {
       ssr: false,
@@ -86,7 +89,7 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
     rootId: "__nuxt",
     buildAssetsDir: "/_nuxt/",
-    baseURL: '/',
+    baseURL: "/",
   },
   runtimeConfig: {
     cookies: {
@@ -179,7 +182,7 @@ export default defineNuxtConfig({
       globPatterns: [
         "**/_nuxt/**/*.{js,css}",
         "**/*.{png,jpg,jpeg,svg,ico}",
-        "manifest.webmanifest"
+        "manifest.webmanifest",
       ],
       navigateFallback: "/",
       cleanupOutdatedCaches: true,
@@ -193,7 +196,7 @@ export default defineNuxtConfig({
             cacheName: "api-cache",
             expiration: {
               maxEntries: 100,
-              maxAgeSeconds: 60 * 60 * 24
+              maxAgeSeconds: 60 * 60 * 24,
             },
           },
         },
