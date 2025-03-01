@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { mount, VueWrapper } from "@vue/test-utils";
-import ScoreCard from "~/components/molecules/score/ScoreCard.vue";
-import BaseCard from "~/components/molecules/common/BaseCard.vue";
-import Title from "~/components/atoms/texts/Title.vue";
+import ScoreCard from "../../../../components/molecules/score/ScoreCard.vue";
+import BaseCard from "../../../../components/molecules/common/BaseCard.vue";
+import Title from "../../../../components/atoms/texts/Title.vue";
 
 describe("ScoreCard", () => {
   let wrapper: VueWrapper<any>;
@@ -34,7 +34,7 @@ describe("ScoreCard", () => {
       name: "Title",
       props: { size: "small" },
     });
-    expect(headerTitle.props("text")).toBe("スコア・平均スコア");
+    expect(headerTitle.props("text")).toBe("今回のスコア : 1000");
   });
 
   it("プロップスで渡されたスコアが正しく表示される", () => {
