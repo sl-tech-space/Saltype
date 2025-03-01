@@ -1,16 +1,20 @@
 import google.generativeai as genai
-from apps.textgenerate.base_view import BaseGenerateTextView
 from apps.textgenerate.prompts import generate_prompt
+from apps.textgenerate.serializers import GenerateTextViewSerializer
+from apps.common.views import BaseView
 from config.settings import API_KEY
 
 # API キーを設定
 genai.configure(api_key=API_KEY)
 
 
-class GenerateTextView(BaseGenerateTextView):
+class GenerateTextView(BaseView):
     """
     テキスト生成API
     """
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, GenerateTextViewSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data):
         """

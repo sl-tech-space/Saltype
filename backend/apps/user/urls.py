@@ -8,6 +8,7 @@ from .views import (
     PasswordResetView,
     PasswordResetConfirmView,
     PasswordResetSuccessNotificationView,
+    ValidateTokenView,
 )
 
 urlpatterns = [
@@ -31,4 +32,5 @@ urlpatterns = [
         PasswordResetSuccessNotificationView.as_view(),
         name="password_reset_success_notification",
     ),
+    path("validate_token/", ValidateTokenView.as_view(), name="validate_token"),
 ]
