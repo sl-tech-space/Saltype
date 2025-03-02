@@ -1,30 +1,51 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import TypingHeader from "~/components/organisms/typing/TypingHeader.vue";
-import BaseHeader from "~/components/molecules/common/BaseHeader.vue";
-import Title from "~/components/atoms/texts/Title.vue";
-import Timer from "~/components/molecules/typing/Timer.vue";
+import TypingHeader from "../../../../components/organisms/typing/TypingHeader.vue";
+import BaseHeader from "../../../../components/molecules/common/BaseHeader.vue";
+import Title from "../../../../components/atoms/texts/Title.vue";
 
 describe("TypingHeader", () => {
+  const mountComponent = () => {
+    return mount(TypingHeader, {
+      global: {
+        components: {
+          BaseHeader,
+          Title,
+        },
+        stubs: {
+          Timer: true,
+          TypingStats: true,
+        },
+      },
+    });
+  };
+
   it("コンポーネントが正しくレンダリングされる", () => {
-    const wrapper = mount(TypingHeader);
+    const wrapper = mountComponent();
+    expect(wrapper.findComponent(BaseHeader).exists()).toBe(true);
+  });
 
-    const baseHeader = wrapper.findComponent(BaseHeader);
-    expect(baseHeader.exists()).toBe(true);
-
-    const headerLeftSlot = baseHeader.find(".header-left");
-    expect(headerLeftSlot.exists()).toBe(true);
-
+  it("左側のスロットにタイトルが正しく表示される", () => {
+    const wrapper = mountComponent();
+    const headerLeftSlot = wrapper.find(".header-left");
     const title = headerLeftSlot.findComponent(Title);
-    expect(title.exists()).toBe(true);
-    expect(title.props("size")).toBe("small");
-    expect(title.props("color")).toBe("white");
-    expect(title.props("text")).toBe("タイピング");
 
-    const headerCenterSlot = baseHeader.find(".header-center");
-    expect(headerCenterSlot.exists()).toBe(true);
+    expect(title.props()).toEqual({
+      size: "small",
+      color: "white",
+      text: "タイピング",
+    });
+  });
 
-    const timer = headerCenterSlot.findComponent(Timer);
-    expect(timer.exists()).toBe(true);
+  it("中央のスロットにタイピング情報が表示される", () => {
+    const wrapper = mountComponent();
+    const headerCenterSlot = wrapper.find(".header-center");
+    const typingEvent = headerCenterSlot.find(".typing-event");
+
+    expect(typingEvent.exists()).toBe(true);
+    expect(typingEvent.findComponent({ name: "TypingStats" }).exists()).toBe(
+      true
+    );
+    expect(typingEvent.findComponent({ name: "Timer" }).exists()).toBe(true);
   });
 });

@@ -1,51 +1,94 @@
-import { describe, it, expect, vi } from "vitest";
-import { mount } from "@vue/test-utils";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { mount, VueWrapper } from "@vue/test-utils";
 import { nextTick } from "vue";
-import Analyze from "~/components/organisms/analyze/AnalyzeCard.vue";
-import TypoFrequencyCard from "~/components/molecules/analyze/TypoFrequencyCard.vue";
-import GrowthChartCard from "~/components/molecules/analyze/GrowthChartCard.vue";
-import Loading from "~/components/molecules/common/ui/Loading.vue";
+import AnalyzeCard from "../../../../components/organisms/analyze/AnalyzeCard.vue";
+import TypoFrequencyCard from "../../../../components/molecules/analyze/TypoFrequencyCard.vue";
+import GrowthChartCard from "../../../../components/molecules/analyze/GrowthChartCard.vue";
 
-// モックの設定
+const mockGetTypoFrequencyByLimit = vi.fn();
+const mockGetPastScores = vi.fn();
+const mockScoresByCombination = { value: {} };
+const mockTypoFrequency = { value: [] };
+const mockIsLoading = { value: true };
+const mockError = { value: null };
+
+vi.mock('~/utils/language', () => ({
+  getLanguageName: vi.fn((id: number) => {
+    return id === 1 ? 'Japanese' : 'English';
+  }),
+  getDifficultyName: vi.fn((id: number) => {
+    return id === 1 ? 'Easy' : 'Normal';
+  }),
+  splitId: vi.fn((id: string) => {
+    const [left, right] = id.split('-');
+    return { left: Number(left), right: Number(right) };
+  }),
+}));
+
 vi.mock("~/composables/analyze/useAnalyze", () => ({
   useAnalyze: () => ({
-    typoFrequency: { value: [] },
-    getTypoFrequencyByLimitParam: vi.fn(),
-    getPastScores: vi.fn().mockResolvedValue([]),
+    typoFrequency: mockTypoFrequency,
+    scoresByCombination: mockScoresByCombination,
+    isLoading: mockIsLoading,
+    error: mockError,
+    getTypoFrequencyByLimit: mockGetTypoFrequencyByLimit,
+    getPastScores: mockGetPastScores,
   }),
 }));
 
 vi.mock("~/composables/typing/useLanguageAndDifficulty", () => ({
   useLanguageAndDifficulty: () => ({
-    generateAllCombinations: () => [{ languageId: "1", difficultyId: "1" }],
+    generateAllCombinations: () => [
+      { languageId: "1", difficultyId: "1" },
+      { languageId: "2", difficultyId: "1" },
+    ],
   }),
 }));
 
-describe("Analyze", () => {
-  it("コンポーネントが正しくレンダリングされる", async () => {
-    const wrapper = mount(Analyze, {
+describe("AnalyzeCard", () => {
+  let wrapper: VueWrapper<any>;
+
+  beforeEach(() => {
+    mockGetTypoFrequencyByLimit.mockReset();
+    mockGetPastScores.mockReset();
+    mockGetPastScores.mockResolvedValue([10, 20, 30]);
+    mockScoresByCombination.value = {};
+    mockTypoFrequency.value = [];
+    mockIsLoading.value = true;
+    mockError.value = null;
+  });
+
+  const mountComponent = () => {
+    return mount(AnalyzeCard, {
       global: {
         stubs: {
-          TypoFrequencyCard: true,
           GrowthChartCard: true,
+          TypoFrequencyCard: true,
           Loading: true,
+          BaseNotification: true,
         },
       },
     });
+  };
 
-    // onMountedの非同期処理を待つ
+  it("コンポーネントが正しくレンダリングされる", async () => {
+    wrapper = mountComponent();
     await nextTick();
 
-    // メインコンテナが存在することを確認
     expect(wrapper.find(".analyze-cards-container").exists()).toBe(true);
-
-    // 左右のカードコンテナが存在することを確認
     expect(wrapper.find(".left-card").exists()).toBe(true);
     expect(wrapper.find(".right-card").exists()).toBe(true);
-
-    // 子コンポーネントが正しくレンダリングされていることを確認
     expect(wrapper.findComponent(GrowthChartCard).exists()).toBe(true);
     expect(wrapper.findComponent(TypoFrequencyCard).exists()).toBe(true);
-    expect(wrapper.findComponent(Loading).exists()).toBe(true);
+  });
+
+  it("マウント時にデータを取得する", async () => {
+    wrapper = mountComponent();
+    await nextTick();
+
+    expect(mockGetTypoFrequencyByLimit).toHaveBeenCalledWith(10);
+    expect(mockGetPastScores).toHaveBeenCalledTimes(2);
+    expect(mockGetPastScores).toHaveBeenCalledWith("1", "1");
+    expect(mockGetPastScores).toHaveBeenCalledWith("2", "1");
   });
 });
