@@ -44,7 +44,7 @@ const emitKeyPress = async (event: KeyboardEvent) => {
 useEventListener(window, 'keydown', emitKeyPress);
 
 onMounted(async () => {
-    const input = localStorage.getItem('ai-prompt') || 'タイピング';
+    const input = localStorage.getItem('prompt') || 'タイピング';
     if (input) {
         initialize(input);
     }

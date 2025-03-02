@@ -3,20 +3,27 @@ import BaseCard from '../../common/BaseCard.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import ToggleSwitch from '~/components/atoms/inputs/ToggleSwitch.vue';
+import PromptSettingForm from './PromptSettingForm.vue';
 
 // タイピング詳細表示の状態管理
 const showTypingDetails = ref(localStorage.getItem('showTypingDetails') === 'true');
+const prompt = ref(localStorage.getItem('prompt'));
 
 // トグル処理
 const updateTypingDetails = (value: boolean) => {
     showTypingDetails.value = value;
     localStorage.setItem('showTypingDetails', value.toString());
 };
+
+const updatePrompt = (newPrompt: string) => {
+    prompt.value = newPrompt;
+    localStorage.setItem('prompt', prompt.value);
+};
 </script>
 
 <template>
     <div class="component-root">
-        <BaseCard width="xl" height="xl" class="user-info">
+        <BaseCard width="xl" height="xl">
             <template #card-header>
                 <div class="header-content">
                     <Title size="small" text="タイピング画面設定" />
@@ -27,10 +34,12 @@ const updateTypingDetails = (value: boolean) => {
                     <div class="body-content-container">
                         <div class="setting-item">
                             <Text size="medium">タイピング詳細表示</Text>
-                            <ToggleSwitch
-                                v-model="showTypingDetails"
-                                @update:model-value="updateTypingDetails"
-                            />
+                            <ToggleSwitch v-model="showTypingDetails" @update:model-value="updateTypingDetails" />
+                        </div>
+                        <div class="setting-item">
+                            <Text size="medium">AIタイピングプロンプト設定<br>デフォルト : 「タイピング」<br>現在の設定： {{ prompt ? prompt : 'タイピング'
+                                }}</Text>
+                            <PromptSettingForm @prompt-updated="updatePrompt" />
                         </div>
                     </div>
                 </div>
