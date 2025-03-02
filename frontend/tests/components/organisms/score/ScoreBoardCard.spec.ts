@@ -1,59 +1,71 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import ScoreBoard from "~/components/organisms/score/ScoreBoardCard.vue";
-import ScoreCard from "~/components/molecules/score/ScoreCard.vue";
-import RankCard from "~/components/molecules/score/RankCard.vue";
-import RetryCard from "~/components/molecules/score/RetryCard.vue";
-import RankingCard from "~/components/molecules/score/RankingCard.vue";
-import { useScoreBoardParam } from "~/composables/score/useScoreBoardParam";
+import { ref } from "vue";
+import ScoreBoardCard from "../../../../components/organisms/score/ScoreBoardCard.vue";
+import ScoreCard from "../../../../components/molecules/score/ScoreCard.vue";
+import RankCard from "../../../../components/molecules/score/RankCard.vue";
+import RankingCard from "../../../../components/molecules/score/RankingCard.vue";
+
+const mockGetParam = vi.fn();
+const mockError = ref<string | null>(null);
+const mockIsLoading = ref(false);
 
 vi.mock("~/composables/score/useScoreBoardParam", () => ({
-  useScoreBoardParam: vi.fn(() => ({
-    getParam: vi.fn().mockResolvedValue({
-      score: 100,
-      average_score: 80,
-      rank: "A",
-      ranking_position: 5
-    })
-  }))
+  useScoreBoardParam: () => ({
+    getParam: mockGetParam,
+    error: mockError,
+    isLoading: mockIsLoading,
+  }),
 }));
 
 describe("ScoreBoardCard", () => {
   beforeEach(() => {
+    mockGetParam.mockReset();
+    mockError.value = null;
+    mockIsLoading.value = false;
+
     // LocalStorageのモック
-    const localStorageMock = {
-      getItem: vi.fn((key) => {
-        const storage: {
-            [key: string]: string;
-            language: string;
-            difficulty: string;
-            totalCorrectTypedCount: string;
-            typingAccuracy: string;
-        } = {
-            language: "1",
-            difficulty: "2",
-            totalCorrectTypedCount: "500",
-            typingAccuracy: "95"
-        };
-        return storage[key] || null;
-      })
-    };
-    Object.defineProperty(window, "localStorage", { value: localStorageMock });
+    vi.stubGlobal("localStorage", {
+      getItem: vi.fn().mockReturnValue("1-1"),
+    });
   });
 
-  it("コンポーネントが正しくレンダリングされ、子コンポーネントに適切なプロップが渡される", async () => {
-    const wrapper = mount(ScoreBoard);
+  const mountComponent = () => {
+    return mount(ScoreBoardCard, {
+      global: {
+        stubs: {
+          RetryCard: true,
+          Loading: true,
+          BaseNotification: true,
+          ClientOnly: true,
+        },
+      },
+    });
+  };
 
+  it("コンポーネントが正しくレンダリングされる", () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find(".score-cards-container").exists()).toBe(true);
+    expect(wrapper.find(".top-card").exists()).toBe(true);
+    expect(wrapper.find(".bottom-card").exists()).toBe(true);
+  });
+
+  it("スコアデータが正しく表示される", async () => {
+    mockGetParam.mockResolvedValue({
+      score: 100,
+      average_score: 80,
+      rank: "A",
+      ranking_position: 5,
+    });
+
+    const wrapper = mountComponent();
     await flushPromises();
 
-    expect(wrapper.findComponent(ScoreCard).exists()).toBe(true);
-    expect(wrapper.findComponent(RankCard).exists()).toBe(true);
-    expect(wrapper.findComponent(RetryCard).exists()).toBe(true);
-    expect(wrapper.findComponent(RankingCard).exists()).toBe(true);
-
     const scoreCard = wrapper.findComponent(ScoreCard);
-    expect(scoreCard.props("yourTotalScore")).toBe(100);
-    expect(scoreCard.props("yourAverageScore")).toBe(80);
+    expect(scoreCard.props()).toEqual({
+      yourTotalScore: 100,
+      yourAverageScore: 80,
+    });
 
     const rankCard = wrapper.findComponent(RankCard);
     expect(rankCard.props("rank")).toBe("A");
@@ -63,17 +75,15 @@ describe("ScoreBoardCard", () => {
   });
 
   it("スコアデータがない場合、デフォルト値が使用される", async () => {
-    vi.mocked(useScoreBoardParam).mockReturnValue({
-      getParam: vi.fn().mockResolvedValue(null)
-    });
-
-    const wrapper = mount(ScoreBoard);
-
+    mockGetParam.mockResolvedValue(null);
+    const wrapper = mountComponent();
     await flushPromises();
 
     const scoreCard = wrapper.findComponent(ScoreCard);
-    expect(scoreCard.props("yourTotalScore")).toBe(0);
-    expect(scoreCard.props("yourAverageScore")).toBe(0);
+    expect(scoreCard.props()).toEqual({
+      yourTotalScore: 0,
+      yourAverageScore: 0,
+    });
 
     const rankCard = wrapper.findComponent(RankCard);
     expect(rankCard.props("rank")).toBe("データなし");

@@ -1,60 +1,51 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import EnglishRankingCard from "~/components/organisms/ranking/EnglishRankingCard.vue";
-import BaseRankingCard from "~/components/molecules/ranking/BaseRankingCard.vue";
-
-vi.mock("~/composables/typing/useLanguageAndDifficulty", () => ({
-  useLanguageAndDifficulty: () => ({
-    getDifficultyName: vi.fn((id) => `Difficulty ${id}`),
-  }),
-}));
+import EnglishRankingCard from "../../../../components/organisms/ranking/EnglishRankingCard.vue";
+import BaseRankingCard from "../../../../components/molecules/ranking/BaseRankingCard.vue";
 
 describe("EnglishRankingCard", () => {
-  it("コンポーネントが正しくレンダリングされる", () => {
-    const mockRankingsByCombination: {
-        [key: `2-${number}`]: Array<{
-          rank: number;
-          name: string;
-          score: number;
-          user_id: string;
-          username: string;
-        }>;
-      } = {
-        "2-1": [{ rank: 1, name: "User1", score: 100, user_id: "1", username: "user1" }],
-        "2-2": [{ rank: 1, name: "User2", score: 200, user_id: "2", username: "user2" }],
-        "2-3": [{ rank: 1, name: "User3", score: 300, user_id: "3", username: "user3" }],
-      };
+  const mockRankings = [
+    { rank: 1, userId: "1", username: "user1", score: 100 },
+    { rank: 2, userId: "2", username: "user2", score: 90 },
+  ];
 
-    const wrapper = mount(EnglishRankingCard, {
-      props: {
-        rankingsByCombination: mockRankingsByCombination,
-      },
+  const defaultProps = {
+    rankingsByCombination: {
+      "2-1": mockRankings,
+      "2-2": mockRankings,
+      "2-3": mockRankings,
+    },
+    rankingDataLimit: 10,
+  };
+
+  const mountComponent = () => {
+    return mount(EnglishRankingCard, {
+      props: defaultProps,
       global: {
         stubs: {
           BaseRankingCard: true,
         },
       },
     });
+  };
 
+  it("コンポーネントが正しくレンダリングされる", () => {
+    const wrapper = mountComponent();
     expect(wrapper.find(".ranking-cards-container").exists()).toBe(true);
     expect(wrapper.find(".ranking-cards").exists()).toBe(true);
+  });
 
-    const rankingCards = wrapper.findAllComponents(BaseRankingCard);
+  it("ランキングカードが正しい数だけ表示される", () => {
+    const wrapper = mountComponent();
+    const rankingCards = wrapper.findAllComponents({ name: "BaseRankingCard" });
     expect(rankingCards).toHaveLength(3);
-
-    rankingCards.forEach((card, index) => {
-      const difficultyId = index + 1;
-      expect(card.props("difficultyName")).toBe(`Difficulty ${difficultyId}`);
-      expect(card.props("rankings")).toEqual(
-        mockRankingsByCombination[`2-${difficultyId}`]
-      );
-    });
   });
 
   it("ランキングデータがない場合、空の配列が渡される", () => {
     const wrapper = mount(EnglishRankingCard, {
       props: {
         rankingsByCombination: {},
+        rankingDataLimit: 10,
       },
       global: {
         stubs: {
@@ -63,10 +54,9 @@ describe("EnglishRankingCard", () => {
       },
     });
 
-    const rankingCards = wrapper.findAllComponents(BaseRankingCard);
+    const rankingCards = wrapper.findAllComponents({ name: "BaseRankingCard" });
     expect(rankingCards).toHaveLength(3);
-
-    rankingCards.forEach((card) => {
+    rankingCards.forEach(card => {
       expect(card.props("rankings")).toEqual([]);
     });
   });

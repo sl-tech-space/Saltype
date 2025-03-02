@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import HomeHeader from "../../../../components/organisms/home/HomeHeader.vue";
-import BaseHeader from "../../../../components/molecules/common/BaseHeader.vue";
+import ScreenSettingHeader from "../../../../../components/organisms/settings/screen/ScreenSettingHeader.vue";
+import BaseHeader from "../../../../../components/molecules/common/BaseHeader.vue";
 
-describe("HomeHeader", () => {
+describe("ScreenSettingHeader", () => {
   const mountComponent = () => {
-    return mount(HomeHeader, {
+    return mount(ScreenSettingHeader, {
       global: {
         components: {
           BaseHeader,
@@ -22,6 +22,6 @@ describe("HomeHeader", () => {
   it("BaseHeaderに正しいタイトルが渡される", () => {
     const wrapper = mountComponent();
     const baseHeader = wrapper.findComponent(BaseHeader);
-    expect(baseHeader.props("title")).toBe("ホーム");
+    expect(baseHeader.props("title")).toBe("画面設定");
   });
 });
