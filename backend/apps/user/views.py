@@ -62,8 +62,6 @@ class GetUserView(BaseView):
     """
 
     def get(self, request, *args, **kwargs):
-        serializer = GetUserSerializer(data=kwargs)
-        serializer.is_valid(raise_exception=True)
         return super().get(request, *args, **kwargs)
 
     def handle_get_request(self, *args, **kwargs):
