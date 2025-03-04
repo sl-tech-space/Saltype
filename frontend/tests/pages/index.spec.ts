@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import WelcomePage from "~/pages/index.vue";
-import Loading from "~/components/molecules/common/ui/Loading.vue";
+import WelcomePage from "../../pages/index.vue";
+import Loading from "../../components/molecules/common/ui/Loading.vue";
 
 describe("WelcomePage", () => {
   it("正しくレンダリングされること", () => {

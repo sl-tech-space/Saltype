@@ -12,19 +12,19 @@ const token = computed(() => {
 const { tokenIsValid, isLoading } = usePasswordReset();
 
 onMounted(async () => {
-    const isValid = await tokenIsValid(token.value);
-    if (!isValid) {
-        await navigateTo({ name: "login" });
-    }
+  const isValid = await tokenIsValid(token.value);
+  if (!isValid) {
+    await navigateTo({ name: "login" });
+  }
 });
 </script>
 
 <template>
-    <div class="page">
-        <AuthHeader />
-        <Reset :token="token" />
-        <Loading :is-loading="isLoading" />
-    </div>
+  <div class="page">
+    <AuthHeader />
+    <Reset :token="token" />
+    <Loading :is-loading="isLoading" />
+  </div>
 </template>
 
 <style lang="scss" scoped>

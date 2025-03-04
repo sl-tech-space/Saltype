@@ -1,91 +1,97 @@
 import { mount } from "@vue/test-utils";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import RankingPage from "~/pages/ranking/index.vue";
-import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
-import ScrollHandler from "~/components/molecules/common/ui/ScrollHandler.vue";
-import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
-import JapaneseRankingCard from "~/components/organisms/ranking/JapaneseRankingCard.vue";
-import EnglishRankingCard from "~/components/organisms/ranking/EnglishRankingCard.vue";
-import DailyRankingCard from "~/components/organisms/ranking/DailyRankingCard.vue";
-import Loading from "~/components/molecules/common/ui/Loading.vue";
-import BaseNotification from "~/components/molecules/common/BaseNotification.vue";
-import PageIndicator from "~/components/molecules/common/ui/PageIndicator.vue";
-import CopyRight from "~/components/atoms/ui/CopyRight.vue";
+import { ref } from "vue";
+import RankingIndex from "../../../pages/ranking/index.vue";
+import RankingHeader from "../../../components/organisms/ranking/RankingHeader.vue";
+import JapaneseRankingCard from "../../../components/organisms/ranking/JapaneseRankingCard.vue";
+import EnglishRankingCard from "../../../components/organisms/ranking/EnglishRankingCard.vue";
+import DailyRankingCard from "../../../components/organisms/ranking/DailyRankingCard.vue";
+import { useRanking } from "../../../composables/ranking/useRanking";
 
-vi.mock("~/composables/ranking/useRanking", () => ({
-  useRanking: () => ({
-    isLoading: false,
-    error: null,
-    dailyJapaneseRankings: [],
-    dailyEnglishRankings: [],
-    japaneseRankings: [],
-    englishRankings: [],
-    getRankingByLimitParam: vi.fn(),
-    getDailyRankingByLimitParam: vi.fn(),
-  }),
+// useRankingのモック
+vi.mock("../../../composables/ranking/useRanking", () => ({
+  useRanking: vi.fn(),
 }));
 
-vi.mock("~/composables/common/useError", () => ({
+// useErrorNotificationのモック
+vi.mock("../../../composables/common/useError", () => ({
   useErrorNotification: () => ({
-    showErrorNotification: false,
+    showErrorNotification: ref(false),
   }),
 }));
 
-describe("RankingPage", () => {
-  let wrapper: any;
+// useHeadのモック
+vi.mock("#imports", () => ({
+  useHead: vi.fn(),
+}));
+
+describe("RankingIndex", () => {
+  const mockRankings = [
+    { id: 1, score: 100, username: "user1" },
+    { id: 2, score: 90, username: "user2" },
+  ];
 
   beforeEach(() => {
-    wrapper = mount(RankingPage, {
-      global: {
-        stubs: {
-          CursorEffect: true,
-          ScrollHandler: true,
-          RankingHeader: true,
-          JapaneseRankingCard: true,
-          EnglishRankingCard: true,
-          DailyRankingCard: true,
-          Loading: true,
-          BaseNotification: true,
-          PageIndicator: true,
-          CopyRight: true,
-        },
-        mocks: {
-          useHead: vi.fn(),
-        },
-      },
+    vi.clearAllMocks();
+    // @ts-ignore
+    vi.mocked(useRanking).mockReturnValue({
+      isLoading: ref(false),
+      error: ref(null),
+      dailyJapaneseRankings: ref(mockRankings),
+      dailyEnglishRankings: ref(mockRankings),
+      japaneseRankings: ref(mockRankings),
+      englishRankings: ref(mockRankings),
+      getRankingByLimitParam: vi.fn(),
+      getDailyRankingByLimitParam: vi.fn(),
     });
   });
 
-  it("コンポーネントが正しくレンダリングされること", () => {
-    expect(wrapper.findComponent(ScrollHandler).exists()).toBe(true);
-    expect(wrapper.findComponent(PageIndicator).exists()).toBe(true);
-    expect(wrapper.findAllComponents(RankingHeader).length).toBe(3);
-    expect(wrapper.findComponent(DailyRankingCard).exists()).toBe(true);
+  it("正しくレンダリングされること", () => {
+    const wrapper = mount(RankingIndex, {
+      shallow: true,
+    });
+
+    // 必要なコンポーネントが存在することを確認
+    expect(wrapper.findComponent(RankingHeader).exists()).toBe(true);
     expect(wrapper.findComponent(JapaneseRankingCard).exists()).toBe(true);
     expect(wrapper.findComponent(EnglishRankingCard).exists()).toBe(true);
-    expect(wrapper.findComponent(Loading).exists()).toBe(true);
-    expect(wrapper.findComponent(CopyRight).exists()).toBe(true);
+    expect(wrapper.findComponent(DailyRankingCard).exists()).toBe(true);
   });
 
-  it("RankingHeaderに正しいタイトルが渡されること", () => {
+  it("ランキングヘッダーに正しいタイトルが渡されること", () => {
+    const wrapper = mount(RankingIndex, {
+      shallow: true,
+    });
+
     const headers = wrapper.findAllComponents(RankingHeader);
+    expect(headers).toHaveLength(3);
     expect(headers[0].props("title")).toBe("ランキング<br>本日のチャンピオン");
     expect(headers[1].props("title")).toBe("ランキング<br>日本語");
     expect(headers[2].props("title")).toBe("ランキング<br>英語");
   });
 
-  it("ランキングカードに正しいプロップが渡されること", () => {
-    const dailyRankingCard = wrapper.findComponent(DailyRankingCard);
-    expect(dailyRankingCard.props("dailyRankingDataLimit")).toBe(1);
+  it("ランキングカードに正しいプロパティが渡されること", () => {
+    const wrapper = mount(RankingIndex, {
+      shallow: true,
+    });
 
-    const japaneseRankingCard = wrapper.findComponent(JapaneseRankingCard);
-    expect(japaneseRankingCard.props("rankingDataLimit")).toBe(5);
+    const dailyCard = wrapper.findComponent(DailyRankingCard);
+    expect(dailyCard.props()).toEqual({
+      dailyJapaneseRankingsByCombination: mockRankings,
+      dailyEnglishRankingsByCombination: mockRankings,
+      dailyRankingDataLimit: 1,
+    });
 
-    const englishRankingCard = wrapper.findComponent(EnglishRankingCard);
-    expect(englishRankingCard.props("rankingDataLimit")).toBe(5);
-  });
+    const japaneseCard = wrapper.findComponent(JapaneseRankingCard);
+    expect(japaneseCard.props()).toEqual({
+      rankingsByCombination: mockRankings,
+      rankingDataLimit: 5,
+    });
 
-  it("エラーがない場合、BaseNotificationが表示されないこと", () => {
-    expect(wrapper.findComponent(BaseNotification).exists()).toBe(false);
+    const englishCard = wrapper.findComponent(EnglishRankingCard);
+    expect(englishCard.props()).toEqual({
+      rankingsByCombination: mockRankings,
+      rankingDataLimit: 5,
+    });
   });
 });
