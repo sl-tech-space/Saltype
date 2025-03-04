@@ -6,23 +6,18 @@ import ToggleSwitch from '~/components/atoms/inputs/ToggleSwitch.vue';
 import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
 // 状態管理
-const isScrollAssist = ref(localStorage.getItem('isScrollAssist') === 'true');
+const { value: scrollAssistValue, setValue: setScrollAssist } = useLocalStorage('isScrollAssist', 'true');
 const { value: cursorEffectValue, setValue: setCursorEffect } = useLocalStorage('isFollowCursorEffect', 'true');
-const isFollowCursorEffect = ref(cursorEffectValue.value !== 'false');
 
-// cursorEffectValueの変更を監視
-watch(cursorEffectValue, (newValue) => {
-    isFollowCursorEffect.value = newValue !== 'false';
-});
+const isScrollAssist = computed(() => scrollAssistValue.value === 'true');
+const isFollowCursorEffect = computed(() => cursorEffectValue.value !== 'false');
 
 // トグル処理
 const updateScrollAssist = (value: boolean) => {
-    isScrollAssist.value = value;
-    localStorage.setItem('isScrollAssist', value.toString());
+    setScrollAssist(value.toString());
 };
 
 const updateFollowCursorEffect = (value: boolean) => {
-    isFollowCursorEffect.value = value;
     setCursorEffect(value.toString());
 };
 </script>

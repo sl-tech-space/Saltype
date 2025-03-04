@@ -3,7 +3,9 @@ import type { SentenceArray } from "@/types/typing";
 /**
  * AIによる文章生成
  */
-export function useAISentence(input: string): { sentences: () => Promise<SentenceArray> } {
+export function useAISentence(input: string): {
+  sentences: () => Promise<SentenceArray>;
+} {
   const sentences = async () => {
     try {
       const response = await fetch("/api/nuxt/generate-sentences/", {

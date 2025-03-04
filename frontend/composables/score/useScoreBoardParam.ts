@@ -1,4 +1,5 @@
 import { useUserInfo } from "../common/useUserInfo";
+import { useLocalStorage } from "../common/useLocalStorage";
 import type { ScoreBoardData } from "~/types/score.d";
 
 /**
@@ -8,9 +9,12 @@ import type { ScoreBoardData } from "~/types/score.d";
 export function useScoreBoardParam() {
   const config = useRuntimeConfig();
   const { user, waitForUser } = useUserInfo();
+  const { value: scoreValue } = useLocalStorage("score", "0");
   const scoreBoardData = ref<ScoreBoardData | null>();
   const error = ref<string | null>(null);
   const isLoading = ref(false);
+
+  const getCurrentScore = () => Number(scoreValue.value);
 
   /**
    * 全データを集約、各関数の呼び出し
@@ -34,14 +38,14 @@ export function useScoreBoardParam() {
       const [rankingData, averageData, userRankData] = await Promise.all([
         _getRanking(selectedLanguage, selectedDifficulty),
         _getAverageScore(selectedLanguage, selectedDifficulty),
-        _getUserRank(selectedLanguage, selectedDifficulty),
+        _getUserRank(),
       ]);
 
       scoreBoardData.value = {
         is_high_score: userRankData.is_highest,
         rank: userRankData.rank_name,
         ranking_position: rankingData.ranking_position,
-        score: Number(localStorage.getItem("score")),
+        score: getCurrentScore(),
         average_score: averageData.average_score,
       };
 
@@ -76,7 +80,7 @@ export function useScoreBoardParam() {
             user_id: user.value?.user_id,
             lang_id: Number(selectedLanguage),
             diff_id: Number(selectedDifficulty),
-            score: Number(localStorage.getItem("score")),
+            score: getCurrentScore(),
           }),
           signal: AbortSignal.timeout(5000),
         }
@@ -142,10 +146,7 @@ export function useScoreBoardParam() {
    * @param selectedDifficulty
    * @returns Promise
    */
-  const _getUserRank = async (
-    selectedLanguage: number,
-    selectedDifficulty: number
-  ) => {
+  const _getUserRank = async () => {
     try {
       const response = await fetch(
         `${config.public.baseURL}/api/django/score/userrank/`,

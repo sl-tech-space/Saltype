@@ -5,6 +5,7 @@
  * @returns 
  * - value: 現在の値
  * - setValue: 値を設定する関数
+ * - getValue: 値を取得する関数
  */
 export const useLocalStorage = (key: string, defaultValue: any = null) => {
     const value = ref(localStorage.getItem(key));
@@ -16,6 +17,10 @@ export const useLocalStorage = (key: string, defaultValue: any = null) => {
             key: key,
             newValue: newValue,
         }));
+    };
+
+    const getValue = () => {
+        return localStorage.getItem(key);
     };
 
     // ストレージイベントの監視
@@ -32,6 +37,7 @@ export const useLocalStorage = (key: string, defaultValue: any = null) => {
 
     return {
         value,
-        setValue
+        setValue,
+        getValue
     };
 }; 

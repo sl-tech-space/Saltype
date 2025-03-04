@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
+
 /**
  * １画面スクロールハンドラー
  */
+const { value: scrollAssist } = useLocalStorage('isScrollAssist', 'true');
 const isScrolling = ref(false);
 const lastScrollTime = ref(0);
 const scrollThreshold = 1; // スクロール開始のしきい値
@@ -65,7 +68,7 @@ const removeScrollListener = () => {
 };
 
 onMounted(() => {
-  if (localStorage.getItem('isScrollAssist') === 'true') {
+  if (scrollAssist.value === 'true') {
     initScrollHandler();
   } else {
     cleanupScrollHandler();
@@ -77,7 +80,7 @@ onUnmounted(() => {
 });
 
 // LocalStorageの変更を監視
-watch(() => localStorage.getItem('isScrollAssist'), (newValue) => {
+watch(scrollAssist, (newValue) => {
   if (newValue === 'true') {
     initScrollHandler();
   } else {

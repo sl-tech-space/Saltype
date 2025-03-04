@@ -1,8 +1,9 @@
 import { useUserInfo } from "../common/useUserInfo";
+import { useAdminPermissionCache } from "./useAdminPermissionCache";
 
 /**
  * ユーザ設定、ユーザ管理画面の共通関数
- * @returns updateUserInfo, checkAdminPermission, 
+ * @returns updateUserInfo, checkAdminPermission,
  * userInfo, isAdmin, isLoading, error
  */
 export function useUser() {
@@ -85,12 +86,13 @@ export function useUser() {
         return;
       }
 
-      const cachedPermission = localStorage.getItem(
-        `admin_permission_${user.value.user_id}`
+      const { getCache, setCache } = useAdminPermissionCache(
+        user.value.user_id
       );
+      const cachedPermission = getCache();
 
-      if (cachedPermission && !force) {
-        isAdmin.value = JSON.parse(cachedPermission);
+      if (cachedPermission !== null && !force) {
+        isAdmin.value = cachedPermission;
         return;
       }
 
@@ -112,11 +114,7 @@ export function useUser() {
 
       const data = await response.json();
       isAdmin.value = data.isAdmin;
-
-      localStorage.setItem(
-        `admin_permission_${user.value.user_id}`,
-        JSON.stringify(data.isAdmin)
-      );
+      setCache(data.isAdmin);
     } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
