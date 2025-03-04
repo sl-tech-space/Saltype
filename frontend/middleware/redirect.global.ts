@@ -41,7 +41,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         );
 
         if (!adminCheckResponse.ok) {
-          throw new Error("Failed to check admin permissions");
+          return await navigateTo({ name: "home" });
         }
 
         const adminCheckResult = await adminCheckResponse.json();

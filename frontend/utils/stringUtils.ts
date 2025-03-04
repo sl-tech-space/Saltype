@@ -27,12 +27,3 @@ export function splitString(str: string, separator: string = ","): string[] {
 export function joinWithHyphen(str1: string, str2: string): string {
   return `${str1}-${str2}`;
 }
-
-/**
- * 文字列から空白を削除する
- * @param str 処理する文字列
- * @returns 空白が削除された文字列
- */
-export function removeWhitespace(str: string): string {
-  return str.replace(/\s/g, "");
-}

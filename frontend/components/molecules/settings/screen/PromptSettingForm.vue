@@ -22,6 +22,7 @@ const validationSchema = computed(() => {
 });
 
 const handleSubmit = () => {
+    prompt.value = prompt.value.trim();
     emit('prompt-updated', prompt.value);
 };
 </script>

@@ -1,46 +1,59 @@
-import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import LoginPage from "~/pages/login.vue";
-import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
-import LoginForm from "~/components/organisms/login/LoginForm.vue";
-import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
-import Title from "~/components/atoms/texts/Title.vue";
+import { describe, it, expect, vi } from "vitest";
+import LoginPage from "../../pages/login.vue";
+import AuthHeader from "../../components/organisms/auth/AuthHeader.vue";
+import LoginForm from "../../components/organisms/login/LoginForm.vue";
+import GoogleAuth from "../../components/organisms/login/GoogleAuth.vue";
+import { useAuthToken } from "../../composables/auth/useAuthToken";
+
+const mockUseHead = vi.fn();
+const mockAuthToken = vi.fn();
+
+// useHeadのモック
+vi.mock("#imports", () => ({
+  useHead: mockUseHead,
+}));
 
 // useAuthTokenのモック
-vi.mock("~/composables/auth/useAuthToken", () => ({
+vi.mock("../../composables/auth/useAuthToken", () => ({
   useAuthToken: () => ({
-    authToken: vi.fn(),
+    authToken: mockAuthToken,
   }),
 }));
 
 describe("LoginPage", () => {
-  it("正しくレンダリングされること", async () => {
+  it("正しくレンダリングされること", () => {
     const wrapper = mount(LoginPage, {
-      global: {
-        stubs: {
-          CursorEffect: true,
-          LoginForm: true,
-          GoogleAuth: true,
-          Title: true,
-        },
-      },
+      shallow: true,
     });
 
-    // 各コンポーネントが存在することを確認
-    expect(wrapper.findComponent(CursorEffect).exists()).toBe(true);
+    // 必要なコンポーネントが存在することを確認
+    expect(wrapper.findComponent(AuthHeader).exists()).toBe(true);
     expect(wrapper.findComponent(LoginForm).exists()).toBe(true);
     expect(wrapper.findComponent(GoogleAuth).exists()).toBe(true);
-    expect(wrapper.findComponent(Title).exists()).toBe(true);
 
-    // pageクラスを持つdiv要素が存在することを確認
+    // ページのルート要素が正しいクラスを持つことを確認
     expect(wrapper.find(".page").exists()).toBe(true);
-
-    // loginクラスを持つdiv要素が存在することを確認
     expect(wrapper.find(".login").exists()).toBe(true);
+  });
 
-    // Titleコンポーネントのテキストとクラスを確認
-    const titleComponent = wrapper.findComponent(Title);
-    expect(titleComponent.props("text")).toBe("ログイン");
-    expect(titleComponent.classes()).toContain("title");
+  it("コンポーネントの順序が正しいこと", () => {
+    const wrapper = mount(LoginPage, {
+      shallow: true,
+    });
+
+    const loginDiv = wrapper.find(".login");
+    const children = loginDiv.element.children;
+    expect(children[0].tagName.toLowerCase()).toBe("auth-header-stub");
+    expect(children[1].tagName.toLowerCase()).toBe("login-form-stub");
+    expect(children[2].tagName.toLowerCase()).toBe("google-auth-stub");
+  });
+
+  it("マウント時に認証トークンチェックが実行されること", () => {
+    mount(LoginPage, {
+      shallow: true,
+    });
+
+    expect(mockAuthToken).toHaveBeenCalled();
   });
 });

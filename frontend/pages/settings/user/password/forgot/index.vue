@@ -4,10 +4,10 @@ import Request from "~/components/organisms/settings/user/password/forgot/Reques
 </script>
 
 <template>
-    <div class="page">
-        <AuthHeader />
-        <Request />
-    </div>
+  <div class="page">
+    <AuthHeader />
+    <Request />
+  </div>
 </template>
 
 <style lang="scss" scoped>
