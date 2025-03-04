@@ -7,6 +7,7 @@ import Loading from '~/components/molecules/common/ui/Loading.vue';
 import BaseNotification from '~/components/molecules/common/BaseNotification.vue';
 import { useErrorNotification } from '~/composables/common/useError';
 import { useScoreBoardParam } from '~/composables/score/useScoreBoardParam';
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 import type { ScoreBoardData } from '~/types/score.d';
 
 const selectedLanguage = ref(0);
@@ -14,10 +15,10 @@ const selectedDifficulty = ref(0);
 const scoreBoardData = ref<ScoreBoardData | null>();
 const { getParam, isLoading, error } = useScoreBoardParam();
 const { showErrorNotification } = useErrorNotification(error);
-const id = ref<string>("");
+const { value: gameModeId } = useLocalStorage('gameModeId');
+const id = computed(() => gameModeId.value ?? '');
 
 onMounted(async () => {
-    id.value = localStorage.getItem("gameModeId") as string;
     const splittedId = splitId(id.value);
 
     if (splittedId) {

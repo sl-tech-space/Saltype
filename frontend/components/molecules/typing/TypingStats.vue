@@ -2,6 +2,7 @@
 import Text from "~/components/atoms/texts/Text.vue";
 import type { TypingStatsEventBus } from "~/types/typing.d";
 import type { TypingStats } from "~/types/typing.d";
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
 declare module '#app' {
   interface NuxtApp {
@@ -14,7 +15,9 @@ const { $bus } = useNuxtApp()
 const totalCorrectTypedCount = ref(0)
 const totalMistypedCount = ref(0)
 const typingAccuracy = ref(0)
-const showTypingDetails = ref(false)
+
+const { value: typingDetailsValue } = useLocalStorage('showTypingDetails', 'true');
+const showTypingDetails = computed(() => typingDetailsValue.value === 'true');
 
 const updateTypingStats = (stats: TypingStats) => {
     totalCorrectTypedCount.value = stats.totalCorrectTypedCount
@@ -24,7 +27,6 @@ const updateTypingStats = (stats: TypingStats) => {
 
 onMounted(() => {
     $bus.$on('typing-stats', updateTypingStats)
-    showTypingDetails.value = localStorage.getItem('showTypingDetails') === 'true'
 })
 
 onUnmounted(() => {

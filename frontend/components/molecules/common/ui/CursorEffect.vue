@@ -3,9 +3,9 @@ import { useColorStore } from '~/store/colorStore';
 import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
 const { colorStore } = useColorStore();
-const { value: cursorEffectValue } = useLocalStorage('isFollowCursorEffect', 'true');
+const { value: cursorEffectValue, setValue } = useLocalStorage('isFollowCursorEffect', 'true');
 
-const isFollowCursorEffect = ref(false);
+const isFollowCursorEffect = ref(cursorEffectValue.value !== 'false');
 const cursor = ref(null);
 const effectKey = ref(0); // 再マウント用のkey
 
@@ -37,11 +37,7 @@ watch(cursorEffectValue, (newValue) => {
 });
 
 onMounted(() => {
-  // 初期値の設定
-  if (localStorage.getItem('isFollowCursorEffect') === null) {
-    localStorage.setItem('isFollowCursorEffect', 'true');
-  }
-  updateCursorEffect(localStorage.getItem('isFollowCursorEffect') !== 'false');
+  updateCursorEffect(cursorEffectValue.value !== 'false');
 });
 
 onUnmounted(() => {

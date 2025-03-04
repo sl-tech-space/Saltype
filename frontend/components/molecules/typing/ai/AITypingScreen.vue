@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTyping } from "~/composables/typing/japanese/ai/useTyping";
 import { useErrorNotification } from "~/composables/common/useError";
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 import Text from "~/components/atoms/texts/Text.vue";
 import Title from "~/components/atoms/texts/Title.vue";
 import Separator from "~/components/atoms/ui/Separator.vue";
@@ -26,6 +27,7 @@ const {
 } = useTyping();
 const { showErrorNotification } = useErrorNotification(error);
 const { $bus } = useNuxtApp();
+const { value: promptValue } = useLocalStorage('prompt', 'タイピング');
 
 /**
  * キー入力時の動作
@@ -44,10 +46,7 @@ const emitKeyPress = async (event: KeyboardEvent) => {
 useEventListener(window, 'keydown', emitKeyPress);
 
 onMounted(async () => {
-    const input = localStorage.getItem('prompt') || 'タイピング';
-    if (input) {
-        initialize(input);
-    }
+    initialize(promptValue.value ?? 'タイピング');
 
     $bus.$on('timer-ended', () => {
         isLoading.value = true;

@@ -3,6 +3,7 @@ import { useSentencePattern } from "~/composables/typing/japanese/useSentencePat
 import { useInputPattern } from "./japanese/useInputPattern";
 import { useMistype } from "./useMistype";
 import { useUserInfo } from "../common/useUserInfo";
+import { useLocalStorage } from "../common/useLocalStorage";
 import { Language } from "./useLanguageAndDifficulty";
 
 /**
@@ -47,6 +48,11 @@ export function useTyping(language: string, difficultyLevel: string) {
   const vowelPattern = computed(() => getVowelPatternArray());
   const symbolPattern = computed(() => getSymbolsPatternArray());
 
+  const { value: gameModeId } = useLocalStorage("gameModeId");
+  const { setValue: setScore } = useLocalStorage("score", "0");
+  const { setValue: setTotalCorrectTypedCount } = useLocalStorage("totalCorrectTypedCount", "0");
+  const { setValue: setTypingAccuracy } = useLocalStorage("typingAccuracy", "0");
+
   /**
    * タイピング結果取得変数
    */
@@ -81,12 +87,11 @@ export function useTyping(language: string, difficultyLevel: string) {
    * 分割された言語：難易度IDを取得
    */
   const _splittedId = computed(() => {
-    const id = localStorage.getItem("gameModeId");
-    if (!id) {
+    if (!gameModeId.value) {
       error.value = "選択した難易度は存在しません";
       return null;
     }
-    return splitId(id);
+    return splitId(gameModeId.value);
   });
 
   /**
@@ -144,7 +149,7 @@ export function useTyping(language: string, difficultyLevel: string) {
       }
 
       const data = await response.json();
-      localStorage.setItem("score", data.score);
+      setScore(data.score.toString());
     } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
@@ -180,14 +185,8 @@ export function useTyping(language: string, difficultyLevel: string) {
 
     await Promise.all([sendMistypeDataToServer(), _sendTypingDataToServer()]);
 
-    localStorage.setItem(
-      "totalCorrectTypedCount",
-      typingResults.totalCorrectTypedCount.toString()
-    );
-    localStorage.setItem(
-      "typingAccuracy",
-      typingResults.typingAccuracy.toString()
-    );
+    setTotalCorrectTypedCount(typingResults.totalCorrectTypedCount.toString());
+    setTypingAccuracy(typingResults.typingAccuracy.toString());
 
     await navigateTo({ name: "score" });
     isLoading.value = false;

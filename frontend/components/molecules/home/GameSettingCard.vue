@@ -5,16 +5,18 @@ import DifficultyLevel from '../common/carousels/DifficultyLevel.vue';
 import Language from '../common/carousels/Language.vue';
 import Separator from '~/components/atoms/ui/Separator.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
 const selectedLanguage = ref(0);
 const selectedDifficulty = ref(0);
+const { setValue: setGameModeId } = useLocalStorage('gameModeId');
 
 const handleStart = async () => {
     const id: string = joinWithHyphen(
         (selectedLanguage.value + 1).toString(), 
         (selectedDifficulty.value + 1).toString()
     );
-    localStorage.setItem("gameModeId", id);
+    setGameModeId(id);
 
     await navigateTo({ name: `typing-id`, params: { id: id } });
 };

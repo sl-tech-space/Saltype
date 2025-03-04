@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BaseCarousel from '../../common/BaseCarousel.vue';
 import Text from '~/components/atoms/texts/Text.vue';
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
 const props = defineProps<{
   modelValue: number
@@ -13,28 +14,22 @@ const emit = defineEmits<{
 // ローカルストレージのキー
 const STORAGE_KEY = 'languageLevelOnCarousel';
 
-// 初期値の設定（ローカルストレージの値を優先）
-const currentSlide = ref(
-  Number(localStorage.getItem(STORAGE_KEY)) ?? props.modelValue
+// useLocalStorageを使用して状態管理
+const { value: storedValue, setValue } = useLocalStorage(STORAGE_KEY, props.modelValue.toString());
+
+// 数値型に変換して保持
+const currentSlide = computed(() => 
+  Number(storedValue.value ?? props.modelValue)
 );
 
-// コンポーネントマウント時に初期値を設定
-onMounted(() => {
-  if (!localStorage.getItem(STORAGE_KEY)) {
-    localStorage.setItem(STORAGE_KEY, currentSlide.value.toString());
-  }
-});
-
 const handleSlideChange = (index: number) => {
-  currentSlide.value = index;
-  localStorage.setItem(STORAGE_KEY, index.toString());
+  setValue(index.toString());
   emit('update:modelValue', index);
 };
 
 watch(() => props.modelValue, (newValue) => {
-  if (newValue !== currentSlide.value) {
-    currentSlide.value = newValue;
-    localStorage.setItem(STORAGE_KEY, newValue.toString());
+  if (newValue !== Number(storedValue.value)) {
+    setValue(newValue.toString());
   }
 });
 </script>

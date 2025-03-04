@@ -4,20 +4,22 @@ import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import ToggleSwitch from '~/components/atoms/inputs/ToggleSwitch.vue';
 import PromptSettingForm from './PromptSettingForm.vue';
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
 // タイピング詳細表示の状態管理
-const showTypingDetails = ref(localStorage.getItem('showTypingDetails') === 'true');
-const prompt = ref(localStorage.getItem('prompt'));
+const { value: typingDetailsValue, setValue: setTypingDetails } = useLocalStorage('showTypingDetails', 'true');
+const { value: promptValue, setValue: setPrompt } = useLocalStorage('prompt', 'タイピング');
+
+const showTypingDetails = computed(() => typingDetailsValue.value === 'true');
+const prompt = computed(() => promptValue.value);
 
 // トグル処理
 const updateTypingDetails = (value: boolean) => {
-    showTypingDetails.value = value;
-    localStorage.setItem('showTypingDetails', value.toString());
+    setTypingDetails(value.toString());
 };
 
 const updatePrompt = (newPrompt: string) => {
-    prompt.value = newPrompt;
-    localStorage.setItem('prompt', prompt.value);
+    setPrompt(newPrompt);
 };
 </script>
 

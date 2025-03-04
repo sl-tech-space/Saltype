@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
 
-const consent = ref<string | null>(null)
-
-onMounted(() => {
-    consent.value = localStorage.getItem('cookie-consent')
-})
+// useLocalStorageを使用して状態管理
+const { value: consent, setValue } = useLocalStorage('cookie-consent');
 
 const acceptCookies = () => {
-    consent.value = 'accepted'
-    localStorage.setItem('cookie-consent', 'accepted')
-}
+    setValue('accepted');
+};
 </script>
 
 <template>
