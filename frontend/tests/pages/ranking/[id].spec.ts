@@ -1,65 +1,82 @@
 import { mount } from "@vue/test-utils";
-import { describe, it, expect, vi } from "vitest";
-import RankingDetails from "~/pages/ranking/[id].vue";
-import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
-import BaseRankingCard from "~/components/molecules/ranking/BaseRankingCard.vue";
-import CopyRight from "~/components/atoms/ui/CopyRight.vue";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { nextTick } from "vue";
+import RankingDetail from "../../../pages/ranking/[id].vue";
+import RankingHeader from "../../../components/organisms/ranking/RankingHeader.vue";
+import BaseRankingCard from "../../../components/molecules/ranking/BaseRankingCard.vue";
+import { useRanking } from "../../../composables/ranking/useRanking";
 
-vi.mock("~/composables/ranking/useRanking", () => ({
-  useRanking: () => ({
-    rankingDetails: [],
-    detailsTitle: "テストランキング",
-    getRankingDetailsByIdAndLimitParam: vi.fn(),
-  }),
+// useRankingのモック
+vi.mock("../../../composables/ranking/useRanking", () => ({
+  useRanking: vi.fn(),
 }));
 
-vi.mock("vue-router", () => ({
+// useRouteのモック
+vi.mock("#imports", () => ({
   useRoute: () => ({
-    params: { id: "1" },
+    params: {
+      id: "1",
+    },
   }),
-}));
-
-vi.mock("nuxt/app", () => ({
   useHead: vi.fn(),
 }));
 
-describe("RankingDetails", () => {
-  const createWrapper = () => {
-    return mount(RankingDetails, {
-      global: {
-        stubs: {
-          RankingHeader: true,
-          BaseRankingCard: true,
-          CopyRight: true,
-        },
-      },
-    });
-  };
+describe("RankingDetail", () => {
+  const mockRankingDetails = [
+    { id: 1, score: 100, username: "user1" },
+    { id: 2, score: 90, username: "user2" },
+  ];
 
-  it("コンポーネントが正しくレンダリングされること", () => {
-    const wrapper = createWrapper();
-    expect(wrapper.find(".page").exists()).toBe(true);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // useRankingのモックを設定
+    // @ts-ignore
+    vi.mocked(useRanking).mockReturnValue({
+      rankingDetails: { value: mockRankingDetails },
+      detailsTitle: { value: "初級" },
+      getRankingDetailsByIdAndLimitParam: vi.fn(),
+    });
+  });
+
+  it("正しくレンダリングされること", () => {
+    const wrapper = mount(RankingDetail, {
+      shallow: true,
+    });
+
+    // 必要なコンポーネントが存在することを確認
     expect(wrapper.findComponent(RankingHeader).exists()).toBe(true);
     expect(wrapper.findComponent(BaseRankingCard).exists()).toBe(true);
-    expect(wrapper.findComponent(CopyRight).exists()).toBe(true);
+
+    // ページのルート要素が正しいクラスを持つことを確認
+    expect(wrapper.classes()).toContain("page");
   });
 
   it("RankingHeaderに正しいプロパティが渡されること", () => {
-    const wrapper = createWrapper();
-    const rankingHeader = wrapper.findComponent(RankingHeader);
-    expect(rankingHeader.props("title")).toBe("ランキング詳細");
-    expect(rankingHeader.props("backName")).toBe("ranking");
+    const wrapper = mount(RankingDetail, {
+      shallow: true,
+    });
+
+    const header = wrapper.findComponent(RankingHeader);
+    expect(header.props("title")).toBe("ランキング詳細");
+    expect(header.props("backName")).toBe("ranking");
   });
 
   it("BaseRankingCardに正しいプロパティが渡されること", () => {
-    const wrapper = createWrapper();
-    const baseRankingCard = wrapper.findComponent(BaseRankingCard);
-    expect(baseRankingCard.props("difficultyName")).toBe("テストランキング");
-    expect(baseRankingCard.props("rankings")).toEqual([]);
-    expect(baseRankingCard.props("width")).toBe("full");
-    expect(baseRankingCard.props("height")).toBe("large");
-    expect(baseRankingCard.props("limit")).toBe(21);
-    expect(baseRankingCard.props("isFooter")).toBe(false);
-    expect(baseRankingCard.props("isGrid")).toBe(true);
+    const wrapper = mount(RankingDetail, {
+      shallow: true,
+    });
+
+    const card = wrapper.findComponent(BaseRankingCard);
+    expect(card.props()).toEqual({
+      difficultyName: { value: "初級" },
+      rankings: { value: mockRankingDetails },
+      width: "full",
+      height: "large",
+      size: "large",
+      limit: 21,
+      isFooter: false,
+      isGrid: true,
+      id: undefined,
+    });
   });
 });

@@ -40,7 +40,9 @@ export function useLogin() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        error.value = errorData.details?.non_field_errors?.[0] || "ログインに失敗しました。";
+        error.value = errorData.details?.detail?.[0] || 
+                     errorData.details?.non_field_errors?.[0] || 
+                     "ログインに失敗しました。";
         return;
       }
 
@@ -57,7 +59,7 @@ export function useLogin() {
       await authToken();
 
       await navigateTo({ name: "home" });
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     } finally {
@@ -92,7 +94,7 @@ export function useLogin() {
       }
 
       isAdmin.value = true;
-    } catch (e) {
+    } catch {
       error.value =
         "ネットワークエラーが発生しました。接続を確認してください。";
     }

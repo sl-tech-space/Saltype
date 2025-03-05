@@ -1,46 +1,44 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { mount, flushPromises } from "@vue/test-utils";
-import TypingScreenInOrganisms from "~/components/organisms/typing/TypingScreen.vue";
-import TypingScreenInMolecules from "~/components/molecules/typing/TypingScreen.vue";
-import Keyboard from "~/components/molecules/typing/layout/Keyboard.vue";
+import { mount } from "@vue/test-utils";
+import TypingScreen from "../../../../components/organisms/typing/TypingScreen.vue";
 
-// useRouteのモックを作成
-const mockUseRoute = vi.fn();
+const mockRoute = {
+  params: {},
+  query: {},
+};
 
-// useRouteのモック
 vi.mock("vue-router", () => ({
-  useRoute: () => mockUseRoute(),
+  useRoute: () => mockRoute,
 }));
 
 describe("TypingScreen", () => {
   beforeEach(() => {
-    // useRouteのモックをリセット
-    mockUseRoute.mockReset();
+    mockRoute.params = {};
   });
 
-  it("英語タイピングが表示される（languageが1以外の場合）", async () => {
-    mockUseRoute.mockReturnValue({
-      query: { language: "2" },
+  const mountComponent = () => {
+    return mount(TypingScreen, {
+      global: {
+        stubs: {
+          TypingScreen: true,
+          AITypingScreen: true,
+          Keyboard: true,
+        },
+      },
     });
+  };
 
-    const wrapper = mount(TypingScreenInOrganisms);
-
-    await flushPromises();
-
-    expect(wrapper.findComponent(TypingScreenInMolecules).exists()).toBe(true);
-    expect(wrapper.findComponent(Keyboard).exists()).toBe(true);
+  it("コンポーネントが正しくレンダリングされる", () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find(".typing-screen").exists()).toBe(true);
   });
 
-  it("英語タイピングが表示される（languageが指定されていない場合）", async () => {
-    mockUseRoute.mockReturnValue({
-      query: {},
-    });
-
-    const wrapper = mount(TypingScreenInOrganisms);
-
-    await flushPromises();
-
-    expect(wrapper.findComponent(TypingScreenInMolecules).exists()).toBe(true);
-    expect(wrapper.findComponent(Keyboard).exists()).toBe(true);
+  it("通常モードでは標準のタイピング画面が表示される", () => {
+    const wrapper = mountComponent();
+    expect(wrapper.findComponent({ name: "TypingScreen" }).exists()).toBe(true);
+    expect(wrapper.findComponent({ name: "AITypingScreen" }).exists()).toBe(
+      false
+    );
+    expect(wrapper.findComponent({ name: "Keyboard" }).exists()).toBe(true);
   });
 });

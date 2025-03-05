@@ -1,11 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import crypto from "crypto";
-
-if (process.env.NUXT_ENV === "production") {
-  console.log = () => {};
-  console.error = () => {};
-  console.warn = () => {};
-}
 
 export default defineNuxtConfig({
   components: true,
@@ -15,18 +8,41 @@ export default defineNuxtConfig({
   routeRules: {
     "/": { ssr: true, prerender: true }, // SSR
     "/login": { ssr: false }, // CSR
-    "/home": { ssr: true }, // SSR
+    "/home": { ssr: false }, // SSR
     "/typing/:id": { ssr: true }, // SSR
+    "/typing/ai": { ssr: true }, // SSR
     "/score": { ssr: true }, // SSR
     "/analyze": { ssr: true }, // SSR
     "/ranking": { isr: 300 }, // ISR 5minutes
     "/ranking/:id": { isr: 300 }, // ISR 5minutes
     "/contact": { ssr: false }, // CSR
-    "/user/setting": { ssr: false }, // CSR
-    "/user/admin": { ssr: false }, // CSR
-    "/privacypolicy": { ssr: true, prerender: true }, // SSG
-    "/cookiepolicy": { ssr: true, prerender: true }, // SSG
-    "/terms": { ssr: true, prerender: true }, // SSG
+    "/settings/screen": {
+      ssr: false,
+      prerender: false,
+    },
+    "/settings/user": { ssr: false }, // CSR
+    "/settings/password/forgot": { ssr: false }, // CSR
+    "/settings/password/reset": { ssr: false }, // CSR
+    "/admin": { ssr: false }, // CSR
+    "/privacypolicy": {
+      ssr: false,
+      static: true,
+    },
+    "/cookiepolicy": {
+      ssr: false,
+      static: true,
+    },
+    "/terms": {
+      ssr: false,
+      static: true,
+    },
+    "/error": {
+      ssr: true,
+      static: true,
+    },
+    "/dev-sw.js": { ssr: false },
+    "/sw.js": { ssr: false },
+    "/workbox-*.js": { ssr: false },
   },
   typescript: {
     shim: false,
@@ -70,6 +86,10 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
+    pageTransition: { name: "page", mode: "out-in" },
+    rootId: "__nuxt",
+    buildAssetsDir: "/_nuxt/",
+    baseURL: "/",
   },
   runtimeConfig: {
     cookies: {
@@ -77,16 +97,18 @@ export default defineNuxtConfig({
       sameSite: "strict",
       httpOnly: true,
     },
-    cryptoKey:
-      process.env.NUXT_CRYPTO_KEY || crypto.randomBytes(32).toString("hex"),
+    cryptoKey: process.env.NUXT_CRYPTO_KEY,
     public: {
       baseURL: process.env.NUXT_CLIENT_SIDE_URL || "http://localhost:8000",
       serverSideBaseURL:
         process.env.NUXT_SERVER_SIDE_URL || "http://django:8000",
       sentencesPath:
-        process.env.NUXT_ENV === "production" ? "dist/data" : "server/data",
+        process.env.NUXT_ENV === "production" ? ".output/server/data" : "server/data",
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
+  },
+  experimental: {
+    buildCache: true,
   },
   vite: {
     build: {
@@ -112,6 +134,7 @@ export default defineNuxtConfig({
         "@vueuse/core",
         "vue-chartjs",
         "chart.js",
+        "jp-transliterator",
       ],
     },
     server: {
@@ -122,6 +145,12 @@ export default defineNuxtConfig({
   },
   nitro: {
     compressPublicAssets: true,
+    storage: {
+      cache: {
+        driver: "lruCache",
+        max: 1000,
+      },
+    },
   },
   pwa: {
     registerType: "autoUpdate",
@@ -150,8 +179,28 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,png,svg,ico}"],
-      navigateFallback: null,
+      globPatterns: [
+        "**/_nuxt/**/*.{js,css}",
+        "**/*.{png,jpg,jpeg,svg,ico}",
+        "manifest.webmanifest",
+      ],
+      navigateFallback: "/",
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/api\./,
+          handler: "NetworkFirst",
+          options: {
+            cacheName: "api-cache",
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24,
+            },
+          },
+        },
+      ],
     },
     strategies: "generateSW",
     client: {
@@ -161,5 +210,8 @@ export default defineNuxtConfig({
       enabled: true,
       type: "module",
     },
+    injectRegister: "auto",
+    includeAssets: ["favicon.ico"],
+    registerWebManifestInRouteRules: true,
   },
 });

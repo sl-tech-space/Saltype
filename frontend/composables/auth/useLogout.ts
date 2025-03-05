@@ -20,7 +20,7 @@ export async function useLogout() {
         path: "/login",
         query: { reason: "logout" },
       });
-    } catch (e) {
+    } catch {
       alert("ログアウトに失敗：管理者に連絡してください");
     }
   };

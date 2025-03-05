@@ -1,8 +1,19 @@
 <script setup lang="ts">
-/**
- * 追従型カーソルエフェクト
- */
+import { useColorStore } from '~/store/colorStore';
+import { useLocalStorage } from '~/composables/common/useLocalStorage';
+
+const { colorStore } = useColorStore();
+const { value: cursorEffectValue, setValue } = useLocalStorage('isFollowCursorEffect', 'true');
+
+const isFollowCursorEffect = ref(cursorEffectValue.value !== 'false');
 const cursor = ref(null);
+const effectKey = ref(0); // 再マウント用のkey
+
+// ライトモードかどうかを判定
+const isLightMode = computed(() =>
+  colorStore.value.backgroundColor === '#dcdcdc' &&
+  colorStore.value.textColor === '#000000'
+);
 
 const updateCursor = (event: any) => {
   if (cursor.value) {
@@ -10,8 +21,23 @@ const updateCursor = (event: any) => {
   }
 }
 
+const updateCursorEffect = (value: boolean) => {
+  isFollowCursorEffect.value = value;
+  effectKey.value++; // keyを更新して再マウント
+  if (value) {
+    window.addEventListener("mousemove", updateCursor);
+  } else {
+    window.removeEventListener("mousemove", updateCursor);
+  }
+}
+
+// 値の変更を監視
+watch(cursorEffectValue, (newValue) => {
+  updateCursorEffect(newValue !== 'false');
+});
+
 onMounted(() => {
-  window.addEventListener("mousemove", updateCursor);
+  updateCursorEffect(cursorEffectValue.value !== 'false');
 });
 
 onUnmounted(() => {
@@ -20,7 +46,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="cursor" class="cursor">
+  <div 
+    v-if="isFollowCursorEffect" 
+    ref="cursor" 
+    :key="effectKey"
+    class="cursor" 
+    :class="{ 'light-mode': isLightMode }"
+  >
     <slot />
   </div>
 </template>
@@ -40,5 +72,14 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   mix-blend-mode: exclusion;
   z-index: 2000;
+
+  &.light-mode {
+    mix-blend-mode: normal;
+    opacity: 0.8;
+    box-shadow: 0 0 30px var(--main-color),
+      0 0 45px var(--main-color),
+      0 0 80px var(--main-color),
+      0 0 100px var(--main-color);
+  }
 }
 </style>

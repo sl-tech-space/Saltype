@@ -64,19 +64,22 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <ScrollHandler v-if="!isTouchDevice && !isMultiTouch" />
-  <PageIndicator :total-pages=3 />
-  <div class="page">
-    <RankingHeader :title="rankingTitle + '本日のチャンピオン'" />
-    <DailyRankingCard :daily-japanese-rankings-by-combination="dailyJapaneseRankings"
-      :daily-english-rankings-by-combination="dailyEnglishRankings" :daily-ranking-data-limit="dailyRankingDataLimit" />
-    <RankingHeader :title="rankingTitle + '日本語'" />
-    <JapaneseRankingCard :rankings-by-combination="japaneseRankings" :ranking-data-limit="rankingDataLimit" />
-    <RankingHeader :title="rankingTitle + '英語'" />
-    <EnglishRankingCard :rankings-by-combination="englishRankings" :ranking-data-limit="rankingDataLimit" />
+  <div>
+    <ScrollHandler v-if="!isTouchDevice && !isMultiTouch" />
+    <PageIndicator :total-pages=3 />
+    <div class="page">
+      <RankingHeader :title="rankingTitle + '本日のチャンピオン'" />
+      <DailyRankingCard :daily-japanese-rankings-by-combination="dailyJapaneseRankings"
+        :daily-english-rankings-by-combination="dailyEnglishRankings"
+        :daily-ranking-data-limit="dailyRankingDataLimit" />
+      <RankingHeader :title="rankingTitle + '日本語'" />
+      <JapaneseRankingCard :rankings-by-combination="japaneseRankings" :ranking-data-limit="rankingDataLimit" />
+      <RankingHeader :title="rankingTitle + '英語'" />
+      <EnglishRankingCard :rankings-by-combination="englishRankings" :ranking-data-limit="rankingDataLimit" />
+    </div>
+    <Loading :is-loading="isLoading" />
+    <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
   </div>
-  <Loading :is-loading="isLoading" />
-  <BaseNotification v-if="error" message="エラーが発生しました" :content="error" :show="showErrorNotification" />
 </template>
 
 <style lang="scss" scoped>

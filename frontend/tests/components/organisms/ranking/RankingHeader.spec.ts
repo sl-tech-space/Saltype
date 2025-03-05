@@ -1,42 +1,41 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import RankingHeader from "~/components/organisms/ranking/RankingHeader.vue";
-import BaseHeader from "~/components/molecules/common/BaseHeader.vue";
+import RankingHeader from "../../../../components/organisms/ranking/RankingHeader.vue";
+import BaseHeader from "../../../../components/molecules/common/BaseHeader.vue";
 
 describe("RankingHeader", () => {
-  it("コンポーネントが正しくレンダリングされ、プロップが正しく渡される", () => {
-    const title = "テストタイトル";
-    const wrapper = mount(RankingHeader, {
-      props: {
-        title: title
-      },
+  const mountComponent = (
+    props: { title: string; backName?: string } = { title: "テストタイトル" }
+  ) => {
+    return mount(RankingHeader, {
+      props,
       global: {
-        stubs: {
-          BaseHeader: true
-        }
-      }
+        components: {
+          BaseHeader,
+        },
+      },
     });
+  };
 
+  it("コンポーネントが正しくレンダリングされる", () => {
+    const wrapper = mountComponent();
+    expect(wrapper.findComponent(BaseHeader).exists()).toBe(true);
+  });
+
+  it("タイトルが正しく渡される", () => {
+    const title = "テストタイトル";
+    const wrapper = mountComponent({ title });
     const baseHeader = wrapper.findComponent(BaseHeader);
-    expect(baseHeader.exists()).toBe(true);
-
     expect(baseHeader.props("title")).toBe(title);
   });
 
-  it("タイトルが空の場合でも正しくレンダリングされる", () => {
-    const wrapper = mount(RankingHeader, {
-      props: {
-        title: ""
-      },
-      global: {
-        stubs: {
-          BaseHeader: true
-        }
-      }
+  it("戻るボタンの名前が正しく渡される", () => {
+    const backName = "戻る";
+    const wrapper = mountComponent({
+      title: "テストタイトル",
+      backName: backName,
     });
-
     const baseHeader = wrapper.findComponent(BaseHeader);
-    expect(baseHeader.exists()).toBe(true);
-    expect(baseHeader.props("title")).toBe("");
+    expect(baseHeader.props("onBackClick")).toBe(backName);
   });
 });

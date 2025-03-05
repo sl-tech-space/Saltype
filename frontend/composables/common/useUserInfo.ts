@@ -1,4 +1,4 @@
-import type { UserData } from "~/types/user";
+import type { UserData } from "~/types/user.d";
 
 /**
  * ユーザ情報を取り扱う

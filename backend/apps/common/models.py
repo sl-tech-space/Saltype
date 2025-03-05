@@ -59,10 +59,8 @@ class User(AbstractUser):
 
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     rank = models.ForeignKey("Rank", on_delete=models.SET_NULL, null=True, blank=True)
-    username = models.CharField(
-        max_length=150, unique=True, validators=[username_validator]
-    )
-    email = models.EmailField(max_length=254, unique=True)
+    username = models.CharField(max_length=15, validators=[username_validator])
+    email = models.EmailField(max_length=256, unique=True)
     password = models.CharField(max_length=100, null=True, blank=True)
     permission = models.PositiveIntegerField(
         choices=PERMISSON.choices, default=PERMISSON.MEMBER
@@ -185,6 +183,7 @@ class Score(models.Model):
         score (IntegerField): ゲームのスコア（デフォルトで0）
         lang (ForeignKey): 言語設定（Langモデルへの外部キー）
         diff (ForeignKey): 難易度設定（Diffモデルへの外部キー）
+        accuracy (FloatField): 正確度（0から1の範囲）
         created_at (DateTimeField): 作成日時
         updated_at (DateTimeField): 更新日時
 
@@ -199,6 +198,8 @@ class Score(models.Model):
     score = models.IntegerField(default=0)
     lang = models.ForeignKey("Lang", on_delete=models.SET_NULL, null=True, blank=True)
     diff = models.ForeignKey("Diff", on_delete=models.SET_NULL, null=True, blank=True)
+    typing_count = models.IntegerField(default=0)
+    accuracy = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -230,3 +231,25 @@ class Miss(models.Model):
 
     class Meta:
         db_table = "t_miss"
+
+
+class Request(models.Model):
+    """
+    リクエストテーブル定義
+
+    Attributes:
+        request_id (AutoField): リクエストID
+        email (EmailField): リクエストを送信したユーザーのメールアドレス
+        request_content (CharField): リクエスト内容（最大256文字）
+        created_at (DateTimeField): 作成日時
+        updated_at (DateTimeField): 更新日時
+    """
+
+    request_id = models.AutoField(primary_key=True)
+    email = models.EmailField(max_length=256)
+    request_content = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "t_request"

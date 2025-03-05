@@ -1,33 +1,37 @@
-import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import ScorePage from "~/pages/score.vue";
-import CursorEffect from "~/components/molecules/common/ui/CursorEffect.vue";
-import ScoreHeader from "~/components/organisms/score/ScoreHeader.vue";
-import ScoreBoardCard from "~/components/organisms/score/ScoreBoardCard.vue";
+import { describe, it, expect, vi } from "vitest";
+import ScorePage from "../../pages/score.vue";
+import ScoreHeader from "../../components/organisms/score/ScoreHeader.vue";
+import ScoreBoardCard from "../../components/organisms/score/ScoreBoardCard.vue";
+
+const mockUseHead = vi.fn();
+
+// useHeadのモック
+vi.mock("#imports", () => ({
+  useHead: mockUseHead,
+}));
 
 describe("ScorePage", () => {
   it("正しくレンダリングされること", () => {
     const wrapper = mount(ScorePage, {
-      global: {
-        stubs: {
-          CursorEffect: true,
-          ScoreHeader: true,
-          ScoreBoardCard: true,
-        },
-      },
+      shallow: true,
     });
 
-    // 各コンポーネントが存在することを確認
-    expect(wrapper.findComponent(CursorEffect).exists()).toBe(true);
+    // 必要なコンポーネントが存在することを確認
     expect(wrapper.findComponent(ScoreHeader).exists()).toBe(true);
     expect(wrapper.findComponent(ScoreBoardCard).exists()).toBe(true);
 
-    // pageクラスを持つdiv要素が存在することを確認
+    // ページのルート要素が正しいクラスを持つことを確認
     expect(wrapper.find(".page").exists()).toBe(true);
+  });
 
-    // pageクラスを持つdiv要素の中にScoreHeaderとScoreBoardCardが存在することを確認
-    const pageDiv = wrapper.find(".page");
-    expect(pageDiv.findComponent(ScoreHeader).exists()).toBe(true);
-    expect(pageDiv.findComponent(ScoreBoardCard).exists()).toBe(true);
+  it("コンポーネントの順序が正しいこと", () => {
+    const wrapper = mount(ScorePage, {
+      shallow: true,
+    });
+
+    const children = wrapper.element.children;
+    expect(children[0].tagName.toLowerCase()).toBe("score-header-stub");
+    expect(children[1].tagName.toLowerCase()).toBe("score-board-card-stub");
   });
 });

@@ -12,5 +12,5 @@ const handleTimerEnd = () => {
 </script>
 <!-- 180000 - 3分 -->
 <template>
-    <BaseTimer :duration="180000" barColor="main-color" @timerEnd="handleTimerEnd" />
+    <BaseTimer :duration="180000" bar-color="main-color" bar-width="medium" @timerEnd="handleTimerEnd" />
 </template>

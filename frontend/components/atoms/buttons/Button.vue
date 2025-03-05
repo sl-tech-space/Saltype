@@ -51,16 +51,16 @@ $colors: (
 
 @each $name, $color in $colors {
   .button-text--#{"#{$name}"} {
- color: $color;
-}
+    color: $color;
+  }
 
-.button-border--#{"#{$name}"} {
- border-color: $color;
-}
+  .button-border--#{"#{$name}"} {
+    border-color: $color;
+  }
 
-.button-background--#{"#{$name}"} {
- background-color: $color;
-}
+  .button-background--#{"#{$name}"} {
+    background-color: $color;
+  }
 }
 
 .button-border--none {
@@ -83,7 +83,7 @@ $sizes: (
     width: if($size ==small, 80px, if($size ==medium, 120px, 160px));
   }
 
-.button-height--#{"#{$size}"} {
+  .button-height--#{"#{$size}"} {
     max-height: 100%;
     height: if($size ==small, 30px, if($size ==medium, 40px, 50px));
   }
@@ -92,6 +92,24 @@ $sizes: (
 .button-width--same-as-input-large {
   max-width: 100%;
   width: 350px;
+}
+
+@media (max-width: 992px) {
+  .button-width--same-as-input-large {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .button-width--same-as-input-large {
+    width: 210px;
+  }
+}
+
+@media (max-width: 576px) {
+  .button-width--same-as-input-large {
+    width: 200px;
+  }
 }
 
 .button--rounded {
@@ -108,6 +126,7 @@ button:disabled {
   button:hover {
     border-color: $hover-color;
     cursor: pointer;
+
     &:disabled {
       border-color: $disabled-color;
     }

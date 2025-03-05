@@ -42,6 +42,22 @@ class BaseView(APIView):
         response_data = self.handle_get_request(request, *args, **kwargs)
         return Response(response_data, status=status.HTTP_200_OK)
 
+    @HandleExceptions()
+    def delete(self, request, serializer_class, *args, **kwargs):
+        """
+        DELETEメソッドでリクエストを処理します。サブクラスでオーバーライド可能。
+
+        Args:
+            request: HTTPリクエストオブジェクト。
+        Returns:
+            Response: 処理結果やエラーを含むHTTPレスポンス。
+        """
+        serializer = serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            response_data = self.handle_delete_request(serializer.validated_data)
+            return Response(response_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def handle_post_request(self, validated_data):
         """
         サブクラスで実装されるべきリクエストデータ処理ロジック。
@@ -70,4 +86,19 @@ class BaseView(APIView):
         """
         raise NotImplementedError(
             "サブクラスは`handle_get_request`メソッドを実装する必要があります"
+        )
+
+    def handle_delete_request(self, *args, **kwargs):
+        """
+        サブクラスで実装されるべきDELETEリクエストデータ処理ロジック。
+
+        Args:
+            *args, **kwargs: 任意の引数。
+        Raises:
+            NotImplementedError: サブクラスがこのメソッドを実装していない場合に発生。
+        Returns:
+            dict: 処理結果を辞書形式で返す。
+        """
+        raise NotImplementedError(
+            "サブクラスは`handle_delete_request`メソッドを実装する必要があります"
         )

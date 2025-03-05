@@ -1,19 +1,19 @@
 from apps.common.models import User
-from django.db import transaction
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from .base_view import BaseAuthenticationView
 from django.conf import settings
+from .serializers import LoginSerializer, GoogleAuthSerializer
+from apps.common.views import BaseView
 
 
-class LoginView(BaseAuthenticationView):
+class LoginView(BaseView):
     """
     ユーザーがオリジナルフォームからログインするためのAPIビュークラス。
     """
 
-    permission_classes = [AllowAny]
+    def post(self, request, *args, **kwargs):
+        return super().post(request, LoginSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data):
         """
@@ -49,13 +49,16 @@ class LoginView(BaseAuthenticationView):
         return token
 
 
-class CheckTokenView(BaseAuthenticationView):
+class CheckTokenView(BaseView):
     """
     トークンを使用した自動ログインAPIビュークラス。
     """
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
     def handle_get_request(self, request, *args, **kwargs):
         """
@@ -76,12 +79,15 @@ class CheckTokenView(BaseAuthenticationView):
         return user_data
 
 
-class GoogleAuthView(BaseAuthenticationView):
+class GoogleAuthView(BaseView):
     """
     Google認証APIビュークラス。
     """
 
     permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, GoogleAuthSerializer, *args, **kwargs)
 
     def handle_post_request(self, validated_data):
         """
@@ -111,7 +117,6 @@ class GoogleAuthView(BaseAuthenticationView):
             "is_admin": is_admin,
         }
 
-    @transaction.atomic
     def create_or_update_user(self, validated_data):
         """
         Google認証データを使用してユーザーを作成または更新します。
@@ -122,8 +127,8 @@ class GoogleAuthView(BaseAuthenticationView):
         Returns:
             User: 作成または更新されたユーザーオブジェクト。
         """
-        email = validated_data["email"]
-        username = validated_data["username"]
+        email = validated_data.get("email")
+        username = validated_data.get("username")
 
         user, created = User.objects.get_or_create(email=email)
         if created:

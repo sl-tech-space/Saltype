@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "saltype",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,17 +14,18 @@
   },
   "dependencies": {
     "@sidebase/nuxt-session": "^0.2.8",
-    "@vite-pwa/nuxt": "^0.10.6",
     "@types/lodash": "^4.17.7",
     "@vee-validate/i18n": "^4.13.2",
     "@vee-validate/rules": "^4.13.2",
+    "@vite-pwa/nuxt": "^0.10.6",
     "@vueuse/core": "^11.1.0",
     "chart.js": "^4.4.4",
     "defu": "^6.1.4",
     "embla-carousel": "^8.2.1",
     "embla-carousel-vue": "^8.2.1",
+    "jp-transliterator": "^1.0.19",
     "mitt": "^3.0.1",
-    "nuxt": "^3.15.1",
+    "nuxt": "^3.14.0",
     "nuxt-security": "^2.1.5",
     "swiper": "^11.1.14",
     "vee-validate": "^4.13.2",
@@ -36,7 +37,7 @@
     "yup-locale-ja": "^1.0.0"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^3.14.3",
+    "@nuxt/test-utils": "^3.14.0",
     "@testing-library/vue": "^8.1.0",
     "@types/swiper": "^5.4.3",
     "@vitest/coverage-v8": "^2.1.2",

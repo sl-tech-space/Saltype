@@ -1,6 +1,6 @@
 import { useRuntimeConfig } from "nuxt/app";
 import { useAuthToken } from "./useAuthToken";
-import type { GoogleUserInfo } from "~/types/user";
+import type { GoogleUserInfo } from "~/types/user.d";
 
 /**
  * Google認証処理
@@ -71,7 +71,7 @@ export const useGoogleAuth = () => {
         },
       });
       client.requestAccessToken();
-    } catch (e) {
+    } catch {
       error.value = "ログインに失敗しました。";
     } finally {
       isLoading.value = false;

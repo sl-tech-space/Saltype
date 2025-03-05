@@ -1,100 +1,28 @@
-import { useInputPattern } from "./useInputPattern";
+import { Romanizer } from "jp-transliterator";
 
 /**
  * 文章パターンの判定処理
  * @returns getPatternList, getAllCombinations
  */
 export function useSentencePattern() {
-  const { getPatternArray } = useInputPattern();
-  const patternArray = getPatternArray();
-
-  /**
-   * 入力パターンを返す
-   * @param sentence
-   * @returns patterns
-   */
-  async function getPatternList(sentence: string): Promise<string[][]> {
-    const patterns: string[][] = [];
-    let i = 0;
-    const nagyouChars = "なにぬねの";
-
-    while (i < sentence.length) {
-      // 「ん」の文章パターン
-      if (sentence[i] === "ん") {
-        if (i + 1 < sentence.length && nagyouChars.includes(sentence[i + 1])) {
-          patterns.push(["nn"]);
-        } else {
-          patterns.push(["n", "nn"]);
-        }
-        i++;
-        continue;
-      }
-
-      // 「っ + {二文字}」のチェック
-      if (i + 2 < sentence.length && sentence[i] === "っ") {
-        const threeChars = sentence.slice(i, i + 3);
-        const matchedPattern = patternArray.find(
-          ([hiragana]) => hiragana === threeChars
-        );
-        if (matchedPattern) {
-          patterns.push(matchedPattern[1]);
-          i += 3;
-          continue;
-        }
-      }
-
-      // 拗音のチェック
-      if (i + 1 < sentence.length) {
-        const twoChars = sentence.slice(i, i + 2);
-        const matchedPattern = patternArray.find(
-          ([hiragana]) => hiragana === twoChars
-        );
-        if (matchedPattern) {
-          patterns.push(matchedPattern[1]);
-          i += 2;
-          continue;
-        }
-      }
-
-      // 通常の文字のチェック
-      const char = sentence[i];
-      const matchedPattern = patternArray.find(
-        ([hiragana]) => hiragana === char
-      );
-      if (matchedPattern) {
-        patterns.push(matchedPattern[1]);
-      } else {
-        patterns.push([char]);
-      }
-      i++;
-    }
-
-    return patterns;
-  }
+  const romanizer = new Romanizer();
 
   /**
    * 全ての入力パターンを返す
-   * @param patterns
+   * @param sentence
    * @returns combinations
    */
-  async function getAllCombinations(patterns: string[][]): Promise<string[]> {
-    const combinations: string[] = [""];
+  async function getAllCombinations(sentence: string): Promise<string[]> {
+    const combinations = romanizer.transliterate(sentence);
 
-    for (const pattern of patterns) {
-      const newCombinations: string[] = [];
-      for (const combination of combinations) {
-        for (const romaji of pattern) {
-          newCombinations.push(combination + romaji);
-        }
-      }
-      combinations.splice(0, combinations.length, ...newCombinations);
+    if (Array.isArray(combinations)) {
+      return combinations.map(([romaji]) => romaji.join(""));
+    } else if (combinations && "error" in combinations) {
+      throw new Error(combinations.error);
+    } else {
+      return [];
     }
-
-    return combinations;
   }
 
-  return {
-    getPatternList,
-    getAllCombinations,
-  };
+  return { getAllCombinations };
 }

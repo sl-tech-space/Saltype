@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // ユーザ管理画面へのアクセス制限
-  if (to.path === "/user/admin") {
+  if (to.path === "/admin") {
     const authToken = useCookie("auth_token").value;
 
     if (authToken) {
@@ -41,7 +41,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         );
 
         if (!adminCheckResponse.ok) {
-          throw new Error("Failed to check admin permissions");
+          return await navigateTo({ name: "home" });
         }
 
         const adminCheckResult = await adminCheckResponse.json();

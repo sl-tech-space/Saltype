@@ -1,18 +1,29 @@
-FROM python:3.10
+FROM python:3.11-slim
 
+# システムの依存関係をインストール
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 作業ディレクトリを設定
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-
-RUN pip install --upgrade pip
+# Pythonの依存関係をコピーしてインストール
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
+# アプリケーションのコードをコピー
 COPY . .
 
-EXPOSE 8000
+# アプリケーション用のユーザーを作成
+RUN useradd -m django && \
+    chown -R django:django /app && \
+    chmod -R 755 /app
 
+# django ユーザーに切り替え
+USER django
+
+# 開発サーバーを実行
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

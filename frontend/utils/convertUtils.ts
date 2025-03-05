@@ -1,6 +1,6 @@
-import type { RankingItem } from "~/types/ranking";
-import type { ApiUserList } from "~/types/user";
-import type { UserList } from "~/types/user";
+import type { RankingItem } from "~/types/ranking.d";
+import type { ApiUserList } from "~/types/user.d";
+import type { UserList } from "~/types/user.d";
 
 /**
  * 受け渡した文字の変換(英語)
@@ -79,19 +79,21 @@ export function convertNumberToJapaneseDifficultyLevelName(
 /**
  * ランキングデータをオブジェクトから配列に変換
  * 元データが配列の場合は変換しない
- * @param obj 
+ * @param obj
  * @returns RankingItem
  */
-export function objectToRankingItem(obj: Record<string, RankingItem> | RankingItem[]): RankingItem[] {
+export function objectToRankingItem(
+  obj: Record<string, RankingItem> | RankingItem[]
+): RankingItem[] {
   if (Array.isArray(obj)) {
     return obj;
   }
   return Object.values(obj);
-};
+}
 
 /**
  * APIで取得したユーザデータを加工
- * @param apiUser 
+ * @param apiUser
  * @returns UserList
  */
 export function convertToUserList(apiUser: ApiUserList): UserList {
@@ -99,8 +101,8 @@ export function convertToUserList(apiUser: ApiUserList): UserList {
     userId: apiUser.user_id,
     userName: apiUser.username,
     email: apiUser.email,
-    todaysMaxScore: apiUser.highest_score?.toString() ?? '0',
-    userRank: apiUser.rank_name ?? 'N/A',
+    todaysMaxScore: apiUser.highest_score?.toString() ?? "0",
+    userRank: apiUser.rank_name ?? "N/A",
     passwordExists: apiUser.password_exists,
   };
 }

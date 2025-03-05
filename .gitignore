@@ -9,4 +9,9 @@ __pycache__/
 *.pyc
 venv
 .pytest_cache
-scripts/
+/scripts
+/scripts/
+logs/cron.log
+logs/exim4/mainlog
+backend/apps/common/migrations/
+backend/logs/
