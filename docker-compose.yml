@@ -9,6 +9,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - ./frontend/server/data:/app/dist/data
     environment:
       - HOST=0.0.0.0
     depends_on:
@@ -40,7 +41,7 @@ services:
   cron:
     build:
       context: ./backend
-      dockerfile: Dockerfile.cron
+      dockerfile: dockerfile.cron
     container_name: cron
     command: cron -f
     volumes:

@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   routeRules: {
     "/": { ssr: true, prerender: true }, // SSR
     "/login": { ssr: false }, // CSR
-    "/home": { ssr: true }, // SSR
+    "/home": { ssr: false }, // SSR
     "/typing/:id": { ssr: true }, // SSR
     "/typing/ai": { ssr: true }, // SSR
     "/score": { ssr: true }, // SSR
@@ -103,7 +103,7 @@ export default defineNuxtConfig({
       serverSideBaseURL:
         process.env.NUXT_SERVER_SIDE_URL || "http://django:8000",
       sentencesPath:
-        process.env.NUXT_ENV === "production" ? "dist/data" : "server/data",
+        process.env.NUXT_ENV === "production" ? ".output/server/data" : "server/data",
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
     },
   },

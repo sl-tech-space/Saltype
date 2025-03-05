@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -8,27 +8,27 @@ ENV PYTHONPATH=/app
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    default-libmysqlclient-dev \
-    pkg-config \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
-    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
 RUN mkdir -p /app/staticfiles
 RUN python manage.py collectstatic --noinput
 
-RUN useradd -u 10000 -m user
-USER user
+RUN useradd -m django && \
+    chown -R django:django /app && \
+    chmod -R 755 /app
+
+USER django
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--chdir", "/app", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
