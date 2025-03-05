@@ -43,13 +43,9 @@ services:
     build:
       context: ./frontend
       dockerfile: dockerfile.prod
-    read_only: true
     container_name: saltype-nuxt
     volumes:
-      - ./frontend/server/data:/app/dist/data:ro
-      - /tmp
-    tmpfs:
-      - /tmp
+      - ./frontend/server/data:/app/dist/data
     environment:
       - HOST=0.0.0.0
     depends_on:
@@ -80,13 +76,9 @@ services:
     build:
       context: ./backend
       dockerfile: dockerfile.prod
-    read_only: true
     container_name: saltype-django
     volumes:
-      - ./backend:/app:ro
-      - /tmp
-    tmpfs:
-      - /tmp
+      - ./backend:/app
     environment:
       - DEBUG=${DEBUG:-false}
       - SECRET_KEY=${SECRET_KEY}
@@ -124,14 +116,9 @@ services:
 
   db:
     image: postgres:14-alpine
-    read_only: true
     container_name: saltype-postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - /tmp
-      - /var/run/postgresql
-    tmpfs:
-      - /tmp
       - /var/run/postgresql
     environment:
       - POSTGRES_DB=${DB_NAME}
