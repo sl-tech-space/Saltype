@@ -14,14 +14,14 @@ export const useColorStore = () => {
   const setColor = (colorName: string, value: string) => {
     if (colorName in colorStore.value) {
       colorStore.value[colorName as keyof typeof colorStore.value] = value;
-      if (import.meta.client) {
+      if (process.client) {
         localStorage.setItem(colorName, value);
       }
     }
   };
 
   const loadColors = () => {
-    if (import.meta.client) {
+    if (process.client) {
       Object.keys(colorStore.value).forEach((colorName) => {
         const savedColor = localStorage.getItem(colorName);
         if (savedColor) {
@@ -36,7 +36,7 @@ export const useColorStore = () => {
     Object.keys(defaultColors).forEach((colorName) => {
       colorStore.value[colorName as keyof typeof colorStore.value] =
         defaultColors[colorName as keyof typeof defaultColors];
-      if (import.meta.client) {
+      if (process.client) {
         localStorage.removeItem(colorName);
       }
     });

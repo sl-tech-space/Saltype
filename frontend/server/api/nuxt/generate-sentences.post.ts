@@ -40,7 +40,7 @@ export default defineEventHandler(async (event: H3Event) => {
     // 生成された文章をJSONファイルに保存
     const aiTextPath = path.join(
       process.cwd(),
-      sentencesPath,
+      `${sentencesPath}`,
       "japanese",
       "ai-text.json"
     );
