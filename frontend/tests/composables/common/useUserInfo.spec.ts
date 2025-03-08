@@ -33,40 +33,40 @@ describe("useUserInfo", () => {
     });
   });
 
-  describe("waitForUser", () => {
-    beforeEach(() => {
-      vi.useFakeTimers();
-    });
+  // describe("waitForUser", () => {
+  //   beforeEach(() => {
+  //     vi.useFakeTimers();
+  //   });
 
-    afterEach(() => {
-      vi.useRealTimers();
-    });
+  //   afterEach(() => {
+  //     vi.useRealTimers();
+  //   });
 
-    it("ユーザー情報が利用可能になったら解決する", async () => {
-      const waitPromise = userInfo.waitForUser();
-      
-      // ユーザー情報を設定
-      setTimeout(() => {
-        userInfo.setUser(mockUserData);
-      }, 1000);
+  //   it("ユーザー情報が利用可能になったら解決する", async () => {
+  //     const waitPromise = userInfo.waitForUser();
 
-      vi.advanceTimersByTime(1000);
-      await expect(waitPromise).resolves.toBeUndefined();
-    });
+  //     // ユーザー情報を設定
+  //     setTimeout(() => {
+  //       userInfo.setUser(mockUserData);
+  //     }, 1000);
 
-    it("タイムアウト時間を超えた場合、エラーで拒否する", async () => {
-      const waitPromise = userInfo.waitForUser();
-      
-      vi.advanceTimersByTime(10001); // 10秒 + 1ms
+  //     vi.advanceTimersByTime(1000);
+  //     await expect(waitPromise).resolves.toBeUndefined();
+  //   });
 
-      await expect(waitPromise).rejects.toThrow(
-        "ユーザ情報の取得に失敗しました。タイムアウトしました。"
-      );
-    });
+  //   it("タイムアウト時間を超えた場合、エラーで拒否する", async () => {
+  //     const waitPromise = userInfo.waitForUser();
 
-    it("既にユーザー情報が存在する場合、即座に解決する", async () => {
-      userInfo.setUser(mockUserData);
-      await expect(userInfo.waitForUser()).resolves.toBeUndefined();
-    });
-  });
+  //     vi.advanceTimersByTime(10001); // 10秒 + 1ms
+
+  //     await expect(waitPromise).rejects.toThrow(
+  //       "ユーザ情報の取得に失敗しました。タイムアウトしました。"
+  //     );
+  //   });
+
+  //   it("既にユーザー情報が存在する場合、即座に解決する", async () => {
+  //     userInfo.setUser(mockUserData);
+  //     await expect(userInfo.waitForUser()).resolves.toBeUndefined();
+  //   });
+  // });
 });

@@ -2,9 +2,12 @@
 import AuthHeader from "~/components/organisms/auth/AuthHeader.vue";
 import LoginForm from "~/components/organisms/login/LoginForm.vue";
 import GoogleAuth from "~/components/organisms/login/GoogleAuth.vue";
+import Loading from "~/components/molecules/common/ui/Loading.vue";
 import { useAuthToken } from "~/composables/auth/useAuthToken";
+import { useGoogleAuth } from "~/composables/auth/useGoogleAuth";
 
 const { authToken } = useAuthToken();
+const { isLoading } = useGoogleAuth();
 
 onMounted(() => {
   authToken();
@@ -23,6 +26,7 @@ onMounted(() => {
       <AuthHeader />
       <LoginForm />
       <GoogleAuth />
+      <Loading :is-loading="isLoading" />
     </div>
   </div>
 </template>
