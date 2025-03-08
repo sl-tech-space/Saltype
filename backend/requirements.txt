@@ -37,4 +37,4 @@ urllib3==2.3.0
 flake8==7.1.2
 drf-social-oauth2>=1.1.0
 gunicorn==23.0.0
-google-generativeai==0.6.0
+google-generativeai==0.8.4
