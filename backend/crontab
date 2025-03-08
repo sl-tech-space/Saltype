@@ -1,3 +1,0 @@
-SHELL=/bin/bash
-PATH=/usr/bin:/bin:/usr/local/bin
-0 19 * * * /bin/bash /app/scripts/daily_scores.sh >> /var/log/cron.log 2>&1

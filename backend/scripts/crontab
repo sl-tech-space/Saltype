@@ -1,0 +1,15 @@
+# 環境変数の設定
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/app/scripts
+PYTHONPATH=/app
+DJANGO_SETTINGS_MODULE=config.settings
+# 他の必要な環境変数
+SQL_ENGINE=${SQL_ENGINE}
+SQL_DATABASE=${SQL_DATABASE}
+SQL_USER=${SQL_USER}
+SQL_PASSWORD=${SQL_PASSWORD}
+SQL_HOST=${SQL_HOST}
+SQL_PORT=${SQL_PORT}
+
+# cronジョブを毎日19時に実行
+0 19 * * * root /usr/sbin/gosu django bash /app/scripts/daily_scores.sh >> /app/logs/cron.log 2>&1
