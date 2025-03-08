@@ -25,7 +25,7 @@ services:
       resources:
         limits:
           memory: 128M
-          cpus: '0.5'
+          cpus: "0.5"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${HTTP_PORT}"]
       interval: 30s
@@ -56,7 +56,7 @@ services:
       resources:
         limits:
           memory: 512M
-          cpus: '1.0'
+          cpus: "1.0"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
@@ -98,7 +98,7 @@ services:
       resources:
         limits:
           memory: 512M
-          cpus: '1.0'
+          cpus: "1.0"
     healthcheck:
       test: ["CMD", "python", "manage.py", "check", "--database", "default"]
       interval: 30s
@@ -130,7 +130,7 @@ services:
       resources:
         limits:
           memory: 512M
-          cpus: '1.0'
+          cpus: "1.0"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
@@ -171,7 +171,7 @@ services:
       resources:
         limits:
           memory: 256M
-          cpus: '0.5'
+          cpus: "0.5"
     healthcheck:
       test: ["CMD", "pgrep", "cron"]
       interval: 30s
