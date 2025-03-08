@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator
 class GenerateTextViewSerializer(BaseSerializer):
     input = serializers.CharField(
         required=True,
+        min_length=1,
         max_length=10,
         validators=[
             RegexValidator(
@@ -14,3 +15,8 @@ class GenerateTextViewSerializer(BaseSerializer):
             )
         ],
     )
+    user_id = serializers.UUIDField()
+
+    def validate(self, attrs):
+        attrs = self.check_user_id(attrs)
+        return attrs

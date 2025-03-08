@@ -1,8 +1,9 @@
 import google.generativeai as genai
+import random
 from apps.textgenerate.prompts import generate_prompt
 from apps.textgenerate.serializers import GenerateTextViewSerializer
 from apps.common.views import BaseView
-from config.settings import API_KEY
+from config.settings import API_KEY,AI_MODEL
 
 # API キーを設定
 genai.configure(api_key=API_KEY)
@@ -22,12 +23,17 @@ class GenerateTextView(BaseView):
         """
         # ユーザーの入力を取得
         user_input = validated_data.get("input")
+        # リクエストからユーザーIDを取得
+        user_id = validated_data.get("user_id")
 
+        # 毎回新しい結果を生成するためのランダム要素を追加
+        random_seed = random.randint(1, 10000)
+        
         # モデルの指定
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel(AI_MODEL)
 
-        # 任意の単語に関連する簡単な文書を生成
-        prompt = generate_prompt(user_input)
+        # プロンプトを生成（ユーザーIDとランダム要素を含める）
+        prompt = generate_prompt(user_input) + f" ユーザーID: {user_id}, ランダムシード: {random_seed}"
 
         # AI にリクエストを送る
         try:
@@ -43,6 +49,7 @@ class GenerateTextView(BaseView):
                 hiragana_text = parts[i + 1].strip()
                 kanji_hiragana_pairs.append([kanji_text, hiragana_text])
 
-            return {"generatedPairs": kanji_hiragana_pairs}
+            # ユーザー固有の結果を返す（DBへの保存なし）
+            return {"userId": user_id, "generatedPairs": kanji_hiragana_pairs}
         except Exception as e:
             return {"error": f"リクエストエラー: {str(e)}"}
