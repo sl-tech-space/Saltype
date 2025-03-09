@@ -20,9 +20,9 @@ COPY scripts/daily_scores.sh /app/scripts/
 RUN chmod +x /app/scripts/daily_scores.sh
 
 # Cronジョブ設定をコピー
-COPY crontab /etc/cron.d/app-cron
+COPY scripts/crontab /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron
-RUN crontab /etc/cron.d/app-cron
+RUN scripts/crontab /etc/cron.d/app-cron
 
 
 # Cronをフォアグラウンドで実行
