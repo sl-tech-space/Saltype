@@ -1,3 +1,4 @@
+import { useUserInfo } from "../common/useUserInfo";
 import type { SentenceArray } from "@/types/typing";
 
 /**
@@ -6,8 +7,17 @@ import type { SentenceArray } from "@/types/typing";
 export function useAISentence(input: string): {
   sentences: () => Promise<SentenceArray>;
 } {
+  const userInfo = useUserInfo();
+  const { user, waitForUser } = userInfo;
+
   const sentences = async () => {
     try {
+      await waitForUser();
+
+      if (!user.value) {
+        throw new Error("ユーザ情報が存在しません");
+      }
+
       const response = await fetch("/api/nuxt/generate-sentences/", {
         method: "POST",
         headers: {
@@ -15,6 +25,7 @@ export function useAISentence(input: string): {
         },
         body: JSON.stringify({
           input: input,
+          user_id: user.value.user_id,
         }),
       });
 
