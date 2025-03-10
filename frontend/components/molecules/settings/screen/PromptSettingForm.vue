@@ -12,12 +12,13 @@ const emit = defineEmits(['prompt-updated']);
 const validationSchema = computed(() => {
     return yup.object().shape({
         prompt: yup.string()
-            .min(0)
-            .max(10)
+            .required('キーワードを入力してください')
+            .min(1, '1文字以上入力してください')
+            .max(10, '10文字以内で入力してください')
             .matches(
                 /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+$/,
                 "ひらがな、カタカナ、漢字のみ入力可能です"
-            ).label("プロンプト"),
+            ).label("キーワード"),
     });
 });
 
@@ -34,14 +35,14 @@ const handleSubmit = () => {
                 <template #input="{ field }">
                     <span>
                         <Input type="text" id="prompt" v-bind="field" placeholder="&nbsp;プロンプト" border="main-color"
-                            width="large" :is-rounded="true" />
+                            :is-rounded="true" />
                     </span>
                 </template>
             </Field>
             <div class="buttons">
                 <Button type="reset" button-text="リセット" border="main-color" :is-rounded="true" />
-                <Button type="submit" button-text="変更" border="main-color" :is-rounded="true" @click="handleSubmit"
-                    @dblclick.prevent />
+                <Button type="submit" button-text="変更" border="main-color" :is-rounded="true" :disabled="!valid"
+                    @click="handleSubmit" @dblclick.prevent />
             </div>
         </Form>
     </div>

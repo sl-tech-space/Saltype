@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Button from '~/components/atoms/buttons/Button.vue';
-
 const props = defineProps<{
     modelValue: boolean;
+    // モーダル外クリックでの閉じる機能を制御するプロップス（デフォルトはtrue）
+    closeOnOutsideClick?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -13,17 +13,48 @@ const isOpen = ref(props.modelValue);
 
 watch(() => props.modelValue, (newValue) => {
     isOpen.value = newValue;
+    document.body.style.overflow = newValue ? 'hidden' : '';
 });
 
+// モーダルを閉じる処理
 const handleCloseModal = () => {
     emit('update:modelValue', false);
 };
+
+// モーダル外クリック時の処理
+const handleOverlayClick = (e: MouseEvent) => {
+    // モーダル外クリックでの閉じる機能が無効化されていない場合のみ閉じる
+    if (props.closeOnOutsideClick !== false && e.target === e.currentTarget) {
+        handleCloseModal();
+    }
+};
+
+const blockEvents = (e: Event) => {
+    if (props.modelValue) {
+        e.stopPropagation();
+    }
+};
+
+onMounted(() => {
+    if (props.modelValue) {
+        document.body.style.overflow = 'hidden';
+    }
+});
+
+onUnmounted(() => {
+    document.body.style.overflow = '';
+});
+
+// closeメソッドを外部に公開
+defineExpose({
+    close: handleCloseModal
+});
 </script>
 
 <template>
     <Teleport to="body">
         <Transition name="modal">
-            <div v-if="isOpen" class="modal-overlay" @click="handleCloseModal">
+            <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick" @keydown.stop @keypress.stop @keyup.stop>
                 <div class="modal-content" @click.stop>
                     <div class="modal-header">
                         <slot name="modal-header"></slot>
@@ -35,8 +66,6 @@ const handleCloseModal = () => {
                     </div>
                     <div class="modal-footer">
                         <slot name="modal-footer">
-                            <Button border="sub-color" width="large" height="medium" background="none"
-                                :is-rounded="true" button-text="閉じる" @click="handleCloseModal" />
                         </slot>
                     </div>
                 </div>
@@ -67,6 +96,7 @@ const handleCloseModal = () => {
         border-radius: 5px;
         display: flex;
         flex-direction: column;
+        z-index: 1001;
 
         .modal-header {
             height: 20%;
