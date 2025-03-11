@@ -13,3 +13,6 @@ SQL_PORT=${SQL_PORT}
 
 # cronジョブを毎日19時に実行
 0 19 * * * root /usr/sbin/gosu django bash /app/scripts/daily_scores.sh >> /app/logs/cron.log 2>&1
+
+# 毎日0時にログローテーション実行
+0 0 * * * root /usr/sbin/logrotate /app/scripts/logrotate.conf --state /app/logs/logrotate.status
