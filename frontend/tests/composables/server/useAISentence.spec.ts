@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useAISentence } from "../../../composables/server/useAISentence";
+import { useUserInfo } from "../../../composables/common/useUserInfo";
+
+// useUserInfoのモック
+vi.mock("../../../composables/common/useUserInfo", () => ({
+  useUserInfo: vi.fn(() => ({
+    user: { value: { user_id: "test-user" } },
+    waitForUser: vi.fn().mockResolvedValue(undefined)
+  }))
+}));
 
 describe("useAISentence", () => {
   let mockFetch: any;
@@ -10,10 +19,10 @@ describe("useAISentence", () => {
 
   describe("sentences", () => {
     const mockSentences = {
-      sentences: [
-        { id: 1, text: "テスト文章1" },
-        { id: 2, text: "テスト文章2" },
-      ],
+      generatedPairs: [
+        ["テスト文章1", "Test Sentence 1"],
+        ["テスト文章2", "Test Sentence 2"]
+      ]
     };
 
     it("文章を正しく生成できる", async () => {
@@ -33,6 +42,7 @@ describe("useAISentence", () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             input: "テスト入力",
+            user_id: "test-user"
           }),
         })
       );
@@ -44,7 +54,6 @@ describe("useAISentence", () => {
       });
 
       const aiSentence = useAISentence("テスト入力");
-
       await expect(aiSentence.sentences()).rejects.toThrow(
         "ネットワークエラーまたはその他例外が発生しました"
       );
@@ -54,7 +63,6 @@ describe("useAISentence", () => {
       mockFetch.mockRejectedValue(new Error("Network error"));
 
       const aiSentence = useAISentence("テスト入力");
-
       await expect(aiSentence.sentences()).rejects.toThrow(
         "ネットワークエラーまたはその他例外が発生しました"
       );

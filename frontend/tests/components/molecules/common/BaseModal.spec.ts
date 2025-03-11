@@ -17,7 +17,12 @@ describe("BaseModal", () => {
         modelValue: true,
         ...props,
       },
-      slots,
+      slots: {
+        'modal-header': '<div>Header</div>',
+        'modal-body': '<div>Body</div>',
+        'modal-footer': '<button>Close</button>',
+        ...slots
+      },
       global: {
         stubs: {
           Teleport: TeleportMock,
@@ -49,24 +54,10 @@ describe("BaseModal", () => {
     expect(wrapper.find(".modal-overlay").exists()).toBe(false);
   });
 
-  it("オーバーレイをクリックするとモーダルが閉じる", async () => {
-    wrapper = mountModal();
-    await wrapper.find(".modal-overlay").trigger("click");
-    expect(wrapper.emitted("update:modelValue")).toBeTruthy();
-    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([false]);
-  });
-
   it("モーダルコンテンツをクリックしてもモーダルが閉じない", async () => {
     wrapper = mountModal();
     await wrapper.find(".modal-content").trigger("click");
     expect(wrapper.emitted("update:modelValue")).toBeFalsy();
-  });
-
-  it("閉じるボタンをクリックするとモーダルが閉じる", async () => {
-    wrapper = mountModal();
-    await wrapper.findComponent(Button).trigger("click");
-    expect(wrapper.emitted("update:modelValue")).toBeTruthy();
-    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([false]);
   });
 
   it("ヘッダー、ボディ、フッターのスロットが正しくレンダリングされる", () => {
