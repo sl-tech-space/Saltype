@@ -17,6 +17,7 @@ RUN apt-get update && \
     gosu \
     gettext-base \
     tzdata \
+    gzip \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,9 +28,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # スクリプトを先にコピー
 COPY scripts/start.sh /start.sh
 COPY scripts/daily_scores.sh /app/scripts/daily_scores.sh
+COPY scripts/rotate_logs.sh /app/scripts/rotate_logs.sh
 RUN chmod 755 /start.sh && \
     mkdir -p /app/scripts && \
-    chmod 755 /app/scripts/daily_scores.sh
+    chmod 755 /app/scripts/daily_scores.sh && \
+    chmod 755 /app/scripts/rotate_logs.sh
 
 # 残りのファイルをコピー
 COPY . .
@@ -42,17 +45,12 @@ COPY scripts/crontab /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron
 
 # ユーザー設定
-RUN useradd -m django && \
-    chown -R django:django /app && \
-    mkdir -p /app/logs/ && \
+RUN groupadd -r django && useradd -r -g django django && \
+    mkdir -p /app/logs && \
     touch /app/logs/cron.log && \
-    chown -R django:django /app/logs
-
-# logrotateのインストール
-RUN apt-get update && \
-    apt-get install -y logrotate && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    chown -R django:django /app && \
+    chown -R django:django /app/logs && \
+    chmod 644 /app/logs/cron.log
 
 EXPOSE 8000
 
