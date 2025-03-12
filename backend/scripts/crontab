@@ -11,5 +11,8 @@ SQL_PASSWORD=${SQL_PASSWORD}
 SQL_HOST=${SQL_HOST}
 SQL_PORT=${SQL_PORT}
 
-# cronジョブを毎日19時に実行
+# 毎日19時に実行
 0 19 * * * root /usr/sbin/gosu django bash /app/scripts/daily_scores.sh >> /app/logs/cron.log 2>&1
+
+# 毎週月曜9時にログローテーション実行
+0 9 * * 1 root bash /app/scripts/rotate_logs.sh

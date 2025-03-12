@@ -5,11 +5,16 @@ import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
 import Button from '~/components/atoms/buttons/Button.vue';
 
-const showModal = ref(false)
+const showModal = ref(false);
+const modalRef = ref();
 
 const handleOpenModal = () => {
-    showModal.value = true
-}
+    showModal.value = true;
+};
+
+const handleCloseModal = () => {
+    modalRef.value?.close();
+};
 
 interface Props {
     rank: string
@@ -47,7 +52,7 @@ const ranks = [
             </div>
         </template>
     </BaseCard>
-    <BaseModal v-model="showModal">
+    <BaseModal ref="modalRef" v-model="showModal" :close-on-outside-click="true">
         <template #modal-header>
             <Title size="small" color="main-color" text="ランク詳細" />
         </template>
@@ -56,6 +61,10 @@ const ranks = [
             <div v-for="(rank, index) in ranks" :key="index">
                 <Text size="large" :text="`${rank.scoreRange} : ${rank.title}`" style="margin-top: 5%;" />
             </div>
+        </template>
+        <template #modal-footer>
+            <Button border="sub-color" width="large" height="medium" background="none" :is-rounded="true"
+                button-text="閉じる" @click="handleCloseModal" />
         </template>
     </BaseModal>
 </template>
