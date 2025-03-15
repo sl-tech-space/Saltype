@@ -3,18 +3,20 @@ services:
     image: nginx:alpine
     container_name: saltype-nginx
     volumes:
-      # - ${SSL_VOLUME}
       - ./templates:/etc/nginx/templates
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     ports:
       - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${HTTPS_PORT}:${HTTPS_PORT}"
     environment:
       - BACKEND=${BACKEND_PROXY}
       - FRONTEND=${FRONTEND_PROXY}
       - SERVER_NAME=${SERVER_NAME}
       - HTTP_PORT=${HTTP_PORT}
-      # - HTTPS_PORT=${HTTPS_PORT}
-      # - SSL_CERTIFICATE_PATH=${SSL_CERTIFICATE_PATH}
-      # - SSL_CERTIFICATE_KEY_PATH=${SSL_CERTIFICATE_KEY_PATH}
+      - HTTPS_PORT=${HTTPS_PORT}
+      - SSL_CERTIFICATE_PATH=/etc/letsencrypt/live/${SERVER_NAME}/fullchain.pem
+      - SSL_CERTIFICATE_KEY_PATH=/etc/letsencrypt/live/${SERVER_NAME}/privkey.pem
     depends_on:
       - frontend
       - backend
@@ -139,6 +141,24 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: saltype-certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: >-
+      certonly --webroot 
+      --webroot-path=/var/www/certbot 
+      --email ${SSL_EMAIL}
+      --agree-tos 
+      --no-eff-email 
+      --force-renewal
+      -d ${SERVER_NAME}
+      -v
+    depends_on:
+      - nginx
 
 networks:
   frontend-net:
