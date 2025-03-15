@@ -67,18 +67,53 @@ onMounted(() => {
 onUnmounted(() => {
   $bus.$off('key-press');
 });
+
+// 拡大率を監視するref
+const zoomLevel = ref(1);
+
+// 拡大率の監視と更新
+onMounted(() => {
+  const updateZoom = () => {
+    zoomLevel.value = window.devicePixelRatio || 1;
+  };
+  
+  updateZoom();
+  
+  window.addEventListener('resize', updateZoom);
+  
+  onUnmounted(() => {
+    window.removeEventListener('resize', updateZoom);
+  });
+});
+
+// キーのサイズを計算するcomputed
+const keySize = computed(() => {
+  const baseSize = 30;
+  return Math.max(baseSize / zoomLevel.value, 20);
+});
+
+const wideKeyWidth = computed(() => keySize.value * 2);
+const extraWideKeyWidth = computed(() => keySize.value * 6.67);
+const fontSize = computed(() => Math.max(10 / zoomLevel.value, 7)); // 最小フォントサイズを7pxに制限
 </script>
 
 <template>
   <div class="keyboard-layout">
     <div class="keyboard">
       <div v-for="(row, rowIndex) in keyboardLayout" :key="rowIndex" class="keyboard-row">
-        <div v-for="key in row" :key="key.code" class="key" :class="{
-          'key-wide': key.wide,
-          'key-extra-wide': key.extraWide,
-          'key-correct': correctKeys.includes(key.code),
-          'key-incorrect': incorrectKeys.includes(key.code)
-        }">
+        <div v-for="key in row" :key="key.code" 
+             class="key" 
+             :class="{
+               'key-wide': key.wide,
+               'key-extra-wide': key.extraWide,
+               'key-correct': correctKeys.includes(key.code),
+               'key-incorrect': incorrectKeys.includes(key.code)
+             }"
+             :style="{
+               width: `${key.extraWide ? extraWideKeyWidth : (key.wide ? wideKeyWidth : keySize)}px`,
+               height: `${keySize}px`,
+               fontSize: `${fontSize}px`
+             }">
           {{ key.label }}
         </div>
       </div>
@@ -99,28 +134,23 @@ onUnmounted(() => {
     padding: 10px;
     box-shadow: 0 0 10px $translucent-black;
     width: 100%;
+    max-width: 1000px;
   }
 
   .keyboard-row {
     display: flex;
     justify-content: center;
-    margin-bottom: 5px;
-    flex-wrap: wrap;
+    margin: 2px 0;
   }
 
   .key {
-    width: 35px;
-    height: 35px;
-    border: 1px solid $translucent-white;
-    border-radius: 5px;
-    color: $main-color;
+    border: 1px solid $sub-color;
+    border-radius: 3px;
+    margin: 2px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 11px;
-    margin: 2px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
 
     &.key-correct {
       color: $correct-color;
@@ -132,93 +162,31 @@ onUnmounted(() => {
       border-color: $incorrect-color;
     }
   }
-
-  .key-wide {
-    width: 60px;
-  }
-
-  .key-extra-wide {
-    width: 200px;
-  }
 }
 
-/* responsive */
 @media (max-width: 1200px) {
   .keyboard-layout {
-    .key {
-      width: 25px;
-      height: 25px;
-      font-size: 8px;
-    }
-
-    .key-wide {
-      width: 55px;
-    }
-
-    .key-extra-wide {
-      width: 180px;
-    }
+    transform: scale(0.7);
+    transform-origin: top center;
   }
 }
 
 @media (max-width: 992px) {
   .keyboard-layout {
-    .key {
-      width: 20px;
-      height: 20px;
-      font-size: 8px;
-    }
-
-    .key-wide {
-      width: 50px;
-    }
-
-    .key-extra-wide {
-      width: 150px;
-    }
+    transform: scale(0.6);
   }
 }
 
 @media (max-width: 768px) {
   .keyboard-layout {
-    .key {
-      width: 15px;
-      height: 15px;
-      font-size: 5px;
-    }
-
-    .key-wide {
-      width: 40px;
-    }
-
-    .key-extra-wide {
-      width: 120px;
-    }
+    transform: scale(0.5);
   }
 }
 
 @media (max-width: 576px) {
   .keyboard-layout {
+    transform: scale(0.4);
     padding: 10px;
-
-    .keyboard {
-      padding: 5px;
-    }
-
-    .key {
-      width: 15px;
-      height: 15px;
-      font-size: 5px;
-      margin: 1px;
-    }
-
-    .key-wide {
-      width: 30px;
-    }
-
-    .key-extra-wide {
-      width: 80px;
-    }
   }
 }
 </style>

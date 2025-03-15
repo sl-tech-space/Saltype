@@ -51,16 +51,16 @@ $colors: (
 
 @each $name, $color in $colors {
   .button-text--#{"#{$name}"} {
-    color: $color;
-  }
+ color: $color;
+}
 
-  .button-border--#{"#{$name}"} {
-    border-color: $color;
-  }
+.button-border--#{"#{$name}"} {
+ border-color: $color;
+}
 
-  .button-background--#{"#{$name}"} {
-    background-color: $color;
-  }
+.button-background--#{"#{$name}"} {
+ background-color: $color;
+}
 }
 
 .button-border--none {
@@ -79,14 +79,14 @@ $sizes: (
 
 @each $size, $values in $sizes {
   .button-width--#{"#{$size}"} {
-    max-width: 100%;
-    width: if($size ==small, 80px, if($size ==medium, 120px, 160px));
-  }
+ max-width: 100%;
+  width: if($size ==small, 80px, if($size ==medium, 120px, 160px));
+}
 
-  .button-height--#{"#{$size}"} {
-    max-height: 100%;
-    height: if($size ==small, 30px, if($size ==medium, 40px, 50px));
-  }
+.button-height--#{"#{$size}"} {
+ max-height: 100%;
+height: if($size ==small, 30px, if($size ==medium, 40px, 50px));
+}
 }
 
 .button-width--same-as-input-large {
@@ -94,19 +94,69 @@ $sizes: (
   width: 350px;
 }
 
+@media (max-width: 1200px) {
+  .button-width--small {
+    width: 70px;
+  }
+
+  .button-width--medium {
+    width: 100px;
+  }
+
+  .button-width--large {
+    width: 140px;
+  }
+}
+
 @media (max-width: 992px) {
+  .button-width--small {
+    width: 60px;
+  }
+
+  .button-width--medium {
+    width: 90px;
+  }
+
+  .button-width--large {
+    width: 120px;
+  }
+
   .button-width--same-as-input-large {
     width: 300px;
   }
 }
 
 @media (max-width: 768px) {
+  .button-width--small {
+    width: 50px;
+  }
+
+  .button-width--medium {
+    width: 80px;
+  }
+
+  .button-width--large {
+    width: 100px;
+  }
+
   .button-width--same-as-input-large {
     width: 210px;
   }
 }
 
 @media (max-width: 576px) {
+  .button-width--small {
+    width: 40px;
+  }
+
+  .button-width--medium {
+    width: 70px;
+  }
+
+  .button-width--large {
+    width: 90px;
+  }
+
   .button-width--same-as-input-large {
     width: 200px;
   }
