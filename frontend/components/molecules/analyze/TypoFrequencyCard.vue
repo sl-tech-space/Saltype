@@ -25,13 +25,16 @@ const displayLimit = computed(() => Math.max(0, props.limit));
         </template>
         <template #card-body>
             <div class="body-content">
-                <ul>
-                    <li v-for="(item, index) in props.typoFrequency.slice(0, displayLimit)" :key="index" class="typo-list">
-                        <Text size="large" color="main-color">
-                            {{ index + 1 }}. キー: {{ item.miss_char }}&ensp;回数: {{ item.miss_count }}
-                        </Text>
-                    </li>
-                </ul>
+                <div class="typo-list-container">
+                    <ul>
+                        <li v-for="(item, index) in props.typoFrequency.slice(0, displayLimit)" :key="index"
+                            class="typo-list">
+                            <Text size="large" color="main-color">
+                                {{ index + 1 }}. キー: {{ item.miss_char }}&ensp;回数: {{ item.miss_count }}
+                            </Text>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </template>
     </BaseCard>
@@ -44,10 +47,15 @@ const displayLimit = computed(() => Math.max(0, props.limit));
     }
 
     .body-content {
-        @include horizontal-flex;
-        
+        height: 100%;
+        @include vertical-centered-flex;
+
+        .typo-list-container {
+            max-height: 100%;
+        }
+
         .typo-list {
-            margin: calc(0.7vw) 0;
+            margin: calc(0.5vw) 0;
         }
     }
 

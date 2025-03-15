@@ -22,27 +22,25 @@ class UpdateUserSerializer(BaseSerializer):
     """
 
     user_id = serializers.UUIDField()  # ユーザーID（UUID形式）
-    username = serializers.CharField(max_length=15)  # ユーザー名（最大150文字）
-    email = serializers.EmailField(max_length=256)  # メールアドレス（Email形式）
-    google_login = serializers.BooleanField()  # Googleログインフラグ
+    username = serializers.CharField(required=False, max_length=15)  # ユーザー名（最大150文字）
+    email = serializers.EmailField(required=False, max_length=256)  # メールアドレス（Email形式）
+    google_login = serializers.BooleanField(required=False)  # Googleログインフラグ
+    # パスワード
     password = serializers.CharField(
         write_only=True,
+        required=False,
         min_length=8,
         max_length=100,
         validators=[password_validator],
-    )  # パスワード
+    )
+    # 新しいパスワード
     new_password = serializers.CharField(
         write_only=True,
+        required=False,
         min_length=8,
         max_length=100,
         validators=[password_validator],
-    )  # 新しいパスワード
-    confirm_password = serializers.CharField(
-        write_only=True,
-        min_length=8,
-        max_length=100,
-        validators=[password_validator],
-    )  # 確認用パスワード
+    )
 
     def validate(self, attrs):
         """

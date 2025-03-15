@@ -79,15 +79,6 @@ const handleSubmit = () => {
                 <Text>
                     文章生成で使用するキーワードを入力してください。<br>
                     1文字以上10文字以内でひらがな、カタカナ、漢字のみ入力可能です。<br>
-                    <br>
-                    ~&nbsp;注意事項&nbsp;~<br>
-                </Text>
-                <Text class="prompt-form-text">
-                    １．キーワードは文章生成で使用されます。<br>
-                    ２．β版のため正しい文章が生成されるとは限りません。<br>
-                    ３．文章生成には時間がかかる場合があります。<br>
-                    ４．挑戦結果は成績に反映されません。<br>
-                    ５．入力したキーワードはAI学習に使用されます。<br>
                 </Text>
                 <Form :validation-schema="validationSchema" @submit="handleSubmit">
                     <Field v-model="prompt" name="prompt" class="field">
@@ -103,6 +94,14 @@ const handleSubmit = () => {
                             @dblclick.prevent />
                     </div>
                 </Form>
+                <Text><br>~&nbsp;注意事項&nbsp;~<br></Text>
+                <Text class="prompt-form-text">
+                    １．キーワードは文章生成で使用されます。<br>
+                    ２．β版のため正しい文章が生成されるとは限りません。<br>
+                    ３．文章生成には時間がかかる場合があります。<br>
+                    ４．挑戦結果は成績に反映されません。<br>
+                    ５．入力したキーワードはAI学習に使用されます。<br>
+                </Text>
             </div>
         </template>
         <template #modal-footer>

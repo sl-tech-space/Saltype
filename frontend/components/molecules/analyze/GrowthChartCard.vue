@@ -55,17 +55,18 @@ if (combinations.value.length > 0) {
             </div>
         </template>
         <template #card-body>
-            <BaseCarousel :slides="combinations.length" :options="{ loop: true }" @slide-change="handleSlideChange"
-                class="body-content">
-                <template v-for="(combination, index) in combinations" :key="combination" #[`slide-${index}`]>
-                    <div v-if="props.scoresByCombination[combination]?.scores?.length > 0">
-                        <BaseChart :scores="props.scoresByCombination[combination].scores" />
-                    </div>
-                    <div v-else>
-                        <Title size="small" color="main-color" text="データがありません" />
-                    </div>
-                </template>
-            </BaseCarousel>
+            <div class="body-content">
+                <BaseCarousel :slides="combinations.length" :options="{ loop: true }" @slide-change="handleSlideChange">
+                    <template v-for="(combination, index) in combinations" :key="combination" #[`slide-${index}`]>
+                        <div v-if="props.scoresByCombination[combination]?.scores?.length > 0">
+                            <BaseChart :scores="props.scoresByCombination[combination].scores" />
+                        </div>
+                        <div v-else>
+                            <Title size="small" color="main-color" text="データがありません" />
+                        </div>
+                    </template>
+                </BaseCarousel>
+            </div>
         </template>
         <template #card-footer>
             <div class="footer-content">
@@ -88,11 +89,8 @@ if (combinations.value.length > 0) {
     }
 
     .body-content {
-        margin-top: 10%;
-
-        .body-content-container {
-            @include horizontal-centered-flex;
-        }
+        height: 100%;
+        @include vertical-centered-flex;
     }
 }
 </style>
