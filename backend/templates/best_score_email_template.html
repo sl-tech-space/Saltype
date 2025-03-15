@@ -1,12 +1,86 @@
 <html>
 
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            gap: 30px;
+        }
+
+        .language-section {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 300px;
+        }
+
+        .difficulty-section {
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #3498db;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+
+        li {
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+
 <body>
-    <h1>{{ today_str }} のスコアランキングを送信します。</h1>
-    <ul>
-        {% for rank, score in scores %}
-        <li>{{ rank }}位 : {{ score.user__username }} - スコア : {{ score.max_score }}</li>
+    <h3>本日のスコアランキング！！</h3>
+
+    <div class="container">
+        {% for language, difficulties in scores_by_language.items %}
+        <div class="language-section">
+            <h2>{{ language }}</h2>
+            {% for difficulty, scores in difficulties.items %}
+            {% if scores %}
+            <div class="difficulty-section">
+                <h3>{{ difficulty }}</h3>
+                <ul>
+                    {% for rank, score in scores %}
+                    <li>{{ rank }}位 : {{ score.user__username }} - スコア : {{ score.max_score }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 </body>
 
 </html>

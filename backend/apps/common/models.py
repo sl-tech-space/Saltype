@@ -253,3 +253,32 @@ class Request(models.Model):
 
     class Meta:
         db_table = "t_request"
+
+
+class GeneratedContent(models.Model):
+    """
+    生成されたコンテンツテーブル定義
+
+    Attributes:
+        content_id (AutoField): コンテンツID
+        user (ForeignKey): コンテンツを生成したユーザーID（Userモデルへの外部キー）
+        theme (CharField): 生成コンテンツのテーマまたは入力プロンプト
+        kanji_text (TextField): 生成された漢字テキスト
+        hiragana_text (TextField): 生成されたひらがなテキスト
+        created_at (DateTimeField): 作成日時
+        updated_at (DateTimeField): 更新日時
+    """
+
+    content_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    theme = models.CharField(max_length=256)
+    kanji_text = models.TextField()
+    hiragana_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "t_generated_content"
+        ordering = ["-created_at"]

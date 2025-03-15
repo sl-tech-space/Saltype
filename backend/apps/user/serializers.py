@@ -161,8 +161,8 @@ class PasswordResetConfirmSerializer(BaseSerializer):
             user = User.objects.get(user_id=user_id)
         except User.DoesNotExist:
             raise serializers.ValidationError("ユーザーが見つかりません。")
-
-        if user.check_password(attrs.get("new_password")):
+        # 過去のパスワードがnullでない場合のみチェックを行う
+        if user.password and user.check_password(attrs.get("new_password")):
             raise serializers.ValidationError(
                 "過去に使用したパスワードと同じです。別のパスワードを使用してください。"
             )

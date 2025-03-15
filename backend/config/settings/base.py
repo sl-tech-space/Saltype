@@ -104,6 +104,9 @@ REST_FRAMEWORK = {
         "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "DEFAULT_RENDERER_CLASSES": [
+        "apps.common.renderers.APIOnlyJSONRenderer",
+    ],
 }
 
 AUTHENTICATION_BACKENDS = (

@@ -3,7 +3,6 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/app/scripts
 PYTHONPATH=/app
 DJANGO_SETTINGS_MODULE=config.settings
-# 他の必要な環境変数
 SQL_ENGINE=${SQL_ENGINE}
 SQL_DATABASE=${SQL_DATABASE}
 SQL_USER=${SQL_USER}

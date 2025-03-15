@@ -81,6 +81,7 @@ services:
     container_name: saltype-django
     volumes:
       - ./backend:/app
+      - ./backend/logs:/app/logs
     environment:
       - DEBUG=${DEBUG:-false}
       - SECRET_KEY=${SECRET_KEY}
@@ -169,3 +170,4 @@ networks:
 volumes:
   postgres_data:
   frontend_data:
+  backend_logs:

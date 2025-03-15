@@ -77,6 +77,11 @@ server {
     add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
     add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
 
+    # エラーページの設定
+    error_page 403 = @error;
+    error_page 404 = @error;
+    error_page 500 502 503 504 = @error;
+
     location /api/nuxt/ {
         proxy_pass $FRONTEND;
         proxy_http_version 1.1;
@@ -106,23 +111,9 @@ server {
         }
     }
 
-    location / {
-        proxy_pass $FRONTEND;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection $connection_upgrade;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
-        proxy_set_header X-Forwarded-Host $server_name;
-        proxy_cache_bypass $http_upgrade;
-        proxy_read_timeout 90;
-        proxy_connect_timeout 90;
-        proxy_send_timeout 90;
-    }
-
     location /api/django/ {
+        proxy_intercept_errors on;
+
         proxy_pass $BACKEND;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -149,5 +140,28 @@ server {
             add_header 'Content-Length' 0;
             return 204;
         }
+    }
+
+    # エラー時はNuxtにフォワード
+    location @error {
+        proxy_pass $FRONTEND;
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_set_header X-Error-Status $status;
+    }
+
+    location / {
+        proxy_pass $FRONTEND;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Host $server_name;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 90;
+        proxy_connect_timeout 90;
+        proxy_send_timeout 90;
     }
 }
