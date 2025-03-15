@@ -8,5 +8,9 @@ chmod 0644 /etc/cron.d/app-cron
 # cronサービスをrootで起動（バックグラウンドで）
 cron
 
+# マイグレーション実行
+gosu django python manage.py makemigrations
+gosu django python manage.py migrate
+
 # Gunicornを非rootユーザー(django)で実行
 exec gosu django gunicorn config.wsgi:application --bind 0.0.0.0:8000
