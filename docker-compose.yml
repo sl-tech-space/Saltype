@@ -38,28 +38,6 @@ services:
     depends_on:
       - db
 
-  # cron:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: dockerfile.cron
-  #   container_name: cron
-  #   command: cron -f
-  #   volumes:
-  #     - ./backend:/app
-  #     - ./backend/logs:/var/log
-  #   environment:
-  #     - DEBUG=${DEBUG}
-  #     - SECRET_KEY=${SECRET_KEY}
-  #     - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
-  #     - SQL_ENGINE=${DB_ENGINE}
-  #     - SQL_DATABASE=${DB_NAME}
-  #     - SQL_USER=${DB_USER}
-  #     - SQL_PASSWORD=${DB_PASSWORD}
-  #     - SQL_HOST=${DB_HOST}
-  #     - SQL_PORT=${DB_PORT}
-  #   depends_on:
-  #     - backend
-
   db:
     image: postgres:14
     container_name: postgres
