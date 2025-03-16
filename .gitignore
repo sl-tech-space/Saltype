@@ -14,3 +14,4 @@ logs/exim4/mainlog
 backend/apps/common/migrations/
 backend/logs/
 data/
+batch

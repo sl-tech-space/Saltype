@@ -154,8 +154,7 @@ services:
       --webroot-path=/var/www/certbot 
       --email ${SSL_EMAIL}
       --agree-tos 
-      --no-eff-email 
-      --force-renewal
+      --no-eff-email
       -d ${SERVER_NAME}
       -v
     depends_on:
