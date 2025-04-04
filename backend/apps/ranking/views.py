@@ -2,6 +2,8 @@ from apps.common.models import Score
 from apps.common.views import BaseView
 from datetime import date
 from .serializers import GetRankingSerializer
+from django.db.models import Max, Window, F
+from django.db.models.functions import Rank
 
 
 class GetRankingView(BaseView):
@@ -42,12 +44,11 @@ class GetRankingView(BaseView):
             "status": "success",
             "data": [
                 {
-                    "user_id": data.user.user_id,
-                    "username": data.user.username,
-                    "score": data.score,
+                    "user_id": data["user__user_id"],
+                    "username": data["user__username"],
+                    "score": data["score"],
                 }
                 for data in ranking_data
-                if data.user is not None
             ],
         }
 
@@ -76,7 +77,15 @@ class GetRankingView(BaseView):
         return list(
             Score.objects.filter(**filter_kwargs)
             .select_related("user")
-            .only("user__user_id", "user__username", "score")
-            .order_by("user__user_id", "-score")
-            .distinct("user__user_id")[:limit]
-        )
+            .annotate(
+                rank=Window(
+                    expression=Rank(),
+                    partition_by=[F("user")],
+                    order_by=F("score").desc(),
+                )
+            )
+            .filter(rank=1)
+            .values("user__user_id", "user__username", "score")
+            .distinct()
+            .order_by("-score")
+        )[:limit]
