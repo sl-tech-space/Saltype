@@ -56,6 +56,7 @@ class GetRankingView(BaseView):
     ) -> list[Score]:
         """
         ランキングデータを取得します。
+        ユーザーごとの最高スコアのみを返します。
 
         Args:
             lang_id (int): 言語ID
