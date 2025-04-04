@@ -76,5 +76,6 @@ class GetRankingView(BaseView):
             Score.objects.filter(**filter_kwargs)
             .select_related("user")
             .only("user__user_id", "user__username", "score")
-            .order_by("-score")[:limit]
+            .order_by("user__user_id", "-score")
+            .distinct("user__user_id")[:limit]
         )
