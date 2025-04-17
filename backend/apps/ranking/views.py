@@ -4,8 +4,7 @@ from datetime import date
 from .serializers import GetRankingSerializer
 from django.db.models import Max, Window, F
 from django.db.models.functions import Rank
-from django.db.models import Max, Window, F
-from django.db.models.functions import Rank
+
 class GetRankingView(BaseView):
     """
     ランキング情報を取得するためのAPIビュークラス。
@@ -13,6 +12,7 @@ class GetRankingView(BaseView):
     """
     def post(self, request, *args, **kwargs):
         return super().post(request, GetRankingSerializer, *args, **kwargs)
+    
     def handle_post_request(self, validated_data: dict) -> dict:
         """
         リクエストデータに基づいてランキングデータを取得します。
@@ -42,13 +42,11 @@ class GetRankingView(BaseView):
                     "user_id": data["user__user_id"],
                     "username": data["user__username"],
                     "score": data["score"],
-                    "user_id": data["user__user_id"],
-                    "username": data["user__username"],
-                    "score": data["score"],
                 }
                 for data in ranking_data
             ],
         }
+        
     def get_ranking_data(
         self, lang_id: int, diff_id: int, limit: int, target_date: date = None
     ) -> list[Score]:
