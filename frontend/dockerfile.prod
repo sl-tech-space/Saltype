@@ -20,6 +20,7 @@ RUN npm run build
 FROM node:20-alpine
 
 WORKDIR /app
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # ビルドステージから必要なファイルをコピー
 COPY --from=build /app/.output ./.output
