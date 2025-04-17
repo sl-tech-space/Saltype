@@ -25,7 +25,7 @@
     "embla-carousel-vue": "^8.2.1",
     "jp-transliterator": "^1.0.22",
     "mitt": "^3.0.1",
-    "nuxt": "^3.14.0",
+    "nuxt": "^3.16.0",
     "nuxt-security": "^2.1.5",
     "swiper": "^11.1.14",
     "vee-validate": "^4.13.2",
