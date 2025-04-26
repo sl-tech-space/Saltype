@@ -23,7 +23,7 @@
     "defu": "^6.1.4",
     "embla-carousel": "^8.2.1",
     "embla-carousel-vue": "^8.2.1",
-    "jp-transliterator": "^1.0.22",
+    "jp-transliterator": "^2.0.3",
     "mitt": "^3.0.1",
     "nuxt": "^3.16.0",
     "nuxt-security": "^2.1.5",
