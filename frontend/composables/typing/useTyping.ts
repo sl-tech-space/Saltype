@@ -31,6 +31,7 @@ export function useTyping(language: string, difficultyLevel: string) {
   const sentencesData = shallowRef<Array<[string, string]>>([]);
   const currentIndex = ref(0);
   const patterns = shallowRef<string[]>([]);
+  const nextPatterns = shallowRef<string[]>([]); // 次の文章のパターンをキャッシュ
   const currentInputIndex = ref(0);
   const currentInput = ref("");
   const currentPatternIndex = ref(0);
@@ -50,8 +51,14 @@ export function useTyping(language: string, difficultyLevel: string) {
 
   const { value: gameModeId } = useLocalStorage("gameModeId");
   const { setValue: setScore } = useLocalStorage("score", "0");
-  const { setValue: setTotalCorrectTypedCount } = useLocalStorage("totalCorrectTypedCount", "0");
-  const { setValue: setTypingAccuracy } = useLocalStorage("typingAccuracy", "0");
+  const { setValue: setTotalCorrectTypedCount } = useLocalStorage(
+    "totalCorrectTypedCount",
+    "0"
+  );
+  const { setValue: setTypingAccuracy } = useLocalStorage(
+    "typingAccuracy",
+    "0"
+  );
 
   /**
    * タイピング結果取得変数
@@ -103,11 +110,19 @@ export function useTyping(language: string, difficultyLevel: string) {
     try {
       const data = await sentences();
       if (Array.isArray(data) && data.length > 0) {
+        // メモリ最適化のために前のデータを解放
+        sentencesData.value = [];
+        patterns.value = [];
+        nextPatterns.value = [];
+
+        // 新しいデータをセット
         sentencesData.value = data;
         resetMistypeStats();
         _resetTypingStats();
         await _updatePatterns();
         _updateColoredText();
+        // 次の文章のパターンを事前に取得
+        _prefetchNextPattern();
       }
     } catch {
       error.value = "文章の取得に失敗しました";
@@ -183,6 +198,10 @@ export function useTyping(language: string, difficultyLevel: string) {
     isLoading.value = true;
     isTypingStarted.value = false;
 
+    // メモリ最適化: 不要なパターンをクリア
+    patterns.value = [];
+    nextPatterns.value = [];
+
     await Promise.all([sendMistypeDataToServer(), _sendTypingDataToServer()]);
 
     setTotalCorrectTypedCount(typingResults.totalCorrectTypedCount.toString());
@@ -250,6 +269,7 @@ export function useTyping(language: string, difficultyLevel: string) {
     const inputKey = event.key.toLowerCase();
     const nextInput = (currentInput.value + inputKey).toLowerCase();
 
+    // 入力に合致するパターンをフィルタリング
     const filteredPatterns = currentPatterns.filter((pattern) => {
       const lowerPattern = pattern.toLowerCase();
       return lowerPattern.startsWith(nextInput);
@@ -266,6 +286,7 @@ export function useTyping(language: string, difficultyLevel: string) {
       vowelPattern.value.includes(inputKey) ||
       symbolPattern.value.includes(inputKey)
     ) {
+      // フィルタリングされたパターンを保持
       patterns.value = filteredPatterns;
       typingResults.totalCorrectTypedCount++;
     }
@@ -316,13 +337,59 @@ export function useTyping(language: string, difficultyLevel: string) {
    */
   const _nextSentence = async (): Promise<void> => {
     if (currentIndex.value < sentencesData.value.length - 1) {
+      // メモリ最適化: 古いパターンをクリア
+      patterns.value = [];
+
       currentIndex.value++;
       currentInputIndex.value = 0;
       currentInput.value = "";
       currentPatternIndex.value = 0;
-      await _updatePatterns();
+
+      // 事前に取得していた次のパターンを使用
+      if (nextPatterns.value.length > 0) {
+        patterns.value = nextPatterns.value;
+        nextPatterns.value = [];
+        // 現在の文章を表示しながら、次の文章のパターンを事前に取得
+        _prefetchNextPattern();
+      } else {
+        // 事前取得できていなかった場合は通常の更新
+        await _updatePatterns();
+      }
+
+      await _updateColoredText();
     } else {
       isTypingStarted.value = false;
+      // メモリ最適化: 全てのパターンをクリア
+      patterns.value = [];
+      nextPatterns.value = [];
+    }
+  };
+
+  /**
+   * 次の文章のパターンを事前に取得
+   */
+  const _prefetchNextPattern = async (): Promise<void> => {
+    // まだ次の文章がある場合のみ
+    if (currentIndex.value < sentencesData.value.length - 1) {
+      const nextIndex = currentIndex.value + 1;
+      const { getAllCombinations } = useSentencePattern();
+
+      if (!_splittedId.value) return;
+
+      try {
+        if (_splittedId.value.left === Language.Japanese) {
+          // 全てのパターンを取得
+          nextPatterns.value = await getAllCombinations(
+            sentencesData.value[nextIndex][1]
+          );
+        } else {
+          nextPatterns.value = [sentencesData.value[nextIndex][0]];
+        }
+      } catch (error) {
+        console.error("次の文章のパターン取得に失敗:", error);
+        // エラーが発生した場合は空配列に
+        nextPatterns.value = [];
+      }
     }
   };
 
@@ -334,7 +401,12 @@ export function useTyping(language: string, difficultyLevel: string) {
     if (!_splittedId.value) {
       return;
     }
+
+    // メモリ最適化: 古いパターンをクリア
+    patterns.value = [];
+
     if (_splittedId.value.left === Language.Japanese) {
+      // 全てのパターンを取得
       patterns.value = await getAllCombinations(
         sentencesData.value[currentIndex.value][1]
       );

@@ -4,6 +4,7 @@ import BaseChart from '../common/BaseChart.vue';
 import BaseCarousel from '../common/BaseCarousel.vue';
 import Title from '~/components/atoms/texts/Title.vue';
 import Text from '~/components/atoms/texts/Text.vue';
+import Separator from '~/components/atoms/ui/Separator.vue';
 import { useLanguageAndDifficulty } from '~/composables/typing/useLanguageAndDifficulty';
 
 interface ScoreProps {
@@ -56,6 +57,10 @@ if (combinations.value.length > 0) {
         </template>
         <template #card-body>
             <div class="body-content">
+                <Text size="large" color="main-color">
+                    設定 : {{ formattedCurrentCombination }}
+                </Text>
+                <Separator width="medium" color="main-color" class="separator" />
                 <BaseCarousel :slides="combinations.length" :options="{ loop: true }" @slide-change="handleSlideChange">
                     <template v-for="(combination, index) in combinations" :key="combination" #[`slide-${index}`]>
                         <div v-if="props.scoresByCombination[combination]?.scores?.length > 0">
@@ -68,13 +73,6 @@ if (combinations.value.length > 0) {
                 </BaseCarousel>
             </div>
         </template>
-        <template #card-footer>
-            <div class="footer-content">
-                <Text size="large" color="main-color">
-                    設定 : {{ formattedCurrentCombination }}
-                </Text>
-            </div>
-        </template>
     </BaseCard>
 </template>
 
@@ -84,13 +82,13 @@ if (combinations.value.length > 0) {
         margin-left: 4%;
     }
 
-    .footer-content {
-        @include horizontal-centered-flex;
-    }
-
     .body-content {
         height: 100%;
         @include vertical-centered-flex;
+    }
+
+    .separator {
+        margin: 10px 0;
     }
 }
 </style>
