@@ -12,7 +12,7 @@ djangorestframework==3.16.0
 djangorestframework-simplejwt==5.5.0
 drf-social-oauth2==3.1.0
 google-auth==2.38.0
-google-auth-oauthlib==1.2.1
+google-auth-oauthlib==1.2.2
 idna==3.10
 gspread==6.2.0
 jwcrypto==1.5.6
