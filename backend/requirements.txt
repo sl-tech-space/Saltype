@@ -1,6 +1,6 @@
 asgiref==3.8.1
 cachetools==5.5.2
-certifi==2025.1.31
+certifi==2025.4.26
 cffi==1.17.1
 charset-normalizer==3.4.1
 cryptography==44.0.2
@@ -11,8 +11,9 @@ django-oauth-toolkit==3.0.1
 djangorestframework==3.16.0
 djangorestframework-simplejwt==5.5.0
 drf-social-oauth2==3.1.0
-google-auth==2.38.0
-google-auth-oauthlib==1.2.1
+google-auth==2.39.0
+google-auth==2.39.0
+google-auth-oauthlib==1.2.2
 idna==3.10
 gspread==6.2.0
 jwcrypto==1.5.6
@@ -27,8 +28,8 @@ python3-openid==3.2.0
 pytz==2025.2
 requests==2.32.3
 requests-oauthlib==2.0.0
-rsa==4.9
-social-auth-core==4.5.6
+rsa==4.9.1
+social-auth-core==4.6.1
 social-auth-app-django==5.4.3
 sqlparse==0.5.3
 typing_extensions==4.13.2
@@ -37,4 +38,4 @@ urllib3==2.4.0
 flake8==7.2.0
 drf-social-oauth2>=1.1.0
 gunicorn==23.0.0
-google-generativeai==0.8.4
+google-generativeai==0.8.5
