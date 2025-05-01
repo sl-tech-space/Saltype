@@ -426,14 +426,19 @@ export function useTyping(language: string, difficultyLevel: string) {
     if (!pattern) return;
 
     if (!isTypingStarted.value) {
-      coloredText.value = pattern;
+      coloredText.value = pattern.replace(/ /g, "&nbsp;");
       return;
     }
 
-    coloredText.value = `<span style="opacity: 0.5">${pattern.slice(
-      0,
-      currentInputIndex.value
-    )}</span>${pattern.slice(currentInputIndex.value)}`;
+    // スペースを&nbsp;に置き換え v-htmlによる表示のため
+    const typedText = pattern
+      .slice(0, currentInputIndex.value)
+      .replace(/ /g, "&nbsp;");
+    const remainingText = pattern
+      .slice(currentInputIndex.value)
+      .replace(/ /g, "&nbsp;");
+
+    coloredText.value = `<span style="opacity: 0.5">${typedText}</span>${remainingText}`;
   };
 
   /**
