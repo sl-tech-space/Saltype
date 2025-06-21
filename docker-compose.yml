@@ -62,8 +62,14 @@ services:
     environment:
       - WATCHDOG_TIMEOUT=10
       - PYTHONPATH=/app/src
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
     command: streamlit run src/main.py --server.runOnSave=true
+    depends_on:
+      - db
     tty: true
-
 volumes:
   postgres_data:
