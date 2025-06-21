@@ -50,5 +50,20 @@ services:
     ports:
       - "5432:5432"
 
+  analyze-tool:
+    build:
+      context: ./analyzeTool
+      dockerfile: Dockerfile
+    container_name: analyze-tool
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./analyzeTool:/app
+    environment:
+      - WATCHDOG_TIMEOUT=10
+      - PYTHONPATH=/app/src
+    command: streamlit run src/main.py --server.runOnSave=true
+    tty: true
+
 volumes:
   postgres_data:

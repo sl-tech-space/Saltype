@@ -153,6 +153,39 @@ services:
     depends_on:
       - nginx
 
+  analyze-tool:
+    build:
+      context: ./analyzeTool
+      dockerfile: dockerfile.prod
+    container_name: saltype-analyze-tool
+    volumes:
+      - ./analyzeTool:/app
+    environment:
+      - WATCHDOG_TIMEOUT=10
+      - PYTHONPATH=/app/src
+    command: streamlit run src/main.py --server.headless=true --server.baseUrlPath=/analyze
+    networks:
+      - frontend-net
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "1.0"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   frontend-net:
     driver: bridge

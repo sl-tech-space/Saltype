@@ -57,6 +57,15 @@ watchEffect(() => {
 const homeMenuItems = computed(() => menuItems.value.homeMenuItems);
 const getAction = computed(() => menuItems.value.getAction);
 
+const analyzeToolUrl = computed(() => {
+    if (import.meta.client) {
+        return process.env.NUXT_ENV === 'production'
+            ? `https://${window.location.host}/analyze-tool`
+            : 'http://localhost:8501';
+    }
+    return '';
+});
+
 onMounted(async () => {
     await checkAdminPermission();
 });
@@ -72,15 +81,24 @@ onMounted(async () => {
         <template #card-body>
             <div class="body-content">
                 <div class="menu-list">
-                    <Text v-for="item in homeMenuItems" :key="item.text" size="large"
-                        @click="() => getAction(item.actionKey)?.()">
+                    <Text v-for="item in homeMenuItems" :key="item.text" size="large">
                         <ClientOnly>
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                                 :fill="colorStore.mainColor">
                                 <path :d="item.path" />
                             </svg>
                         </ClientOnly>
-                        {{ item.text }}
+                        <ClientOnly>
+                            <a v-if="item.actionKey === 'navigateToAnalyzeTool'" :href="analyzeToolUrl" target="_blank"
+                                rel="noopener noreferrer" class="analyze-tool-link">
+                                {{ item.text }}
+                            </a>
+                            <template v-else>
+                                <span @click="() => getAction(item.actionKey)?.()">
+                                    {{ item.text }}
+                                </span>
+                            </template>
+                        </ClientOnly>
                     </Text>
                 </div>
             </div>
@@ -120,9 +138,12 @@ onMounted(async () => {
                     align-items: center;
                 }
 
-                &:hover {
-                    color: $hover-color;
-                    cursor: pointer;
+                span,
+                a {
+                    &:hover {
+                        color: $hover-color;
+                        cursor: pointer;
+                    }
                 }
             }
         }
@@ -146,5 +167,10 @@ onMounted(async () => {
 .slide-enter-to,
 .slide-leave-from {
     transform: translateX(0);
+}
+
+.analyze-tool-link {
+    color: inherit;
+    text-decoration: none;
 }
 </style>
