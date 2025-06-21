@@ -289,11 +289,13 @@ class GetUserRankingView(BaseView):
         Returns:
             int: ユーザーのランキング位置（1位からの順位）。
         """
-        higher_score_count = Score.objects.filter(
-            score__gt=score,
-            user_id=user_id,
+        user_max_scores = Score.objects.filter(
             lang_id=lang_id,
             diff_id=diff_id,
+        ).values('user_id').annotate(max_score=Max('score'))
+
+        higher_score_count = user_max_scores.filter(
+            max_score__gt=score
         ).count()
 
         return higher_score_count + 1
