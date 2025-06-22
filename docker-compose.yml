@@ -62,8 +62,8 @@ services:
     environment:
       - WATCHDOG_TIMEOUT=10
       - PYTHONPATH=/app/src
-      - DB_HOST=db
-      - DB_PORT=5432
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -71,5 +71,6 @@ services:
     depends_on:
       - db
     tty: true
+
 volumes:
   postgres_data:

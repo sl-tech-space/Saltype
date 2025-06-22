@@ -12,6 +12,7 @@ services:
     environment:
       - BACKEND=${BACKEND_PROXY}
       - FRONTEND=${FRONTEND_PROXY}
+      - ANALYZE_TOOL=${ANALYZE_TOOL_PROXY}
       - SERVER_NAME=${SERVER_NAME}
       - HTTP_PORT=${HTTP_PORT}
       - HTTPS_PORT=${HTTPS_PORT}
@@ -163,9 +164,14 @@ services:
     environment:
       - WATCHDOG_TIMEOUT=10
       - PYTHONPATH=/app/src
-    command: streamlit run src/main.py --server.headless=true --server.baseUrlPath=/analyze
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    command: streamlit run src/main.py --server.headless=true --server.baseUrlPath=/analyze-tool
     networks:
-      - frontend-net
+      - backend-net
     deploy:
       resources:
         limits:
