@@ -1,0 +1,4 @@
+[submodule "analyzeTool"]
+	path = analyzeTool
+	url = https://github.com/sl-tech-space/TypingAnalizeTool.git
+	branch = main
