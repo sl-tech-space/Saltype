@@ -59,9 +59,8 @@ const getAction = computed(() => menuItems.value.getAction);
 
 const analyzeToolUrl = computed(() => {
     if (import.meta.client) {
-        return process.env.NUXT_ENV === 'production'
-            ? `https://${window.location.host}/analyze-tool`
-            : 'http://localhost:8501';
+        const config = useRuntimeConfig();
+        return config.public.analyzeToolUrl;
     }
     return '';
 });
@@ -90,7 +89,7 @@ onMounted(async () => {
                         </ClientOnly>
                         <ClientOnly>
                             <a v-if="item.actionKey === 'navigateToAnalyzeTool'" :href="analyzeToolUrl" target="_blank"
-                                rel="noopener noreferrer" class="analyze-tool-link">
+                                rel="noopener" referrerpolicy="origin" class="analyze-tool-link">
                                 {{ item.text }}
                             </a>
                             <template v-else>
