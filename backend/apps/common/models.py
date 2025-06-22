@@ -65,6 +65,7 @@ class User(AbstractUser):
     permission = models.PositiveIntegerField(
         choices=PERMISSON.choices, default=PERMISSON.MEMBER
     )
+    is_newgraduate = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     del_flg = models.BooleanField(default=False)

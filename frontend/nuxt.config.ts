@@ -113,6 +113,9 @@ export default defineNuxtConfig({
       sentencesPath:
         process.env.NUXT_ENV === "production" ? ".output/server/data" : "server/data",
       googleClientId: process.env.NUXT_APP_GOOGLE_CLIENT_ID,
+      analyzeToolUrl: process.env.NUXT_ENV === 'production' 
+        ? process.env.NUXT_CLIENT_SIDE_URL + '/analyze-tool' 
+        : 'http://localhost:8501'
     },
   },
   experimental: {
@@ -197,6 +200,10 @@ export default defineNuxtConfig({
       skipWaiting: true,
       clientsClaim: true,
       runtimeCaching: [
+        {
+          urlPattern: /^\/analyze-tool\//,
+          handler: 'NetworkOnly',
+        },
         {
           urlPattern: /^https:\/\/api\./,
           handler: "NetworkFirst",
